@@ -202,8 +202,9 @@ enum class LyricsFontFamily(val storageValue: String) {
 }
 
 /**
- * `KaraokeLyricsView.textColor`. `ARTWORK` keeps the cover-tinted neutral that matches the ambient
- * background; the other modes override it for users who want a fixed reading colour.
+ * `KaraokeLyricsView.textColor`. `ARTWORK` tints the words with the cover's palette, `THEME` with
+ * the theme's primary tone; the other modes pin a fixed reading colour. Both tinted modes are
+ * re-lit for the page so they stay legible.
  */
 enum class LyricsTextColorMode(val storageValue: String) {
     ARTWORK("artwork"),

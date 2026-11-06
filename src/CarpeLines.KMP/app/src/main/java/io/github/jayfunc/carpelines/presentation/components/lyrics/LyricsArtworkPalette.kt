@@ -15,16 +15,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 import androidx.palette.graphics.Palette
+import com.google.android.material.color.utilities.Hct
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
  * Colours for the lyric text on top of the ambient background.
  *
- * BetterLyrics keeps the lyrics a neutral grey and lets the background carry the colour. Polarity
- * is read from the *page* behind the words (the theme surface, which the now-playing colour scheme
- * already derived from the cover), not from the cover itself: a bright cover under a dark scrim
- * still needs light text, and getting that backwards is how lyrics become unreadable.
+ * Polarity is read from the *page* behind the words (the theme surface, which the now-playing
+ * colour scheme already derived from the cover), not from the cover itself: a bright cover under
+ * a dark scrim still needs light text, and getting that backwards is how lyrics become
+ * unreadable. Only the hue comes from the artwork or the theme; [legibleTint] re-lights it for
+ * the page so a choice between the two is actually visible.
  */
 @Immutable
 data class LyricsTextColors(
@@ -92,16 +94,16 @@ fun rememberArtworkPalette(bitmap: Bitmap?): ArtworkPalette? {
 }
 
 /**
- * The lyric palette. The polarity comes from the page, the accent from the cover: that is the one
- * thing the artwork is actually good for, and it is what makes the page feel tinted by the song
- * without ever putting dark words on a dark scrim.
+ * The page-level lyric palette: polarity, accents and the neutral reading colour. The accent comes
+ * from the cover, keeping the page tinted by the song without ever putting dark words on a dark
+ * scrim. The text hue itself is chosen per [LyricsTextColorMode] by [resolveLyricContentColor].
  */
 fun resolveLyricsTextColors(
     palette: ArtworkPalette?,
     colorScheme: ColorScheme,
 ): LyricsTextColors {
-    val light = colorScheme.surface.luminance() > 0.5f
-    val base = if (light) Color(0xFF101014) else Color(0xFFF4F4F7)
+    val light = isLightPage(colorScheme)
+    val base = neutralLyricColor(light)
     return LyricsTextColors(
         played = base,
         unplayed = base.copy(alpha = WinLyricsVisualDefaults.UNPLAYED_LINE_OPACITY),
@@ -111,6 +113,54 @@ fun resolveLyricsTextColors(
         isLightBackground = light,
     )
 }
+
+/**
+ * The lyric text colour for the "Lyric colour" setting. `ARTWORK` takes the cover's hue and
+ * `THEME` the theme's primary tone, both re-lit for the page: without that, both modes resolved to
+ * the same near-white/off-black as the neutral default and the setting did nothing.
+ */
+fun resolveLyricContentColor(
+    mode: LyricsTextColorMode,
+    palette: ArtworkPalette?,
+    colorScheme: ColorScheme,
+): Color {
+    val light = isLightPage(colorScheme)
+    return when (mode) {
+        LyricsTextColorMode.ARTWORK ->
+            (palette?.vibrant ?: palette?.dominant)?.let { legibleTint(it, light) }
+                ?: neutralLyricColor(light)
+
+        LyricsTextColorMode.THEME -> legibleTint(colorScheme.primary, light)
+        LyricsTextColorMode.LIGHT -> Color.White
+        LyricsTextColorMode.DARK -> Color(0xFF101014)
+    }
+}
+
+private fun isLightPage(colorScheme: ColorScheme): Boolean =
+    colorScheme.surface.luminance() > 0.5f
+
+/** The reading colour used when the chosen source carries no hue of its own. */
+private fun neutralLyricColor(lightPage: Boolean): Color =
+    if (lightPage) Color(0xFF101014) else Color(0xFFF4F4F7)
+
+/**
+ * Keeps the source hue and chroma but pins its Material tone to the page: a cover's mid-tone can
+ * be a dark navy on a dark page or a pale yellow on a light one, and either disappears into the
+ * scrim. A grey artwork has no hue to follow and falls back to neutral rather than inventing one.
+ */
+private fun legibleTint(source: Color, lightPage: Boolean): Color {
+    val hct = Hct.fromInt(source.toArgb())
+    if (hct.chroma < MIN_TINT_CHROMA) return neutralLyricColor(lightPage)
+    hct.chroma = hct.chroma.coerceIn(MIN_TINT_CHROMA, MAX_TINT_CHROMA)
+    hct.tone = if (lightPage) LIGHT_PAGE_TINT_TONE else DARK_PAGE_TINT_TONE
+    return Color(hct.toInt())
+}
+
+/** HCT chroma below ~12 reads as grey; the same cutoff the artwork sampler uses. */
+private const val MIN_TINT_CHROMA = 12.0
+private const val MAX_TINT_CHROMA = 64.0
+private const val DARK_PAGE_TINT_TONE = 80.0
+private const val LIGHT_PAGE_TINT_TONE = 30.0
 
 /** Stable identity for the palette cache, without hashing the whole bitmap. */
 private val Bitmap.generationId: Int

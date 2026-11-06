@@ -106,12 +106,12 @@ import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsAlignme
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsLineActionsSheet
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsOffsetStore
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsSystemBarsAppearance
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsTextColorMode
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsTextColors
 import io.github.jayfunc.carpelines.presentation.components.lyrics.card.LyricsShareSheet
 import io.github.jayfunc.carpelines.presentation.components.lyrics.rememberArtworkPalette
 import io.github.jayfunc.carpelines.presentation.components.lyrics.rememberLyricsChromeState
 import io.github.jayfunc.carpelines.presentation.components.lyrics.rememberLyricsDisplaySettings
+import io.github.jayfunc.carpelines.presentation.components.lyrics.resolveLyricContentColor
 import io.github.jayfunc.carpelines.presentation.components.lyrics.resolveLyricsTextColors
 import io.github.jayfunc.carpelines.presentation.components.lyrics.scaledForLyrics
 import io.github.jayfunc.carpelines.presentation.components.player.AnimatedPlaybackControls
@@ -240,12 +240,11 @@ fun NowPlayingLyricsScreen(
     val colors = resolveLyricsTextColors(palette, MaterialTheme.colorScheme)
     // `KaraokeLyricsView.textColor` is a single colour for every lyric layer, so the override is
     // resolved once here instead of per line.
-    val lyricContentColor = when (settings.visual.textColorMode) {
-        LyricsTextColorMode.ARTWORK -> colors.played
-        LyricsTextColorMode.THEME -> MaterialTheme.colorScheme.onSurface
-        LyricsTextColorMode.LIGHT -> Color.White
-        LyricsTextColorMode.DARK -> Color(0xFF101014)
-    }
+    val lyricContentColor = resolveLyricContentColor(
+        mode = settings.visual.textColorMode,
+        palette = palette,
+        colorScheme = MaterialTheme.colorScheme,
+    )
     // The bar goes away for the whole page, not just the lyrics-only face: the lyrics reach the top
     // of the page, and system icons over them read as dirt on the words.
     LyricsSystemBarsAppearance(isLightBackground = colors.isLightBackground)
