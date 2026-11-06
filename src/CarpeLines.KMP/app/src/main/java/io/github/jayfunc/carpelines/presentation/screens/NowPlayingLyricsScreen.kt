@@ -419,6 +419,47 @@ fun NowPlayingLyricsScreen(
                 // The lyrics are one view in both faces: the overview shows them in the middle
                 // band of the page, and hiding the chrome simply gives them the whole height.
                 lyricsContent = { lyricsModifier ->
+                    // The words arrive asynchronously — a local tag first, an online search after
+                    // it — so their first appearance has to be a transition rather than a state
+                    // flip: the spinner occupies this same band, and swapping the two used to
+                    // read as the lyrics snapping from 0 to 1 with nothing in between.
+                    val reducedMotion = LocalReducedMotion.current
+                    val showsSynced = lyrics?.synced?.isNotEmpty() == true
+                    val showsPlain = !showsSynced && lyrics?.plain?.isNotEmpty() == true
+                    val arrival = remember { Animatable(if (reducedMotion) 1f else 0f) }
+                    var wordsOnPage by remember { mutableStateOf(false) }
+                    LaunchedEffect(showsSynced, showsPlain) {
+                        if (!showsSynced && !showsPlain) {
+                            // Whatever takes the band next (spinner, settled miss) brings its own
+                            // entrance, so the words after it start from transparent again.
+                            wordsOnPage = false
+                            arrival.snapTo(if (reducedMotion) 1f else 0f)
+                            return@LaunchedEffect
+                        }
+                        // An in-place swap (plain → synced for the same track) keeps the words
+                        // where they are; only the first arrival fades.
+                        if (wordsOnPage) return@LaunchedEffect
+                        wordsOnPage = true
+                        if (reducedMotion) {
+                            arrival.snapTo(1f)
+                        } else {
+                            arrival.snapTo(0f)
+                            arrival.animateTo(
+                                targetValue = 1f,
+                                animationSpec = tween(
+                                    durationMillis = 320,
+                                    easing = M3EMotion.Easings.emphasizedDecelerate,
+                                ),
+                            )
+                        }
+                    }
+                    // Read in the layer block, not in composition: the fade then costs one layer
+                    // update per frame instead of rebuilding the karaoke list.
+                    val lyricsArrival = if (showsSynced || showsPlain) {
+                        lyricsModifier.graphicsLayer { alpha = arrival.value }
+                    } else {
+                        lyricsModifier
+                    }
                     when {
                         lyrics?.synced?.isNotEmpty() == true -> {
                             val synced = remember(lyrics) { lyrics.synced.orEmpty().toImmutableList() }
@@ -452,7 +493,7 @@ fun NowPlayingLyricsScreen(
                                 duetLayoutEnabled = settings.duetLayoutEnabled,
                                 showBackgroundVocals = settings.showBackgroundVocals,
                                 visual = settings.visual,
-                                modifier = lyricsModifier,
+                                modifier = lyricsArrival,
                             )
                         }
 
@@ -462,7 +503,7 @@ fun NowPlayingLyricsScreen(
                             lyricsAlignment = settings.visual.alignment,
                             bottomPadding = 32.dp,
                             contentColor = lyricContentColor,
-                            modifier = lyricsModifier,
+                            modifier = lyricsArrival,
                         )
 
                         isLoading -> M3ELoadingState(
