@@ -29,6 +29,9 @@ data class BetterLyricsCandidate(
     val score: Int get() = result.matchPercentage
 }
 
+/** A provider answer this repository already collected; [document] is null when nothing matched. */
+data class CachedLyricsLoad(val document: LyricsDocument?)
+
 /**
  * Android-facing facade over the shared BetterLyrics engine.
  *
@@ -60,6 +63,28 @@ class BetterLyricsRepository @Inject constructor(
     private val engine by lazy {
         BetterLyricsAndroid.engine { appleMusicToken }
     }
+
+    /**
+     * The last answer each query got, keyed by metadata, duration, source order and parse options.
+     *
+     * The lyrics page lives in a back-stack entry whose ViewModel is gone once the page is popped,
+     * so without this every visit started the whole provider search again for a track that had
+     * already been resolved seconds earlier. Entries are cheap (a parsed document) and bounded;
+     * anything that changes the result — a reordered source list, a translation setting — changes
+     * the key and therefore resolves afresh.
+     */
+    private val recentLoads =
+        object : LinkedHashMap<String, CachedLoad>(INITIAL_CACHE_SIZE, 0.75f, true) {
+            override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, CachedLoad>?): Boolean =
+                size > MAX_CACHED_LOADS
+        }
+
+    private data class CachedLoad(
+        /** Normalized title/artist/album, used to drop every variant of one track at once. */
+        val identity: String,
+        val document: LyricsDocument?,
+        val storedAtEpochMs: Long,
+    )
 
     var appleMusicToken: String?
         get() = preferences.getString(KEY_APPLE_MUSIC_TOKEN, null)
@@ -202,16 +227,86 @@ class BetterLyricsRepository @Inject constructor(
             )
         }
 
-    /** Loads lyrics for any metadata query, used by the external media listener. */
-    suspend fun load(query: LyricsQuery, minMatchPercentage: Int = 60): LyricsDocument? =
-        withContext(Dispatchers.IO) {
-            engine.load(
-                query = query,
-                options = parseOptions(),
-                minMatchPercentage = minMatchPercentage,
-                providerOrder = onlineProviderOrder,
+    /**
+     * The answer [load] already produced for [query], without touching the network.
+     *
+     * Returns null while the query is still unknown. A miss (`document == null`) is reported as a
+     * hit so a page that repaints does not search again for a track that genuinely has no lyrics;
+     * misses expire after [MISS_TTL_MS] so a provider that was briefly down is asked again.
+     */
+    fun peek(query: LyricsQuery, minMatchPercentage: Int = 60): CachedLyricsLoad? {
+        val entry = lookup(cacheKey(query, minMatchPercentage, parseOptions())) ?: return null
+        return CachedLyricsLoad(entry.document)
+    }
+
+    /** Drops every cached answer for [query]; used when the user explicitly asks to look again. */
+    fun invalidate(query: LyricsQuery) {
+        val identity = identityOf(query)
+        synchronized(recentLoads) {
+            recentLoads.entries.removeAll { (_, entry) -> entry.identity == identity }
+        }
+    }
+
+    /**
+     * Loads lyrics for any metadata query, used by the external media listener.
+     *
+     * With [useCache] the previous answer for the same query is reused instead of searching, which
+     * is what keeps a re-entered lyrics page from hitting every provider again.
+     */
+    suspend fun load(
+        query: LyricsQuery,
+        minMatchPercentage: Int = 60,
+        useCache: Boolean = true,
+    ): LyricsDocument? = withContext(Dispatchers.IO) {
+        val options = parseOptions()
+        val key = cacheKey(query, minMatchPercentage, options)
+        if (useCache) {
+            lookup(key)?.let { return@withContext it.document }
+        }
+        val document = engine.load(
+            query = query,
+            options = options,
+            minMatchPercentage = minMatchPercentage,
+            providerOrder = onlineProviderOrder,
+        )
+        synchronized(recentLoads) {
+            recentLoads[key] = CachedLoad(
+                identity = identityOf(query),
+                document = document,
+                storedAtEpochMs = System.currentTimeMillis(),
             )
         }
+        document
+    }
+
+    private fun identityOf(query: LyricsQuery): String = listOf(query.title, query.artist, query.album)
+        .joinToString("\u0001") { it.trim().lowercase() }
+
+    /** A live cache entry, dropping "nothing found" answers once they are old enough to retry. */
+    private fun lookup(key: String): CachedLoad? = synchronized(recentLoads) {
+        val entry = recentLoads[key] ?: return@synchronized null
+        if (entry.document == null &&
+            System.currentTimeMillis() - entry.storedAtEpochMs > MISS_TTL_MS
+        ) {
+            recentLoads.remove(key)
+            return@synchronized null
+        }
+        entry
+    }
+
+    private fun cacheKey(
+        query: LyricsQuery,
+        minMatchPercentage: Int,
+        options: LyricsParseOptions,
+    ): String = buildString {
+        append(identityOf(query)).append('\u0001')
+        // Durations wobble by a beat between what a session publishes and what a scanner reads;
+        // bucketing keeps those from looking like a different query.
+        append((query.durationMs ?: 0L) / DURATION_BUCKET_MS).append('\u0001')
+        append(minMatchPercentage).append('\u0001')
+        append(onlineProviderOrder.joinToString(",") { it.name }).append('\u0001')
+        append(options.hashCode())
+    }
 
     /** Parses local/embedded lyrics with the same options as provider payloads. */
     suspend fun parseRawLyrics(
@@ -245,5 +340,15 @@ class BetterLyricsRepository @Inject constructor(
         const val KEY_ROMANIZATION_ENABLED = "romanization_enabled"
         const val KEY_TRANSLATION_TARGET = "translation_target_language"
         const val KEY_SOURCE_ORDER = "lyrics_source_order"
+
+        /** One document per track is small; a couple of dozen covers a listening session. */
+        const val MAX_CACHED_LOADS = 24
+        const val INITIAL_CACHE_SIZE = 8
+
+        /** A "nothing found" answer is a hint, not a verdict: ask again after a while. */
+        const val MISS_TTL_MS = 10 * 60 * 1000L
+
+        /** Duration is matching input, not identity; this keeps small wobbles on one cache entry. */
+        const val DURATION_BUCKET_MS = 5_000L
     }
 }

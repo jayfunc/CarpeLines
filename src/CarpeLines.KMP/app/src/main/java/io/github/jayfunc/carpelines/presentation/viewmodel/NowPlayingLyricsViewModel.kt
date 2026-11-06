@@ -288,6 +288,31 @@ class NowPlayingLyricsViewModel @Inject constructor(
                 return@launch
             }
 
+            // The page is popped and rebuilt every time the user comes back to it, taking this
+            // ViewModel's state with it. The providers' answer for this track outlives that: paint
+            // it straight away instead of showing a spinner and searching all of them again.
+            val query = media.toLyricsQuery()
+            if (!ignoreStored) {
+                val cached = repository.peek(query)
+                if (cached != null) {
+                    val cachedDocument = cached.document
+                    if (cachedDocument != null && !cachedDocument.isEmpty) {
+                        _state.update {
+                            it.copy(
+                                loading = false,
+                                notFound = false,
+                                error = null,
+                                lyrics = repository.toPlayerLyrics(cachedDocument, fromRemote = true),
+                                providerLabel = cachedDocument.provider.displayName,
+                            )
+                        }
+                    } else if (!localApplied) {
+                        markNotFound()
+                    }
+                    return@launch
+                }
+            }
+
             if (!localApplied) {
                 _state.update {
                     it.copy(
@@ -304,7 +329,7 @@ class NowPlayingLyricsViewModel @Inject constructor(
 
             val document = try {
                 withTimeoutOrNull(ONLINE_SEARCH_TIMEOUT_MS) {
-                    repository.load(media.toLyricsQuery())
+                    repository.load(query, useCache = !ignoreStored)
                 }
             } catch (cancelled: CancellationException) {
                 throw cancelled
@@ -354,6 +379,8 @@ class NowPlayingLyricsViewModel @Inject constructor(
         lastTrackKey = null
         val current = media ?: lastExternal
         if (current != null) {
+            // An explicit retry is the one place that must not be answered from the cache.
+            repository.invalidate(current.toLyricsQuery())
             resolveExternal(current, ignoreStored = true)
         } else {
             resolveInternal(lastInternal, _state.value.lyrics, lastLocalLoading)
