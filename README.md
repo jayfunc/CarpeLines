@@ -88,12 +88,15 @@ CarpeLines needs **Android 11 (API 30) or newer**. It does not play audio itself
 
 <div align="center">
 
-| Android Studio | Gradle CLI |
+| Latest Release (Recommended) | Build from Source |
 | :---: | :---: |
-| Open `src/CarpeLines.KMP` as the Gradle root and run the `app` configuration. | Build a universal debug APK from the commands below. |
-| Debug builds install as `io.github.jayfunc.carpelines.debug`. | The APK lands in `app/build/outputs/apk/debug/`. |
+| <a href="https://github.com/jayfunc/CarpeLines/releases/latest"><img src="https://img.shields.io/badge/Download-Universal_APK-6750A4?style=for-the-badge&logo=android&logoColor=white&labelColor=1D1B20" alt="Download the latest release" /></a><br>Signed universal APK, built and published by CI.<br>`stable` goes to the latest release; `alpha` and `beta` are pre-releases on the [releases page](https://github.com/jayfunc/CarpeLines/releases). | [Android Studio](#build-from-source) — open `src/CarpeLines.KMP` as the Gradle root and run the `app` configuration.<br>[Gradle CLI](#build-from-source) — build a universal debug APK with the commands below.<br>Debug builds install as `io.github.jayfunc.carpelines.debug`. |
+
+**[All Releases](https://github.com/jayfunc/CarpeLines/releases) | [Release Checklist](docs/RELEASE.md)**
 
 </div>
+
+### Build from Source
 
 The Gradle project lives in `src/CarpeLines.KMP`, so run every task from that directory. JDK 21 and Android SDK 37 are required.
 
@@ -102,7 +105,7 @@ cd src/CarpeLines.KMP
 JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :app:assembleDebug -Pcarpelines.enableAbiSplits=false
 ```
 
-`-Pcarpelines.enableAbiSplits=false` produces one universal APK; ABI splits are on by default. On Windows:
+`-Pcarpelines.enableAbiSplits=false` produces one universal APK; ABI splits are on by default. The APK lands in `app/build/outputs/apk/debug/`. On Windows:
 
 ```powershell
 cd src\CarpeLines.KMP

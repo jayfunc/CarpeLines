@@ -88,12 +88,15 @@ CarpeLines 需要 **Android 11 (API 30) 或更高版本**。它本身不播放�
 
 <div align="center">
 
-| Android Studio | Gradle 命令行 |
+| 最新版本（推荐） | 从源码构建 |
 | :---: | :---: |
-| 以 `src/CarpeLines.KMP` 作为 Gradle 根目录打开，运行 `app` 配置。 | 使用下面的命令构建通用 debug APK。 |
-| Debug 版安装为 `io.github.jayfunc.carpelines.debug`。 | APK 输出到 `app/build/outputs/apk/debug/`。 |
+| <a href="https://github.com/jayfunc/CarpeLines/releases/latest"><img src="https://img.shields.io/badge/Download-Universal_APK-6750A4?style=for-the-badge&logo=android&logoColor=white&labelColor=1D1B20" alt="下载最新版本" /></a><br>由 CI 构建并签名的通用 APK。<br>`stable` 会作为最新版本发布；`alpha` 与 `beta` 为预发布版，见 [Releases 页面](https://github.com/jayfunc/CarpeLines/releases)。 | [Android Studio](#从源码构建) — 以 `src/CarpeLines.KMP` 作为 Gradle 根目录打开，运行 `app` 配置。<br>[Gradle 命令行](#从源码构建) — 使用下面的命令构建通用 debug APK。<br>Debug 版安装为 `io.github.jayfunc.carpelines.debug`。 |
+
+**[所有版本](https://github.com/jayfunc/CarpeLines/releases) | [发布流程](docs/RELEASE.md)**
 
 </div>
+
+### 从源码构建
 
 Gradle 工程位于 `src/CarpeLines.KMP`，所有任务都需在该目录下执行。需要 JDK 21 与 Android SDK 37。
 
@@ -102,7 +105,7 @@ cd src/CarpeLines.KMP
 JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :app:assembleDebug -Pcarpelines.enableAbiSplits=false
 ```
 
-`-Pcarpelines.enableAbiSplits=false` 会产出单个通用 APK；ABI 拆分默认开启。Windows 下：
+`-Pcarpelines.enableAbiSplits=false` 会产出单个通用 APK；ABI 拆分默认开启。APK 输出到 `app/build/outputs/apk/debug/`。Windows 下：
 
 ```powershell
 cd src\CarpeLines.KMP
