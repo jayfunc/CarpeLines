@@ -206,10 +206,10 @@
     <string name="setup_excluded_folders_title">Ekskluderte mapper</string>
     <string name="setup_external_artist_images_description">Hent manglende artistbilder fra Deezer og lagre dem lokalt i cachen.</string>
     <string name="setup_external_artist_images_title">Artistbilder fra Deezer</string>
-    <string name="setup_external_lyrics_description">Søk på lrclib.net når lokale eller innebygde sangtekster mangler.</string>
-    <string name="setup_external_lyrics_title">Sangtekster fra nett via LRCLIB</string>
-    <string name="setup_external_services_footer">Du kan endre dette senere i Innstillinger &gt; Lokal musikk &gt; Valgfrie nettjenester.</string>
-    <string name="setup_external_services_title">Valgfrie nettjenester</string>
+    <string name="setup_external_lyrics_description">Søker i QQ Music, NetEase, Kugou, LRCLIB og Apple Music når lokale tekster mangler.</string>
+    <string name="setup_external_lyrics_title">Netttekster</string>
+    <string name="setup_external_services_footer">Du kan endre dette senere i Innstillinger &gt; Nettjenester.</string>
+    <string name="setup_external_services_title">Nettjenester</string>
     <string name="setup_grant_media_permission">Gi medietilgang</string>
     <string name="setup_grant_permission_generic">Gi tillatelse</string>
     <string name="setup_import_backup">Importer sikkerhetskopi</string>
@@ -274,7 +274,7 @@
     <string name="word_delimiter_toast_invalid">Finnes allerede eller er ugyldig</string>
     <string name="word_delimiter_toast_reset">Orddelimitere tilbakestilt til standard</string>
     <string name="word_delimiters_screen_title">Orddelimitere</string>
-    <string name="setup_external_services_subtitle">CarpeLines fungerer offline som standard. Aktiver bare oppslagene du vil ha.</string>
+    <string name="setup_external_services_subtitle">Nettsøk etter tekster er på som standard. Slå av det du ikke vil bruke.</string>
     <string name="setup_permission_media_description">CarpeLines leser lydfiler på denne enheten for å finne innebygde tekster og .lrc-filer i samme mappe. Lydfilene dine blir værende på denne enheten.</string>
     <string name="setup_permission_alarms_description">Valgfritt, men anbefalt hvis du bruker Sleep timer og vil at CarpeLines skal stoppe avspillingen nøyaktig i tide.</string>
     <string name="setup_backup_have_description">Hvis du allerede har en CarpeLines-sikkerhetskopi, kan du gjenopprette den nå og hoppe over det meste av resten av oppsettet på denne enheten.</string>

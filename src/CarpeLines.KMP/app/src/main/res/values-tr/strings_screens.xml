@@ -206,10 +206,10 @@
     <string name="setup_excluded_folders_title">Hariç tutulan klasörler</string>
     <string name="setup_external_artist_images_description">Eksik sanatçı fotoğraflarını Deezer\'den getirir ve yerel olarak önbelleğe alır.</string>
     <string name="setup_external_artist_images_title">Deezer\'den sanatçı görselleri</string>
-    <string name="setup_external_lyrics_description">Yerel veya gömülü şarkı sözleri yoksa lrclib.net\'te arama yapar.</string>
-    <string name="setup_external_lyrics_title">LRCLIB\'den çevrimiçi şarkı sözleri</string>
-    <string name="setup_external_services_footer">Bunu daha sonra Ayarlar &gt; Yerel Müzik &gt; İsteğe bağlı çevrimiçi hizmetler bölümünden değiştirebilirsin.</string>
-    <string name="setup_external_services_title">İsteğe Bağlı Çevrimiçi Hizmetler</string>
+    <string name="setup_external_lyrics_description">Yerel şarkı sözleri yoksa QQ Music, NetEase, Kugou, LRCLIB ve Apple Music\'te arar.</string>
+    <string name="setup_external_lyrics_title">Çevrimiçi şarkı sözleri</string>
+    <string name="setup_external_services_footer">Bunu daha sonra Ayarlar &gt; Çevrimiçi Hizmetler bölümünden değiştirebilirsin.</string>
+    <string name="setup_external_services_title">Çevrimiçi Hizmetler</string>
     <string name="setup_grant_media_permission">Medya İzni Ver</string>
     <string name="setup_grant_permission_generic">İzin Ver</string>
     <string name="setup_import_backup">Yedeği içe aktar</string>
@@ -274,7 +274,7 @@
     <string name="word_delimiter_toast_invalid">Zaten var veya geçersiz</string>
     <string name="word_delimiter_toast_reset">Kelime sınırlayıcıları varsayılana sıfırlandı</string>
     <string name="word_delimiters_screen_title">Kelime Sınırlayıcıları</string>
-    <string name="setup_external_services_subtitle">CarpeLines varsayılan olarak çevrimdışı çalışır. Yalnızca istediğiniz aramaları etkinleştirin.</string>
+    <string name="setup_external_services_subtitle">Çevrimiçi şarkı sözü araması varsayılan olarak açıktır. İstemediğin hizmetleri kapat.</string>
     <string name="setup_permission_media_description">CarpeLines, gömülü şarkı sözlerini ve aynı klasördeki .lrc dosyalarını bulmak için bu cihazdaki ses dosyalarını okur. Ses dosyaların bu cihazda kalır.</string>
     <string name="setup_permission_alarms_description">İsteğe bağlıdır, ancak uyku zamanlayıcısını kullanıyorsanız ve CarpeLines\'in oynatmayı tam zamanında durdurmasını istiyorsanız önerilir.</string>
     <string name="setup_backup_have_description">Zaten bir CarpeLines yedeğiniz varsa şimdi geri yükleyin ve bu cihazdaki kurulumun çoğunu atlayın.</string>

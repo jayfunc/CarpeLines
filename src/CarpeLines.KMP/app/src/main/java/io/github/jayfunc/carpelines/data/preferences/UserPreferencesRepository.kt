@@ -699,7 +699,9 @@ constructor(
 
     val externalLyricsEnabledFlow: Flow<Boolean> =
             dataStore.data.map { preferences ->
-                preferences[PreferencesKeys.EXTERNAL_LYRICS_ENABLED] ?: false
+                // Online providers (QQ Music, NetEase, Kugou, LRCLIB, Apple Music) are the default
+                // way lyrics are found; only an explicit opt-out disables them.
+                preferences[PreferencesKeys.EXTERNAL_LYRICS_ENABLED] ?: true
             }.distinctUntilChanged()
 
     suspend fun setExternalLyricsEnabled(enabled: Boolean) {

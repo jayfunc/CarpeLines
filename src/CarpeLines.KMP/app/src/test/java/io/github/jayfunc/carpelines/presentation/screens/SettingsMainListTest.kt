@@ -29,6 +29,7 @@ class SettingsMainListTest {
         val expected = listOf(
             MainSettingsEntry.Category(SettingsCategory.APPEARANCE),
             MainSettingsEntry.Destination.LYRICS,
+            MainSettingsEntry.Category(SettingsCategory.ONLINE_SERVICES),
             MainSettingsEntry.Category(SettingsCategory.LOCAL_MUSIC),
             MainSettingsEntry.Category(SettingsCategory.BACKUP_RESTORE),
             MainSettingsEntry.Destination.UPDATES,

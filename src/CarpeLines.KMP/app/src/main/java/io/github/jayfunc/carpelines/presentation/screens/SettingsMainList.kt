@@ -54,6 +54,7 @@ internal sealed interface MainSettingsEntry {
 internal val mainSettingsEntries: List<MainSettingsEntry> = buildList {
     add(MainSettingsEntry.Category(SettingsCategory.APPEARANCE))
     add(MainSettingsEntry.Destination.LYRICS)
+    add(MainSettingsEntry.Category(SettingsCategory.ONLINE_SERVICES))
     add(MainSettingsEntry.Category(SettingsCategory.LOCAL_MUSIC))
     add(MainSettingsEntry.Category(SettingsCategory.BACKUP_RESTORE))
     add(MainSettingsEntry.Destination.UPDATES)

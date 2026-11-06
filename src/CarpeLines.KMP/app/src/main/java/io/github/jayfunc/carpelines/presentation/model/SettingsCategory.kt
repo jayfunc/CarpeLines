@@ -2,6 +2,7 @@ package io.github.jayfunc.carpelines.presentation.model
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Cloud
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.LibraryMusic
 import androidx.compose.material.icons.rounded.Lyrics
@@ -41,6 +42,16 @@ enum class SettingsCategory(
         titleRes = R.string.settings_category_local_music_title,
         subtitleRes = R.string.settings_category_local_music_subtitle,
         icon = Icons.Rounded.LibraryMusic
+    ),
+    /**
+     * Network lookups that are not tied to the local scan: the online lyrics providers and the
+     * Deezer artist artwork.
+     */
+    ONLINE_SERVICES(
+        id = "online_services",
+        titleRes = R.string.settings_category_online_services_title,
+        subtitleRes = R.string.settings_category_online_services_subtitle,
+        icon = Icons.Rounded.Cloud
     ),
     BACKUP_RESTORE(
         id = "backup_restore",

@@ -40,7 +40,7 @@ data class SetupUiState(
     val notificationAccessGranted: Boolean = false,
     val isLoadingDirectories: Boolean = false,
     val blockedDirectories: Set<String> = emptySet(),
-    val externalLyricsEnabled: Boolean = false,
+    val externalLyricsEnabled: Boolean = true,
     val externalArtistImagesEnabled: Boolean = false,
     val appThemeMode: String = AppThemeMode.DARK,
     val isInspectingBackup: Boolean = false,

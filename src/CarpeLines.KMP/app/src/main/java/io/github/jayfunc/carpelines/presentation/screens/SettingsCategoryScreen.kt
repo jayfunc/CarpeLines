@@ -592,6 +592,41 @@ fun SettingsCategoryScreen(
                         }
                         // Search-only grouping: the main list links to the lyrics screen directly.
                         SettingsCategory.LYRICS -> Unit
+                        SettingsCategory.ONLINE_SERVICES -> {
+                            SettingsSubsection(
+                                title = stringResource(R.string.settings_category_online_services_title),
+                                addBottomSpace = false
+                            ) {
+                                SwitchSettingItem(
+                                    title = stringResource(R.string.setcat_external_lyrics_title),
+                                    subtitle = stringResource(R.string.setcat_external_lyrics_subtitle),
+                                    checked = uiState.externalLyricsEnabled,
+                                    onCheckedChange = { settingsViewModel.setExternalLyricsEnabled(it) },
+                                    leadingIcon = {
+                                        Icon(
+                                            painter = painterResource(R.drawable.rounded_lyrics_24),
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.secondary
+                                        )
+                                    },
+                                    modifier = Modifier.settingHighlight("item_online_services_lyrics", highlightKey)
+                                )
+                                SwitchSettingItem(
+                                    title = stringResource(R.string.setcat_external_artist_images_title),
+                                    subtitle = stringResource(R.string.setcat_external_artist_images_subtitle),
+                                    checked = uiState.externalArtistImagesEnabled,
+                                    onCheckedChange = { settingsViewModel.setExternalArtistImagesEnabled(it) },
+                                    leadingIcon = {
+                                        Icon(
+                                            painter = painterResource(R.drawable.rounded_artist_24),
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.secondary
+                                        )
+                                    },
+                                    modifier = Modifier.settingHighlight("item_online_services_artist_images", highlightKey)
+                                )
+                            }
+                        }
                         SettingsCategory.LOCAL_MUSIC -> {
                             LocalMusicSettingsSection(
                                 settingsViewModel = settingsViewModel,

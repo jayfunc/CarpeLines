@@ -108,8 +108,8 @@
     <string name="setcat_export_backup_title">Exportar copia</string>
     <string name="setcat_external_artist_images_subtitle">Permitir que las imágenes de artista que falten se obtengan de Deezer y se guarden en la caché local.</string>
     <string name="setcat_external_artist_images_title">Imágenes de artista desde Deezer</string>
-    <string name="setcat_external_lyrics_subtitle">Permitir búsquedas y descargas manuales desde lrclib.net cuando no haya letras locales.</string>
-    <string name="setcat_external_lyrics_title">Letras en línea desde LRCLIB</string>
+    <string name="setcat_external_lyrics_subtitle">Busca en QQ Music, NetEase, Kugou, LRCLIB y Apple Music cuando faltan las letras locales.</string>
+    <string name="setcat_external_lyrics_title">Letras en línea</string>
     <string name="setcat_filtering">Filtrado</string>
     <string name="setcat_folder_back_gesture_subtitle">En la pestaña Carpetas, el botón de atrás del sistema navega por la pila de carpetas antes de salir de la Biblioteca.</string>
     <string name="setcat_folder_back_gesture_title">El gesto atrás controla carpetas</string>
@@ -240,6 +240,8 @@
     <string name="settings_category_about_subtitle">Información de la app, versión y créditos</string>
     <string name="settings_category_about_title">Acerca de</string>
     <string name="settings_category_appearance_subtitle">Temas, diseño y estilos visuales</string>
+    <string name="settings_category_online_services_title">Servicios en línea</string>
+    <string name="settings_category_online_services_subtitle">Proveedores de letras y portadas de artistas</string>
     <string name="settings_category_appearance_title">Apariencia</string>
     <string name="settings_category_backup_subtitle">Exporta y recupera tus datos personales</string>
     <string name="settings_category_backup_title">Copia y restauración</string>

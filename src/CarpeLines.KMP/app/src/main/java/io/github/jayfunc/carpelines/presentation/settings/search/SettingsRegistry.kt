@@ -229,27 +229,28 @@ object SettingsRegistry {
                 onToggle = { viewModel, checked -> viewModel.setAutoScanLrcFiles(checked) }
             ),
             SettingSpec(
-                id = "local_music_external_lyrics",
-                itemKey = "item_local_music_external_lyrics",
+                id = "online_services_lyrics",
+                itemKey = "item_online_services_lyrics",
                 titleRes = R.string.setcat_external_lyrics_title,
                 subtitleRes = R.string.setcat_external_lyrics_subtitle,
-                category = SettingsCategory.LOCAL_MUSIC,
-                subscreenRoute = Screen.SettingsCategory.createRoute("local_music"),
+                category = SettingsCategory.ONLINE_SERVICES,
+                subscreenRoute = Screen.SettingsCategory.createRoute("online_services"),
                 type = SettingType.SWITCH,
                 keywordsStatic = listOf(
                     "online lyrics", "lrclib", "lrclib.net", "external lyrics", "network lyrics",
+                    "qq music", "netease", "kugou", "apple music",
                     "在线歌词", "在线服务"
                 ),
                 getValue = { it.externalLyricsEnabled },
                 onToggle = { viewModel, checked -> viewModel.setExternalLyricsEnabled(checked) }
             ),
             SettingSpec(
-                id = "local_music_external_artist_images",
-                itemKey = "item_local_music_external_artist_images",
+                id = "online_services_artist_images",
+                itemKey = "item_online_services_artist_images",
                 titleRes = R.string.setcat_external_artist_images_title,
                 subtitleRes = R.string.setcat_external_artist_images_subtitle,
-                category = SettingsCategory.LOCAL_MUSIC,
-                subscreenRoute = Screen.SettingsCategory.createRoute("local_music"),
+                category = SettingsCategory.ONLINE_SERVICES,
+                subscreenRoute = Screen.SettingsCategory.createRoute("online_services"),
                 type = SettingType.SWITCH,
                 keywordsStatic = listOf(
                     "deezer", "online services", "artist images", "artist artwork", "portraits",

@@ -83,7 +83,7 @@ data class SettingsUiState(
     val folderBackGestureNavigation: Boolean = true,
     val lyricsSourcePreference: LyricsSourcePreference = LyricsSourcePreference.EMBEDDED_FIRST,
     val autoScanLrcFiles: Boolean = false,
-    val externalLyricsEnabled: Boolean = false,
+    val externalLyricsEnabled: Boolean = true,
     val externalArtistImagesEnabled: Boolean = false,
     val blockedDirectories: Set<String> = emptySet(),
     val appRebrandDialogShown: Boolean = false,

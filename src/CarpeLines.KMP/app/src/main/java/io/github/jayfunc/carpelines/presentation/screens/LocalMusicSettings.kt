@@ -33,7 +33,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -169,37 +168,6 @@ internal fun LocalMusicSettingsSection(
             checked = uiState.autoScanLrcFiles,
             onCheckedChange = { settingsViewModel.setAutoScanLrcFiles(it) },
             modifier = Modifier.settingHighlight("item_local_music_auto_lrc", highlightKey),
-        )
-    }
-
-    SettingsSubsection(title = stringResource(R.string.setcat_online_services)) {
-        SwitchSettingItem(
-            title = stringResource(R.string.setcat_external_lyrics_title),
-            subtitle = stringResource(R.string.setcat_external_lyrics_subtitle),
-            checked = uiState.externalLyricsEnabled,
-            onCheckedChange = { settingsViewModel.setExternalLyricsEnabled(it) },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(R.drawable.rounded_lyrics_24),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.secondary,
-                )
-            },
-            modifier = Modifier.settingHighlight("item_local_music_external_lyrics", highlightKey),
-        )
-        SwitchSettingItem(
-            title = stringResource(R.string.setcat_external_artist_images_title),
-            subtitle = stringResource(R.string.setcat_external_artist_images_subtitle),
-            checked = uiState.externalArtistImagesEnabled,
-            onCheckedChange = { settingsViewModel.setExternalArtistImagesEnabled(it) },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(R.drawable.rounded_artist_24),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.secondary,
-                )
-            },
-            modifier = Modifier.settingHighlight("item_local_music_external_artist_images", highlightKey),
         )
     }
 

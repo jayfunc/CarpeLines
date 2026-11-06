@@ -112,8 +112,8 @@
     <string name="setcat_smart_mix_history_action">Verlauf löschen</string>
     <string name="setcat_smart_mix_history_cleared">Smart-Mix-Verlauf gelöscht</string>
     <string name="setcat_external_artist_images_title">Künstlerbilder von Deezer</string>
-    <string name="setcat_external_lyrics_subtitle">Erlaubt Suchen und manuelle Abrufe von lrclib.net, wenn lokal keine Lyrics vorhanden sind.</string>
-    <string name="setcat_external_lyrics_title">Online-Lyrics von LRCLIB</string>
+    <string name="setcat_external_lyrics_subtitle">Durchsucht QQ Music, NetEase, Kugou, LRCLIB und Apple Music, wenn lokale Lyrics fehlen.</string>
+    <string name="setcat_external_lyrics_title">Online-Lyrics</string>
     <string name="setcat_filtering">Filter</string>
     <string name="setcat_folder_back_gesture_subtitle">Im Ordner-Tab geht die Zurück-Geste zuerst eine Ebene hoch, bevor die Bibliothek verlassen wird.</string>
     <string name="setcat_folder_back_gesture_title">Zurück navigiert durch Ordner</string>
@@ -240,6 +240,8 @@
     <string name="settings_category_about_subtitle">Version, Credits und mehr</string>
     <string name="settings_category_about_title">Über</string>
     <string name="settings_category_appearance_subtitle">Design, Layout und Farben</string>
+    <string name="settings_category_online_services_title">Online-Dienste</string>
+    <string name="settings_category_online_services_subtitle">Lyrics-Anbieter und Künstlerbilder</string>
     <string name="settings_category_appearance_title">Darstellung</string>
     <string name="settings_category_backup_subtitle">App-Daten exportieren und importieren</string>
     <string name="settings_category_backup_title">Backup &amp; Wiederherstellen</string>
