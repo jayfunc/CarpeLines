@@ -201,7 +201,14 @@ class ExternalPlaybackStore @Inject constructor(
         }.getOrNull()?.takeIf { it.isNotBlank() } ?: return Snapshot()
         return runCatching {
             val type = object : TypeToken<Snapshot>() {}.type
-            gson.fromJson<Snapshot>(raw, type) ?: Snapshot()
+            val parsed: Snapshot? = gson.fromJson(raw, type)
+            // Minified builds used to write this file with obfuscated field names, which no longer
+            // match. Gson then leaves the lists null even though their Kotlin types are non-null,
+            // so normalise here rather than letting the nulls reach the view models.
+            Snapshot(
+                tracks = parsed?.tracks.orEmpty(),
+                players = parsed?.players.orEmpty(),
+            )
         }.onFailure { Timber.w(it, "Unable to read external playback snapshot") }
             .getOrDefault(Snapshot())
     }

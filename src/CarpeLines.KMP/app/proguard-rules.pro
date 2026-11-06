@@ -30,6 +30,11 @@
 -keep class * extends com.google.gson.reflect.TypeToken
 
 -keep class io.github.jayfunc.carpelines.data.preferences.PreferenceBackupEntry { *; }
+# Gson reads this snapshot reflectively. Without the keep rule R8 also drops the generic field
+# signatures, so List<TrackRecord>/List<PlayerRecord> come back as List<LinkedTreeMap>.
+-keep class io.github.jayfunc.carpelines.data.external.ExternalPlaybackStore$Snapshot { *; }
+-keep class io.github.jayfunc.carpelines.data.external.ExternalPlaybackStore$TrackRecord { *; }
+-keep class io.github.jayfunc.carpelines.data.external.ExternalPlaybackStore$PlayerRecord { *; }
 -keep class io.github.jayfunc.carpelines.data.backup.model.** { *; }
 -keep class io.github.jayfunc.carpelines.data.backup.module.** { *; }
 -keep class io.github.jayfunc.carpelines.data.database.FavoritesEntity { *; }
