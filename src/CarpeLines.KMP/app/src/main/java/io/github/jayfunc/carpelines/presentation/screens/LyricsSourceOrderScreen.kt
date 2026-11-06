@@ -39,6 +39,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -61,6 +62,7 @@ import io.github.jayfunc.carpelines.presentation.navigation.navigateSafely
 import io.github.jayfunc.carpelines.presentation.utils.LocalAppHapticsConfig
 import io.github.jayfunc.carpelines.presentation.utils.performAppCompatHapticFeedback
 import io.github.jayfunc.carpelines.presentation.viewmodel.LyricsSourceOrderViewModel
+import io.github.jayfunc.carpelines.ui.theme.m3eContentWidth
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
@@ -165,13 +167,14 @@ fun LyricsSourceOrderScreen(
     Box(
         modifier = Modifier
             .nestedScroll(nestedScrollConnection)
-            .fillMaxSize()
+            .fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
     ) {
         val currentTopBarHeightDp = with(density) { topBarHeight.value.toDp() }
 
         LazyColumn(
             state = lazyListState,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.m3eContentWidth().fillMaxSize(),
             contentPadding = PaddingValues(
                 start = 16.dp,
                 top = currentTopBarHeightDp + 8.dp,

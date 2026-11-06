@@ -35,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -54,6 +55,7 @@ import io.github.jayfunc.carpelines.presentation.components.MiniPlayerHeight
 import io.github.jayfunc.carpelines.presentation.settings.search.settingHighlight
 import io.github.jayfunc.carpelines.presentation.viewmodel.LyricsProviderSettingsViewModel
 import io.github.jayfunc.carpelines.ui.m3e.M3ETextField
+import io.github.jayfunc.carpelines.ui.theme.m3eContentWidth
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
@@ -141,13 +143,14 @@ fun LyricsProviderSettingsScreen(
     Box(
         modifier = Modifier
             .nestedScroll(nestedScrollConnection)
-            .fillMaxSize()
+            .fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
     ) {
         val currentTopBarHeightDp = with(density) { topBarHeight.value.toDp() }
 
         LazyColumn(
             state = lazyListState,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.m3eContentWidth().fillMaxSize(),
             contentPadding = PaddingValues(
                 start = 16.dp,
                 top = currentTopBarHeightDp + 8.dp,

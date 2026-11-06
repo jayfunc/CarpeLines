@@ -148,6 +148,7 @@ import io.github.jayfunc.carpelines.presentation.settings.search.LocalSettingsHi
 import io.github.jayfunc.carpelines.presentation.settings.search.settingHighlight
 import io.github.jayfunc.carpelines.presentation.viewmodel.PlayerViewModel
 import io.github.jayfunc.carpelines.presentation.viewmodel.SettingsViewModel
+import io.github.jayfunc.carpelines.ui.theme.m3eContentWidth
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -367,11 +368,14 @@ fun LyricsSettingsScreen(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().nestedScroll(nestedScrollConnection)) {
+    Box(
+        modifier = Modifier.fillMaxSize().nestedScroll(nestedScrollConnection),
+        contentAlignment = Alignment.TopCenter
+    ) {
         val currentTopBarHeight = with(density) { topBarHeight.value.toDp() }
         LazyColumn(
             state = lazyListState,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.m3eContentWidth().fillMaxSize(),
             contentPadding = PaddingValues(
                 top = currentTopBarHeight + 8.dp,
                 start = 16.dp,

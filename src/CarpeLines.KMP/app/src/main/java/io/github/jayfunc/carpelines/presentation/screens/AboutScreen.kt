@@ -101,6 +101,7 @@ import io.github.jayfunc.carpelines.presentation.components.SmartImage
 import io.github.jayfunc.carpelines.presentation.navigation.Screen
 import io.github.jayfunc.carpelines.presentation.navigation.navigateSafely
 import io.github.jayfunc.carpelines.presentation.viewmodel.PlayerViewModel
+import io.github.jayfunc.carpelines.ui.theme.m3eContentWidth
 import io.github.jayfunc.carpelines.utils.BrandName
 import kotlinx.coroutines.launch
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
@@ -272,6 +273,7 @@ fun AboutScreen(
                 alpha = contentAlpha
                 translationY = contentOffset.toPx()
             },
+        contentAlignment = Alignment.TopCenter
     ) {
         val currentTopBarHeightDp = with(density) { topBarHeight.value.toDp() }
         LazyColumn(
@@ -283,7 +285,7 @@ fun AboutScreen(
                         .asPaddingValues()
                         .calculateBottomPadding() + 12.dp,
             ),
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.m3eContentWidth().fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             item(key = "hero_card") {

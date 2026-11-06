@@ -1264,70 +1264,76 @@ private fun BackupSectionSelectionDialog(
                             }
                         }
                     ) { innerPadding ->
-                        Column(
-                            modifier = Modifier
-                                .padding(innerPadding)
-                                .fillMaxSize()
-                                .padding(horizontal = 18.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.TopCenter
                         ) {
-                            Surface(
-                                color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                                shape = M3EShape.large,
+                            Column(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 12.dp)
+                                    .padding(innerPadding)
+                                    .m3eContentWidth()
+                                    .fillMaxSize()
+                                    .padding(horizontal = 18.dp),
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
-                                Column(
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                Surface(
+                                    color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                                    shape = M3EShape.large,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 12.dp)
                                 ) {
-                                    Text(
-                                        text = supportingText,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                    Text(
-                                        text = stringResource(R.string.backup_sections_selected_format, selectedCount, totalCount),
-                                        style = MaterialTheme.typography.titleSmall,
-                                        color = MaterialTheme.colorScheme.primary,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                    if (inProgress) {
-                                        Row(
-                                            horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            LoadingIndicator(modifier = Modifier.height(24.dp))
-                                            Text(
-                                                text = stringResource(R.string.backup_transfer_in_progress),
-                                                style = MaterialTheme.typography.bodySmall,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                                            )
+                                    Column(
+                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
+                                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        Text(
+                                            text = supportingText,
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                        Text(
+                                            text = stringResource(R.string.backup_sections_selected_format, selectedCount, totalCount),
+                                            style = MaterialTheme.typography.titleSmall,
+                                            color = MaterialTheme.colorScheme.primary,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                        if (inProgress) {
+                                            Row(
+                                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                LoadingIndicator(modifier = Modifier.height(24.dp))
+                                                Text(
+                                                    text = stringResource(R.string.backup_transfer_in_progress),
+                                                    style = MaterialTheme.typography.bodySmall,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            }
                                         }
                                     }
                                 }
-                            }
 
-                            LazyColumn(
-                                state = listState,
-                                modifier = Modifier.fillMaxSize(),
-                                contentPadding = PaddingValues(bottom = 18.dp),
-                                verticalArrangement = Arrangement.spacedBy(10.dp)
-                            ) {
-                                itemsIndexed(BackupSection.entries, key = { _, section -> section.key }) { index, section ->
-                                    val isSelected = section in selectedSections
-                                    BackupSectionSelectableCard(
-                                        section = section,
-                                        selected = isSelected,
-                                        enabled = !inProgress,
-                                        shape = M3EShape.groupedCards(index, BackupSection.entries.size),
-                                        onToggle = {
-                                            onSelectionChanged(
-                                                if (isSelected) selectedSections - section else selectedSections + section
-                                            )
-                                        }
-                                    )
+                                LazyColumn(
+                                    state = listState,
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentPadding = PaddingValues(bottom = 18.dp),
+                                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                                ) {
+                                    itemsIndexed(BackupSection.entries, key = { _, section -> section.key }) { index, section ->
+                                        val isSelected = section in selectedSections
+                                        BackupSectionSelectableCard(
+                                            section = section,
+                                            selected = isSelected,
+                                            enabled = !inProgress,
+                                            shape = M3EShape.groupedCards(index, BackupSection.entries.size),
+                                            onToggle = {
+                                                onSelectionChanged(
+                                                    if (isSelected) selectedSections - section else selectedSections + section
+                                                )
+                                            }
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -1734,88 +1740,94 @@ private fun ImportFileSelectionDialog(
                             }
                         }
                     ) { innerPadding ->
-                        Column(
-                            modifier = Modifier
-                                .padding(innerPadding)
-                                .fillMaxSize()
-                                .padding(horizontal = 18.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.TopCenter
                         ) {
-                            Surface(
-                                color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                                shape = M3EShape.large,
+                            Column(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 12.dp)
-                            ) {
-                                Column(
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.import_backup_hint),
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                            }
-
-                            if (backupHistory.isNotEmpty()) {
-                                Text(
-                                    text = stringResource(R.string.import_recent_backups),
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.padding(start = 4.dp, top = 4.dp)
-                                )
-                            }
-
-                            LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
-                                contentPadding = PaddingValues(bottom = 18.dp),
+                                    .padding(innerPadding)
+                                    .m3eContentWidth()
+                                    .fillMaxSize()
+                                    .padding(horizontal = 18.dp),
                                 verticalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
-                                if (backupHistory.isEmpty()) {
-                                    item {
-                                        Surface(
-                                            color = MaterialTheme.colorScheme.surfaceContainerLow,
-                                            shape = M3EShape.large,
-                                            modifier = Modifier.fillMaxWidth()
-                                        ) {
-                                            Column(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(24.dp),
-                                                horizontalAlignment = Alignment.CenterHorizontally,
-                                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                                Surface(
+                                    color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                                    shape = M3EShape.large,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 12.dp)
+                                ) {
+                                    Column(
+                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
+                                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        Text(
+                                            text = stringResource(R.string.import_backup_hint),
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+
+                                if (backupHistory.isNotEmpty()) {
+                                    Text(
+                                        text = stringResource(R.string.import_recent_backups),
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+                                    )
+                                }
+
+                                LazyColumn(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentPadding = PaddingValues(bottom = 18.dp),
+                                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                                ) {
+                                    if (backupHistory.isEmpty()) {
+                                        item {
+                                            Surface(
+                                                color = MaterialTheme.colorScheme.surfaceContainerLow,
+                                                shape = M3EShape.large,
+                                                modifier = Modifier.fillMaxWidth()
                                             ) {
-                                                Icon(
-                                                    imageVector = Icons.Rounded.Restore,
-                                                    contentDescription = null,
-                                                    modifier = Modifier.size(36.dp),
-                                                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                                                )
-                                                Text(
-                                                    text = stringResource(R.string.import_no_recent_title),
-                                                    style = MaterialTheme.typography.bodyMedium,
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                                )
-                                                Text(
-                                                    text = stringResource(R.string.import_no_recent_subtitle),
-                                                    style = MaterialTheme.typography.bodySmall,
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                                                )
+                                                Column(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(24.dp),
+                                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Rounded.Restore,
+                                                        contentDescription = null,
+                                                        modifier = Modifier.size(36.dp),
+                                                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                                                    )
+                                                    Text(
+                                                        text = stringResource(R.string.import_no_recent_title),
+                                                        style = MaterialTheme.typography.bodyMedium,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                    Text(
+                                                        text = stringResource(R.string.import_no_recent_subtitle),
+                                                        style = MaterialTheme.typography.bodySmall,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                                                    )
+                                                }
                                             }
                                         }
-                                    }
-                                } else {
-                                    itemsIndexed(backupHistory, key = { _, entry -> entry.uri }) { index, entry ->
-                                        BackupHistoryCard(
-                                            entry = entry,
-                                            context = context,
-                                            shape = M3EShape.groupedCards(index, backupHistory.size),
-                                            onSelect = { onHistoryItemSelected(entry) },
-                                            onRemove = { onRemoveHistoryEntry(entry) }
-                                        )
+                                    } else {
+                                        itemsIndexed(backupHistory, key = { _, entry -> entry.uri }) { index, entry ->
+                                            BackupHistoryCard(
+                                                entry = entry,
+                                                context = context,
+                                                shape = M3EShape.groupedCards(index, backupHistory.size),
+                                                onSelect = { onHistoryItemSelected(entry) },
+                                                onRemove = { onRemoveHistoryEntry(entry) }
+                                            )
+                                        }
                                     }
                                 }
                             }

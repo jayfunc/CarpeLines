@@ -87,6 +87,7 @@ import io.github.jayfunc.carpelines.ui.m3e.M3EConnectedActions
 import io.github.jayfunc.carpelines.ui.m3e.M3EConnectedOrientation
 import io.github.jayfunc.carpelines.ui.m3e.M3ESecondaryButton
 import io.github.jayfunc.carpelines.ui.m3e.M3ETonalButton
+import io.github.jayfunc.carpelines.ui.theme.m3eContentWidth
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -174,13 +175,14 @@ fun UpdatesScreen(
     Box(
         modifier = Modifier
             .nestedScroll(nestedScrollConnection)
-            .fillMaxSize()
+            .fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
     ) {
         val currentTopBarHeightDp = with(density) { topBarHeight.value.toDp() }
 
         LazyColumn(
             state = lazyListState,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.m3eContentWidth().fillMaxSize(),
             contentPadding = PaddingValues(
                 start = 16.dp,
                 top = currentTopBarHeightDp + 8.dp,
