@@ -58,6 +58,16 @@ jobs:
       - name: App unit tests
         run: ./gradlew :app:testDebugUnitTest --stacktrace
 
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          # 文件名含动态 versionName（CarpeLines-<versionName>-debug.apk），
+          # 故按目录 glob 上传，不写死文件名。
+          name: carpelines-debug-apk
+          path: src/CarpeLines.KMP/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v4
