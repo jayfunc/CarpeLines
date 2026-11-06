@@ -64,8 +64,8 @@ enum class UpdateError {
 
 /**
  * Checks the selected channel for a newer build and installs same-channel updates through
- * [PackageInstaller]. Cross-channel releases are only reported: stable and alpha builds are
- * signed with different keys, so moving between them needs an uninstall the user drives.
+ * [PackageInstaller]. Cross-channel releases are only reported: switching between alpha, beta
+ * and stable is a reinstall the user drives.
  */
 @Singleton
 class AppUpdateManager @Inject constructor(
@@ -81,9 +81,9 @@ class AppUpdateManager @Inject constructor(
     val selectedChannel: Flow<UpdateChannel> =
         preferences.updateChannelFlow.map { it ?: installedChannel }
 
-    /** Background checks are opt-in: the user decides, defaults to on for alpha testers. */
+    /** Background checks are opt-in: the user decides, defaults to on for prerelease channels. */
     val autoCheckEnabled: Flow<Boolean> =
-        preferences.updateAutoCheckFlow.map { it ?: (installedChannel == UpdateChannel.ALPHA) }
+        preferences.updateAutoCheckFlow.map { it ?: (installedChannel != UpdateChannel.STABLE) }
 
     private val _status = MutableStateFlow<UpdateStatus>(UpdateStatus.Idle)
     val status: StateFlow<UpdateStatus> = _status.asStateFlow()

@@ -11,25 +11,26 @@ class AppReleaseSourceTest {
     private fun releaseJson(
         tag: String,
         prerelease: Boolean,
-        draft: Boolean,
+        draft: Boolean = false,
         assetsJson: String,
     ): String =
         """{"tag_name":"$tag","prerelease":$prerelease,"draft":$draft,
            "html_url":"https://github.com/jayfunc/CarpeLines/releases/tag/$tag","assets":$assetsJson}"""
 
-    private fun alphaReleaseJson(
+    private fun apkAssets(tag: String, abis: List<String>): String {
+        val name = tag.removePrefix("v")
+        return abis.joinToString(prefix = "[", postfix = "]") { abi ->
+            """{"name":"CarpeLines-$name-$abi.apk","size":37082259,
+               "browser_download_url":"https://github.com/jayfunc/CarpeLines/releases/download/$tag/CarpeLines-$name-$abi.apk"}"""
+        }
+    }
+
+    private fun prereleaseJson(
         tag: String,
         prerelease: Boolean = true,
         draft: Boolean = false,
         abis: List<String> = listOf("arm64-v8a", "armeabi-v7a"),
-    ): String {
-        val name = tag.removePrefix("v")
-        val assets = abis.joinToString(prefix = "[", postfix = "]") { abi ->
-            """{"name":"CarpeLines-$name-$abi.apk","size":37082259,
-               "browser_download_url":"https://github.com/jayfunc/CarpeLines/releases/download/$tag/CarpeLines-$name-$abi.apk"}"""
-        }
-        return releaseJson(tag, prerelease, draft, assets)
-    }
+    ): String = releaseJson(tag, prerelease, draft, apkAssets(tag, abis))
 
     private fun stableReleaseJson(
         tag: String,
@@ -49,8 +50,8 @@ class AppReleaseSourceTest {
 
     // region AppRelease builders
 
-    private fun alphaAppRelease(versionName: String) = AppRelease(
-        channel = UpdateChannel.ALPHA,
+    private fun appRelease(channel: UpdateChannel, versionName: String) = AppRelease(
+        channel = channel,
         versionName = versionName,
         versionCode = null,
         apkUrl = "https://example.invalid/app.apk",
@@ -58,14 +59,9 @@ class AppReleaseSourceTest {
         pageUrl = "https://example.invalid",
     )
 
-    private fun stableAppRelease(versionName: String) = AppRelease(
-        channel = UpdateChannel.STABLE,
-        versionName = versionName,
-        versionCode = null,
-        apkUrl = "https://example.invalid/app.apk",
-        apkSizeBytes = null,
-        pageUrl = "https://example.invalid",
-    )
+    private fun alphaAppRelease(versionName: String) = appRelease(UpdateChannel.ALPHA, versionName)
+
+    private fun stableAppRelease(versionName: String) = appRelease(UpdateChannel.STABLE, versionName)
 
     // endregion
 
@@ -79,7 +75,7 @@ class AppReleaseSourceTest {
             ).joinToString(prefix = "[", postfix = "]")
         )
 
-        val latest = AppReleaseSource.parseLatestStable(releases)!!
+        val latest = AppReleaseSource.parseLatest(releases, UpdateChannel.STABLE, emptyList())!!
 
         assertThat(latest.versionName).isEqualTo("0.5.0")
         assertThat(latest.channel).isEqualTo(UpdateChannel.STABLE)
@@ -98,7 +94,7 @@ class AppReleaseSourceTest {
             )}]"""
         )
 
-        val latest = AppReleaseSource.parseLatestStable(releases)!!
+        val latest = AppReleaseSource.parseLatest(releases, UpdateChannel.STABLE, emptyList())!!
 
         assertThat(latest.apkUrl).isEqualTo("https://example.invalid/universal.apk")
     }
@@ -108,13 +104,13 @@ class AppReleaseSourceTest {
         val releases = JSONArray(
             listOf(
                 stableReleaseJson("v0.6.0", draft = true),
-                alphaReleaseJson("v0.6.0-alpha.1"),
+                prereleaseJson("v0.6.0-alpha.1"),
                 stableReleaseJson("v0.5.9", assets = emptyList()),
                 stableReleaseJson("v0.5.8"),
             ).joinToString(prefix = "[", postfix = "]")
         )
 
-        val latest = AppReleaseSource.parseLatestStable(releases)!!
+        val latest = AppReleaseSource.parseLatest(releases, UpdateChannel.STABLE, emptyList())!!
 
         assertThat(latest.versionName).isEqualTo("0.5.8")
     }
@@ -123,20 +119,20 @@ class AppReleaseSourceTest {
     fun `stable versions order numerically, not lexically`() {
         val releases = JSONArray("[${stableReleaseJson("v0.10.0")},${stableReleaseJson("v0.9.0")}]")
 
-        assertThat(AppReleaseSource.parseLatestStable(releases)!!.versionName).isEqualTo("0.10.0")
+        assertThat(AppReleaseSource.parseLatest(releases, UpdateChannel.STABLE, emptyList())!!.versionName).isEqualTo("0.10.0")
     }
 
     @Test
     fun `newest alpha is picked by version even when the API lists it later`() {
         val releases = JSONArray(
             listOf(
-                alphaReleaseJson("v0.3.0-alpha.9"),
-                alphaReleaseJson("v0.3.0-alpha.16"),
-                alphaReleaseJson("v0.3.0-alpha.15"),
+                prereleaseJson("v0.3.0-alpha.9"),
+                prereleaseJson("v0.3.0-alpha.16"),
+                prereleaseJson("v0.3.0-alpha.15"),
             ).joinToString(prefix = "[", postfix = "]")
         )
 
-        val latest = AppReleaseSource.parseLatestAlpha(releases, listOf("arm64-v8a"))!!
+        val latest = AppReleaseSource.parseLatest(releases, UpdateChannel.ALPHA, listOf("arm64-v8a"))!!
 
         assertThat(latest.versionName).isEqualTo("0.3.0-alpha.16")
         assertThat(latest.apkUrl).endsWith("/CarpeLines-0.3.0-alpha.16-arm64-v8a.apk")
@@ -144,9 +140,13 @@ class AppReleaseSourceTest {
 
     @Test
     fun `alpha asset follows the device ABI preference order`() {
-        val releases = JSONArray("[${alphaReleaseJson("v0.3.0-alpha.16")}]")
+        val releases = JSONArray("[${prereleaseJson("v0.3.0-alpha.16")}]")
 
-        val latest = AppReleaseSource.parseLatestAlpha(releases, listOf("armeabi-v7a", "arm64-v8a"))!!
+        val latest = AppReleaseSource.parseLatest(
+            releases,
+            UpdateChannel.ALPHA,
+            listOf("armeabi-v7a", "arm64-v8a"),
+        )!!
 
         assertThat(latest.apkUrl).endsWith("-armeabi-v7a.apk")
     }
@@ -155,16 +155,68 @@ class AppReleaseSourceTest {
     fun `drafts, stable tags and releases without a matching APK are not offered`() {
         val releases = JSONArray(
             listOf(
-                alphaReleaseJson("v0.3.0-alpha.20", draft = true),
-                alphaReleaseJson("v0.4.0", prerelease = false),
-                alphaReleaseJson("v0.3.0-alpha.19", abis = listOf("x86_64")),
-                alphaReleaseJson("v0.3.0-alpha.18"),
+                prereleaseJson("v0.3.0-alpha.20", draft = true),
+                prereleaseJson("v0.4.0", prerelease = false),
+                prereleaseJson("v0.3.0-alpha.19", abis = listOf("x86_64")),
+                prereleaseJson("v0.3.0-alpha.18"),
             ).joinToString(prefix = "[", postfix = "]")
         )
 
-        assertThat(AppReleaseSource.parseLatestAlpha(releases, listOf("arm64-v8a"))!!.versionName)
+        assertThat(AppReleaseSource.parseLatest(releases, UpdateChannel.ALPHA, listOf("arm64-v8a"))!!.versionName)
             .isEqualTo("0.3.0-alpha.18")
-        assertThat(AppReleaseSource.parseLatestAlpha(releases, listOf("x86"))).isNull()
+        assertThat(AppReleaseSource.parseLatest(releases, UpdateChannel.ALPHA, listOf("x86"))).isNull()
+    }
+
+    @Test
+    fun `CI tags with channel build and hash are discoverable per channel`() {
+        val releases = JSONArray(
+            listOf(
+                stableReleaseJson("v1.0.0-stable.57-3f9a1c2"),
+                prereleaseJson("v1.0.0-beta.58-8b2d4e1", abis = listOf("universal")),
+                prereleaseJson("v1.0.0-alpha.58-8b2d4e1", abis = listOf("universal")),
+            ).joinToString(prefix = "[", postfix = "]")
+        )
+
+        val alpha = AppReleaseSource.parseLatest(releases, UpdateChannel.ALPHA, listOf("arm64-v8a"))!!
+        val beta = AppReleaseSource.parseLatest(releases, UpdateChannel.BETA, listOf("arm64-v8a"))!!
+        val stable = AppReleaseSource.parseLatest(releases, UpdateChannel.STABLE, listOf("arm64-v8a"))!!
+
+        assertThat(alpha.versionName).isEqualTo("1.0.0-alpha.58-8b2d4e1")
+        assertThat(alpha.apkUrl).endsWith("-universal.apk")
+        assertThat(beta.versionName).isEqualTo("1.0.0-beta.58-8b2d4e1")
+        assertThat(beta.channel).isEqualTo(UpdateChannel.BETA)
+        assertThat(stable.versionName).isEqualTo("1.0.0-stable.57-3f9a1c2")
+    }
+
+    @Test
+    fun `newer build of the same version wins`() {
+        val releases = JSONArray(
+            listOf(
+                stableReleaseJson("v1.0.0-stable.57-3f9a1c2"),
+                stableReleaseJson("v1.0.0-stable.60-1111111"),
+                stableReleaseJson("v1.0.0-stable.58-2222222"),
+            ).joinToString(prefix = "[", postfix = "]")
+        )
+
+        assertThat(
+            AppReleaseSource.parseLatest(releases, UpdateChannel.STABLE, emptyList())!!.versionName
+        ).isEqualTo("1.0.0-stable.60-1111111")
+    }
+
+    @Test
+    fun `same version compares by build number then hash`() {
+        assertThat(
+            alphaAppRelease("1.0.0-alpha.58-8b2d4e1")
+                .isNewerThan("1.0.0-alpha.57-3f9a1c2", 1057)
+        ).isTrue()
+        assertThat(
+            alphaAppRelease("1.0.0-alpha.57-3f9a1c2")
+                .isNewerThan("1.0.0-alpha.57-3f9a1c2", 1057)
+        ).isFalse()
+        assertThat(
+            alphaAppRelease("1.0.0-alpha.58-8b2d4e1")
+                .isNewerThan("1.0.0-beta.58-8b2d4e1", 1058)
+        ).isTrue()
     }
 
     @Test
@@ -197,5 +249,9 @@ class AppReleaseSourceTest {
         assertThat(UpdateChannel.ofVersionName("0.3.0")).isEqualTo(UpdateChannel.STABLE)
         assertThat(UpdateChannel.ofVersionName("0.3.0-alpha.16")).isEqualTo(UpdateChannel.ALPHA)
         assertThat(UpdateChannel.ofVersionName("0.3.0-pr.137.ba94188")).isEqualTo(UpdateChannel.ALPHA)
+        assertThat(UpdateChannel.ofVersionName("1.0.0-alpha.57-3f9a1c2")).isEqualTo(UpdateChannel.ALPHA)
+        assertThat(UpdateChannel.ofVersionName("1.0.0-beta.57-3f9a1c2")).isEqualTo(UpdateChannel.BETA)
+        assertThat(UpdateChannel.ofVersionName("1.0.0-stable.57-3f9a1c2")).isEqualTo(UpdateChannel.STABLE)
+        assertThat(UpdateChannel.ofVersionName("1.0.0-dev.57-3f9a1c2")).isEqualTo(UpdateChannel.ALPHA)
     }
 }

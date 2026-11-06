@@ -41,15 +41,21 @@ val enableComposeCompilerReports = providers.gradleProperty("carpelines.enableCo
 // ---------------------------------------------------------------------------
 // 版本号派生
 //
-// 版本信息直接从 git 检出状态推导，提交时不需要改动任何版本文件：
-//   versionCode = 基数(APP_VERSION_CODE_BASE，默认 1000) + HEAD 可达提交数
-//   versionName = 最近 tag 名（提交正好在该 tag 上）
-//                 否则 <tag 或基线>-dev.<距 tag 的提交数>-g<hash>
-// 发布构建可以显式覆盖：-PAPP_VERSION_NAME=1.2.3 -PAPP_VERSION_CODE=1203
-// 没有 git 可用时（例如源码压缩包）回退到 appVersionFallbackName。
+// 版本号唯一来源是 version.properties 的 version=<major>.<minor>.<patch>，发版只改这一行。
+// 构建号是 HEAD 可达提交数，构建哈希是 HEAD 的 7 位短 hash。
+// 频道由 -Pcarpelines.channel=alpha|beta|stable 指定，本地构建默认 dev。
+//
+//   versionName = <version>-<channel>.<commit count>-<short hash>
+//                 例如 1.0.0-beta.57-3f9a1c2
+//   versionCode = 基数(APP_VERSION_CODE_BASE，默认 1000) + 提交数
+//
+// 单次构建仍可覆盖：-PAPP_VERSION_NAME=... -PAPP_VERSION_CODE=...
 // ---------------------------------------------------------------------------
 
-val appVersionFallbackName = "1.0.0"
+val versionProperties = Properties().apply {
+    val file = rootProject.file("version.properties")
+    if (file.isFile) file.inputStream().use { load(it) }
+}
 
 /** 在 Gradle 根目录执行 git 命令；git 不可用或命令失败时返回 null。 */
 fun gitOutput(vararg args: String): String? = runCatching {
@@ -60,22 +66,31 @@ fun gitOutput(vararg args: String): String? = runCatching {
     }.standardOutput.asText.get().trim().takeIf { it.isNotEmpty() }
 }.getOrNull()
 
+val appVersionNumber = versionProperties.getProperty("version")
+    ?.trim()
+    ?.takeIf { it.matches(Regex("""\d+\.\d+\.\d+""")) }
+    ?: error("version.properties must define version=<major>.<minor>.<patch>")
+
+val buildChannel = providers.gradleProperty("carpelines.channel")
+    .getOrElse("dev")
+    .lowercase()
+    .also { channel ->
+        require(channel in setOf("alpha", "beta", "stable", "dev")) {
+            "carpelines.channel must be alpha, beta, stable or dev (was '$channel')"
+        }
+    }
+
 val appVersionCodeBase = providers.gradleProperty("APP_VERSION_CODE_BASE")
     .orNull?.toIntOrNull() ?: 1000
 val gitCommitCount = gitOutput("rev-list", "--count", "HEAD")?.toIntOrNull()
-// --always 保证没有 tag 时也输出短 hash，因此一次调用即可区分两种情况。
-val gitDescribe = gitOutput("describe", "--tags", "--long", "--always")
-val taggedCommit = gitDescribe?.let { Regex("^(.+)-(\\d+)-g([0-9a-f]+)$").find(it) }
+val gitCommitHash = gitOutput("rev-parse", "--short=7", "HEAD")
 
-val gitVersionName = when {
-    taggedCommit != null -> {
-        val tag = taggedCommit.groupValues[1].removePrefix("v")
-        val distance = taggedCommit.groupValues[2].toInt()
-        if (distance == 0) tag else "$tag-dev.$distance-g${taggedCommit.groupValues[3]}"
+val gitVersionName =
+    if (gitCommitCount != null && gitCommitHash != null) {
+        "$appVersionNumber-$buildChannel.$gitCommitCount-$gitCommitHash"
+    } else {
+        appVersionNumber
     }
-    gitDescribe != null -> "$appVersionFallbackName-dev.${gitCommitCount ?: 0}-g$gitDescribe"
-    else -> appVersionFallbackName
-}
 
 val appVersionName = providers.gradleProperty("APP_VERSION_NAME")
     .orNull?.takeIf { it.isNotBlank() } ?: gitVersionName
@@ -205,9 +220,11 @@ android {
     }
 }
 
-// 打包产物带上版本号，例如 CarpeLines-1.0.0-arm64-v8a.apk。
-// 签名后的 release 产物保持 CarpeLines-<版本号>-<abi>.apk，与 alpha 更新通道
-// 期望的资源名一致；未签名的构建补上 -unsigned，其他构建类型补上构建类型名。
+// 产物名带完整的发布标识，例如
+//   CarpeLines-1.0.0-beta.57-3f9a1c2-universal.apk
+//   CarpeLines-1.0.0-alpha.57-3f9a1c2-arm64-v8a.apk
+// versionName 已包含频道、版本号、构建号和 commit hash；这里补上 ABI（关闭 ABI 拆分时
+// 写 universal），未签名构建补 -unsigned，非 release 构建类型补构建类型名。
 androidComponents {
     onVariants { variant ->
         val isSigned = variant.buildType == "debug" || hasReleaseSigningConfig
@@ -216,7 +233,7 @@ androidComponents {
                 .firstOrNull { it.filterType == FilterConfiguration.FilterType.ABI }
                 ?.identifier
             val suffix = buildString {
-                if (abi != null) append("-").append(abi)
+                append("-").append(abi ?: "universal")
                 when {
                     !isSigned -> append("-unsigned")
                     variant.buildType != "release" -> append("-").append(variant.name)

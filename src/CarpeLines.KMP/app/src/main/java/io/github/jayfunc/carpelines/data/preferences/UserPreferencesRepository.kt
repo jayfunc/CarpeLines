@@ -100,8 +100,8 @@ constructor(
         PreferencesKeys.METADATA_CHARSET_REPAIR_VERSION.name,
         "listenbrainz_token",
         "lastfm_session_key",
-        // Update settings describe this install (stable vs. alpha signed), not user taste;
-        // restoring them onto the other channel's install would offer a cross-signed update.
+        // Update settings describe this install (alpha/beta/stable), not user taste;
+        // restoring them onto another channel's install would offer a cross-signed update.
         PreferencesKeys.UPDATE_CHANNEL.name,
         PreferencesKeys.UPDATE_AUTO_CHECK.name,
         PreferencesKeys.UPDATE_LAST_NOTIFIED_VERSION.name

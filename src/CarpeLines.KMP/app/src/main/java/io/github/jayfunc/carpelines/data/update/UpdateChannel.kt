@@ -1,73 +1,75 @@
 package io.github.jayfunc.carpelines.data.update
 
 /**
- * Where builds of a channel are published. Both channels live on GitHub Releases: stable builds
- * are the tagged releases, alpha builds are prereleases signed with the project CI key, so an
- * install from one channel can never be updated in place by the other.
+ * Where builds of a channel are published. All channels live on GitHub Releases: stable builds
+ * are normal releases, alpha and beta builds are prereleases. CI signs every channel with the
+ * same key, but the updater only installs within the selected channel; moving between channels
+ * needs the user-driven reinstall flow.
  */
 enum class UpdateChannel(val storageKey: String) {
     STABLE("stable"),
+    BETA("beta"),
     ALPHA("alpha");
 
     companion object {
         fun fromStorageKey(key: String?): UpdateChannel? = entries.firstOrNull { it.storageKey == key }
 
         /**
-         * The channel the running build was distributed through. CI-built alphas (and PR builds,
-         * which share the CI key) carry a pre-release suffix; releases use the plain tag.
+         * The channel the running build was distributed through, encoded in its version name
+         * (`1.0.0-beta.57-3f9a1c2`). Legacy stable names carry no channel token, while legacy CI
+         * and PR builds (which have always used a `-` suffix) count as alpha.
          */
         fun ofVersionName(versionName: String): UpdateChannel =
-            if ('-' in versionName) ALPHA else STABLE
+            BuildVersion.parse(versionName)?.channel
+                ?: if ('-' in versionName) ALPHA else STABLE
     }
 }
 
-/** `0.3.0-alpha.16` as published by the alpha-release workflow. */
-data class AlphaVersion(
+/**
+ * A published build, as it appears in a release tag or the installed version name:
+ * `<major>.<minor>.<patch>[-<channel>.<build>][-<hash>]`, for example `1.0.0-beta.57-3f9a1c2`.
+ *
+ * Legacy names `0.5.1` (stable) and `0.3.0-alpha.16` (alpha) parse as well, so an installed app
+ * can still compare itself against builds from the old pipelines.
+ */
+internal data class BuildVersion(
     val major: Int,
     val minor: Int,
     val patch: Int,
+    val channel: UpdateChannel?,
     val build: Int,
-) : Comparable<AlphaVersion> {
+    val hash: String?,
+) : Comparable<BuildVersion> {
 
-    override fun compareTo(other: AlphaVersion): Int = compareValuesBy(
-        this, other, AlphaVersion::major, AlphaVersion::minor, AlphaVersion::patch, AlphaVersion::build
+    override fun compareTo(other: BuildVersion): Int = compareValuesBy(
+        this,
+        other,
+        BuildVersion::major,
+        BuildVersion::minor,
+        BuildVersion::patch,
+        BuildVersion::build,
+        { it.hash.orEmpty() },
     )
 
     companion object {
-        private val PATTERN = Regex("""^v?(\d+)\.(\d+)\.(\d+)-alpha\.(\d+)$""")
+        private val PATTERN = Regex(
+            """^v?(\d+)\.(\d+)\.(\d+)(?:-(alpha|beta|stable|dev)\.(\d+))?(?:-([0-9a-f]{7,40}))?$"""
+        )
 
-        fun parse(value: String): AlphaVersion? {
+        fun parse(value: String): BuildVersion? {
             val groups = PATTERN.matchEntire(value.trim())?.groupValues ?: return null
-            return AlphaVersion(
+            return BuildVersion(
                 major = groups[1].toIntOrNull() ?: return null,
                 minor = groups[2].toIntOrNull() ?: return null,
                 patch = groups[3].toIntOrNull() ?: return null,
-                build = groups[4].toIntOrNull() ?: return null,
-            )
-        }
-    }
-}
-
-/** `0.5.1` — the tag of a stable GitHub release. */
-data class StableVersion(
-    val major: Int,
-    val minor: Int,
-    val patch: Int,
-) : Comparable<StableVersion> {
-
-    override fun compareTo(other: StableVersion): Int = compareValuesBy(
-        this, other, StableVersion::major, StableVersion::minor, StableVersion::patch
-    )
-
-    companion object {
-        private val PATTERN = Regex("""^v?(\d+)\.(\d+)\.(\d+)$""")
-
-        fun parse(value: String): StableVersion? {
-            val groups = PATTERN.matchEntire(value.trim())?.groupValues ?: return null
-            return StableVersion(
-                major = groups[1].toIntOrNull() ?: return null,
-                minor = groups[2].toIntOrNull() ?: return null,
-                patch = groups[3].toIntOrNull() ?: return null,
+                channel = when (groups[4]) {
+                    UpdateChannel.ALPHA.storageKey -> UpdateChannel.ALPHA
+                    UpdateChannel.BETA.storageKey -> UpdateChannel.BETA
+                    UpdateChannel.STABLE.storageKey -> UpdateChannel.STABLE
+                    else -> null
+                },
+                build = groups[5].toIntOrNull() ?: 0,
+                hash = groups[6].takeIf { it.isNotEmpty() },
             )
         }
     }
@@ -77,7 +79,7 @@ data class StableVersion(
 data class AppRelease(
     val channel: UpdateChannel,
     val versionName: String,
-    /** alpha releases only expose their version name. */
+    /** Releases expose only their version name; install verification reads the APK itself. */
     val versionCode: Long?,
     val apkUrl: String,
     val apkSizeBytes: Long?,
@@ -85,22 +87,14 @@ data class AppRelease(
 )
 
 /** Whether [release] is newer than the running build, assuming both are on the same channel. */
-internal fun AppRelease.isNewerThan(installedVersionName: String, installedVersionCode: Long): Boolean =
-    when (channel) {
-        UpdateChannel.STABLE -> {
-            // GitHub releases carry no version code; the tag is the only truth.
-            val candidate = StableVersion.parse(versionName) ?: return false
-            val installed = StableVersion.parse(installedVersionName)
-                // A non-tag install (CI or hand-built) has no stable number; any published
-                // release is the way back onto the channel.
-                ?: return true
-            candidate > installed
-        }
-        UpdateChannel.ALPHA -> {
-            val candidate = AlphaVersion.parse(versionName) ?: return false
-            // PR and other CI builds share the alpha signing key but have no alpha number;
-            // any published alpha is the way back onto the channel.
-            val installed = AlphaVersion.parse(installedVersionName) ?: return true
-            candidate > installed
-        }
-    }
+internal fun AppRelease.isNewerThan(installedVersionName: String, installedVersionCode: Long): Boolean {
+    val candidate = BuildVersion.parse(versionName) ?: return false
+    val installed = BuildVersion.parse(installedVersionName)
+        // A PR or hand-built install has no comparable version; any published release is the
+        // way back onto a channel.
+        ?: return true
+    if (installed.channel != null && installed.channel != channel) return true
+    // Legacy stable names have no channel token; they are only comparable with stable builds.
+    if (installed.channel == null && channel != UpdateChannel.STABLE) return true
+    return candidate > installed
+}

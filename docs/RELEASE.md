@@ -1,59 +1,78 @@
 # Release Checklist
 
-CarpeLines releases are shipped from `main` after the release candidate passes local checks and a basic device smoke test.
+CarpeLines builds are produced and published by the manually triggered CI workflow
+(`.github/workflows/ci.yml`). Every run builds one signed APK, generates release notes from git,
+and creates (or updates) a GitHub Release for the selected channel.
 
-Paths in this document are relative to the Gradle root (`src/CarpeLines.KMP`) unless a command says otherwise.
+Paths in this document are relative to the Gradle root (`src/CarpeLines.KMP`) unless a command
+says otherwise.
 
 ## Versioning
 
-`versionName` and `versionCode` are derived from git by `app/build.gradle.kts`, so a release
-never edits a version file:
+`version.properties` in the Gradle root is the single source of the version number. A release
+only edits that one line:
 
-- `versionName` is the nearest tag with its leading `v` stripped (`v0.1.0` → `0.1.0`,
-  `v0.2.0-alpha.3` → `0.2.0-alpha.3`). Builds after that tag get `-dev.<commits>-g<hash>`
-  appended, which keeps them out of the stable channel.
-- `versionCode` is `1000` (`APP_VERSION_CODE_BASE`) plus the number of commits reachable
-  from `HEAD`. It only ever grows, so upgrades install in place.
-
-Both values can be pinned for a single build when needed:
-
-```sh
-./gradlew :app:assembleRelease -PAPP_VERSION_NAME=0.1.0 -PAPP_VERSION_CODE=1001
+```properties
+version=1.0.0
 ```
 
-Derivation needs the full git history and tags: a shallow clone reports a truncated commit
-count, so build from a full clone (CI checks out with `fetch-depth: 0`) and run
-`git fetch --tags` locally after someone else pushes a tag.
+Gradle derives everything else from the checkout:
 
-For every public release:
+- **Build number** — `git rev-list --count HEAD`.
+- **Commit hash** — the first 7 characters of `HEAD`.
+- **`versionName`** — `<version>-<channel>.<build>-<hash>`, for example
+  `1.0.0-beta.57-3f9a1c2`.
+- **`versionCode`** — `1000` (`APP_VERSION_CODE_BASE`) plus the build number. It only grows
+  with the commit count, so same-channel upgrades install in place.
 
-1. Confirm the working tree is clean and `main` is up to date.
-2. Tag the release as `v<X.Y.Z>`, for example `v0.1.0`. Nothing else needs editing.
+The channel comes from `-Pcarpelines.channel=alpha|beta|stable`. Local builds default to `dev`.
+Both values can still be pinned for a single build:
+
+```sh
+./gradlew :app:assembleRelease -Pcarpelines.channel=alpha -PAPP_VERSION_NAME=0.1.0 -PAPP_VERSION_CODE=1001
+```
+
+Derivation needs the full git history: a shallow clone reports a truncated build number, so CI
+checks out with `fetch-depth: 0`.
+
+## Channels
+
+| Channel | GitHub release | Tag | APK asset |
+| --- | --- | --- | --- |
+| `alpha` | prerelease | `v1.0.0-alpha.57-3f9a1c2` | `CarpeLines-1.0.0-alpha.57-3f9a1c2-universal.apk` |
+| `beta` | prerelease | `v1.0.0-beta.57-3f9a1c2` | `CarpeLines-1.0.0-beta.57-3f9a1c2-universal.apk` |
+| `stable` | latest release | `v1.0.0-stable.57-3f9a1c2` | `CarpeLines-1.0.0-stable.57-3f9a1c2-universal.apk` |
+
+The APK name encodes channel, version, build number and commit hash; `versionName` carries the
+same information inside the app. ABI-split builds replace `-universal` with the ABI name.
 
 ## Required Local Checks
 
-Run these before tagging:
+Run these before triggering CI:
 
 ```sh
 JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :app:compileDebugKotlin
 JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :app:lintDebug
 JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :app:testDebugUnitTest
-JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :app:assembleRelease -Pcarpelines.enableAbiSplits=false -Pcarpelines.disableReleaseSigning=true
+JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :app:assembleRelease -Pcarpelines.channel=stable -Pcarpelines.enableAbiSplits=false -Pcarpelines.disableReleaseSigning=true
 ```
-
-For split APK artifacts, use:
-
-```sh
-JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :app:assembleRelease -Pcarpelines.enableAbiSplits=true
-```
-
-APK artifacts are named from `versionName`: `CarpeLines-<versionName>-<abi>.apk` for signed release builds, with `-unsigned` appended when no release signing config is present.
 
 ## Signing
 
-Release signing is driven by an untracked `keystore.properties` file at the Gradle root (`src/CarpeLines.KMP`).
+CI restores the release keystore from repository secrets before building:
 
-Supported keys:
+| Secret | Contents |
+| --- | --- |
+| `KEYSTORE_BASE64` | Base64 of the `.jks` file |
+| `KEYSTORE_STORE_PASSWORD` | Keystore password |
+| `KEYSTORE_KEY_ALIAS` | Key alias |
+| `KEYSTORE_KEY_PASSWORD` | Key password |
+
+The workflow writes `keystore.properties` at the Gradle root and passes no signing overrides, so
+`app/build.gradle.kts` signs the release. All three channels use this one key; switching channels
+still needs the reinstall flow because the updater only installs within the selected channel.
+
+Local signing keeps working through an untracked `keystore.properties`:
 
 ```properties
 storeFile=/absolute/or/repo-relative/path/to/release.jks
@@ -62,9 +81,9 @@ keyAlias=...
 keyPassword=...
 ```
 
-`storeFile` is optional when the release keystore is available as `release.jks` at the Gradle root. `storePassword`, `keyAlias`, and `keyPassword` are required for signing. If signing properties or the keystore file are missing, release builds are unsigned.
-
-For unsigned verification builds, pass `-Pcarpelines.disableReleaseSigning=true` even when local signing files exist.
+`storeFile` is optional when the release keystore is available as `release.jks` at the Gradle
+root. For unsigned verification builds, pass `-Pcarpelines.disableReleaseSigning=true` even when
+local signing files exist.
 
 ## Device Smoke Test
 
@@ -78,21 +97,40 @@ Install the release candidate and verify:
 6. Lyrics settings survive an app restart.
 7. Backup export flow creates a file.
 
-## In-App Updates
-
-The Updates screen (`data/update/`) reads the GitHub releases feed, so keep tag and asset formats stable:
-
-- **Stable:** tagged, non-prerelease releases named `v<X.Y.Z>`. The updater prefers a universal APK asset and falls back to any architecture-specific APK the release ships. Any installed version name without a `-` suffix counts as a stable install.
-- **Alpha:** GitHub prereleases tagged `v<X.Y.Z>-alpha.<N>` with assets named `CarpeLines-<X.Y.Z>-alpha.<N>-<abi>.apk`. Renaming tags or assets breaks alpha update discovery.
-
-Stable and alpha builds are signed with different keys. The updater installs only same-channel releases whose signer matches the installed app, and walks users through uninstalling to switch channels.
-
 ## Publishing
 
-1. Ensure `main` is clean and pushed.
-2. Create a tag: `git tag v<X.Y.Z>`.
-3. Push the tag: `git push origin v<X.Y.Z>`.
-4. Create a GitHub release from the tag.
-5. Attach APK artifacts and paste the changelog section.
-6. Check the README provider list still matches the optional network services present in the app.
-7. Create source archives from git, not from the working tree, so ignored local artifacts are excluded.
+1. Ensure `main` is clean, pushed, and has the intended `version.properties`.
+2. Open **Actions → CI → Run workflow** and choose `alpha`, `beta` or `stable`.
+3. CI runs the lyrics and app unit tests, assembles a signed universal release APK, generates
+   the changelog, and publishes the GitHub Release with the APK attached directly (no zip).
+
+The workflow is manual only. Re-running it on the same commit updates the existing release and
+overwrites its asset instead of failing on a duplicate tag.
+
+## Changelog
+
+`.github/scripts/generate-changelog.sh` builds the notes from
+[Conventional Commits](https://www.conventionalcommits.org/) since the previous release tag of
+the same channel:
+
+- `feat` → Features, `fix` → Fixes, `perf` → Performance, `refactor` → Refactoring,
+  `docs`, `build`, `ci`, `test`, `revert`, `chore` each get their own section.
+- A scope is kept: `fix(lyrics): fade lyrics` becomes `**lyrics:** fade lyrics (hash)`.
+- Commits that do not follow the convention land under Other changes; merge commits are skipped.
+- The first release of a channel falls back to the newest tag of any channel, then to the whole
+  history.
+
+So commit messages should follow `type(scope): summary` for readable release notes.
+
+## In-App Updates
+
+The Updates screen (`data/update/`) reads the GitHub releases feed and discovers one channel at a
+time:
+
+- Tags are parsed as `<version>[-<channel>.<build>][-<hash>]`. Legacy tags `v0.5.1` and
+  `v0.3.0-alpha.16` still resolve to their channel.
+- Stable releases are non-prereleases; alpha and beta are prereleases distinguished by the tag.
+- Asset lookup prefers the device ABI, then the `-universal` APK.
+
+Because the tag scheme changed, already-installed builds from the old pipeline cannot parse the
+new releases; users need one manual install to get back onto automatic updates.

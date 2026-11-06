@@ -316,12 +316,15 @@
     <string name="updates_check_row_title">检查更新</string>
     <string name="updates_installed_version">已安装：%1$s</string>
     <string name="updates_channel_stable">稳定版</string>
+    <string name="updates_channel_beta">Beta 版</string>
     <string name="updates_channel_alpha">Alpha 版</string>
     <string name="updates_channel_stable_source">稳定版 · GitHub</string>
+    <string name="updates_channel_beta_source">Beta 版 · GitHub</string>
     <string name="updates_channel_alpha_source">Alpha 版 · GitHub</string>
     <string name="updates_channel_title">发布渠道</string>
     <string name="updates_channel_stable_description">发布在 GitHub 上的经过测试的版本。</string>
-    <string name="updates_channel_alpha_description">每次合并更改都会构建一个版本并发布到 GitHub，可能存在不够完善的地方。</string>
+    <string name="updates_channel_beta_description">通过 Alpha 阶段验证的预览版本，发布在 GitHub 上。</string>
+    <string name="updates_channel_alpha_description">每次手动执行 CI 都会构建并发布到 GitHub，可能存在不够完善的地方。</string>
     <string name="updates_auto_check_title">自动检查</string>
     <string name="updates_auto_check_subtitle">每天检查一次更新，有可用更新时通知你。</string>
     <string name="updates_status_idle">检查是否有更新的构建。</string>

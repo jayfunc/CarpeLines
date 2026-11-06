@@ -360,12 +360,15 @@
     <string name="updates_check_row_title">Check for updates</string>
     <string name="updates_installed_version">Installed: %1$s</string>
     <string name="updates_channel_stable">Stable</string>
+    <string name="updates_channel_beta">Beta</string>
     <string name="updates_channel_alpha">Alpha</string>
     <string name="updates_channel_stable_source">Stable · GitHub</string>
+    <string name="updates_channel_beta_source">Beta · GitHub</string>
     <string name="updates_channel_alpha_source">Alpha · GitHub</string>
     <string name="updates_channel_title">Release channel</string>
     <string name="updates_channel_stable_description">Tested releases published on GitHub.</string>
-    <string name="updates_channel_alpha_description">A build for every merged change, published on GitHub. Expect rough edges.</string>
+    <string name="updates_channel_beta_description">Preview builds that passed the alpha stage, published on GitHub.</string>
+    <string name="updates_channel_alpha_description">A build for every manual CI run, published on GitHub. Expect rough edges.</string>
     <string name="updates_auto_check_title">Check automatically</string>
     <string name="updates_auto_check_subtitle">Look for updates once a day and notify you when one is available.</string>
     <string name="updates_status_idle">Check whether a newer build is available.</string>

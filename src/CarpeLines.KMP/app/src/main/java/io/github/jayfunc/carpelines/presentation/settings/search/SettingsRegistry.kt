@@ -300,7 +300,7 @@ object SettingsRegistry {
                 category = SettingsCategory.ABOUT,
                 subscreenRoute = Screen.Updates.route,
                 type = SettingType.NAVIGABLE_CARD,
-                keywordsStatic = listOf("update", "upgrade", "version", "alpha", "stable", "github", "channel")
+                keywordsStatic = listOf("update", "upgrade", "version", "alpha", "beta", "stable", "github", "channel")
             ),
             SettingSpec(
                 id = "about_licenses",

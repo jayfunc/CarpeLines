@@ -214,15 +214,18 @@ fun UpdatesScreen(
                         description = stringResource(
                             when (state.selectedChannel) {
                                 UpdateChannel.STABLE -> R.string.updates_channel_stable_description
+                                UpdateChannel.BETA -> R.string.updates_channel_beta_description
                                 UpdateChannel.ALPHA -> R.string.updates_channel_alpha_description
                             }
                         ),
                         options = mapOf(
                             UpdateChannel.STABLE.storageKey to stringResource(R.string.updates_channel_stable_source),
+                            UpdateChannel.BETA.storageKey to stringResource(R.string.updates_channel_beta_source),
                             UpdateChannel.ALPHA.storageKey to stringResource(R.string.updates_channel_alpha_source),
                         ),
                         optionDescriptions = mapOf(
                             UpdateChannel.STABLE.storageKey to stringResource(R.string.updates_channel_stable_description),
+                            UpdateChannel.BETA.storageKey to stringResource(R.string.updates_channel_beta_description),
                             UpdateChannel.ALPHA.storageKey to stringResource(R.string.updates_channel_alpha_description),
                         ),
                         selectedKey = state.selectedChannel.storageKey,
@@ -520,11 +523,13 @@ private fun ChannelSwitchDialog(
 
 private fun channelLabel(channel: UpdateChannel): Int = when (channel) {
     UpdateChannel.STABLE -> R.string.updates_channel_stable
+    UpdateChannel.BETA -> R.string.updates_channel_beta
     UpdateChannel.ALPHA -> R.string.updates_channel_alpha
 }
 
 private fun channelSource(channel: UpdateChannel): Int = when (channel) {
     UpdateChannel.STABLE -> R.string.updates_channel_stable_source
+    UpdateChannel.BETA -> R.string.updates_channel_beta_source
     UpdateChannel.ALPHA -> R.string.updates_channel_alpha_source
 }
 
