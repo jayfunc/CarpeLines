@@ -625,6 +625,10 @@ class MainActivity : ComponentActivity() {
                 } ?: false
             }
         }
+        // The lyrics page gives up the rail as well as the bar: it is a reading surface that owns
+        // the whole window on every size class. Pushed detail pages keep the rail, since that is
+        // their only visible way back on a wide window.
+        val shouldHideNavigationRail = currentRoute == Screen.NowPlayingLyrics.route
 
         val hapticsEnabled by playerViewModel.hapticsEnabled.collectAsStateWithLifecycle()
         val rootView = LocalView.current
@@ -653,10 +657,25 @@ class MainActivity : ComponentActivity() {
             LocalShowScrollbar provides showScrollbar
         ) {
             Row(modifier = Modifier.fillMaxSize()) {
-                if (useNavigationRail) {
-                    // The rail is permanent furniture on medium/expanded windows: hiding it on a
-                    // detail page would strand the user on the widest screens, where the bottom
-                    // bar is not available as a fallback.
+                AnimatedVisibility(
+                    visible = useNavigationRail && !shouldHideNavigationRail,
+                    enter = fadeIn(animationSpec = tween(220)) +
+                        expandHorizontally(
+                            animationSpec = tween(
+                                durationMillis = 320,
+                                easing = FastOutSlowInEasing
+                            ),
+                            expandFrom = Alignment.Start
+                        ),
+                    exit = fadeOut(animationSpec = tween(180)) +
+                        shrinkHorizontally(
+                            animationSpec = tween(
+                                durationMillis = 300,
+                                easing = FastOutLinearInEasing
+                            ),
+                            shrinkTowards = Alignment.Start
+                        )
+                ) {
                     PlayerNavigationRail(
                         navController = navController,
                         navItems = MainNavItems,
