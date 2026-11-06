@@ -12,4 +12,7 @@
     <string name="lyrics_duet_layout_subtitle">Şarkı sözleri sesleri işaretlediğinde (v1:, v2:) her şarkıcıyı kendi tarafına yerleştir</string>
     <string name="lyrics_background_vocals_title">Arka vokaller</string>
     <string name="lyrics_background_vocals_subtitle">Arka vokalleri ana satırın altında daha küçük yazıyla göster</string>
+    <string name="external_lyrics_permission_title">Bildirim erişimi gerekli</string>
+    <string name="external_lyrics_permission_body">Android, diğer uygulamaların medya oturumlarını yalnızca bildirim dinleyicilerine sunar. Erişim ver, ardından herhangi bir müzik çalarda oynatmayı başlat.</string>
+    <string name="external_lyrics_grant_access">Bildirim erişimini aç</string>
 </resources>

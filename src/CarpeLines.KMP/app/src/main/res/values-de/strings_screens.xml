@@ -187,7 +187,7 @@
     <string name="search_placeholder">Suchen…</string>
     <string name="search_try_different_or_filters">Anderen Suchbegriff versuchen oder Filter prüfen.</string>
     <string name="search_filter_all">Alle</string>
-    <string name="setup_all_set_body">Du kannst jetzt deine Musik genießen.</string>
+    <string name="setup_all_set_body">CarpeLines ist bereit. Starte die Wiedergabe in einem beliebigen Musikplayer – die Lyrics folgen automatisch.</string>
     <string name="setup_all_set_title">Alles bereit!</string>
     <string name="setup_app_navigation_subtitle">Stil der Navigationsleiste wählen</string>
     <string name="setup_app_navigation_title">App-Navigation</string>
@@ -202,13 +202,13 @@
     <string name="setup_compact_mode_pill_hint">Minimale Pill-Navigation aktiv</string>
     <string name="setup_compact_mode_tab_hint">Standard-Tab-Leiste aktiv</string>
     <string name="setup_enable_notifications">Benachrichtigungen aktivieren</string>
-    <string name="setup_excluded_folders_description">Alle Ordner werden gescannt. Hier Ordner ausschließen, die ignoriert werden sollen.</string>
+    <string name="setup_excluded_folders_description">Standardmäßig werden alle Ordner durchsucht. Wähle Orte aus, die beim Suchen nach eingebetteten Lyrics und .lrc-Dateien ignoriert werden sollen.</string>
     <string name="setup_excluded_folders_title">Ausgeschlossene Ordner</string>
     <string name="setup_external_artist_images_description">Fehlende Künstlerfotos von Deezer laden und lokal zwischenspeichern.</string>
     <string name="setup_external_artist_images_title">Künstlerbilder von Deezer</string>
     <string name="setup_external_lyrics_description">lrclib.net durchsuchen, wenn lokale oder eingebettete Lyrics fehlen.</string>
     <string name="setup_external_lyrics_title">Online-Lyrics von LRCLIB</string>
-    <string name="setup_external_services_footer">Du kannst das später unter Einstellungen &gt; Musikverwaltung &gt; Optionale Online-Dienste ändern.</string>
+    <string name="setup_external_services_footer">Du kannst das später unter Einstellungen &gt; Lokale Musik &gt; Optionale Online-Dienste ändern.</string>
     <string name="setup_external_services_title">Optionale Online-Dienste</string>
     <string name="setup_grant_media_permission">Medienberechtigung erteilen</string>
     <string name="setup_grant_permission_generic">Berechtigung erteilen</string>
@@ -226,7 +226,7 @@
     <string name="setup_navbar_footer">Änderbar unter Einstellungen &gt; Darstellung &gt; NavBar-Stil.</string>
     <string name="setup_permission_alarms_title">Alarme &amp; Erinnerungen</string>
     <string name="setup_battery_optimization_title">Akku-Optimierung</string>
-    <string name="setup_battery_optimization_description">Manche Geräte beenden Apps im Hintergrund aggressiv. Akku-Optimierung für CarpeLines deaktivieren, damit die Wiedergabe nicht unterbrochen wird.</string>
+    <string name="setup_battery_optimization_description">Manche Android-Geräte beenden Hintergrund-Apps aggressiv. Deaktiviere die Akku-Optimierung für CarpeLines, damit Media-Session-Überwachung, Widgets und Lyrics-Abfragen im Hintergrund weiterlaufen.</string>
     <string name="setup_disable_battery_optimization">Optimierung deaktivieren</string>
     <string name="setup_permission_granted">Berechtigung erteilt</string>
     <string name="setup_permission_media_title">Medienberechtigung</string>
@@ -244,7 +244,7 @@
     <string name="setup_theme_footer">Änderbar unter Einstellungen &gt; Darstellung &gt; App-Design.</string>
     <string name="setup_theme_light_description">Das helle Material 3 Expressiv-Design.</string>
     <string name="setup_theme_light_title">Hell</string>
-    <string name="setup_theme_subtitle">Design wählen, bevor es losgeht.</string>
+    <string name="setup_theme_subtitle">Wähle das Erscheinungsbild, bevor du den Lyrics folgst.</string>
     <string name="setup_theme_title">App-Design</string>
     <string name="setup_welcome_prefix">Willkommen bei </string>
     <string name="skip_for_now">Vorerst überspringen</string>
@@ -275,7 +275,7 @@
     <string name="word_delimiter_toast_reset">Wort-Trennzeichen zurückgesetzt</string>
     <string name="word_delimiters_screen_title">Wort-Trennzeichen</string>
     <string name="setup_external_services_subtitle">CarpeLines funktioniert standardmäßig offline. Aktiviere nur die Abfragen, die du möchtest.</string>
-    <string name="setup_permission_media_description">CarpeLines benötigt Zugriff auf deine Audiodateien, um deine Musikbibliothek aufzubauen.</string>
+    <string name="setup_permission_media_description">CarpeLines liest Audiodateien auf diesem Gerät, um eingebettete Lyrics und .lrc-Dateien im selben Ordner zu finden. Deine Audiodateien bleiben auf diesem Gerät.</string>
     <string name="setup_permission_alarms_description">Optional, aber empfehlenswert, wenn du den Sleep Timer nutzt und möchtest, dass CarpeLines die Wiedergabe auf die Minute genau beendet.</string>
     <string name="setup_backup_have_description">Wenn du bereits ein CarpeLines-Backup hast, stelle es jetzt wieder her und überspringe den Großteil der restlichen Einrichtung auf diesem Gerät.</string>
     <string name="setup_theme_dark_description">Das standardmäßige dunkle Material-3-Design für CarpeLines.</string>

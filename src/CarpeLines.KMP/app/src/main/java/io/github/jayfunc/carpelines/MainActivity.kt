@@ -2,7 +2,6 @@ package io.github.jayfunc.carpelines
 
 import io.github.jayfunc.carpelines.presentation.navigation.navigateSafely
 
-import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -111,8 +110,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import androidx.core.net.toUri
 import io.github.jayfunc.carpelines.data.external.ExternalMediaMonitor
 import io.github.jayfunc.carpelines.data.preferences.AppThemeMode
@@ -240,7 +237,6 @@ class MainActivity : ComponentActivity() {
         super.attachBaseContext(AppLocaleManager.wrapContext(newBase))
     }
 
-    @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         LogUtils.d(this, "onCreate")
         val splashScreen = installSplashScreen()
@@ -343,26 +339,21 @@ class MainActivity : ComponentActivity() {
             var showCrashReportDialog by remember { mutableStateOf(false) }
             var crashLogData by remember { mutableStateOf<CrashLogData?>(null) }
             
-            val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                listOf(Manifest.permission.READ_MEDIA_AUDIO, Manifest.permission.POST_NOTIFICATIONS)
-            } else {
-                listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-            }
-            @OptIn(ExperimentalPermissionsApi::class)
-            val permissionState = rememberMultiplePermissionsState(permissions = permissions)
-            val permissionsValid = permissionState.allPermissionsGranted
-            val showSetupScreen = remember(isSetupComplete, permissionsValid, isBenchmarkMode) {
+            // Media access is optional (it only enables local tag/.lrc lyrics), so setup must not
+            // be shown again just because the user skipped it. Notification access is checked by
+            // the setup flow itself.
+            val showSetupScreen = remember(isSetupComplete, isBenchmarkMode) {
                 when {
                     isBenchmarkMode -> false
                     isSetupComplete == null -> null
-                    else -> !isSetupComplete!! || !permissionsValid
+                    else -> !isSetupComplete!!
                 }
             }
 
             LaunchedEffect(showSetupScreen) {
                 if (showSetupScreen == false) {
-                     LogUtils.i(this, "Setup complete/skipped and permissions valid. Starting sync.")
-                     mainViewModel.startSync()
+                    LogUtils.i(this, "Setup complete. Starting sync.")
+                    mainViewModel.startSync()
                 }
             }
 

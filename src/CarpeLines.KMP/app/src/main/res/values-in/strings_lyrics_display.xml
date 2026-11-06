@@ -12,4 +12,7 @@
     <string name="lyrics_duet_layout_subtitle">Tempatkan setiap penyanyi di sisinya sendiri saat lirik menandai suara (v1:, v2:)</string>
     <string name="lyrics_background_vocals_title">Vokal latar</string>
     <string name="lyrics_background_vocals_subtitle">Tampilkan vokal latar dengan teks lebih kecil di bawah baris utama</string>
+    <string name="external_lyrics_permission_title">Akses notifikasi diperlukan</string>
+    <string name="external_lyrics_permission_body">Android hanya menampilkan sesi media dari aplikasi lain kepada pendengar notifikasi. Berikan akses, lalu mulai pemutaran di pemutar musik mana pun.</string>
+    <string name="external_lyrics_grant_access">Buka akses notifikasi</string>
 </resources>

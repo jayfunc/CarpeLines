@@ -184,7 +184,7 @@
     <string name="search_placeholder">검색…</string>
     <string name="search_try_different_or_filters">다른 검색어를 입력하거나 필터를 확인해 보세요.</string>
     <string name="search_filter_all">전체</string>
-    <string name="setup_all_set_body">이제 음악을 즐길 준비가 되었습니다.</string>
+    <string name="setup_all_set_body">CarpeLines가 준비되었습니다. 아무 음악 플레이어에서나 재생을 시작하면 가사가 따라옵니다.</string>
     <string name="setup_all_set_title">준비 완료!</string>
     <string name="setup_app_navigation_subtitle">하단 내비게이션 바의 스타일을 선택하세요.</string>
     <string name="setup_app_navigation_title">앱 내비게이션</string>
@@ -199,13 +199,13 @@
     <string name="setup_compact_mode_pill_hint">최소 알약 내비게이션 사용 중</string>
     <string name="setup_compact_mode_tab_hint">표준 탭 행 사용 중</string>
     <string name="setup_enable_notifications">알림 활성화</string>
-    <string name="setup_excluded_folders_description">기본적으로 모든 폴더가 스캔됩니다. 라이브러리 구축 시 무시할 위치를 선택하세요.</string>
+    <string name="setup_excluded_folders_description">기본적으로 모든 폴더를 검사합니다. 내장 가사와 .lrc 파일을 검색할 때 무시할 위치를 선택하세요.</string>
     <string name="setup_excluded_folders_title">제외된 폴더</string>
     <string name="setup_external_artist_images_description">없는 아티스트 사진을 Deezer에서 가져와 로컬에 캐시합니다.</string>
     <string name="setup_external_artist_images_title">Deezer의 아티스트 이미지</string>
     <string name="setup_external_lyrics_description">로컬 또는 내장 가사가 없을 때 lrclib.net에서 검색합니다.</string>
     <string name="setup_external_lyrics_title">LRCLIB의 온라인 가사</string>
-    <string name="setup_external_services_footer">나중에 설정 &gt; 음악 관리 &gt; 선택적 온라인 서비스에서 변경할 수 있습니다.</string>
+    <string name="setup_external_services_footer">나중에 설정 &gt; 로컬 음악 &gt; 선택적 온라인 서비스에서 변경할 수 있습니다.</string>
     <string name="setup_external_services_title">선택적 온라인 서비스</string>
     <string name="setup_grant_media_permission">미디어 권한 허용</string>
     <string name="setup_grant_permission_generic">권한 허용</string>
@@ -223,7 +223,7 @@
     <string name="setup_navbar_footer">나중에 설정 &gt; 디자인 &gt; 내비게이션 바 스타일에서 변경할 수 있습니다.</string>
     <string name="setup_permission_alarms_title">알람 및 리마인더</string>
     <string name="setup_battery_optimization_title">배터리 최적화</string>
-    <string name="setup_battery_optimization_description">일부 Android 기기는 백그라운드 앱을 강제로 종료합니다. 예기치 않은 재생 중단을 방지하려면 배터리 최적화를 비활성화하세요.</string>
+    <string name="setup_battery_optimization_description">일부 Android 기기는 백그라운드 앱을 강제로 종료합니다. 미디어 세션 모니터링, 위젯, 가사 조회가 백그라운드에서 계속 작동하도록 CarpeLines의 배터리 최적화를 해제하세요.</string>
     <string name="setup_disable_battery_optimization">최적화 비활성화</string>
     <string name="setup_permission_granted">권한 허용됨</string>
     <string name="setup_permission_media_title">미디어 권한</string>
@@ -241,7 +241,7 @@
     <string name="setup_theme_footer">나중에 설정 &gt; 디자인 &gt; 앱 테마에서 변경할 수 있습니다.</string>
     <string name="setup_theme_light_description">앱 전체에 적용되는 밝은 Material 3 디자인입니다.</string>
     <string name="setup_theme_light_title">밝은 테마</string>
-    <string name="setup_theme_subtitle">라이브러리를 탐색하기 전에 원하는 스타일을 선택하세요.</string>
+    <string name="setup_theme_subtitle">가사를 따라가기 전에 원하는 화면 스타일을 선택하세요.</string>
     <string name="setup_theme_title">앱 테마</string>
     <string name="setup_welcome_prefix">환영합니다! </string>
     <string name="skip_for_now">건너뛰기</string>
@@ -272,7 +272,7 @@
     <string name="word_delimiter_toast_reset">단어 구분 기호가 기본값으로 재설정되었습니다</string>
     <string name="word_delimiters_screen_title">단어 구분 기호</string>
     <string name="setup_external_services_subtitle">CarpeLines는 기본적으로 오프라인으로 작동합니다. 원하는 조회 기능만 활성화하세요.</string>
-    <string name="setup_permission_media_description">음악 라이브러리를 구성하려면 CarpeLines가 오디오 파일에 접근할 수 있어야 합니다.</string>
+    <string name="setup_permission_media_description">CarpeLines는 이 기기의 오디오 파일을 읽어 내장 가사와 같은 폴더의 .lrc 파일을 찾습니다. 오디오 파일은 이 기기에 그대로 남습니다.</string>
     <string name="setup_permission_alarms_description">선택 사항이지만, 취침 타이머를 사용하며 CarpeLines가 정확한 시간에 재생을 멈추게 하려면 허용하는 것이 좋습니다.</string>
     <string name="setup_backup_have_description">이미 CarpeLines 백업이 있다면 지금 복구하여 이 기기의 나머지 설정 대부분을 건너뛸 수 있습니다.</string>
     <string name="setup_theme_dark_description">CarpeLines의 기본 Material 3 다크 룩입니다.</string>

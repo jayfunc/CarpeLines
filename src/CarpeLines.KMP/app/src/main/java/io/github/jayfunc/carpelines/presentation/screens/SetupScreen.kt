@@ -150,6 +150,7 @@ import io.github.jayfunc.carpelines.R
 import io.github.jayfunc.carpelines.data.backup.model.BackupSection
 import io.github.jayfunc.carpelines.data.backup.model.BackupTransferProgressUpdate
 import io.github.jayfunc.carpelines.data.backup.model.RestorePlan
+import io.github.jayfunc.carpelines.data.external.ExternalMediaMonitor
 import io.github.jayfunc.carpelines.data.preferences.AppLanguage
 import io.github.jayfunc.carpelines.data.preferences.AppThemeMode
 import io.github.jayfunc.carpelines.presentation.components.PermissionIconCollage
@@ -226,13 +227,16 @@ fun SetupScreen(
         }
     }
 
-    val pages = remember {
-        buildSetupPages(Build.VERSION.SDK_INT)
+    // Folder exclusions only make sense when local scanning is enabled, so the page disappears
+    // when media access is skipped.
+    val pages = remember(uiState.mediaPermissionGranted) {
+        buildSetupPages(includeDirectorySelection = uiState.mediaPermissionGranted)
     }
 
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val scope = rememberCoroutineScope()
-    val currentPage = pages[pagerState.currentPage]
+    // The list can shrink if media access is revoked mid-setup, so clamp before indexing.
+    val currentPage = pages[pagerState.currentPage.coerceIn(0, pages.lastIndex)]
     val isNextButtonEnabled = isPermissionGateSatisfied(context, currentPage, uiState)
     var previousPageIndex by remember { mutableStateOf(0) }
     val navigateToPage: (Int) -> Unit = { targetPage ->
@@ -311,7 +315,7 @@ fun SetupScreen(
                 pagerState = pagerState,
                 animated = (pagerState.currentPage != 0),
                 isNextButtonEnabled = isNextButtonEnabled,
-                isFinishButtonEnabled = uiState.allPermissionsGranted,
+                isFinishButtonEnabled = uiState.requiredPermissionsGranted,
                 onNextClicked = {
                     val page = pages[pagerState.currentPage]
                     if (isPermissionGateSatisfied(context, page, uiState)) {
@@ -354,9 +358,13 @@ fun SetupScreen(
             ) {
                 when (page) {
                     SetupPage.Welcome -> WelcomePage()
+                    SetupPage.NotificationAccess -> NotificationAccessPage(uiState = uiState)
                     SetupPage.MediaPermission -> MediaPermissionPage(
                         uiState = uiState,
-                        onPermissionStateUpdated = { setupViewModel.checkPermissions(context) }
+                        onPermissionStateUpdated = { setupViewModel.checkPermissions(context) },
+                        onSkip = {
+                            navigateToPage(pagerState.currentPage + 1)
+                        }
                     )
                     SetupPage.BackupRestore -> BackupRestorePage(
                         uiState = uiState,
@@ -390,16 +398,6 @@ fun SetupScreen(
                         onSelectionFinished = setupViewModel::applyPendingDirectoryRuleChanges,
                         onStorageSelected = setupViewModel::selectStorage
                     )
-                    SetupPage.NotificationsPermission -> NotificationsPermissionPage(
-                        uiState = uiState,
-                        onPermissionStateUpdated = { setupViewModel.checkPermissions(context) }
-                    )
-                    SetupPage.AlarmsPermission -> AlarmsPermissionPage(
-                        uiState = uiState,
-                        onSkip = {
-                            navigateToPage(pagerState.currentPage + 1)
-                        }
-                    )
                     SetupPage.BatteryOptimization -> BatteryOptimizationPage(
                         onSkip = {
                             navigateToPage(pagerState.currentPage + 1)
@@ -415,13 +413,6 @@ fun SetupScreen(
                         onExternalArtistImagesChanged = setupViewModel::setExternalArtistImagesEnabled
                     )
                     SetupPage.Finish -> FinishPage()
-                    SetupPage.LibraryLayout -> LibraryLayoutPage(
-                        uiState = uiState,
-                        onModeSelected = setupViewModel::setLibraryNavigationMode,
-                        onSkip = {
-                            navigateToPage(pagerState.currentPage + 1)
-                        }
-                    )
                 }
             }
         }
@@ -544,41 +535,26 @@ fun DirectorySelectionPage(
 
 sealed class SetupPage {
     object Welcome : SetupPage()
+    object NotificationAccess : SetupPage()
     object MediaPermission : SetupPage()
     object BackupRestore : SetupPage()
     object DirectorySelection : SetupPage()
     object ExternalServices : SetupPage()
     object ThemeSelection : SetupPage()
-    object NotificationsPermission : SetupPage()
-    object AlarmsPermission : SetupPage()
-    object LibraryLayout : SetupPage()
     object BatteryOptimization : SetupPage()
     object Finish : SetupPage()
 }
 
-private fun buildSetupPages(sdkInt: Int): List<SetupPage> {
-    val pages = mutableListOf<SetupPage>(
-        SetupPage.Welcome,
-        SetupPage.MediaPermission
-    )
-
-    if (sdkInt >= Build.VERSION_CODES.TIRAMISU) {
-        pages += SetupPage.NotificationsPermission
-    }
-
-    pages += SetupPage.BackupRestore
-    pages += SetupPage.DirectorySelection
-    pages += SetupPage.ExternalServices
-    pages += SetupPage.ThemeSelection
-    pages += SetupPage.LibraryLayout
-
-    if (sdkInt >= Build.VERSION_CODES.S) {
-        pages += SetupPage.AlarmsPermission
-    }
-
-    pages += SetupPage.BatteryOptimization
-    pages += SetupPage.Finish
-    return pages
+private fun buildSetupPages(includeDirectorySelection: Boolean): List<SetupPage> = buildList {
+    add(SetupPage.Welcome)
+    add(SetupPage.NotificationAccess)
+    add(SetupPage.MediaPermission)
+    add(SetupPage.BackupRestore)
+    if (includeDirectorySelection) add(SetupPage.DirectorySelection)
+    add(SetupPage.ExternalServices)
+    add(SetupPage.ThemeSelection)
+    add(SetupPage.BatteryOptimization)
+    add(SetupPage.Finish)
 }
 
 private fun firstBlockedForwardPageIndex(
@@ -600,46 +576,21 @@ private fun isPermissionGateSatisfied(
     uiState: SetupUiState
 ): Boolean {
     return when (page) {
-        SetupPage.MediaPermission -> {
-            uiState.mediaPermissionGranted || hasMediaPermissionNow(context)
-        }
-        SetupPage.NotificationsPermission -> {
-            uiState.notificationsPermissionGranted ||
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-                ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_GRANTED
+        // Media access only feeds local tag/.lrc scanning, so it can be skipped; notification
+        // access is what makes the media-session listener work at all.
+        SetupPage.MediaPermission -> true
+        SetupPage.NotificationAccess -> {
+            uiState.notificationAccessGranted || hasNotificationAccessNow(context)
         }
         else -> true
     }
 }
 
-private fun allRequiredPermissionsGrantedNow(context: Context): Boolean {
-    val mediaGranted = hasMediaPermissionNow(context)
-    val notificationsGranted =
-        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
-    return mediaGranted && notificationsGranted
-}
+private fun allRequiredPermissionsGrantedNow(context: Context): Boolean =
+    hasNotificationAccessNow(context)
 
-private fun hasMediaPermissionNow(context: Context): Boolean {
-    val mediaPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        Manifest.permission.READ_MEDIA_AUDIO
-    } else {
-        Manifest.permission.READ_EXTERNAL_STORAGE
-    }
-    return ContextCompat.checkSelfPermission(context, mediaPermission) == PackageManager.PERMISSION_GRANTED
-}
-
-private fun hasExactAlarmPermissionNow(context: Context): Boolean {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true
-    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
-    return alarmManager.canScheduleExactAlarms()
-}
+private fun hasNotificationAccessNow(context: Context): Boolean =
+    ExternalMediaMonitor.hasNotificationAccess(context)
 
 @Composable
 fun WelcomePage() {
@@ -835,7 +786,8 @@ private fun SetupLanguagePill() {
 @Composable
 fun MediaPermissionPage(
     uiState: SetupUiState,
-    onPermissionStateUpdated: () -> Unit
+    onPermissionStateUpdated: () -> Unit,
+    onSkip: () -> Unit
 ) {
     val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         listOf(Manifest.permission.READ_MEDIA_AUDIO)
@@ -869,80 +821,6 @@ fun MediaPermissionPage(
                 permissionState.launchMultiplePermissionRequest()
             }
         }
-    )
-}
-
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-fun NotificationsPermissionPage(
-    uiState: SetupUiState,
-    onPermissionStateUpdated: () -> Unit
-) {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
-
-    val permissionState = rememberMultiplePermissionsState(permissions = listOf(Manifest.permission.POST_NOTIFICATIONS))
-    val notificationIcons = persistentListOf(
-        R.drawable.rounded_circle_notifications_24,
-        R.drawable.rounded_skip_next_24,
-        R.drawable.rounded_play_arrow_24,
-        R.drawable.rounded_pause_24,
-        R.drawable.rounded_skip_previous_24
-    )
-
-    val isGranted = uiState.notificationsPermissionGranted || permissionState.allPermissionsGranted
-
-    LaunchedEffect(permissionState.allPermissionsGranted) {
-        onPermissionStateUpdated()
-    }
-
-    PermissionPageLayout(
-        title = stringResource(R.string.setup_permission_notifications_title),
-        granted = isGranted,
-        description = stringResource(R.string.setup_permission_notifications_description),
-        buttonText = if (isGranted) stringResource(R.string.setup_permission_granted) else stringResource(R.string.setup_enable_notifications),
-        buttonEnabled = !isGranted,
-        icons = notificationIcons,
-        onGrantClicked = {
-            if (!isGranted) {
-                permissionState.launchMultiplePermissionRequest()
-            }
-        }
-    )
-}
-
-@Composable
-fun AlarmsPermissionPage(
-    uiState: SetupUiState,
-    onSkip: () -> Unit
-) {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return
-
-    val context = LocalContext.current
-    val icons = persistentListOf(
-        R.drawable.rounded_alarm_24,
-        R.drawable.rounded_schedule_24,
-        R.drawable.rounded_timer_24,
-        R.drawable.rounded_hourglass_empty_24,
-        R.drawable.rounded_notifications_active_24
-    )
-
-    val isGranted = uiState.alarmsPermissionGranted
-
-    PermissionPageLayout(
-        title = stringResource(R.string.setup_permission_alarms_title),
-        granted = isGranted,
-        description = stringResource(R.string.setup_permission_alarms_description),
-        buttonText = if (isGranted) stringResource(R.string.setup_permission_granted) else stringResource(R.string.setup_grant_permission_generic),
-        buttonEnabled = !isGranted,
-        icons = icons,
-        onGrantClicked = {
-            if (!isGranted) {
-                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                val uri = "package:${context.packageName}".toUri()
-                intent.data = uri
-                context.startActivity(intent)
-            }
-        }
     ) {
         if (!isGranted) {
             TextButton(onClick = onSkip) {
@@ -950,6 +828,51 @@ fun AlarmsPermissionPage(
             }
         }
     }
+}
+
+/**
+ * Android only exposes other apps' media sessions to a notification listener, so this is the one
+ * permission CarpeLines cannot work without. There is no runtime dialog: the user grants it on the
+ * system page, and the page flips to granted when they come back.
+ */
+@Composable
+fun NotificationAccessPage(uiState: SetupUiState) {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var hasAccess by remember { mutableStateOf(ExternalMediaMonitor.hasNotificationAccess(context)) }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                hasAccess = ExternalMediaMonitor.hasNotificationAccess(context)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    val isGranted = uiState.notificationAccessGranted || hasAccess
+    val icons = persistentListOf(
+        R.drawable.rounded_notifications_active_24,
+        R.drawable.rounded_play_arrow_24,
+        R.drawable.rounded_lyrics_24,
+        R.drawable.rounded_music_note_24,
+        R.drawable.rounded_album_24
+    )
+
+    PermissionPageLayout(
+        title = stringResource(R.string.external_lyrics_permission_title),
+        granted = isGranted,
+        description = stringResource(R.string.external_lyrics_permission_body),
+        buttonText = if (isGranted) stringResource(R.string.setup_permission_granted) else stringResource(R.string.external_lyrics_grant_access),
+        buttonEnabled = !isGranted,
+        icons = icons,
+        onGrantClicked = {
+            if (!isGranted) {
+                ExternalMediaMonitor.openNotificationAccessSettings(context)
+            }
+        }
+    )
 }
 
 @Composable
@@ -1439,284 +1362,6 @@ private fun ExternalServiceToggleCard(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
-@Composable
-fun LibraryLayoutPage(
-    uiState: SetupUiState,
-    onModeSelected: (String) -> Unit,
-    onSkip: () -> Unit
-) {
-    val isCompact = uiState.libraryNavigationMode == "compact_pill"
-
-    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-        val isCompactHeight = maxHeight < 680.dp
-        val pagePadding = if (maxWidth < 360.dp) 20.dp else 24.dp
-        val titleSize = if (maxWidth < 360.dp || isCompactHeight) 29.sp else 32.sp
-        val previewHeight = if (isCompactHeight) 150.dp else 190.dp
-        val sectionSpacing = if (isCompactHeight) 14.dp else 18.dp
-
-        // The preview has a fixed height instead of weight(1f): a weighted child collapses to
-        // nothing once the content overflows inside a vertical scroll.
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = pagePadding, vertical = if (isCompactHeight) 18.dp else 24.dp)
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                if (!isCompactHeight) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-                Text(
-                    text = stringResource(R.string.setup_library_layout_title),
-                    style = MaterialTheme.typography.displayMedium.copy(
-                        fontFamily = RoundedSans,
-                        fontSize = titleSize
-                    ),
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(if (isCompactHeight) 10.dp else 16.dp))
-
-                Text(
-                    text = stringResource(R.string.setup_library_layout_subtitle),
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = sectionSpacing)
-                    .height(previewHeight),
-                contentAlignment = Alignment.Center
-            ) {
-                LibraryHeaderPreview(isCompact = isCompact, previewHeight = previewHeight)
-            }
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer
-                    ),
-                    shape = RoundedCornerShape(24.dp),
-                    onClick = { onModeSelected(if (isCompact) "tab_row" else "compact_pill") }
-                ) {
-                    Row(
-                       modifier = Modifier
-                           .padding(horizontal = 20.dp, vertical = 16.dp)
-                           .fillMaxWidth(),
-                       verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.setup_compact_mode),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = if (isCompact) stringResource(R.string.setup_compact_mode_pill_hint) else stringResource(R.string.setup_compact_mode_tab_hint),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        M3ESwitch(
-                            checked = isCompact,
-                            onCheckedChange = { checked ->
-                                onModeSelected(if (checked) "compact_pill" else "tab_row")
-                            }
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = stringResource(R.string.setup_library_layout_footer),
-                    style = MaterialTheme.typography.labelMedium,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-
-                Spacer(modifier = Modifier.height(if (isCompactHeight) 8.dp else 24.dp))
-            }
-        }
-    }
-}
-
-@Composable
-fun LibraryHeaderPreview(isCompact: Boolean, previewHeight: Dp = 180.dp) {
-    val gradientColors = listOf(
-        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
-        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.25f),
-        Color.Transparent
-    )
-    
-    Card(
-        shape = RoundedCornerShape(
-            topStart = 24.dp,
-            topEnd = 24.dp,
-            bottomStart = 0.dp,
-            bottomEnd = 0.dp
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(previewHeight)
-                .background(Brush.verticalGradient(gradientColors))
-        ) {
-            AnimatedContent(
-                targetState = isCompact,
-                transitionSpec = {
-                    (fadeIn(animationSpec = tween(400)) + scaleIn(initialScale = 0.95f))
-                        .togetherWith(fadeOut(animationSpec = tween(200)) + scaleOut(targetScale = 0.95f))
-                },
-                label = "HeaderPreviewAnim"
-            ) { compact ->
-                if (compact) {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        Row(
-                            modifier = Modifier
-                                .padding(top = 24.dp, start = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            LibraryNavigationPillSetupShow(
-                                title = stringResource(R.string.setup_preview_songs_label),
-                                isExpanded = false,
-                                iconRes = R.drawable.rounded_music_note_24,
-                                pageIndex = 0,
-                                onClick = {},
-                                onArrowClick = {}
-                            )
-                        }
-                    }
-                } else {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(top = 24.dp, start = 20.dp, end = 20.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.tab_library),
-                            fontFamily = RoundedSans,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontSize = 40.sp,
-                            letterSpacing = 1.sp
-                        )
-                        Spacer(modifier = Modifier.height(18.dp))
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Box(
-                                    modifier = Modifier.background(
-                                        MaterialTheme.colorScheme.surfaceContainerLowest,
-                                        shape = CircleShape
-                                    )
-                                ) {
-                                    Text(
-                                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 14.dp),
-                                        text = stringResource(R.string.tab_songs),
-                                        style = MaterialTheme.typography.titleSmall,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.primary
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(6.dp))
-                                Box(
-                                    modifier = Modifier
-                                        .width(20.dp)
-                                        .height(3.dp)
-                                        .background(
-                                            MaterialTheme.colorScheme.primary,
-                                            RoundedCornerShape(100)
-                                        )
-                                )
-                            }
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Box(
-                                    modifier = Modifier.background(
-                                        MaterialTheme.colorScheme.surfaceContainerLowest,
-                                        shape = CircleShape
-                                    )
-                                ) {
-                                    Text(
-                                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 14.dp),
-                                        text = stringResource(R.string.tab_albums),
-                                        style = MaterialTheme.typography.titleSmall,
-                                        fontWeight = FontWeight.Medium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(6.dp))
-                                Box(
-                                    modifier = Modifier
-                                        .width(20.dp)
-                                        .height(3.dp)
-                                        .background(
-                                            Color.Transparent,
-                                            RoundedCornerShape(100)
-                                        )
-                                )
-                            }
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Box(
-                                    modifier = Modifier.background(
-                                        MaterialTheme.colorScheme.surfaceContainerLowest,
-                                        shape = CircleShape
-                                    )
-                                ) {
-                                    Text(
-                                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 14.dp),
-                                        text = stringResource(R.string.tab_artists),
-                                        style = MaterialTheme.typography.titleSmall,
-                                        fontWeight = FontWeight.Medium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(6.dp))
-                                Box(
-                                    modifier = Modifier
-                                        .width(20.dp)
-                                        .height(3.dp)
-                                        .background(
-                                            Color.Transparent,
-                                            RoundedCornerShape(100)
-                                        )
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-
 @Composable
 fun FinishPage() {
     val finishIcons = persistentListOf(
@@ -2164,137 +1809,6 @@ private fun SetupRestoreSectionRow(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
-@Composable
-fun LibraryNavigationPillSetupShow(
-    title: String,
-    isExpanded: Boolean,
-    iconRes: Int,
-    pageIndex: Int,
-    onClick: () -> Unit,
-    onArrowClick: () -> Unit
-) {
-    data class PillState(val pageIndex: Int, val iconRes: Int, val title: String)
-
-    val pillRadius = 26.dp
-    val innerRadius = 4.dp
-    val expandedRadius = 60.dp
-
-    val animatedArrowCorner by animateFloatAsState(
-        targetValue = if (isExpanded) pillRadius.value else innerRadius.value,
-        label = "ArrowCornerAnimation"
-    )
-
-    val arrowRotation by animateFloatAsState(
-        targetValue = if (isExpanded) 180f else 0f,
-        label = "ArrowRotation"
-    )
-
-    Row(
-        modifier = Modifier
-            .padding(start = 4.dp)
-            .height(IntrinsicSize.Min),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        Surface(
-            shape = RoundedCornerShape(
-                topStart = pillRadius,
-                bottomStart = pillRadius,
-                topEnd = innerRadius,
-                bottomEnd = innerRadius
-            ),
-            tonalElevation = 8.dp,
-            color = MaterialTheme.colorScheme.primaryContainer,
-            modifier = Modifier
-                .fillMaxHeight()
-                .clip(
-                    RoundedCornerShape(
-                        topStart = pillRadius,
-                        bottomStart = pillRadius,
-                        topEnd = innerRadius,
-                        bottomEnd = innerRadius
-                    )
-                )
-                .clickable(onClick = onClick)
-        ) {
-            Box(
-                modifier = Modifier.padding(start = 18.dp, end = 14.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                AnimatedContent(
-                    targetState = PillState(pageIndex = pageIndex, iconRes = iconRes, title = title),
-                    transitionSpec = {
-                        val direction = targetState.pageIndex.compareTo(initialState.pageIndex).coerceIn(-1, 1)
-                        val slideIn = slideInHorizontally { fullWidth -> if (direction >= 0) fullWidth else -fullWidth } + fadeIn()
-                        val slideOut = slideOutHorizontally { fullWidth -> if (direction >= 0) -fullWidth else fullWidth } + fadeOut()
-                        slideIn.togetherWith(slideOut)
-                    },
-                    label = "LibraryPillTitle"
-                ) { targetState ->
-                    Row(
-                        modifier = Modifier.padding(vertical = 10.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(id = targetState.iconRes),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                        Text(
-                            text = targetState.title,
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-                }
-            }
-        }
-
-        Surface(
-            shape = RoundedCornerShape(
-                topStart = animatedArrowCorner.dp,
-                bottomStart = animatedArrowCorner.dp,
-                topEnd = pillRadius,
-                bottomEnd = pillRadius
-            ),
-            tonalElevation = 8.dp,
-            color = MaterialTheme.colorScheme.primaryContainer,
-            modifier = Modifier
-                .fillMaxHeight()
-                .clip(
-                    RoundedCornerShape(
-                        topStart = animatedArrowCorner.dp,
-                        bottomStart = animatedArrowCorner.dp,
-                        topEnd = pillRadius,
-                        bottomEnd = pillRadius
-                    )
-                )
-                .clickable(
-                    indication = ripple(),
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = onArrowClick
-                )
-        ) {
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 10.dp)
-                    .width(36.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    modifier = Modifier.rotate(arrowRotation),
-                    imageVector = Icons.Rounded.KeyboardArrowDown,
-                    contentDescription = stringResource(R.string.cd_expand_menu),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-        }
-    }
-}
-
 /**
  * A floating bottom bar with an expressive design inspired by Material 3,
  * including an animated sine wave along the top edge.
@@ -2467,256 +1981,3 @@ fun SetupBottomBar(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
-@Composable
-fun NavBarLayoutPage(
-    uiState: SetupUiState,
-    onModeSelected: (String) -> Unit,
-    onCustomizeRadius: () -> Unit,
-    onSkip: () -> Unit
-) {
-    val isDefault = uiState.navBarStyle != "full_width"
-
-    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-        val isCompactHeight = maxHeight < 720.dp
-        val pagePadding = if (maxWidth < 360.dp) 20.dp else 24.dp
-        val titleSize = if (maxWidth < 360.dp || isCompactHeight) 29.sp else 32.sp
-        val previewHeight = if (isCompactHeight) 164.dp else 200.dp
-        val sectionSpacing = if (isCompactHeight) 14.dp else 18.dp
-
-        // Fixed preview height for the same reason as LibraryLayoutPage: weight(1f) cannot share
-        // space inside a vertical scroll.
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = pagePadding, vertical = if (isCompactHeight) 18.dp else 24.dp)
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                if (!isCompactHeight) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-                Text(
-                    text = stringResource(R.string.setup_app_navigation_title),
-                    style = MaterialTheme.typography.displayMedium.copy(
-                        fontFamily = RoundedSans,
-                        fontSize = titleSize
-                    ),
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(if (isCompactHeight) 10.dp else 16.dp))
-
-                Text(
-                    text = stringResource(R.string.setup_app_navigation_subtitle),
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = sectionSpacing)
-                    .height(previewHeight),
-                contentAlignment = Alignment.Center
-            ) {
-                NavBarPreview(isDefault = isDefault, previewHeight = previewHeight)
-            }
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer
-                    ),
-                    shape = RoundedCornerShape(24.dp),
-                    onClick = { onModeSelected(if (isDefault) "full_width" else "default") }
-                ) {
-                    Column(
-                        modifier = Modifier
-                           .padding(horizontal = 20.dp, vertical = 16.dp)
-                           .fillMaxWidth()
-                    ) {
-                        Row(
-                           modifier = Modifier.fillMaxWidth(),
-                           verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = stringResource(R.string.setup_navbar_default_style),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Bold
-                                )
-                                Text(
-                                    text = if (isDefault) stringResource(R.string.setup_nav_floating_pill_description) else stringResource(R.string.setup_nav_full_width_description),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                            M3ESwitch(
-                                checked = isDefault,
-                                onCheckedChange = { checked ->
-                                    onModeSelected(if (checked) "default" else "full_width")
-                                }
-                            )
-                        }
-
-                        AnimatedVisibility(
-                            visible = true,
-                            enter =   androidx.compose.animation.expandVertically() + fadeIn(),
-                            exit = androidx.compose.animation.shrinkVertically() + fadeOut()
-                        ) {
-                             Column {
-                                 Spacer(modifier = Modifier.height(16.dp))
-                                 FilledTonalButton(
-                                     onClick = onCustomizeRadius,
-                                     modifier = Modifier.fillMaxWidth(),
-                                     colors = ButtonDefaults.filledTonalButtonColors(
-                                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                         contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                                     )
-                                 ) {
-                                     Icon(Icons.Rounded.RoundedCorner, contentDescription = null, modifier = Modifier.size(18.dp))
-                                     Spacer(modifier = Modifier.width(8.dp))
-                                     Text(stringResource(R.string.customize_corner_radius))
-                                 }
-                             }
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = stringResource(R.string.setup_navbar_footer),
-                    style = MaterialTheme.typography.labelMedium,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-
-                Spacer(modifier = Modifier.height(if (isCompactHeight) 8.dp else 24.dp))
-            }
-        }
-    }
-}
-
-@Composable
-fun NavBarPreview(isDefault: Boolean, previewHeight: Dp = 200.dp) {
-    val gradientColors = listOf(
-        MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.5f),
-        MaterialTheme.colorScheme.surfaceContainer,
-    )
-    
-    Card(
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceBright
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(previewHeight)
-            .padding(horizontal = 8.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                 repeat(3) {
-                     Box(
-                         modifier = Modifier
-                             .fillMaxWidth(if(it==1) 0.7f else 1f)
-                             .height(12.dp)
-                             .clip(RoundedCornerShape(6.dp))
-                             .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-                     )
-                 }
-            }
-            
-            Box(
-                modifier = Modifier.align(Alignment.BottomCenter)
-            ) {
-                AnimatedContent(
-                    targetState = isDefault,
-                    transitionSpec = {
-                        (fadeIn(animationSpec = tween(400)) + slideInVertically { it })
-                            .togetherWith(fadeOut(animationSpec = tween(200)) + slideOutVertically { it })
-                    },
-                    label = "NavbarPreviewAnim"
-                ) { default ->
-                    if (default) {
-                         Surface(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                                .height(80.dp),
-                            shape = AbsoluteSmoothCornerShape(
-                                cornerRadiusTL = 28.dp,
-                                cornerRadiusTR = 28.dp,
-                                cornerRadiusBL = 28.dp,
-                                cornerRadiusBR = 28.dp,
-                                smoothnessAsPercentTL = 60,
-                                smoothnessAsPercentTR = 60,
-                                smoothnessAsPercentBL = 60,
-                                smoothnessAsPercentBR = 60
-                            ),
-                            color = MaterialTheme.colorScheme.surfaceContainer,
-                            tonalElevation = 6.dp
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxSize(),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(painterResource(R.drawable.rounded_home_24), null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                                Icon(painterResource(R.drawable.rounded_search_24), null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                                Icon(painterResource(R.drawable.rounded_library_music_24), null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                            }
-                        }
-                    } else {
-                        Surface(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(80.dp),
-                            color = MaterialTheme.colorScheme.surfaceContainer,
-                            tonalElevation = 6.dp,
-                            shape = AbsoluteSmoothCornerShape(
-                                cornerRadiusTL = 28.dp,
-                                smoothnessAsPercentTL = 60,
-                                cornerRadiusTR = 28.dp,
-                                smoothnessAsPercentTR = 60,
-                                cornerRadiusBL = 0.dp,
-                                smoothnessAsPercentBL = 60,
-                                cornerRadiusBR = 0.dp,
-                                smoothnessAsPercentBR = 60
-                            )
-                        ) {
-                             Row(
-                                modifier = Modifier.fillMaxSize(),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(painterResource(R.drawable.rounded_home_24), null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                                Icon(painterResource(R.drawable.rounded_search_24), null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                                Icon(painterResource(R.drawable.rounded_library_music_24), null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}

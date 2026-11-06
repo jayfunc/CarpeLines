@@ -12,4 +12,7 @@
     <string name="lyrics_duet_layout_subtitle">Размещать исполнителей по разные стороны, если в тексте отмечены голоса (v1:, v2:)</string>
     <string name="lyrics_background_vocals_title">Бэк-вокал</string>
     <string name="lyrics_background_vocals_subtitle">Показывать бэк-вокал мелким шрифтом под основной строкой</string>
+    <string name="external_lyrics_permission_title">Требуется доступ к уведомлениям</string>
+    <string name="external_lyrics_permission_body">Android открывает медиасессии других приложений только службам прослушивания уведомлений. Предоставьте доступ, затем запустите воспроизведение в любом музыкальном плеере.</string>
+    <string name="external_lyrics_grant_access">Открыть доступ к уведомлениям</string>
 </resources>

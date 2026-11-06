@@ -12,4 +12,7 @@
     <string name="lyrics_duet_layout_subtitle">가사에 파트가 표시되어 있으면(v1:, v2:) 가수마다 다른 쪽에 표시합니다</string>
     <string name="lyrics_background_vocals_title">배경 보컬</string>
     <string name="lyrics_background_vocals_subtitle">배경 보컬을 본 가사 아래에 작은 글씨로 표시합니다</string>
+    <string name="external_lyrics_permission_title">알림 접근 권한 필요</string>
+    <string name="external_lyrics_permission_body">Android는 다른 앱의 미디어 세션을 알림 리스너에만 노출합니다. 접근 권한을 허용한 뒤 아무 음악 플레이어에서나 재생을 시작하세요.</string>
+    <string name="external_lyrics_grant_access">알림 접근 권한 열기</string>
 </resources>

@@ -60,7 +60,7 @@
     <string name="setup_intro_body">让我们完成初始配置。</string>
     <string name="setup_checking_backup">正在校验备份包…</string>
     <string name="setup_theme_title">应用主题</string>
-    <string name="setup_theme_subtitle">在浏览音乐库前选择你喜欢的界面风格。</string>
+    <string name="setup_theme_subtitle">开始跟随歌词前，先选择你喜欢的界面风格。</string>
     <string name="setup_theme_footer">后续可在 设置＞外观＞应用主题 中修改。</string>
     <string name="setup_recommended">推荐</string>
     <string name="setup_external_services_title">可选在线服务</string>
@@ -69,7 +69,7 @@
     <string name="setup_external_lyrics_description">本地或内嵌歌词缺失时，从 lrclib.net 搜索歌词。</string>
     <string name="setup_external_artist_images_title">来自 Deezer 的艺术家封面</string>
     <string name="setup_external_artist_images_description">拉取缺失的艺术家图片并缓存至本地。</string>
-    <string name="setup_external_services_footer">后续可在 设置＞音乐管理＞可选在线服务 修改。</string>
+    <string name="setup_external_services_footer">后续可在 设置＞本地音乐＞可选在线服务 修改。</string>
     <string name="setup_library_layout_title">音乐库布局</string>
     <string name="setup_library_layout_subtitle">选择你偏好的库浏览方式。</string>
     <string name="setup_compact_mode">紧凑模式</string>
@@ -79,7 +79,7 @@
     <string name="tab_albums">专辑</string>
     <string name="tab_artists">艺术家</string>
     <string name="setup_all_set_title">配置完成！</string>
-    <string name="setup_all_set_body">现在可以开始欣赏你的音乐。</string>
+    <string name="setup_all_set_body">CarpeLines 已就绪。在任意音乐播放器中开始播放，歌词会自动跟随。</string>
     <string name="setup_restore_backup_title">恢复备份</string>
     <string name="setup_restore_backup_subtitle">完成设置前确认需要导入的内容。</string>
     <string name="setup_modules_selected_format">已选择 %1$d / %2$d 项模块</string>
@@ -110,10 +110,10 @@
     <string name="cd_reset_defaults">恢复默认</string>
 
     <string name="setup_excluded_folders_title">排除文件夹</string>
-    <string name="setup_excluded_folders_description">默认扫描全部文件夹，选择需要忽略的目录，建立音乐库时不会读取。</string>
+    <string name="setup_excluded_folders_description">默认扫描全部文件夹。选择需要忽略的目录，扫描内嵌歌词与 .lrc 文件时不会读取。</string>
     <string name="setup_choose_folders_ignore">选择要忽略的文件夹</string>
     <string name="setup_permission_media_title">媒体权限</string>
-    <string name="setup_permission_media_description">CarpeLines 需要访问音频文件来构建音乐库。</string>
+    <string name="setup_permission_media_description">CarpeLines 会读取本机音频文件，以查找内嵌歌词与同目录 .lrc 文件，音频文件不会上传。</string>
     <string name="setup_permission_granted">权限已授予</string>
     <string name="setup_grant_media_permission">授予媒体权限</string>
     <string name="setup_permission_notifications_title">通知权限</string>
@@ -122,7 +122,7 @@
     <string name="setup_permission_alarms_title">闹钟与提醒</string>
     <string name="setup_permission_alarms_description">可选，若使用睡眠定时，建议开启，保证准时停止播放。</string>
     <string name="setup_battery_optimization_title">电池优化</string>
-    <string name="setup_battery_optimization_description">某些 Android 设备会强制结束后台应用。请为 CarpeLines 禁用电池优化，以防止意外的播放中断。</string>
+    <string name="setup_battery_optimization_description">某些 Android 设备会强制结束后台应用。请为 CarpeLines 禁用电池优化，以保证媒体会话监听、小组件与歌词查询在后台持续工作。</string>
     <string name="setup_disable_battery_optimization">禁用优化</string>
     <string name="setup_grant_permission_generic">授予权限</string>
     <string name="setup_backup_have_title">你是否拥有备份？</string>

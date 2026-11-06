@@ -12,4 +12,7 @@
     <string name="lyrics_duet_layout_subtitle">ضع كل مغنٍّ في جانب مستقل عندما تميّز الكلمات الأصوات (v1: و v2:)</string>
     <string name="lyrics_background_vocals_title">الغناء الخلفي</string>
     <string name="lyrics_background_vocals_subtitle">اعرض الغناء الخلفي بخط أصغر أسفل السطر الرئيسي</string>
+    <string name="external_lyrics_permission_title">يلزم الوصول إلى الإشعارات</string>
+    <string name="external_lyrics_permission_body">لا يكشف Android عن جلسات الوسائط الخاصة بالتطبيقات الأخرى إلا لمستمعي الإشعارات. امنح الوصول ثم ابدأ التشغيل في أي مشغل موسيقى.</string>
+    <string name="external_lyrics_grant_access">فتح الوصول إلى الإشعارات</string>
 </resources>

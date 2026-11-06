@@ -187,7 +187,7 @@
     <string name="search_placeholder">Ara…</string>
     <string name="search_try_different_or_filters">Farklı bir arama terimi deneyin veya filtrelerinizi kontrol edin.</string>
     <string name="search_filter_all">Tümü</string>
-    <string name="setup_all_set_body">Müziğinizin keyfini çıkarmaya hazırsınız.</string>
+    <string name="setup_all_set_body">CarpeLines hazır. Herhangi bir müzik çalarda oynatmayı başlat, şarkı sözleri seni takip etsin.</string>
     <string name="setup_all_set_title">Her Şey Hazır!</string>
     <string name="setup_app_navigation_subtitle">Alt navigasyon çubuğunun stilini seçin.</string>
     <string name="setup_app_navigation_title">Uygulama Navigasyonu</string>
@@ -202,13 +202,13 @@
     <string name="setup_compact_mode_pill_hint">Minimal hap (pill) navigasyonu kullanılıyor</string>
     <string name="setup_compact_mode_tab_hint">Standart sekme satırı kullanılıyor</string>
     <string name="setup_enable_notifications">Bildirimleri Etkinleştir</string>
-    <string name="setup_excluded_folders_description">Varsayılan olarak tüm klasörler taranır. Kitaplığınızı oluştururken yok sayılmasını istediğiniz konumları seçin.</string>
+    <string name="setup_excluded_folders_description">Tüm klasörler varsayılan olarak taranır. Gömülü şarkı sözleri ve .lrc dosyaları aranırken yok sayılacak konumları seç.</string>
     <string name="setup_excluded_folders_title">Hariç tutulan klasörler</string>
     <string name="setup_external_artist_images_description">Eksik sanatçı fotoğraflarını Deezer\'den getirir ve yerel olarak önbelleğe alır.</string>
     <string name="setup_external_artist_images_title">Deezer\'den sanatçı görselleri</string>
     <string name="setup_external_lyrics_description">Yerel veya gömülü şarkı sözleri yoksa lrclib.net\'te arama yapar.</string>
     <string name="setup_external_lyrics_title">LRCLIB\'den çevrimiçi şarkı sözleri</string>
-    <string name="setup_external_services_footer">Bunları daha sonra Ayarlar &gt; Müzik Yönetimi &gt; İsteğe bağlı çevrimiçi hizmetler bölümünden değiştirebilirsiniz.</string>
+    <string name="setup_external_services_footer">Bunu daha sonra Ayarlar &gt; Yerel Müzik &gt; İsteğe bağlı çevrimiçi hizmetler bölümünden değiştirebilirsin.</string>
     <string name="setup_external_services_title">İsteğe Bağlı Çevrimiçi Hizmetler</string>
     <string name="setup_grant_media_permission">Medya İzni Ver</string>
     <string name="setup_grant_permission_generic">İzin Ver</string>
@@ -226,7 +226,7 @@
     <string name="setup_navbar_footer">Bunu daha sonra Ayarlar &gt; Görünüm &gt; Navigasyon Çubuğu Stili bölümünden değiştirebilirsiniz.</string>
     <string name="setup_permission_alarms_title">Alarmlar ve Hatırlatıcılar</string>
     <string name="setup_battery_optimization_title">Pil Optimizasyonu</string>
-    <string name="setup_battery_optimization_description">Bazı Android cihazlar arka plan uygulamalarını agresif bir şekilde kapatır. Beklenmedik oynatma kesintilerini önlemek için CarpeLines için pil optimizasyonunu devre dışı bırakın.</string>
+    <string name="setup_battery_optimization_description">Bazı Android cihazlar arka plan uygulamalarını agresif şekilde kapatır. Medya oturumu izleme, widget\'lar ve şarkı sözü aramalarının arka planda çalışmaya devam etmesi için CarpeLines\'ta pil optimizasyonunu devre dışı bırak.</string>
     <string name="setup_disable_battery_optimization">Optimizasyonu Devre Dışı Bırak</string>
     <string name="setup_permission_granted">İzin Verildi</string>
     <string name="setup_permission_media_title">Medya İzni</string>
@@ -244,7 +244,7 @@
     <string name="setup_theme_footer">Bunu daha sonra Ayarlar &gt; Görünüm &gt; Uygulama Teması bölümünden değiştirebilirsiniz.</string>
     <string name="setup_theme_light_description">Uygulama genelinde daha parlak bir Material 3 görünümü.</string>
     <string name="setup_theme_light_title">Açık</string>
-    <string name="setup_theme_subtitle">Kitaplığınızı keşfetmeye başlamadan önce istediğiniz görünümü seçin.</string>
+    <string name="setup_theme_subtitle">Şarkı sözlerini takip etmeye başlamadan önce istediğin görünümü seç.</string>
     <string name="setup_theme_title">Uygulama Teması</string>
     <string name="setup_welcome_prefix">Hoş geldiniz: </string>
     <string name="skip_for_now">Şimdilik atla</string>
@@ -275,7 +275,7 @@
     <string name="word_delimiter_toast_reset">Kelime sınırlayıcıları varsayılana sıfırlandı</string>
     <string name="word_delimiters_screen_title">Kelime Sınırlayıcıları</string>
     <string name="setup_external_services_subtitle">CarpeLines varsayılan olarak çevrimdışı çalışır. Yalnızca istediğiniz aramaları etkinleştirin.</string>
-    <string name="setup_permission_media_description">CarpeLines\'in müzik kitaplığınızı oluşturabilmesi için ses dosyalarınıza erişmesi gerekir.</string>
+    <string name="setup_permission_media_description">CarpeLines, gömülü şarkı sözlerini ve aynı klasördeki .lrc dosyalarını bulmak için bu cihazdaki ses dosyalarını okur. Ses dosyaların bu cihazda kalır.</string>
     <string name="setup_permission_alarms_description">İsteğe bağlıdır, ancak uyku zamanlayıcısını kullanıyorsanız ve CarpeLines\'in oynatmayı tam zamanında durdurmasını istiyorsanız önerilir.</string>
     <string name="setup_backup_have_description">Zaten bir CarpeLines yedeğiniz varsa şimdi geri yükleyin ve bu cihazdaki kurulumun çoğunu atlayın.</string>
     <string name="setup_theme_dark_description">CarpeLines için varsayılan Material 3 koyu görünümü.</string>

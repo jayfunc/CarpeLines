@@ -12,4 +12,7 @@
     <string name="lyrics_duet_layout_subtitle">Coloca a cada cantante en su propio lado cuando la letra marca las voces (v1:, v2:)</string>
     <string name="lyrics_background_vocals_title">Coros de fondo</string>
     <string name="lyrics_background_vocals_subtitle">Muestra los coros en texto más pequeño debajo de la línea principal</string>
+    <string name="external_lyrics_permission_title">Se requiere acceso a las notificaciones</string>
+    <string name="external_lyrics_permission_body">Android solo expone las sesiones multimedia de otras aplicaciones a los lectores de notificaciones. Concede el acceso y luego inicia la reproducción en cualquier reproductor de música.</string>
+    <string name="external_lyrics_grant_access">Abrir acceso a notificaciones</string>
 </resources>

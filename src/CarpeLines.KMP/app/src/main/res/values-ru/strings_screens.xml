@@ -193,7 +193,7 @@
     <string name="search_placeholder">Поиск…</string>
     <string name="search_try_different_or_filters">Попробуйте другой запрос или проверьте фильтры.</string>
     <string name="search_filter_all">Все</string>
-    <string name="setup_all_set_body">Теперь можно наслаждаться музыкой.</string>
+    <string name="setup_all_set_body">CarpeLines готов. Запустите воспроизведение в любом музыкальном плеере — текст будет следовать за музыкой.</string>
     <string name="setup_all_set_title">Готово!</string>
     <string name="setup_app_navigation_subtitle">Выберите стиль нижней панели навигации.</string>
     <string name="setup_app_navigation_title">Навигация приложения</string>
@@ -208,13 +208,13 @@
     <string name="setup_compact_mode_pill_hint">Минималистичная навигация-пилюля</string>
     <string name="setup_compact_mode_tab_hint">Стандартные вкладки</string>
     <string name="setup_enable_notifications">Включить уведомления</string>
-    <string name="setup_excluded_folders_description">По умолчанию сканируются все папки. Выберите места, которые нужно игнорировать при создании медиатеки.</string>
+    <string name="setup_excluded_folders_description">По умолчанию сканируются все папки. Выберите расположения, которые нужно игнорировать при поиске встроенных текстов и файлов .lrc.</string>
     <string name="setup_excluded_folders_title">Исключённые папки</string>
     <string name="setup_external_artist_images_description">Загружать недостающие фото исполнителей из Deezer и кэшировать их локально.</string>
     <string name="setup_external_artist_images_title">Изображения исполнителей из Deezer</string>
     <string name="setup_external_lyrics_description">Искать на lrclib.net, когда локального или встроенного текста нет.</string>
     <string name="setup_external_lyrics_title">Онлайн-тексты из LRCLIB</string>
-    <string name="setup_external_services_footer">Позже это можно изменить в Настройки &gt; Управление музыкой &gt; Дополнительные онлайн-сервисы.</string>
+    <string name="setup_external_services_footer">Изменить можно позже в Настройки &gt; Локальная музыка &gt; Дополнительные онлайн-сервисы.</string>
     <string name="setup_external_services_title">Дополнительные онлайн-сервисы</string>
     <string name="setup_grant_media_permission">Предоставить доступ к медиафайлам</string>
     <string name="setup_grant_permission_generic">Предоставить доступ</string>
@@ -232,7 +232,7 @@
     <string name="setup_navbar_footer">Позже это можно изменить в Настройки &gt; Внешний вид &gt; Стиль панели навигации.</string>
     <string name="setup_permission_alarms_title">Будильники и напоминания</string>
     <string name="setup_battery_optimization_title">Оптимизация батареи</string>
-    <string name="setup_battery_optimization_description">Некоторые устройства Android агрессивно закрывают фоновые приложения. Отключите оптимизацию батареи для CarpeLines, чтобы избежать неожиданных прерываний воспроизведения.</string>
+    <string name="setup_battery_optimization_description">Некоторые устройства Android агрессивно закрывают фоновые приложения. Отключите оптимизацию батареи для CarpeLines, чтобы отслеживание медиасессий, виджеты и поиск текстов продолжали работать в фоне.</string>
     <string name="setup_disable_battery_optimization">Отключить оптимизацию</string>
     <string name="setup_permission_granted">Разрешение предоставлено</string>
     <string name="setup_permission_media_title">Доступ к медиафайлам</string>
@@ -250,7 +250,7 @@
     <string name="setup_theme_footer">Позже это можно изменить в Настройки &gt; Внешний вид &gt; Тема приложения.</string>
     <string name="setup_theme_light_description">Более светлая тема Material 3 для всего приложения.</string>
     <string name="setup_theme_light_title">Светлая</string>
-    <string name="setup_theme_subtitle">Выберите внешний вид приложения перед началом работы.</string>
+    <string name="setup_theme_subtitle">Выберите оформление, прежде чем начать следить за текстом песен.</string>
     <string name="setup_theme_title">Тема приложения</string>
     <string name="setup_welcome_prefix">Добро пожаловать в </string>
     <string name="skip_for_now">Пропустить</string>
@@ -281,7 +281,7 @@
     <string name="word_delimiter_toast_reset">Словесные разделители сброшены</string>
     <string name="word_delimiters_screen_title">Словесные разделители</string>
     <string name="setup_external_services_subtitle">По умолчанию CarpeLines работает офлайн. Включайте только те онлайн-запросы, которые вам нужны.</string>
-    <string name="setup_permission_media_description">CarpeLines нужен доступ к вашим аудиофайлам, чтобы создать музыкальную медиатеку.</string>
+    <string name="setup_permission_media_description">CarpeLines читает аудиофайлы на этом устройстве, чтобы найти встроенные тексты и файлы .lrc в той же папке. Ваши аудиофайлы остаются на этом устройстве.</string>
     <string name="setup_permission_alarms_description">Необязательно, но рекомендуется, если вы используете таймер сна и хотите, чтобы CarpeLines останавливал воспроизведение точно вовремя.</string>
     <string name="setup_backup_have_description">Если у вас уже есть резервная копия CarpeLines, восстановите её сейчас и пропустите большую часть оставшейся настройки на этом устройстве.</string>
     <string name="setup_theme_dark_description">Стандартная тёмная тема Material 3 для CarpeLines.</string>

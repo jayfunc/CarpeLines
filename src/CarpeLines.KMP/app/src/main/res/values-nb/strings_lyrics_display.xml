@@ -12,4 +12,7 @@
     <string name="lyrics_duet_layout_subtitle">Plasser hver sanger på sin egen side når sangteksten markerer stemmer (v1:, v2:)</string>
     <string name="lyrics_background_vocals_title">Bakgrunnsvokal</string>
     <string name="lyrics_background_vocals_subtitle">Vis bakgrunnsvokal med mindre tekst under hovedlinjen</string>
+    <string name="external_lyrics_permission_title">Tilgang til varsler kreves</string>
+    <string name="external_lyrics_permission_body">Android gjør bare medieøkter fra andre apper tilgjengelige for varsellyttere. Gi tilgang, og start deretter avspilling i en hvilken som helst musikkavspiller.</string>
+    <string name="external_lyrics_grant_access">Åpne varseltilgang</string>
 </resources>

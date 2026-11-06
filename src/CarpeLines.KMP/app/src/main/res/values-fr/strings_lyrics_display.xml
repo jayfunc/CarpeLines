@@ -12,4 +12,7 @@
     <string name="lyrics_duet_layout_subtitle">Place chaque chanteur de son côté quand les paroles indiquent les voix (v1:, v2:)</string>
     <string name="lyrics_background_vocals_title">Chœurs</string>
     <string name="lyrics_background_vocals_subtitle">Affiche les chœurs en plus petit sous la ligne principale</string>
+    <string name="external_lyrics_permission_title">Accès aux notifications requis</string>
+    <string name="external_lyrics_permission_body">Android n\'expose les sessions multimédias des autres applications qu\'aux lecteurs de notifications. Accordez l\'accès, puis lancez la lecture dans n\'importe quel lecteur de musique.</string>
+    <string name="external_lyrics_grant_access">Ouvrir l\'accès aux notifications</string>
 </resources>

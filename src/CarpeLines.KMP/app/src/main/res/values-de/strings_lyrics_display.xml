@@ -12,4 +12,7 @@
     <string name="lyrics_duet_layout_subtitle">Jede Stimme auf eine eigene Seite setzen, wenn die Lyrics Stimmen markieren (v1:, v2:)</string>
     <string name="lyrics_background_vocals_title">Hintergrundgesang</string>
     <string name="lyrics_background_vocals_subtitle">Backing Vocals in kleinerer Schrift unter der Hauptzeile anzeigen</string>
+    <string name="external_lyrics_permission_title">Benachrichtigungszugriff erforderlich</string>
+    <string name="external_lyrics_permission_body">Android stellt Mediensitzungen anderer Apps nur Benachrichtigungs-Listenern bereit. Erteile den Zugriff und starte dann die Wiedergabe in einem beliebigen Musikplayer.</string>
+    <string name="external_lyrics_grant_access">Benachrichtigungszugriff öffnen</string>
 </resources>

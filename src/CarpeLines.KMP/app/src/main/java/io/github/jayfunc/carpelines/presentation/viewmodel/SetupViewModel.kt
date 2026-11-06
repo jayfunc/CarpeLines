@@ -15,6 +15,7 @@ import io.github.jayfunc.carpelines.data.backup.model.BackupOperationType
 import io.github.jayfunc.carpelines.data.backup.model.BackupSection
 import io.github.jayfunc.carpelines.data.backup.model.RestorePlan
 import io.github.jayfunc.carpelines.data.backup.model.RestoreResult
+import io.github.jayfunc.carpelines.data.external.ExternalMediaMonitor
 import io.github.jayfunc.carpelines.data.preferences.AppThemeMode
 import io.github.jayfunc.carpelines.data.preferences.ThemePreferencesRepository
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
@@ -36,27 +37,23 @@ import java.io.File
 
 data class SetupUiState(
     val mediaPermissionGranted: Boolean = false,
-    val notificationsPermissionGranted: Boolean = false,
+    val notificationAccessGranted: Boolean = false,
     val isLoadingDirectories: Boolean = false,
     val blockedDirectories: Set<String> = emptySet(),
-    val libraryNavigationMode: String = "tab_row",
-    val navBarStyle: String = "default",
-    val navBarCornerRadius: Int = 28,
     val externalLyricsEnabled: Boolean = false,
     val externalArtistImagesEnabled: Boolean = false,
-    val alarmsPermissionGranted: Boolean = false,
     val appThemeMode: String = AppThemeMode.DARK,
     val isInspectingBackup: Boolean = false,
     val isRestoringBackup: Boolean = false,
     val restorePlan: RestorePlan? = null,
     val backupTransferProgress: BackupTransferProgressUpdate? = null
 ) {
-    val allPermissionsGranted: Boolean
-        get() {
-            val mediaOk = mediaPermissionGranted
-            val notificationsOk = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) notificationsPermissionGranted else true
-            return mediaOk && notificationsOk
-        }
+    /**
+     * Notification access is the only permission setup insists on: media access is optional and
+     * only enables local tag/.lrc lyrics.
+     */
+    val requiredPermissionsGranted: Boolean
+        get() = notificationAccessGranted
 }
 
 sealed interface SetupEvent {
@@ -111,9 +108,6 @@ class SetupViewModel @Inject constructor(
         viewModelScope.launch {
             combine<Any?, SetupPrefsUpdate>(
                 userPreferencesRepository.blockedDirectoriesFlow,
-                userPreferencesRepository.libraryNavigationModeFlow,
-                userPreferencesRepository.navBarStyleFlow,
-                userPreferencesRepository.navBarCornerRadiusFlow,
                 userPreferencesRepository.externalLyricsEnabledFlow,
                 userPreferencesRepository.externalArtistImagesEnabledFlow,
                 themePreferencesRepository.appThemeModeFlow
@@ -122,20 +116,14 @@ class SetupViewModel @Inject constructor(
                 val blockedDirectories = values[0] as Set<String>
                 SetupPrefsUpdate(
                     blocked = blockedDirectories,
-                    mode = values[1] as String,
-                    style = values[2] as String,
-                    radius = values[3] as Int,
-                    externalLyricsEnabled = values[4] as Boolean,
-                    externalArtistImagesEnabled = values[5] as Boolean,
-                    appThemeMode = values[6] as String
+                    externalLyricsEnabled = values[1] as Boolean,
+                    externalArtistImagesEnabled = values[2] as Boolean,
+                    appThemeMode = values[3] as String
                 )
             }.collect { update ->
                 _uiState.update { state ->
                     state.copy(
                         blockedDirectories = update.blocked,
-                        libraryNavigationMode = update.mode,
-                        navBarStyle = update.style,
-                        navBarCornerRadius = update.radius,
                         externalLyricsEnabled = update.externalLyricsEnabled,
                         externalArtistImagesEnabled = update.externalArtistImagesEnabled,
                         appThemeMode = update.appThemeMode
@@ -153,9 +141,6 @@ class SetupViewModel @Inject constructor(
     
     private data class SetupPrefsUpdate(
         val blocked: Set<String>,
-        val mode: String,
-        val style: String,
-        val radius: Int,
         val externalLyricsEnabled: Boolean,
         val externalArtistImagesEnabled: Boolean,
         val appThemeMode: String
@@ -168,24 +153,10 @@ class SetupViewModel @Inject constructor(
             ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
         }
 
-        val notificationsPermissionGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
-        } else {
-            true
-        }
-
-        val alarmsPermissionGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
-            alarmManager.canScheduleExactAlarms()
-        } else {
-            true
-        }
-
         _uiState.update {
             it.copy(
                 mediaPermissionGranted = mediaPermissionGranted,
-                notificationsPermissionGranted = notificationsPermissionGranted,
-                alarmsPermissionGranted = alarmsPermissionGranted
+                notificationAccessGranted = ExternalMediaMonitor.hasNotificationAccess(context)
             )
         }
     }
@@ -249,24 +220,6 @@ class SetupViewModel @Inject constructor(
     fun isAtRoot(): Boolean = fileExplorerStateHolder.isAtRoot()
 
     fun explorerRoot(): File = fileExplorerStateHolder.rootDirectory()
-
-    fun setLibraryNavigationMode(mode: String) {
-        viewModelScope.launch {
-            userPreferencesRepository.setLibraryNavigationMode(mode)
-        }
-    }
-
-    fun setNavBarStyle(style: String) {
-        viewModelScope.launch {
-            userPreferencesRepository.setNavBarStyle(style)
-        }
-    }
-
-    fun setNavBarCornerRadius(radius: Int) {
-        viewModelScope.launch {
-            userPreferencesRepository.setNavBarCornerRadius(radius)
-        }
-    }
 
     fun setExternalLyricsEnabled(enabled: Boolean) {
         viewModelScope.launch {
