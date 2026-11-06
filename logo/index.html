@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CarpeLines — Brand identity · Material 3 Expressive</title>
+<style>
+:root{
+  --bg:#0B0805; --panel:#15100A; --panel2:#1D1610;
+  --line:rgba(255,240,220,.09); --line2:rgba(255,240,220,.18);
+  --ink:#F7EFE3; --muted:#AC9A87; --faint:#7E6D5C;
+  --amber:#FFB84D; --dim:#946C36; --cream:#FFF6E6;
+  --ok:#8FD8A8; --no:#FF8C7B;
+  --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.75 system-ui,"Segoe UI",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(760px 420px at 12% -6%,rgba(255,163,31,.14),transparent 70%),
+                   radial-gradient(620px 380px at 96% 4%,rgba(255,77,122,.07),transparent 72%);
+  background-repeat:no-repeat;
+}
+.wrap{max-width:1040px;margin:0 auto;padding:0 44px 120px}
+code,.mono{font-family:var(--mono);font-size:.86em;letter-spacing:.02em}
+
+/* ---------- hero ---------- */
+header{padding:76px 0 0}
+.kicker{font:600 11px/1 var(--mono);letter-spacing:.22em;color:var(--amber);text-transform:uppercase}
+h1{font-size:64px;line-height:1.02;letter-spacing:-.035em;margin:18px 0 0;font-weight:700}
+.sub{margin:14px 0 0;color:var(--muted);font-size:17px;max-width:56ch}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:26px;align-items:center}
+.meta span{font:500 11.5px/1 var(--mono);color:var(--muted);border:1px solid var(--line2);
+  padding:8px 11px;border-radius:999px;letter-spacing:.04em}
+.hero{display:flex;gap:44px;align-items:center;margin-top:48px;flex-wrap:wrap}
+.hero .art{position:relative;flex:0 0 auto}
+.hero .art::before{content:"";position:absolute;inset:-46px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,163,31,.20),transparent 66%);filter:blur(4px)}
+.hero .art svg{position:relative;display:block}
+
+/* ---------- sections ---------- */
+section{padding-top:72px;margin-top:72px;border-top:1px solid var(--line)}
+.shead{display:flex;align-items:baseline;gap:16px;margin-bottom:8px}
+.shead .n{font:600 11px/1 var(--mono);color:var(--amber);letter-spacing:.18em}
+.shead h2{font-size:25px;letter-spacing:-.01em;margin:0;font-weight:650}
+.lede{color:var(--muted);max-width:66ch;margin:10px 0 0}
+
+/* ---------- concept ---------- */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px 20px 24px}
+.card .tag{font:600 10.5px/1 var(--mono);letter-spacing:.16em;color:var(--faint);text-transform:uppercase}
+.card h3{margin:10px 0 8px;font-size:16.5px;font-weight:650;letter-spacing:.01em}
+.card p{margin:0;color:var(--muted);font-size:14px;line-height:1.7}
+.card .viz{height:64px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;gap:3px;
+  background:#F7F2E9;border-radius:14px}
+
+/* ---------- construction ---------- */
+.construct{display:grid;grid-template-columns:1fr 300px;gap:34px;align-items:center;margin-top:26px}
+.gridbox{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:26px}
+.gridbox svg{display:block;width:100%;max-width:470px;margin:0 auto;height:auto}
+.legend{margin:16px 0 0;font:11.5px/1.8 var(--mono);color:var(--faint);text-align:center}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:9px 0;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 10.5px/1.4 var(--mono);letter-spacing:.13em;color:var(--faint);text-transform:uppercase}
+td:first-child{color:var(--muted);white-space:nowrap;padding-right:14px}
+td code{color:var(--cream)}
+
+/* ---------- sizes ---------- */
+.ramp{display:flex;align-items:flex-end;gap:26px;flex-wrap:wrap;margin-top:28px;
+  background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:34px 30px}
+.ramp .it{text-align:center}
+.ramp .it .lbl{font:10px var(--mono);color:var(--faint);margin-top:9px}
+
+/* ---------- colour ---------- */
+.swgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:26px}
+.sw{display:flex;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);
+  border-radius:14px;padding:12px}
+.sw .chip{width:38px;height:38px;border-radius:11px;flex:0 0 auto;box-shadow:inset 0 0 0 1px rgba(255,255,255,.10)}
+.sw .tx{min-width:0}
+.sw .tx b{display:block;font-size:13px;font-weight:600;letter-spacing:.01em}
+.sw .tx code{color:var(--faint);font-size:11.5px}
+.ratio{font:600 11px var(--mono);color:var(--ok);margin-left:auto;white-space:nowrap}
+
+/* ---------- variants ---------- */
+.var{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:26px}
+.var .tile{border-radius:22px;padding:30px;display:flex;align-items:center;justify-content:center;min-height:190px;
+  border:1px solid var(--line)}
+.var .tile.light{background:#F7F2E9;border-color:#EDE3D4}
+.var .tile.mono{background:#0E0A07}
+.var p.cap{margin:11px 2px 0;color:var(--muted);font-size:12.5px;grid-column:1/-1}
+
+/* ---------- lockups ---------- */
+.lock{margin-top:24px;border-radius:22px;overflow:hidden;border:1px solid var(--line)}
+.lock.light{background:#F7F2E9;border-color:#EDE3D4}
+.lock svg{display:block;width:100%;height:auto;max-width:660px;margin:0 auto}
+.lockrow{display:grid;grid-template-columns:300px 1fr;gap:22px;margin-top:24px}
+.lockrow .side{display:flex;align-items:center;justify-content:center;border-radius:22px;
+  background:#F7F2E9;border:1px solid #EDE3D4;padding:20px}
+
+/* ---------- motion ---------- */
+.motion{display:grid;grid-template-columns:240px 1fr;gap:34px;align-items:center;margin-top:26px}
+.motion .stage{background:#F7F2E9;border:1px solid #EDE3D4;
+  border-radius:24px;padding:26px;display:flex;justify-content:center}
+@keyframes sweepX{0%{width:6px}100%{width:41px}}
+@keyframes afterX{0%{x:49px;width:35px}100%{x:84px;width:.6px}}
+@keyframes knobX{0%{cx:40px}100%{cx:75px}}
+.demo{animation:6s cubic-bezier(.2,0,0,1) infinite alternate}
+.demo.s{animation-name:sweepX}
+.demo.a{animation-name:afterX}
+.demo.k{animation-name:knobX}
+@media (prefers-reduced-motion:reduce){.demo{animation:none}}
+
+/* ---------- do / don't ---------- */
+.dd{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}
+.dd .b{border:1px solid var(--line);border-radius:18px;padding:18px;background:var(--panel);text-align:center}
+.dd .b .box{height:104px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.dd .b .flag{display:inline-flex;align-items:center;gap:6px;font:600 11px var(--mono);letter-spacing:.1em;
+  padding:5px 10px;border-radius:999px}
+.dd .b .flag.ok{color:var(--ok);background:rgba(143,216,168,.10)}
+.dd .b .flag.no{color:var(--no);background:rgba(255,140,123,.10)}
+.dd .b p{margin:9px 0 0;font-size:12.5px;color:var(--muted);line-height:1.6}
+
+/* ---------- misc ---------- */
+.note{border-left:2px solid var(--amber);padding:2px 0 2px 16px;color:var(--muted);font-size:14px;
+  margin:22px 0 0;max-width:70ch}
+.note b{color:var(--ink);font-weight:600}
+.files{margin-top:26px;font:12.5px/2.1 var(--mono);color:var(--faint)}
+.files b{color:var(--muted);font-weight:500}
+footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);
+  font:11.5px/1.9 var(--mono);color:var(--faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="g-sol" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#FFF6EA"/><stop offset="1" stop-color="#FFE4C6"/>
+  </linearGradient>
+  <clipPath id="c-sq"><rect width="108" height="108" rx="30"/></clipPath>
+
+  <!-- what the launcher actually shows: the 72dp visible area of the 108dp canvas -->
+  <symbol id="ic-app" viewBox="18 18 72 72">
+    <rect x="18" y="18" width="72" height="72" rx="20" fill="url(#g-sol)"/>
+    <g transform="translate(54 54) scale(.6667) translate(-54 -54)">
+      <rect x="25" y="34" width="50" height="8" rx="4" fill="#D9480F"/>
+      <rect x="25" y="50" width="26" height="8" rx="4" fill="#D9480F"/>
+      <rect x="69" y="50" width="15" height="8" rx="4" fill="#8A7663"/>
+      <rect x="25" y="66" width="30" height="8" rx="4" fill="#8A7663"/>
+      <circle cx="60" cy="54" r="7" fill="#1C1917"/>
+    </g>
+  </symbol>
+
+  <symbol id="ic-mono" viewBox="0 0 108 108">
+    <g fill="currentColor">
+      <rect x="25" y="34" width="50" height="8" rx="4"/>
+      <rect x="25" y="50" width="26" height="8" rx="4"/>
+      <rect x="69" y="50" width="15" height="8" rx="4" opacity=".45"/>
+      <rect x="25" y="66" width="30" height="8" rx="4" opacity=".45"/>
+      <circle cx="60" cy="54" r="7"/>
+    </g>
+  </symbol>
+</defs></svg>
+
+<div class="wrap">
+
+<header>
+  <div class="kicker">Brand identity · v1.0</div>
+  <h1>CarpeLines</h1>
+  <p class="sub">The mark for word-by-word lyrics: three lyric lines and one time cursor. The cursor sits at 59% of the line width, marking the character being sung right now.</p>
+  <div class="meta">
+    <span>Material 3 Expressive</span>
+    <span>Android adaptive icon</span>
+    <span>2026-11</span>
+  </div>
+
+  <div class="hero">
+    <div class="art">
+      <svg width="230" height="230"><use href="#ic-app"/></svg>
+    </div>
+    <div style="flex:1;min-width:260px">
+      <div class="mono" style="color:var(--faint);font-size:12px;letter-spacing:.16em">WORDMARK</div>
+      <div style="font-size:46px;font-weight:700;letter-spacing:-.03em;margin-top:10px;line-height:1.1">CarpeLines</div>
+      <p style="color:var(--muted);margin:16px 0 0;font-size:14px;max-width:40ch">
+        The wordmark and the mark are used separately. The mark carries all of the recognition;
+        the wordmark is a single-weight typographic treatment — no colour added, no outline,
+        no two-tone split.
+      </p>
+    </div>
+  </div>
+</header>
+
+<!-- ================= 01 concept ================= -->
+<section>
+  <div class="shead"><div class="n">01</div><h2>Concept</h2></div>
+  <p class="lede">
+    CarpeLines promises that, whatever is playing on the phone, the lyrics keep pace word by
+    word. The mark does one thing: it draws that promise into a shape you understand at a
+    glance. Three capsules are lyric lines; one perfect circle is the time cursor.
+  </p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="viz">
+        <svg viewBox="23 32 61 44" width="66" height="48">
+          <rect x="25" y="34" width="50" height="8" rx="4" fill="#D9480F"/>
+          <rect x="25" y="50" width="26" height="8" rx="4" fill="#D9480F"/>
+          <rect x="25" y="66" width="30" height="8" rx="4" fill="#8A7663"/>
+        </svg>
+      </div>
+      <div class="tag">Lines</div>
+      <h3>Three lines, a broken right edge</h3>
+      <p>Three equal horizontal lines would be read as a menu icon. So the lines are 50 / 59 / 30 — an uneven right edge is what makes them look like a line being read.</p>
+    </div>
+    <div class="card">
+      <div class="viz">
+        <svg viewBox="23 47 63 14" width="90" height="20">
+          <rect x="25" y="50" width="26" height="8" rx="4" fill="#D9480F"/>
+          <circle cx="60" cy="54" r="7" fill="#1C1917"/>
+          <rect x="69" y="50" width="15" height="8" rx="4" fill="#8A7663"/>
+        </svg>
+      </div>
+      <div class="tag">Carpe</div>
+      <h3>The cursor sits at 59%</h3>
+      <p>The circle is the playback position and also "now" — what Carpe means. It is 1.75× the line height and overshoots 3 above and below: the only element in the whole mark that leaves the grid.</p>
+    </div>
+    <div class="card">
+      <div class="viz">
+        <svg viewBox="0 0 56 24" width="112" height="48">
+          <rect x="1" y="8" width="26" height="8" rx="4" fill="#8A7663"/>
+          <circle cx="43" cy="12" r="10" fill="#1C1917"/>
+        </svg>
+      </div>
+      <div class="tag">Shape contrast</div>
+      <h3>Circle against capsule, no colour shift</h3>
+      <p>M3E treats shape as an expressive lever alongside colour. The cursor earns its focus through shape difference, so the whole mark needs only two ink levels.</p>
+    </div>
+  </div>
+
+  <p class="note">
+    <b>Why not the old note + lines:</b> a note says "plays music", but this app plays no local
+    audio — it only follows the system media session and shows the lyrics. The mark should point
+    at the thing this app alone does: aligning lyrics with time.
+  </p>
+</section>
+
+<!-- ================= 02 construction ================= -->
+<section>
+  <div class="shead"><div class="n">02</div><h2>Construction</h2></div>
+  <p class="lede">
+    Every dimension is based on the 108×108 adaptive-icon canvas (the Android spec) and
+    quantised to multiples of 4. But launchers only keep the middle <code>72 × 72</code>, so the
+    glyph is output at <code>2/3</code> of the canvas — otherwise the edges get cropped to 3–4dp
+    on screen and the whitespace no longer matches the design.
+  </p>
+
+  <div class="construct">
+    <div class="gridbox">
+      <svg viewBox="0 0 180 140" role="img" aria-label="Construction diagram">
+        <g transform="translate(6.5 6.5)">
+          <rect width="107" height="107" rx="30" fill="#F7F2E9" stroke="#EDE1D2" stroke-width=".7"/>
+          <g stroke="rgba(59,31,0,.07)" stroke-width=".4">
+            <path d="M9,0V108M18,0V108M27,0V108M36,0V108M45,0V108M54,0V108M63,0V108M72,0V108M81,0V108M90,0V108M99,0V108
+                     M0,9H108M0,18H108M0,27H108M0,36H108M0,45H108M0,54H108M0,63H108M0,72H108M0,81H108M0,90H108M0,99H108"/>
+          </g>
+
+          <!-- 72dp visible area, what the launcher keeps -->
+          <rect x="18" y="18" width="72" height="72" rx="20" fill="none" stroke="rgba(59,31,0,.50)" stroke-width=".55" stroke-dasharray="2.4 2"/>
+          <text x="18" y="15.6" fill="#8A7663" font-family="ui-monospace,monospace" font-size="4.6">72 visible</text>
+
+          <!-- Ø66 safe circle -->
+          <circle cx="54" cy="54" r="33" fill="none" stroke="rgba(217,72,15,.45)" stroke-width=".6" stroke-dasharray="2 2.4"/>
+
+          <!-- the mark, output at 2/3 so it keeps the designed margin inside 72 -->
+          <g transform="translate(54 54) scale(.6667) translate(-54 -54)">
+            <rect x="25" y="34" width="50" height="8" rx="4" fill="#D9480F"/>
+            <rect x="25" y="50" width="26" height="8" rx="4" fill="#D9480F"/>
+            <rect x="69" y="50" width="15" height="8" rx="4" fill="#8A7663"/>
+            <rect x="25" y="66" width="30" height="8" rx="4" fill="#8A7663"/>
+            <circle cx="60" cy="54" r="7" fill="#1C1917"/>
+            <path d="M53.3,54h9.4M58,49.3v9.4" stroke="rgba(255,246,234,.7)" stroke-width=".4"/>
+          </g>
+        </g>
+
+        <!-- Ø9.3 -->
+        <g stroke="rgba(255,184,77,.62)" stroke-width=".5" fill="none">
+          <path d="M84,55.8h3M84,65.2h3M87,55.8v9.4"/>
+          <path d="M69.5,55.8h17.5M69.5,65.2h17.5" stroke-dasharray="1.4 1.9" stroke-width=".35"/>
+        </g>
+        <text x="89" y="62" fill="#FFB84D" font-family="ui-monospace,monospace" font-size="5">Ø9.3</text>
+
+        <!-- 27 -->
+        <g stroke="rgba(255,184,77,.62)" stroke-width=".5" fill="none">
+          <path d="M102,47.2h3M102,74.5h3M105,47.2v27.3"/>
+          <path d="M80.5,47.2h24.5M80.5,74.5h24.5" stroke-dasharray="1.4 1.9" stroke-width=".35"/>
+        </g>
+        <text x="108" y="62" fill="#FFB84D" font-family="ui-monospace,monospace" font-size="5.2">27</text>
+
+        <!-- 39 -->
+        <g stroke="rgba(255,184,77,.62)" stroke-width=".5" fill="none">
+          <path d="M41.2,87v4M80.5,87v4M41.2,91h39.3"/>
+          <path d="M41.2,74.5v16.5M80.5,74.5v16.5" stroke-dasharray="1.4 1.9" stroke-width=".35"/>
+        </g>
+        <text x="60.8" y="84" text-anchor="middle" fill="#FFB84D" font-family="ui-monospace,monospace" font-size="5.2">39</text>
+
+        <text x="11" y="16" fill="#8A5A0A" font-family="ui-monospace,monospace" font-size="5">r30</text>
+      </svg>
+      <p class="legend">Dashed square 72 visible area · dashed circle Ø66 safe zone · measured ink 39 × 27 · grid 9</p>
+    </div>
+
+    <div>
+      <table>
+        <tr><th>Element</th><th>Spec (design → output)</th></tr>
+        <tr><td>Canvas</td><td><code>108 × 108</code>, multiple of 4 (Android technical canvas)</td></tr>
+        <tr><td>Visible area</td><td><code>72 × 72</code>; launchers crop 18 on each side</td></tr>
+        <tr><td>Output scale</td><td>glyph centred at <code>2/3</code> of the canvas, ink <code>39 × 27</code></td></tr>
+        <tr><td>Safe zone</td><td>Ø66 centred circle (91.7% of the visible area)</td></tr>
+        <tr><td>Line height</td><td><code>8</code> → <code>5.3</code>, radius <code>r4</code> → <code>r2.7</code> (= half height, capsule)</td></tr>
+        <tr><td>Line gap</td><td><code>8</code> (clearance 8 → 5.3)</td></tr>
+        <tr><td>Line width</td><td><code>50 / 59 / 30</code> → <code>33 / 39 / 20</code>, left-aligned at x=25</td></tr>
+        <tr><td>Cursor</td><td>Ø<code>14</code> → Ø<code>9.3</code>, centre x=60 (59% of the line width), overshoots 3 above and below</td></tr>
+        <tr><td>Cursor clearance</td><td><code>2</code> on each side → <code>1.3</code>; neither the sung nor the unsung segment touches the cursor</td></tr>
+        <tr><td>Container</td><td><code>r30</code> (27.8% of the canvas), <code>r20</code> inside the visible area</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 sizes ================= -->
+<section>
+  <div class="shead"><div class="n">03</div><h2>Sizes</h2></div>
+  <p class="lede">Above 24dp the "lines + cursor" still reads. Below 24dp (notification bar, inline in lists) switch to the single-colour silhouette — never the gradient version.</p>
+  <div class="ramp">
+    <div class="it"><svg width="160" height="160"><use href="#ic-app"/></svg><div class="lbl">160</div></div>
+    <div class="it"><svg width="96" height="96"><use href="#ic-app"/></svg><div class="lbl">96</div></div>
+    <div class="it"><svg width="72" height="72"><use href="#ic-app"/></svg><div class="lbl">72</div></div>
+    <div class="it"><svg width="48" height="48"><use href="#ic-app"/></svg><div class="lbl">48</div></div>
+    <div class="it"><svg width="32" height="32"><use href="#ic-app"/></svg><div class="lbl">32</div></div>
+    <div class="it"><svg width="24" height="24"><use href="#ic-app"/></svg><div class="lbl">24</div></div>
+    <div class="it"><svg width="16" height="16" style="color:#FFF6E6"><use href="#ic-mono"/></svg><div class="lbl">16 mono</div></div>
+  </div>
+</section>
+
+<!-- ================= 04 colour ================= -->
+<section>
+  <div class="shead"><div class="n">04</div><h2>Colour</h2></div>
+  <p class="lede">
+    Paper white as the base, vermilion and warm grey as the strokes, deep ink reserved for the
+    cursor. The moment the base drifts yellow and the strokes drift brown, the whole surface
+    slides towards "caramel on old paper" — so the base is pushed almost white and colour
+    appears only on the line being sung.
+  </p>
+
+  <div class="swgrid">
+    <div class="sw"><div class="chip" style="background:linear-gradient(135deg,#FFF6EA,#FFE4C6)"></div>
+      <div class="tx"><b>Container (top → bottom)</b><code>#FFF6EA → #FFE4C6</code></div><div class="ratio">baseline</div></div>
+    <div class="sw"><div class="chip" style="background:#D9480F"></div>
+      <div class="tx"><b>Sung / current character</b><code>#D9480F</code></div><div class="ratio">3.5–4.0:1</div></div>
+    <div class="sw"><div class="chip" style="background:#8A7663"></div>
+      <div class="tx"><b>Unsung</b><code>#8A7663</code></div><div class="ratio">3.5–4.0:1</div></div>
+    <div class="sw"><div class="chip" style="background:#1C1917"></div>
+      <div class="tx"><b>Time cursor</b><code>#1C1917</code></div><div class="ratio">14.3–16.3:1</div></div>
+    <div class="sw"><div class="chip" style="background:#1C1917"></div>
+      <div class="tx"><b>Wordmark ink</b><code>#1C1917</code></div><div class="ratio">14.3–16.3:1</div></div>
+  </div>
+
+  <p class="note">
+    <b>The mark does not take part in dynamic colour.</b> At runtime the app derives 48 semantic
+    roles from the album artwork, but brand assets must stay constant — otherwise the same mark
+    looks different on every phone. The values here are therefore hard-coded; they mirror
+    <code>primary</code> (sung), the dark tone of <code>primary</code> (unsung) and
+    <code>onSurface</code> (cursor / wordmark), but they are brand constants and never read from
+    <code>ColorScheme</code>.
+  </p>
+</section>
+
+<!-- ================= 05 variants ================= -->
+<section>
+  <div class="shead"><div class="n">05</div><h2>Variants</h2></div>
+  <p class="lede">Two levels: light background (the only colour version, the default) and a flat silhouette. The mono version serves Android 13+ themed icons, the notification bar and single-colour print.</p>
+  <div class="var">
+    <div class="tile light"><svg width="112" height="112"><use href="#ic-app"/></svg></div>
+    <div class="tile mono"><svg width="104" height="104" style="color:#FFF6E6"><use href="#ic-mono"/></svg></div>
+    <p class="cap">
+      <b style="color:var(--ink)">Colour</b> &nbsp;paper-white base + vermilion strokes, the default and only colour version &nbsp;·&nbsp;
+      <b style="color:var(--ink)">Mono</b> &nbsp;flat silhouette, themed icons / notification icon
+    </p>
+  </div>
+</section>
+
+<!-- ================= 06 lockups ================= -->
+<section>
+  <div class="shead"><div class="n">06</div><h2>Lockups</h2></div>
+  <p class="lede">The mark height and the wordmark cap height hold an 84 : 30 ratio. The wordmark appears once, with at least one mark-width of whitespace to its right.</p>
+
+  <div class="lock light">
+    <svg viewBox="0 0 360 108"><use href="#lk" x="0" y="0"/></svg>
+  </div>
+
+  <div class="lockrow">
+    <div class="lock light" style="margin-top:0">
+      <svg viewBox="0 0 280 196" style="max-width:280px;margin:0 auto">
+        <rect width="280" height="196" fill="#F7F2E9"/>
+        <g transform="translate(86 20)">
+          <g clip-path="url(#c-sq)">
+            <rect width="108" height="108" fill="url(#g-sol)"/>
+          </g>
+          <rect x="25" y="34" width="50" height="8" rx="4" fill="#D9480F"/>
+          <rect x="25" y="50" width="26" height="8" rx="4" fill="#D9480F"/>
+          <rect x="69" y="50" width="15" height="8" rx="4" fill="#8A7663"/>
+          <rect x="25" y="66" width="30" height="8" rx="4" fill="#8A7663"/>
+          <circle cx="60" cy="54" r="7" fill="#1C1917"/>
+        </g>
+        <text x="140" y="178" text-anchor="middle" font-family="system-ui,'Segoe UI',sans-serif"
+              font-size="36" font-weight="700" letter-spacing="-0.8" fill="#1C1917">CarpeLines</text>
+      </svg>
+    </div>
+    <div class="side">
+      <svg width="200" height="143" viewBox="21 30 67 48"><use href="#mk-mark"/></svg>
+    </div>
+  </div>
+  <p class="lede" style="font-size:13.5px">
+    Left: vertical lockup, for splash screens and store art. Right: bare mark (no container), for
+    tight spaces or surfaces that already carry the brand colour.
+  </p>
+</section>
+
+<!-- ================= 07 motion ================= -->
+<section>
+  <div class="shead"><div class="n">07</div><h2>Motion</h2></div>
+  <p class="lede">Motion explains one thing only: where the song has reached. The cursor travels with the playback position, and the highlight advances from the cursor's left edge and never crosses it.</p>
+
+  <div class="motion">
+    <div class="stage">
+      <svg width="180" height="180" viewBox="0 0 108 108">
+        <g clip-path="url(#c-sq)">
+          <rect width="108" height="108" fill="url(#g-sol)"/>
+        </g>
+        <rect x="25" y="34" width="50" height="8" rx="4" fill="#D9480F"/>
+        <rect class="demo s" x="25" y="50" height="8" rx="4" fill="#D9480F" width="26"/>
+        <rect class="demo a" x="69" y="50" height="8" rx="4" fill="#8A7663" width="15"/>
+        <rect x="25" y="66" width="30" height="8" rx="4" fill="#8A7663"/>
+        <circle class="demo k" cx="60" cy="54" r="7" fill="#1C1917"/>
+      </svg>
+    </div>
+    <div>
+      <table>
+        <tr><th>Segment</th><th>Token</th><th>Spec</th></tr>
+        <tr><td>Cursor travel</td><td><code>M3EMotion.spatial()</code></td><td>spring, damping 0.7, slight overshoot allowed</td></tr>
+        <tr><td>Highlight advance</td><td><code>emphasized decelerate</code></td><td>600ms, <code>cubic-bezier(.2,0,0,1)</code></td></tr>
+        <tr><td>Gradient drift</td><td>splash / store art only</td><td>8s loop; still when idle</td></tr>
+      </table>
+      <p class="note" style="margin-top:18px">
+        When the system's remove-animations setting is on, only the resting frame remains (cursor
+        at 59%). The resting frame has to be a complete, credible mark on its own — which is why
+        animation is not part of the mark, only an explanation of it.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 08 usage ================= -->
+<section>
+  <div class="shead"><div class="n">08</div><h2>Usage</h2></div>
+  <div class="dd">
+    <div class="b"><div class="box"><svg width="88" height="88"><use href="#ic-app"/></svg></div>
+      <span class="flag ok">DO</span><p>This is the only colour icon; dark UI reuses it instead of getting a dark variant.</p></div>
+    <div class="b"><div class="box"><div style="background:#F7F2E9;border-radius:18px;padding:16px;display:flex"><svg width="58" height="58" style="color:#1C1917"><use href="#ic-mono"/></svg></div></div>
+      <span class="flag ok">DO</span><p>Use the silhouette where colour is unavailable and let the system tint it.</p></div>
+    <div class="b"><div class="box"><svg width="88" height="88" style="filter:drop-shadow(5px 10px 0 rgba(0,0,0,.85))"><use href="#ic-app"/></svg></div>
+      <span class="flag no">DON'T</span><p>No drop shadows. Hierarchy comes from tone, not shadow.</p></div>
+    <div class="b"><div class="box"><svg width="86" height="86" style="transform:scaleX(1.4)"><use href="#ic-app"/></svg></div>
+      <span class="flag no">DON'T</span><p>Do not stretch or rotate. The proportions are part of the mark.</p></div>
+    <div class="b"><div class="box"><svg width="88" height="88" style="filter:hue-rotate(155deg)"><use href="#ic-app"/></svg></div>
+      <span class="flag no">DON'T</span><p>Do not shift the hue. The UI already takes colour from the artwork; the mark must stay constant.</p></div>
+    <div class="b"><div class="box"><svg width="88" height="88" style="opacity:.35"><use href="#ic-app"/></svg></div>
+      <span class="flag no">DON'T</span><p>No translucency. The unsung lines sink into the background with it.</p></div>
+  </div>
+</section>
+
+<!-- ================= 09 compliance ================= -->
+<section>
+  <div class="shead"><div class="n">09</div><h2>M3E compliance check</h2></div>
+  <p class="lede">Checked point by point against the six expressive levers of M3 Expressive and the conventions already set out in the project's <code>M3E-DESIGN-SYSTEM.md</code>.</p>
+
+  <table style="margin-top:24px">
+    <tr><th style="width:120px">Lever</th><th>What this mark does</th></tr>
+    <tr><td>Colour</td><td>Paper-white base + vermilion / warm grey (<code>#D9480F</code> / <code>#8A7663</code>); deep ink only for cursor and wordmark; the container carries a single same-hue gradient</td></tr>
+    <tr><td>Shape</td><td>Capsule (lines) against perfect circle (cursor). Shape difference carries the whole hierarchy; colour only assists</td></tr>
+    <tr><td>Scale</td><td>Line height 8 / cursor Ø14 = 1.75× (output 5.3 / 9.3); the cursor is the only element that leaves the grid</td></tr>
+    <tr><td>Container</td><td><code>r30</code> rounded-square container + tonal gradient (matching "express depth with tone, not shadow")</td></tr>
+    <tr><td>Motion</td><td>Explains state only (where the song is), never produces a decorative loop</td></tr>
+    <tr><td>Type</td><td>Wordmark at a single weight of 700, tracking −0.02em; no colour, no bold line breaks</td></tr>
+    <tr><td>Restraint</td><td>Exactly one strong expressive point in the whole mark (the cursor); sung and unsung differ by one level of lightness, so colour never competes with the cursor</td></tr>
+    <tr><td>Accessibility</td><td>Sung 3.5–4.0:1, unsung 3.5–4.0:1, cursor / wordmark 14.3–16.3:1; the mono version still reads at 16px</td></tr>
+  </table>
+
+  <p class="note">
+    <b>One deliberate deviation:</b> the design system forbids bringing content colours below
+    <code>38% alpha</code>. The "unsung" stroke here does not use alpha but the solid
+    <code>#8A7663</code> — 38% deep ink on a paper-white base measures below the 3:1 floor for
+    graphics, while the solid colour holds above 3.5:1 at both ends of the gradient.
+  </p>
+
+  <div class="files">
+    <b>carpe-icon.svg</b>　app icon, light background (default, the only colour version)<br>
+    <b>carpe-icon-monochrome.svg</b>　flat silhouette<br>
+    <b>carpe-mark.svg / carpe-mark-mono.svg</b>　bare mark (ink on light / mono)<br>
+    <b>carpe-lockup-horizontal.svg / carpe-lockup-vertical.svg</b>　horizontal / vertical lockup<br>
+    <b>android/res/</b>　adaptive icon resources ready to drop into the app (background / foreground / mono layer)<br>
+    <b>tools/generate.py</b>　reproducible geometry and contrast script
+  </div>
+</section>
+
+<footer>
+  <div>CarpeLines brand identity · v1.0</div>
+  <div>Material 3 Expressive · Android adaptive icon 108dp</div>
+</footer>
+
+</div>
+
+<!-- lockup symbols (viewBox-aligned) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <g id="lk">
+    <rect width="360" height="108" fill="#F7F2E9"/>
+    <g transform="translate(12 12) scale(.7778)">
+      <g clip-path="url(#c-sq)"><rect width="108" height="108" fill="url(#g-sol)"/></g>
+      <rect x="25" y="34" width="50" height="8" rx="4" fill="#D9480F"/>
+      <rect x="25" y="50" width="26" height="8" rx="4" fill="#D9480F"/>
+      <rect x="69" y="50" width="15" height="8" rx="4" fill="#8A7663"/>
+      <rect x="25" y="66" width="30" height="8" rx="4" fill="#8A7663"/>
+      <circle cx="60" cy="54" r="7" fill="#1C1917"/>
+    </g>
+    <text x="112" y="67.5" font-family="system-ui,'Segoe UI',sans-serif" font-size="38" font-weight="700"
+          letter-spacing="-0.8" fill="#1C1917">CarpeLines</text>
+  </g>
+  <g id="mk-mark">
+    <rect x="25" y="34" width="50" height="8" rx="4" fill="#D9480F"/>
+    <rect x="25" y="50" width="26" height="8" rx="4" fill="#D9480F"/>
+    <rect x="69" y="50" width="15" height="8" rx="4" fill="#8A7663"/>
+    <rect x="25" y="66" width="30" height="8" rx="4" fill="#8A7663"/>
+    <circle cx="60" cy="54" r="7" fill="#1C1917"/>
+  </g>
+</defs></svg>
+
+</body>
+</html>

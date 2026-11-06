@@ -1,0 +1,30 @@
+# Normalize every text file to LF in the repository and in the working tree so
+# Windows checkouts produce the same diffs as Linux and macOS ones.
+* text=auto eol=lf
+
+# Shell and Gradle launch scripts must stay executable and LF-only.
+*.sh     text eol=lf
+gradlew  text eol=lf
+
+# Windows launch scripts keep their CRLF endings.
+*.bat    text eol=crlf
+*.cmd    text eol=crlf
+
+# Binary assets: never diff, merge or convert these.
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.webp   binary
+*.gif    binary
+*.ico    binary
+*.jar    binary
+*.keystore binary
+*.jks    binary
+*.p12    binary
+*.wav    binary
+*.mp3    binary
+*.ttf    binary
+*.otf    binary
+
+# Keep generated and vendored files out of diff noise.
+*.svg    text

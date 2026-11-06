@@ -1,0 +1,92 @@
+name: Bug report
+description: Something in CarpeLines does not work as expected
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please search existing issues first — duplicates
+        will be closed. For security problems use SECURITY.md instead.
+
+  - type: input
+    id: version
+    attributes:
+      label: CarpeLines version
+      description: Settings → About, or the APK file name.
+      placeholder: "1.0.0 (versionCode 4)"
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device and Android version
+      placeholder: "Pixel 8, Android 16 (API 36)"
+    validations:
+      required: true
+
+  - type: input
+    id: player
+    attributes:
+      label: Player app
+      description: Which app is playing the media session, if relevant.
+      placeholder: "Spotify 9.0.12"
+
+  - type: dropdown
+    id: source
+    attributes:
+      label: Lyrics source
+      options:
+        - Embedded tag
+        - Sibling .lrc file
+        - QQ Music
+        - NetEase Cloud Music
+        - Kugou
+        - LRCLIB
+        - Apple Music
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open the Lyrics tab
+        2. Play a track with word-by-word lyrics
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screen recording
+      description: Attach a logcat excerpt or a screen capture if you have one.
+      render: shell
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true
+        - label: I am running the latest release.
+          required: true

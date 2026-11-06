@@ -1,0 +1,54 @@
+name: Feature request
+description: Suggest an improvement for CarpeLines
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        CarpeLines deliberately has no audio engine or library browser — it
+        drives the player that is already running. Requests that turn it into a
+        music player are out of scope.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the situation you are in, not just the solution.
+      placeholder: "When a track has no word timings, I cannot..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Lyrics rendering
+        - Lyrics sources and matching
+        - Backgrounds and theming
+        - Widgets and media session
+        - Settings
+        - Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true

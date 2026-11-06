@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- System splash colours. CarpeLinesSplash starts from these and blends into the app theme.
+     Brand palette (see logo/README.md): warm ink on a warm paper surface. -->
+<resources>
+    <color name="splash_background">#FFFFFBF4</color>
+    <color name="splash_glyph">#FF1C1917</color>
+</resources>

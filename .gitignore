@@ -1,0 +1,94 @@
+# CarpeLines — repository root ignore rules.
+#
+# The Gradle project lives in src/CarpeLines.KMP, but this file covers the whole
+# tree so build output, local configuration and editor state stay out of the
+# repository no matter which directory a task or IDE creates them in.
+
+# ---- Gradle / Kotlin build output -------------------------------------------
+**/build/
+**/.gradle/
+**/.gradle-local/
+**/.gradle-temp/
+**/.kotlin/
+**/.cxx/
+**/.externalNativeBuild/
+**/captures/
+**/benchmark-results/
+**/graphify-out/
+**/.ksp/
+**/kspCaches/
+**/compose-reports/
+**/lint-results*.xml
+**/lint-results*.html
+*.versionsBackup
+
+# Generated release assets only; the rest of app/src/release stays in git.
+**/app/src/release/generated/
+
+# ---- Local configuration, signing and crash dumps ---------------------------
+**/local.properties
+**/keystore.properties
+**/*.jks
+**/*.keystore
+**/*.apk
+**/*.aab
+hs_err_pid*
+replay_pid*
+*.hprof
+.env
+.env.local
+
+# ---- Local scratch and tooling state ----------------------------------------
+# Assistant / IDE workspace state and device-testing scratch never ship.
+.workbuddy/
+.codebuddy/
+.agents/
+.metadata/
+.device-shots/
+.debug/
+.tmp_dex*/
+.tmp/
+*.tmp
+*.temp
+
+# F-Droid metadata is not published from this repository.
+metadata/
+
+# The logo preview sheet is machine-local: _sheet.html hard-codes absolute paths
+# into this checkout, and _sheet.png is its render.
+logo/tools/_sheet.html
+logo/tools/_sheet.png
+
+# ---- Python tooling (logo/tools) --------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# ---- Logs and merge residue --------------------------------------------------
+*.log
+*.salive
+*.orig
+*.rej
+*.bak
+
+# ---- Editors and OS ----------------------------------------------------------
+.idea/
+.vs/
+*.iml
+CLAUDE.md
+AGENTS.md
+misc.xml
+markdown.xml
+.vscode/
+*.swp
+*.swo
+.DS_Store
+._*
+ehthumbs.db
+Thumbs.db
+desktop.ini

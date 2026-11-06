@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_stats">Statistikk</string>
+    <string name="home_hero_subtitle">Ord-for-ord-tekster for det som spilles på telefonen.</string>
+    <string name="home_now_playing_eyebrow">Spiller nå</string>
+</resources>

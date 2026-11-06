@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Drop-in replacement for app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml.
+     Requires the three drawables next to this file:
+       res/drawable/ic_launcher_bg_m3e.xml
+       res/drawable/ic_launcher_fg_m3e.xml
+       res/drawable/ic_launcher_mono_m3e.xml -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_bg_m3e" />
+    <foreground android:drawable="@drawable/ic_launcher_fg_m3e" />
+    <monochrome android:drawable="@drawable/ic_launcher_mono_m3e" />
+</adaptive-icon>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_stats">收听统计</string>
+    <string name="home_hero_subtitle">为手机上正在播放的音乐显示逐字歌词。</string>
+    <string name="home_now_playing_eyebrow">正在播放</string>
+    <string name="home_idle_title">在任意播放器里放一首歌</string>
+    <string name="home_idle_subtitle">音乐一响，逐字歌词就跟着出现，不用切来切去。</string>
+    <string name="home_now_playing_in_app">%1$s · 正在播放</string>
+    <string name="home_paused_eyebrow">已暂停</string>
+    <string name="home_paused_in_app">%1$s · 已暂停</string>
+    <string name="home_played_players_title">放过的播放器</string>
+    <string name="home_played_players_count">共 %1$d 首</string>
+    <string name="home_played_players_empty">还没有播放记录。在任意播放器里播放音乐，它们的图标会出现在这里。</string>
+    <string name="lyrics_not_found_local_hint">本地没有找到这首歌的歌词。检查音频标签或同名 .lrc 文件，也可以在设置里打开更多歌词源。</string>
+</resources>

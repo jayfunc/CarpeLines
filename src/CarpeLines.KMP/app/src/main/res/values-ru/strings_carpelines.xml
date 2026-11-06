@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_stats">Статистика</string>
+    <string name="home_hero_subtitle">Пословный текст для того, что играет на телефоне.</string>
+    <string name="home_now_playing_eyebrow">Сейчас играет</string>
+</resources>

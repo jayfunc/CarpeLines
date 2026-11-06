@@ -1,0 +1,62 @@
+// Ported from BetterLyrics' Shaders/SnowEffect.cs (WinUI 3 / ComputeSharp), itself ported from
+// https://www.shadertoy.com/view/Mdt3Df. Credit to the original author.
+//
+// The shader writes `snow` as a premultiplied white pixel (`float4(snow)`), so the flakes brighten
+// whatever is behind them instead of painting an opaque layer.
+
+uniform float2 uResolution;  // effect size in pixels, the D2D dispatch size
+uniform float uTime;         // seconds since the page opened, the renderer's accumulator
+uniform float uDensity;      // SnowFlakeOverlayAmount / 100
+uniform float uSpeed;        // SnowFlakeOverlaySpeed
+
+half4 main(float2 fragCoord) {
+    // The renderer feeds integer scene positions and flips them, because Direct2D counts y upwards.
+    float2 xy = floor(fragCoord);
+    float2 position = float2(xy.x, uResolution.y - xy.y);
+
+    float snow = 0.0;
+
+    for (int k = 0; k < 6; k++) {
+        for (int i = 1; i < 12; i++) {
+            float layer = float(k);
+            float depth = float(i);
+            float cellSize = 2.0 + depth * 3.0;
+            float downSpeed = 0.3 + (sin(uTime * 0.4 + float(k + i * 20)) + 1.0) * 0.00008 * uSpeed;
+
+            // `uv` is normalised by the width for both axes, as in the original.
+            float2 uv = position / uResolution.x +
+                float2(
+                    0.01 * sin((uTime + layer * 6185.0) * 0.6 + depth) * (5.0 / depth),
+                    downSpeed * (uTime + layer * 1352.0) * (1.0 / depth));
+
+            float2 uvStep = ceil(uv * cellSize - float2(0.5)) / cellSize;
+
+            float x = fract(sin(dot(
+                uvStep,
+                float2(12.9898 + layer * 12.0, 78.233 + layer * 315.156))) * 43758.5453 +
+                layer * 12.0) - 0.5;
+            float y = fract(sin(dot(
+                uvStep,
+                float2(62.2364 + layer * 23.0, 94.674 + layer * 95.0))) * 62159.8432 +
+                layer * 12.0) - 0.5;
+
+            float randomMagnitude1 = sin(uTime * 2.5) * 0.7 / cellSize;
+            float randomMagnitude2 = cos(uTime * 2.5) * 0.7 / cellSize;
+
+            float d = 5.0 *
+                distance(
+                    uvStep + float2(x * sin(y), y) * randomMagnitude1 +
+                        float2(y, x) * randomMagnitude2,
+                    uv);
+
+            float omiVal = fract(sin(dot(uvStep, float2(32.4691, 94.615))) * 31572.1684);
+
+            if (omiVal < uDensity) {
+                snow += (x + 1.0) * 0.4 *
+                    clamp(1.9 - d * (15.0 + x * 6.3) * (cellSize / 1.4), 0.0, 1.0);
+            }
+        }
+    }
+
+    return half4(snow);
+}

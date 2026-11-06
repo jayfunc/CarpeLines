@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_stats">통계</string>
+    <string name="home_hero_subtitle">휴대폰에서 재생 중인 음악의 가사를 단어별로 표시합니다.</string>
+    <string name="home_now_playing_eyebrow">재생 중</string>
+</resources>

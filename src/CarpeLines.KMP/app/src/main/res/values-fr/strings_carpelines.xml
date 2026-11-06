@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_stats">Statistiques</string>
+    <string name="home_hero_subtitle">Des paroles mot à mot pour tout ce qui joue sur votre téléphone.</string>
+    <string name="home_now_playing_eyebrow">Lecture en cours</string>
+</resources>

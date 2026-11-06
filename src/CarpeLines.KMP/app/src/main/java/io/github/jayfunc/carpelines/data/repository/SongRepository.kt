@@ -1,0 +1,27 @@
+package io.github.jayfunc.carpelines.data.repository
+
+import androidx.paging.PagingData
+import io.github.jayfunc.carpelines.data.model.Song
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+
+interface SongRepository {
+    fun getSongs(): Flow<List<Song>>
+    fun getSongsByAlbum(albumId: Long): Flow<List<Song>>
+    fun getSongsByArtist(artistId: Long): Flow<List<Song>>
+    suspend fun searchSongs(query: String): List<Song>
+    fun getSongById(songId: Long): Flow<Song?>
+    fun getPaginatedSongs(sortOption: io.github.jayfunc.carpelines.data.model.SortOption, storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter): Flow<PagingData<Song>>
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun getPaginatedSongs(): Flow<PagingData<Song>>
+    fun getPaginatedFavoriteSongs(
+        sortOption: io.github.jayfunc.carpelines.data.model.SortOption,
+        storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter
+    ): Flow<PagingData<Song>>
+    suspend fun getFavoriteSongsOnce(
+        storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter
+    ): List<Song>
+    fun getFavoriteSongCountFlow(
+        storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter
+    ): Flow<Int>
+}

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="18 18 72 72" width="108" height="108" role="img" aria-label="CarpeLines">
+  <title>CarpeLines — app icon (light surface, default). Shows the 72dp area the launcher keeps.</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFF6EA"/>
+      <stop offset="1" stop-color="#FFE4C6"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="18" y="18" width="72" height="72" rx="20" fill="url(#bg)"/>
+
+  <g transform="translate(54 54) scale(.6667) translate(-54 -54)">
+    <!-- line 1 — already sung -->
+    <rect x="25" y="34" width="50" height="8" rx="4" fill="#D9480F"/>
+    <!-- line 2 — the line being sung right now -->
+    <rect x="25" y="50" width="26" height="8" rx="4" fill="#D9480F"/>
+    <rect x="69" y="50" width="15" height="8" rx="4" fill="#8A7663"/>
+    <!-- line 3 — still ahead -->
+    <rect x="25" y="66" width="30" height="8" rx="4" fill="#8A7663"/>
+    <!-- time knob -->
+    <circle cx="60" cy="54" r="7" fill="#1C1917"/>
+  </g>
+</svg>

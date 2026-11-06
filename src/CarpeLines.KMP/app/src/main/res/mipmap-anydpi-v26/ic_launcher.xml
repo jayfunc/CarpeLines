@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  CarpeLines adaptive icon. The layers are vectors, so this wins over the
+  mipmap-*dpi/ic_launcher*.png bitmaps on every device (minSdk is 30). The bitmaps
+  are vestigial fallbacks, regenerated from the same geometry by logo/tools/rasterize.py.
+-->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+    <monochrome android:drawable="@drawable/ic_launcher_monochrome" />
+</adaptive-icon>

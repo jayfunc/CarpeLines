@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security report
+    url: https://github.com/jayfunc/CarpeLines/security/advisories/new
+    about: Please report vulnerabilities privately, not in a public issue.
+  - name: Community chat
+    url: https://t.me/carpelines
+    about: Questions about setup, playback or lyrics sources.

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  CarpeLines launcher foreground — the mark: three lyric lines and a time knob.
+
+  Coordinates are the 108dp adaptive-icon canvas. All ink stays inside the 66dp
+  safe circle centred at (54,54); the measured ink box is 59 x 40 at (25,34).
+
+    line 1        x 25 -> 75  (50)   already sung
+    line 2 sung   x 25 -> 51  (26)   the line being sung right now
+    knob          Ø14 at (60,54)     the moment, 59% into line 2
+    line 2 unsung x 69 -> 84  (15)
+    line 3        x 25 -> 55  (30)   still ahead
+
+  Deep ink on the warm paper background (#3B1F00 sung / knob, #9C6A1E unsung).
+  Line radius r4 = half the line height, so every line is a pill. Keep in sync with
+  drawable/ic_launcher_monochrome.xml, drawable/splash_icon.xml and ../logo/.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!--
+      The launcher only keeps the middle 72dp of the 108dp canvas, so the mark is
+      output at 2/3. That puts the ink at 39 x 27 with a 16dp margin inside the
+      visible area — the same proportion the logo was drawn with.
+    -->
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.6667"
+        android:scaleY="0.6667">
+
+    <!-- line 1 — already sung -->
+    <path
+        android:fillColor="#FFD9480F"
+        android:pathData="M25,38 C25,35.790861 26.790861,34 29,34 L71,34 C73.209139,34 75,35.790861 75,38 C75,40.209139 73.209139,42 71,42 L29,42 C26.790861,42 25,40.209139 25,38 Z" />
+
+    <!-- line 2 — sung part -->
+    <path
+        android:fillColor="#FFD9480F"
+        android:pathData="M25,54 C25,51.790861 26.790861,50 29,50 L47,50 C49.209139,50 51,51.790861 51,54 C51,56.209139 49.209139,58 47,58 L29,58 C26.790861,58 25,56.209139 25,54 Z" />
+
+    <!-- line 2 — unsung part -->
+    <path
+        android:fillColor="#FF8A7663"
+        android:pathData="M69,54 C69,51.790861 70.790861,50 73,50 L80,50 C82.209139,50 84,51.790861 84,54 C84,56.209139 82.209139,58 80,58 L73,58 C70.790861,58 69,56.209139 69,54 Z" />
+
+    <!-- line 3 — still ahead -->
+    <path
+        android:fillColor="#FF8A7663"
+        android:pathData="M25,70 C25,67.790861 26.790861,66 29,66 L51,66 C53.209139,66 55,67.790861 55,70 C55,72.209139 53.209139,74 51,74 L29,74 C26.790861,74 25,72.209139 25,70 Z" />
+
+    <!-- time knob -->
+    <path
+        android:fillColor="#FFD9480F"
+        android:pathData="M60,47 C63.865993,47 67,50.134007 67,54 C67,57.865993 63.865993,61 60,61 C56.134007,61 53,57.865993 53,54 C53,50.134007 56.134007,47 60,47 Z" />
+
+    </group>
+</vector>

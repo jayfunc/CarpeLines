@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="21 30 67 48" width="134" height="96" role="img" aria-label="CarpeLines">
+  <title>CarpeLines — mark, single colour (light surfaces / print / themed icon)</title>
+  <g fill="currentColor" color="#1C1917">
+    <rect x="25" y="34" width="50" height="8" rx="4"/>
+    <rect x="25" y="50" width="26" height="8" rx="4"/>
+    <rect x="69" y="50" width="15" height="8" rx="4" opacity=".45"/>
+    <rect x="25" y="66" width="30" height="8" rx="4" opacity=".45"/>
+    <circle cx="60" cy="54" r="7"/>
+  </g>
+</svg>
