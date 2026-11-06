@@ -346,9 +346,13 @@ internal fun LyricsShareSheet(
                     ),
                 ),
                 orientation = M3EConnectedOrientation.Horizontal,
+                // The bottom inset is the sheet's own padding, so it matches the 16dp the other
+                // sheets close with instead of hugging the navigation bar.
                 modifier = Modifier.padding(
-                    horizontal = M3ESpacing.large,
-                    vertical = M3ESpacing.small,
+                    start = M3ESpacing.large,
+                    end = M3ESpacing.large,
+                    top = M3ESpacing.small,
+                    bottom = M3ESpacing.large,
                 ),
             )
         }
@@ -826,9 +830,16 @@ private fun LyricsSelectionSheet(
                         emphasis = M3EActionEmphasis.Filled,
                     ),
                 ),
+                // The bottom inset is the sheet's own padding, so the confirm clears the
+                // navigation bar by the same 16dp the other sheets use.
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = M3ESpacing.large, vertical = M3ESpacing.medium),
+                    .padding(
+                        start = M3ESpacing.large,
+                        end = M3ESpacing.large,
+                        top = M3ESpacing.medium,
+                        bottom = M3ESpacing.large,
+                    ),
                 height = M3ESize.minimumTarget,
                 loneActionAlignment = Alignment.End,
             )
