@@ -5,7 +5,6 @@ import io.github.jayfunc.carpelines.presentation.navigation.navigateSafely
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
@@ -142,7 +141,6 @@ import io.github.jayfunc.carpelines.ui.theme.generateColorSchemeFromSeed
 import io.github.jayfunc.carpelines.utils.AppLocaleManager
 import io.github.jayfunc.carpelines.utils.CrashHandler
 import io.github.jayfunc.carpelines.utils.LogUtils
-import io.github.jayfunc.carpelines.utils.PhoneOrientationPolicy
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -820,12 +818,5 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
     }
-
-    // configChanges keeps this activity alive across fold/unfold, so re-check the phone lock here.
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        PhoneOrientationPolicy.apply(this)
-    }
-
 
 }

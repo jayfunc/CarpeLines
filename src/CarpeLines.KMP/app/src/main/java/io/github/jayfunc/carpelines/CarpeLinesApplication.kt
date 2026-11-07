@@ -25,7 +25,6 @@ import io.github.jayfunc.carpelines.utils.FolderArtworkSettingsCoordinator
 import io.github.jayfunc.carpelines.utils.AppLocaleManager
 import io.github.jayfunc.carpelines.utils.CrashHandler
 import io.github.jayfunc.carpelines.utils.MediaMetadataRetrieverPool
-import io.github.jayfunc.carpelines.utils.PhoneOrientationPolicy
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -159,8 +158,6 @@ class CarpeLinesApplication : Application(), ImageLoaderFactory, Configuration.P
         externalPlaybackRecorder.get().start(startupScope)
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
-
-        registerActivityLifecycleCallbacks(PhoneOrientationPolicy)
 
         syncManager.get().start()
 
