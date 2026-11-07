@@ -2,7 +2,8 @@ name: CI
 
 # 只允许手动执行：每次运行都会构建一个签名的 APK，并自动创建/更新对应频道的
 # GitHub Release（资产直接是 APK，不再包 zip）。
-# 版本号取自 src/CarpeLines.KMP/version.properties，构建号是提交数，构建哈希是短 hash。
+# 版本号取自 src/CarpeLines.KMP/version.properties；发布 tag 用 HEAD 提交时间生成，
+# versionName 和 APK 名用提交数，versionCode 的基数也是提交数，构建哈希是短 hash。
 on:
   workflow_dispatch:
     inputs:
@@ -71,12 +72,17 @@ jobs:
           fi
           build="$(git rev-list --count HEAD)"
           hash="$(git rev-parse --short=7 HEAD)"
-          version_name="${version}-${channel}.${build}-${hash}"
-          tag="v${version_name}"
+          channel_label="${channel^}"
+          # tag 用 HEAD 的提交时间（UTC）：定长，GitHub 的字符串排序等价于时间序。
+          # APK 名和 versionName 仍用提交数，更新检查从资产名读取它。
+          stamp="$(date -u -d "@$(git show -s --format=%ct HEAD)" +%Y%m%d.%H%M)"
+          version_name="${version}-${channel}.${build}"
+          tag="v${version}-${channel}.${stamp}"
           apk_name="CarpeLines-${version_name}-universal.apk"
 
           {
             echo "VERSION=$version"
+            echo "CHANNEL_LABEL=$channel_label"
             echo "BUILD=$build"
             echo "HASH=$hash"
             echo "VERSION_NAME=$version_name"
@@ -119,6 +125,7 @@ jobs:
           ./gradlew :app:assembleRelease
           -Pcarpelines.channel=${{ inputs.channel }}
           -Pcarpelines.enableAbiSplits=false
+          -PAPP_BUILD_TIME_EPOCH=$(date +%s)
           --stacktrace
 
       - name: Collect APK
@@ -142,10 +149,9 @@ jobs:
           set -euo pipefail
           notes="$RUNNER_TEMP/release-notes.md"
           {
-            echo "### $TAG"
-            echo
             echo "| | |"
             echo "|---|---|"
+            echo "| Tag | \`$TAG\` |"
             echo "| Channel | \`${{ inputs.channel }}\` |"
             echo "| Version | \`$VERSION\` |"
             echo "| Build | \`$BUILD\` |"
@@ -162,7 +168,7 @@ jobs:
           set -euo pipefail
           notes="$RUNNER_TEMP/release-notes.md"
           apk="$RUNNER_TEMP/$APK_NAME"
-          title="CarpeLines $VERSION ${{ inputs.channel }} (build $BUILD)"
+          title="CarpeLines $VERSION $CHANNEL_LABEL $BUILD"
           prerelease_flag="--prerelease"
           if [ "${{ inputs.channel }}" = "stable" ]; then
             prerelease_flag="--latest"

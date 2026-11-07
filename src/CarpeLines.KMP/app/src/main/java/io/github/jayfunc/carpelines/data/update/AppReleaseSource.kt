@@ -57,9 +57,12 @@ class AppReleaseSource @Inject constructor(
 
         /**
          * Newest release of [channel] with an APK for this device. CI tags releases
-         * `v<version>-<channel>.<build>-<hash>` and names assets
-         * `CarpeLines-<version>-<channel>.<build>-<hash>-<abi|universal>.apk`; legacy tags such
-         * as `v0.5.1` and `v0.3.0-alpha.16` still resolve to their channel.
+         * `v<version>-<channel>.<stamp>` (commit time `yyyyMMdd.HHmm`) so GitHub can order
+         * same-day releases, while the asset is named
+         * `CarpeLines-<version>-<channel>.<build>-<abi|universal>.apk`. The version that is
+         * shown and compared comes from the asset name; older releases carry the commit count in
+         * both places and may append `-<hash>`. Legacy tags such as `v0.5.1` and
+         * `v0.3.0-alpha.16` still resolve to their channel.
          */
         internal fun parseLatest(
             releases: JSONArray,
@@ -73,14 +76,19 @@ class AppReleaseSource @Inject constructor(
                 .filter { it.optBoolean("prerelease") == expectPrerelease }
                 .mapNotNull { release ->
                     val tag = release.optString("tag_name")
-                    val version = BuildVersion.parse(tag) ?: return@mapNotNull null
+                    val tagVersion = BuildVersion.parse(tag) ?: return@mapNotNull null
                     // Legacy stable tags predate the channel token.
-                    if ((version.channel ?: UpdateChannel.STABLE) != channel) return@mapNotNull null
+                    if ((tagVersion.channel ?: UpdateChannel.STABLE) != channel) {
+                        return@mapNotNull null
+                    }
                     val asset = pickAsset(release.optJSONArray("assets"), supportedAbis)
                         ?: return@mapNotNull null
+                    val versionName = (versionNameFromAsset(asset.optString("name"))
+                        ?: tag.removePrefix("v")).withoutCommitHash()
+                    val version = BuildVersion.parse(versionName) ?: tagVersion
                     version to AppRelease(
                         channel = channel,
-                        versionName = tag.removePrefix("v"),
+                        versionName = versionName,
                         versionCode = null,
                         apkUrl = asset.optString("browser_download_url"),
                         apkSizeBytes = asset.optLong("size", -1L).takeIf { it > 0 },
@@ -90,6 +98,15 @@ class AppReleaseSource @Inject constructor(
                 .maxByOrNull { (version, _) -> version }
                 ?.second
         }
+
+        // ABIs contain hyphens (`arm64-v8a`), so match the known set instead of a generic suffix.
+        private val ASSET_NAME_PATTERN = Regex(
+            """^CarpeLines-(.+)-(universal|arm64-v8a|armeabi-v7a|x86|x86_64)\.apk$"""
+        )
+
+        /** `CarpeLines-<versionName>-<abi>.apk` → `<versionName>`. */
+        private fun versionNameFromAsset(assetName: String): String? =
+            ASSET_NAME_PATTERN.matchEntire(assetName)?.groupValues?.get(1)
 
         private fun pickAsset(assets: JSONArray?, supportedAbis: List<String>): JSONObject? {
             if (assets == null) return null

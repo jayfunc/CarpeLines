@@ -181,11 +181,92 @@ class AppReleaseSourceTest {
         val beta = AppReleaseSource.parseLatest(releases, UpdateChannel.BETA, listOf("arm64-v8a"))!!
         val stable = AppReleaseSource.parseLatest(releases, UpdateChannel.STABLE, listOf("arm64-v8a"))!!
 
-        assertThat(alpha.versionName).isEqualTo("1.0.0-alpha.58-8b2d4e1")
+        // Old names carry a commit hash; users see the version without it.
+        assertThat(alpha.versionName).isEqualTo("1.0.0-alpha.58")
         assertThat(alpha.apkUrl).endsWith("-universal.apk")
-        assertThat(beta.versionName).isEqualTo("1.0.0-beta.58-8b2d4e1")
+        assertThat(beta.versionName).isEqualTo("1.0.0-beta.58")
         assertThat(beta.channel).isEqualTo(UpdateChannel.BETA)
-        assertThat(stable.versionName).isEqualTo("1.0.0-stable.57-3f9a1c2")
+        assertThat(stable.versionName).isEqualTo("1.0.0-stable.57")
+    }
+
+    @Test
+    fun `hashless tags resolve and compare against hash-carrying installs`() {
+        val releases = JSONArray(
+            listOf(
+                stableReleaseJson("v1.0.0-stable.57"),
+                prereleaseJson("v1.0.0-alpha.58", abis = listOf("universal")),
+            ).joinToString(prefix = "[", postfix = "]")
+        )
+
+        val alpha = AppReleaseSource.parseLatest(releases, UpdateChannel.ALPHA, listOf("arm64-v8a"))!!
+
+        assertThat(alpha.versionName).isEqualTo("1.0.0-alpha.58")
+        assertThat(alpha.isNewerThan("1.0.0-alpha.57-3f9a1c2", 1057)).isTrue()
+        // Same build, installed name still carries the hash: not an upgrade.
+        assertThat(alpha.isNewerThan("1.0.0-alpha.58-8b2d4e1", 1058)).isFalse()
+        assertThat(stableAppRelease("1.0.0-stable.57").isNewerThan("1.0.0-stable.56-abc1234", 1056)).isTrue()
+    }
+
+    @Test
+    fun `commit-time stamps order chronologically within a day`() {
+        assertThat(
+            alphaAppRelease("1.0.0-alpha.20261106.1357")
+                .isNewerThan("1.0.0-alpha.20261106.1224", 0)
+        ).isTrue()
+        assertThat(
+            alphaAppRelease("1.0.0-alpha.20261106.1224")
+                .isNewerThan("1.0.0-alpha.20261106.1357", 0)
+        ).isFalse()
+        assertThat(
+            alphaAppRelease("1.0.0-alpha.20261107.0905")
+                .isNewerThan("1.0.0-alpha.20261106.2359", 0)
+        ).isTrue()
+        // Legacy commit-count builds stay comparable: every stamped build is newer than them.
+        assertThat(
+            alphaAppRelease("1.0.0-alpha.20261106.1224")
+                .isNewerThan("1.0.0-alpha.57-3f9a1c2", 1057)
+        ).isTrue()
+    }
+
+    @Test
+    fun `timestamp tags are discoverable and the newest commit time wins`() {
+        val releases = JSONArray(
+            listOf(
+                prereleaseJson("v1.0.0-alpha.20261106.1224", abis = listOf("universal")),
+                prereleaseJson("v1.0.0-alpha.20261106.1357", abis = listOf("universal")),
+            ).joinToString(prefix = "[", postfix = "]")
+        )
+
+        assertThat(
+            AppReleaseSource.parseLatest(releases, UpdateChannel.ALPHA, listOf("arm64-v8a"))!!.versionName
+        ).isEqualTo("1.0.0-alpha.20261106.1357")
+    }
+
+    @Test
+    fun `stamped tag offers the build-named asset version`() {
+        val releases = JSONArray(
+            listOf(
+                releaseJson(
+                    tag = "v1.0.0-alpha.20261106.1212",
+                    prerelease = true,
+                    assetsJson = """[{"name":"CarpeLines-1.0.0-alpha.9-universal.apk","size":1,
+                        "browser_download_url":"https://example.invalid/a.apk"}]""",
+                ),
+                releaseJson(
+                    tag = "v1.0.0-alpha.20261106.1342",
+                    prerelease = true,
+                    assetsJson = """[{"name":"CarpeLines-1.0.0-alpha.12-universal.apk","size":1,
+                        "browser_download_url":"https://example.invalid/b.apk"}]""",
+                ),
+            ).joinToString(prefix = "[", postfix = "]")
+        )
+
+        val latest = AppReleaseSource.parseLatest(releases, UpdateChannel.ALPHA, listOf("arm64-v8a"))!!
+
+        assertThat(latest.versionName).isEqualTo("1.0.0-alpha.12")
+        assertThat(latest.isNewerThan("1.0.0-alpha.9", 1009)).isTrue()
+        // The stamped tag must not make the release newer than the version it actually ships.
+        assertThat(latest.isNewerThan("1.0.0-alpha.12", 1012)).isFalse()
     }
 
     @Test
@@ -200,7 +281,7 @@ class AppReleaseSourceTest {
 
         assertThat(
             AppReleaseSource.parseLatest(releases, UpdateChannel.STABLE, emptyList())!!.versionName
-        ).isEqualTo("1.0.0-stable.60-1111111")
+        ).isEqualTo("1.0.0-stable.60")
     }
 
     @Test

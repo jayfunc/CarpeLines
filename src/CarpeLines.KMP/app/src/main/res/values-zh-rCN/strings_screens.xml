@@ -205,6 +205,9 @@
     <string name="about_slogan">撷句成章，拾韵成行</string>
     <string name="about_tagline">为手机上正在播放的音乐提供逐字同步歌词。</string>
     <string name="about_version_format">版本 v%1$s</string>
+    <string name="about_build_time_format">构建时间：%1$s</string>
+    <string name="about_commit_format">提交 %1$s</string>
+    <string name="cd_about_open_commit">在 GitHub 上打开提交 %1$s</string>
     <string name="screen_about">关于</string>
     <string name="about_maintainer_title">维护者</string>
     <string name="about_maintainer_subtitle">CarpeLines 由 @jayfunc 开发与维护。</string>

@@ -16,8 +16,8 @@ enum class UpdateChannel(val storageKey: String) {
 
         /**
          * The channel the running build was distributed through, encoded in its version name
-         * (`1.0.0-beta.57-3f9a1c2`). Legacy stable names carry no channel token, while legacy CI
-         * and PR builds (which have always used a `-` suffix) count as alpha.
+         * (`1.0.0-beta.57`). Legacy stable names carry no channel token, while legacy CI and PR
+         * builds (which have always used a `-` suffix) count as alpha.
          */
         fun ofVersionName(versionName: String): UpdateChannel =
             BuildVersion.parse(versionName)?.channel
@@ -26,8 +26,11 @@ enum class UpdateChannel(val storageKey: String) {
 }
 
 /**
- * A published build, as it appears in a release tag or the installed version name:
- * `<major>.<minor>.<patch>[-<channel>.<build>][-<hash>]`, for example `1.0.0-beta.57-3f9a1c2`.
+ * A published build version, as it appears in a release tag, an APK asset name, or the installed
+ * version name: `<major>.<minor>.<patch>[-<channel>.<build-or-stamp>][-<hash>]`, for example
+ * `1.0.0-beta.57` or the stamped tag `1.0.0-beta.20261106.1357`. A stamp is the commit time
+ * (`yyyyMMdd.HHmm`, UTC) flattened to digits, so tagged builds sort chronologically; both forms
+ * compare numerically.
  *
  * Legacy names `0.5.1` (stable) and `0.3.0-alpha.16` (alpha) parse as well, so an installed app
  * can still compare itself against builds from the old pipelines.
@@ -37,7 +40,8 @@ internal data class BuildVersion(
     val minor: Int,
     val patch: Int,
     val channel: UpdateChannel?,
-    val build: Int,
+    /** Commit count, or a commit-time stamp flattened to digits (`202611061357`) in release tags. */
+    val build: Long,
     val hash: String?,
 ) : Comparable<BuildVersion> {
 
@@ -53,7 +57,7 @@ internal data class BuildVersion(
 
     companion object {
         private val PATTERN = Regex(
-            """^v?(\d+)\.(\d+)\.(\d+)(?:-(alpha|beta|stable|dev)\.(\d+))?(?:-([0-9a-f]{7,40}))?$"""
+            """^v?(\d+)\.(\d+)\.(\d+)(?:-(alpha|beta|stable|dev)\.(\d+(?:\.\d+)?))?(?:-([0-9a-f]{7,40}))?$"""
         )
 
         fun parse(value: String): BuildVersion? {
@@ -68,12 +72,17 @@ internal data class BuildVersion(
                     UpdateChannel.STABLE.storageKey -> UpdateChannel.STABLE
                     else -> null
                 },
-                build = groups[5].toIntOrNull() ?: 0,
+                build = groups[5].replace(".", "").toLongOrNull() ?: 0L,
                 hash = groups[6].takeIf { it.isNotEmpty() },
             )
         }
     }
 }
+
+private val COMMIT_HASH_SUFFIX = Regex("""-[0-9a-f]{7,40}$""")
+
+/** Strips the `-<commit>` suffix that older releases and installs carry in their version names. */
+internal fun String.withoutCommitHash(): String = replace(COMMIT_HASH_SUFFIX, "")
 
 /** A published build that can be offered to the user. */
 data class AppRelease(

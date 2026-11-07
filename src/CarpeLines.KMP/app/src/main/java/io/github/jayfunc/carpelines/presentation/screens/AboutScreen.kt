@@ -21,6 +21,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -94,6 +95,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
+import io.github.jayfunc.carpelines.BuildConfig
 import io.github.jayfunc.carpelines.R
 import io.github.jayfunc.carpelines.presentation.components.CollapsibleCommonTopBar
 import io.github.jayfunc.carpelines.presentation.components.MiniPlayerHeight
@@ -105,6 +107,10 @@ import io.github.jayfunc.carpelines.ui.theme.m3eContentWidth
 import io.github.jayfunc.carpelines.utils.BrandName
 import kotlinx.coroutines.launch
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import kotlin.math.roundToInt
 
 private data class Contributor(
@@ -291,6 +297,9 @@ fun AboutScreen(
             item(key = "hero_card") {
                 AboutHeroCard(
                     versionName = versionName,
+                    buildTime = formatBuildTime(BuildConfig.BUILD_TIME_EPOCH_SECONDS),
+                    commitShort = BuildConfig.GIT_COMMIT_SHORT,
+                    commitSha = BuildConfig.GIT_COMMIT_SHA,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
@@ -363,9 +372,13 @@ fun AboutScreen(
 @Composable
 private fun AboutHeroCard(
     versionName: String,
+    buildTime: String,
+    commitShort: String,
+    commitSha: String,
     modifier: Modifier = Modifier,
 ) {
     val heroShape = AbsoluteSmoothCornerShape(30.dp, 60)
+    val context = LocalContext.current
 
     Surface(
         modifier = modifier,
@@ -427,9 +440,73 @@ private fun AboutHeroCard(
                         fontWeight = FontWeight.SemiBold,
                     )
                 }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    AboutInfoPill(
+                        text = stringResource(R.string.about_build_time_format, buildTime),
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+
+                    if (commitShort.isNotBlank()) {
+                        AboutInfoPill(
+                            text = stringResource(R.string.about_commit_format, commitShort),
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            onClickLabel = stringResource(
+                                R.string.cd_about_open_commit,
+                                commitShort,
+                            ),
+                            onClick = { openUrl(context, "$SourceRepoUrl/commit/$commitSha") },
+                        )
+                    }
+                }
             }
         }
     }
+}
+
+/** A capsule chip matching the version pill, optionally tappable. */
+@Composable
+private fun AboutInfoPill(
+    text: String,
+    containerColor: Color,
+    contentColor: Color,
+    modifier: Modifier = Modifier,
+    onClickLabel: String? = null,
+    onClick: (() -> Unit)? = null,
+) {
+    Text(
+        text = text,
+        modifier = modifier
+            .clip(CircleShape)
+            .background(containerColor)
+            .then(
+                if (onClick != null) {
+                    Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = LocalIndication.current,
+                        role = Role.Button,
+                        onClickLabel = onClickLabel,
+                        onClick = onClick,
+                    )
+                } else {
+                    Modifier
+                }
+            )
+            .padding(horizontal = 12.dp, vertical = 7.dp),
+        style = MaterialTheme.typography.labelLarge,
+        fontWeight = FontWeight.Medium,
+        color = contentColor,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+    )
 }
 
 /** The CarpeLines mark: three lyric lines and the time knob, from `logo/`. */
@@ -822,6 +899,16 @@ private fun expressiveListShape(index: Int, count: Int): AbsoluteSmoothCornerSha
         else -> AbsoluteSmoothCornerShape(inner, 60)
     }
 }
+
+/** Formats the build instant in the device timezone and locale. */
+private fun formatBuildTime(epochSeconds: Long): String =
+    if (epochSeconds <= 0L) {
+        "N/A"
+    } else {
+        Instant.ofEpochSecond(epochSeconds)
+            .atZone(ZoneId.systemDefault())
+            .format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT))
+    }
 
 private fun openUrl(context: Context, url: String) {
     val uri = try {

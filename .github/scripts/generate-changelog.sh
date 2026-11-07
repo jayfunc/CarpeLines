@@ -12,7 +12,8 @@ cd "$repo_root"
 repo_url="${GITHUB_SERVER_URL:-https://github.com}/${GITHUB_REPOSITORY:-jayfunc/CarpeLines}"
 
 # Previous published tag of this channel among HEAD's ancestors. New-format tags look like
-# v1.0.0-beta.57-3f9a1c2; legacy tags are v0.5.1 and v0.3.0-alpha.16.
+# v1.0.0-beta.20261106.1357 (older ones use the commit count, e.g. v1.0.0-beta.57-3f9a1c2);
+# legacy tags are v0.5.1 and v0.3.0-alpha.16.
 prev=""
 while IFS= read -r candidate; do
   [ "$candidate" = "$tag" ] && continue

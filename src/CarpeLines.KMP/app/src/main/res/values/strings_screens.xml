@@ -210,6 +210,9 @@
     <string name="about_slogan" tools:ignore="MissingTranslation">Seize the Line, Keep the Time</string>
     <string name="about_tagline">Word-by-word synced lyrics for whatever is playing on your phone.</string>
     <string name="about_version_format">Version v%1$s</string>
+    <string name="about_build_time_format" tools:ignore="MissingTranslation">Build time: %1$s</string>
+    <string name="about_commit_format" tools:ignore="MissingTranslation">Commit %1$s</string>
+    <string name="cd_about_open_commit" tools:ignore="MissingTranslation">Open commit %1$s on GitHub</string>
     <string name="screen_about">About</string>
     <string name="about_maintainer_title">Maintainer</string>
     <string name="about_maintainer_subtitle">CarpeLines is built and maintained by @jayfunc.</string>

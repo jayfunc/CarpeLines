@@ -19,11 +19,17 @@ version=1.0.0
 Gradle derives everything else from the checkout:
 
 - **Build number** — `git rev-list --count HEAD`.
+- **Release stamp** — the `HEAD` commit time in UTC, formatted `yyyyMMdd.HHmm`, for example
+  `20261106.1357`. It is used only in the release tag.
 - **Commit hash** — the first 7 characters of `HEAD`.
-- **`versionName`** — `<version>-<channel>.<build>-<hash>`, for example
-  `1.0.0-beta.57-3f9a1c2`.
-- **`versionCode`** — `1000` (`APP_VERSION_CODE_BASE`) plus the build number. It only grows
-  with the commit count, so same-channel upgrades install in place.
+- **`versionName`** — `<version>-<channel>.<build>`, for example `1.0.0-beta.57`.
+- **`versionCode`** — `1000` (`APP_VERSION_CODE_BASE`) plus the build number. It only grows with
+  the commit count, so same-channel upgrades install in place.
+
+The tag uses the stamp because GitHub Releases sorts same-day releases by comparing tag strings,
+not numbers: a variable-length build number would put `alpha.9` above `alpha.12`. The APK name and
+`versionName` keep the short build number, and the in-app updater reads the released version from
+the APK asset name.
 
 The channel comes from `-Pcarpelines.channel=alpha|beta|stable`. Local builds default to `dev`.
 Both values can still be pinned for a single build:
@@ -39,12 +45,19 @@ checks out with `fetch-depth: 0`.
 
 | Channel | GitHub release | Tag | APK asset |
 | --- | --- | --- | --- |
-| `alpha` | prerelease | `v1.0.0-alpha.57-3f9a1c2` | `CarpeLines-1.0.0-alpha.57-3f9a1c2-universal.apk` |
-| `beta` | prerelease | `v1.0.0-beta.57-3f9a1c2` | `CarpeLines-1.0.0-beta.57-3f9a1c2-universal.apk` |
-| `stable` | latest release | `v1.0.0-stable.57-3f9a1c2` | `CarpeLines-1.0.0-stable.57-3f9a1c2-universal.apk` |
+| `alpha` | prerelease | `v1.0.0-alpha.20261106.1357` | `CarpeLines-1.0.0-alpha.57-universal.apk` |
+| `beta` | prerelease | `v1.0.0-beta.20261106.1357` | `CarpeLines-1.0.0-beta.57-universal.apk` |
+| `stable` | latest release | `v1.0.0-stable.20261106.1357` | `CarpeLines-1.0.0-stable.57-universal.apk` |
 
-The APK name encodes channel, version, build number and commit hash; `versionName` carries the
-same information inside the app. ABI-split builds replace `-universal` with the ABI name.
+The release title is `CarpeLines <version> <Channel> <build>`, for example
+`CarpeLines 1.0.0 Alpha 15`. It is cosmetic: GitHub orders releases by the tag (created date, then
+the tag's pre-release string), so the title never affects sorting.
+
+The tag carries version, channel and commit-time stamp; the APK asset and `versionName` carry the
+build number instead, and assets also name the ABI. Running the workflow again for the same
+commit produces the same stamp, so it updates the existing release instead of creating a second
+one. ABI-split builds replace `-universal` with the ABI name. The release body repeats the tag,
+build number and commit link.
 
 ## Required Local Checks
 
@@ -127,10 +140,15 @@ So commit messages should follow `type(scope): summary` for readable release not
 The Updates screen (`data/update/`) reads the GitHub releases feed and discovers one channel at a
 time:
 
-- Tags are parsed as `<version>[-<channel>.<build>][-<hash>]`. Legacy tags `v0.5.1` and
-  `v0.3.0-alpha.16` still resolve to their channel.
+- Tags supply the channel and GitHub's ordering; they are parsed as
+  `<version>[-<channel>.<stamp>][-<hash>]`, where `<stamp>` is the commit time (`yyyyMMdd.HHmm`)
+  or, for older releases, the commit count. Legacy tags `v0.5.1` and `v0.3.0-alpha.16` still
+  resolve to their channel.
+- The released version, used for display and comparison, comes from the asset name
+  `CarpeLines-<versionName>-<abi>.apk`, which carries the build number (`1.0.0-alpha.15`).
 - Stable releases are non-prereleases; alpha and beta are prereleases distinguished by the tag.
 - Asset lookup prefers the device ABI, then the `-universal` APK.
 
-Because the tag scheme changed, already-installed builds from the old pipeline cannot parse the
-new releases; users need one manual install to get back onto automatic updates.
+Because the tag scheme changed, builds installed from commit-count releases (up to
+`v1.0.0-alpha.12`) cannot parse commit-time stamps; users need one manual install of the first
+stamped release to get back onto automatic updates.

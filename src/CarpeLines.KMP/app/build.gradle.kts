@@ -42,12 +42,15 @@ val enableComposeCompilerReports = providers.gradleProperty("carpelines.enableCo
 // 版本号派生
 //
 // 版本号唯一来源是 version.properties 的 version=<major>.<minor>.<patch>，发版只改这一行。
-// 构建号是 HEAD 可达提交数，构建哈希是 HEAD 的 7 位短 hash。
+// 构建标识是 HEAD 提交时间（UTC，yyyyMMdd.HHmm），构建哈希是 HEAD 的 7 位短 hash。
 // 频道由 -Pcarpelines.channel=alpha|beta|stable 指定，本地构建默认 dev。
 //
-//   versionName = <version>-<channel>.<commit count>-<short hash>
-//                 例如 1.0.0-beta.57-3f9a1c2
+//   versionName = <version>-<channel>.<commit count>
+//                 例如 1.0.0-beta.57
 //   versionCode = 基数(APP_VERSION_CODE_BASE，默认 1000) + 提交数
+//
+// 发布 tag 由 CI 另用提交时间（<channel>.<yyyyMMdd.HHmm>）生成，用于 GitHub Releases
+// 的同日排序；APK 名和 versionName 保持简短的构建号形式，更新检查也从资产名读取它。
 //
 // 单次构建仍可覆盖：-PAPP_VERSION_NAME=... -PAPP_VERSION_CODE=...
 // ---------------------------------------------------------------------------
@@ -84,10 +87,15 @@ val appVersionCodeBase = providers.gradleProperty("APP_VERSION_CODE_BASE")
     .orNull?.toIntOrNull() ?: 1000
 val gitCommitCount = gitOutput("rev-list", "--count", "HEAD")?.toIntOrNull()
 val gitCommitHash = gitOutput("rev-parse", "--short=7", "HEAD")
-
+val gitCommitSha = gitOutput("rev-parse", "HEAD")
+// CI 传入实际构建时刻；本地构建回退到提交时间，避免配置缓存把旧的时间戳留在 APK 里。
+val buildTimeEpochSeconds = providers.gradleProperty("APP_BUILD_TIME_EPOCH")
+    .orNull?.toLongOrNull()
+    ?: gitOutput("show", "-s", "--format=%ct", "HEAD")?.toLongOrNull()
+    ?: 0L
 val gitVersionName =
-    if (gitCommitCount != null && gitCommitHash != null) {
-        "$appVersionNumber-$buildChannel.$gitCommitCount-$gitCommitHash"
+    if (gitCommitCount != null) {
+        "$appVersionNumber-$buildChannel.$gitCommitCount"
     } else {
         appVersionNumber
     }
@@ -143,6 +151,10 @@ android {
         targetSdk = 37
         versionCode = appVersionCode
         versionName = appVersionName
+
+        buildConfigField("String", "GIT_COMMIT_SHA", "\"${gitCommitSha.orEmpty()}\"")
+        buildConfigField("String", "GIT_COMMIT_SHORT", "\"${gitCommitHash.orEmpty()}\"")
+        buildConfigField("long", "BUILD_TIME_EPOCH_SECONDS", "${buildTimeEpochSeconds}L")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -221,9 +233,9 @@ android {
 }
 
 // 产物名带完整的发布标识，例如
-//   CarpeLines-1.0.0-beta.57-3f9a1c2-universal.apk
-//   CarpeLines-1.0.0-alpha.57-3f9a1c2-arm64-v8a.apk
-// versionName 已包含频道、版本号、构建号和 commit hash；这里补上 ABI（关闭 ABI 拆分时
+//   CarpeLines-1.0.0-beta.57-universal.apk
+//   CarpeLines-1.0.0-alpha.57-arm64-v8a.apk
+// versionName 已包含频道、版本号和构建号；这里补上 ABI（关闭 ABI 拆分时
 // 写 universal），未签名构建补 -unsigned，非 release 构建类型补构建类型名。
 androidComponents {
     onVariants { variant ->

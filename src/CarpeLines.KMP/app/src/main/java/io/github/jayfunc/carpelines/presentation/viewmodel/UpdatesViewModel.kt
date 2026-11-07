@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.jayfunc.carpelines.data.update.AppUpdateManager
 import io.github.jayfunc.carpelines.data.update.UpdateChannel
 import io.github.jayfunc.carpelines.data.update.UpdateStatus
+import io.github.jayfunc.carpelines.data.update.withoutCommitHash
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -28,7 +29,7 @@ class UpdatesViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val initialState = UpdatesUiState(
-        installedVersion = updateManager.installedVersionName,
+        installedVersion = updateManager.installedVersionName.withoutCommitHash(),
         installedChannel = updateManager.installedChannel,
         selectedChannel = updateManager.installedChannel,
         autoCheckEnabled = false,
