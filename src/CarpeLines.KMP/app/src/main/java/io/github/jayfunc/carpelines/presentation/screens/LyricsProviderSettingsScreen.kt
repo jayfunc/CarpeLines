@@ -55,6 +55,7 @@ import io.github.jayfunc.carpelines.presentation.components.MiniPlayerHeight
 import io.github.jayfunc.carpelines.presentation.settings.search.settingHighlight
 import io.github.jayfunc.carpelines.presentation.viewmodel.LyricsProviderSettingsViewModel
 import io.github.jayfunc.carpelines.ui.m3e.M3ETextField
+import io.github.jayfunc.carpelines.ui.theme.M3EShape
 import io.github.jayfunc.carpelines.ui.theme.m3eContentWidth
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
@@ -266,7 +267,7 @@ fun LyricsProviderSettingsScreen(
                     leadingIcon = {
                         Icon(Icons.Rounded.Translate, null, tint = MaterialTheme.colorScheme.secondary)
                     },
-                    shape = settingsGroupItemShape(index = 0, count = 2)
+                    shape = M3EShape.groupedCards(index = 0, count = 2)
                 )
             }
 
@@ -279,7 +280,7 @@ fun LyricsProviderSettingsScreen(
                     leadingIcon = {
                         Icon(Icons.Rounded.Translate, null, tint = MaterialTheme.colorScheme.secondary)
                     },
-                    shape = settingsGroupItemShape(index = 1, count = 2)
+                    shape = M3EShape.groupedCards(index = 1, count = 2)
                 )
             }
         }

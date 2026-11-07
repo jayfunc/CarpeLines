@@ -62,6 +62,7 @@ import io.github.jayfunc.carpelines.presentation.navigation.navigateSafely
 import io.github.jayfunc.carpelines.presentation.utils.LocalAppHapticsConfig
 import io.github.jayfunc.carpelines.presentation.utils.performAppCompatHapticFeedback
 import io.github.jayfunc.carpelines.presentation.viewmodel.LyricsSourceOrderViewModel
+import io.github.jayfunc.carpelines.ui.theme.M3EShape
 import io.github.jayfunc.carpelines.ui.theme.m3eContentWidth
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
@@ -205,7 +206,7 @@ fun LyricsSourceOrderScreen(
                     trailingIcon = {
                         Icon(Icons.Rounded.ChevronRight, null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     },
-                    shape = settingsGroupItemShape(index = 0, count = 2),
+                    shape = M3EShape.groupedCards(index = 0, count = 2),
                     onClick = {
                         navController.navigateSafely(
                             Screen.SettingsCategory.createRoute(SettingsCategory.LOCAL_MUSIC.id)
@@ -223,7 +224,7 @@ fun LyricsSourceOrderScreen(
                     trailingIcon = {
                         Icon(Icons.Rounded.ChevronRight, null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     },
-                    shape = settingsGroupItemShape(index = 1, count = 2),
+                    shape = M3EShape.groupedCards(index = 1, count = 2),
                     onClick = viewModel::reset,
                 )
             }
@@ -275,7 +276,7 @@ fun LyricsSourceOrderScreen(
                                 )
                             }
                         },
-                        shape = settingsGroupItemShape(index = index, count = order.size),
+                        shape = M3EShape.groupedCards(index = index, count = order.size),
                     )
                 }
             }
@@ -294,7 +295,7 @@ fun LyricsSourceOrderScreen(
                         checked = false,
                         onCheckedChange = { viewModel.setEnabled(source, it) },
                         leadingIcon = { SourceLeadingIcon(source) },
-                        shape = settingsGroupItemShape(index = index, count = disabled.size),
+                        shape = M3EShape.groupedCards(index = index, count = disabled.size),
                     )
                 }
             }

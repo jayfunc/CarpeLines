@@ -16,7 +16,6 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.rememberTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -78,7 +77,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
@@ -104,6 +102,7 @@ import io.github.jayfunc.carpelines.presentation.components.MiniPlayerHeight
 import io.github.jayfunc.carpelines.presentation.components.rememberAppMessage
 import io.github.jayfunc.carpelines.presentation.components.subcomps.SineWaveLine
 import io.github.jayfunc.carpelines.ui.m3e.M3ESearchField
+import io.github.jayfunc.carpelines.ui.theme.M3EShape
 import io.github.jayfunc.carpelines.ui.theme.emphasized
 import io.github.jayfunc.carpelines.ui.theme.m3eContentWidth
 import kotlinx.coroutines.Dispatchers
@@ -434,8 +433,8 @@ fun LicensesScreen(
                         key = { index, _ -> "raw_para_$index" },
                     ) { index, paragraph ->
                         Surface(
-                            shape = settingsGroupItemShape(index, loadedContent.rawParagraphs.size),
-                            color = MaterialTheme.colorScheme.surfaceContainerLow,
+                            shape = M3EShape.groupedCards(index, loadedContent.rawParagraphs.size),
+                            color = MaterialTheme.colorScheme.surfaceContainer,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
@@ -475,7 +474,7 @@ fun LicensesScreen(
                     ) { index, item ->
                         LicenseCardRow(
                             item = item,
-                            shape = settingsGroupItemShape(index, filteredItems.size),
+                            shape = M3EShape.groupedCards(index, filteredItems.size),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
@@ -516,11 +515,10 @@ private fun LicenseCardRow(
     modifier: Modifier = Modifier,
 ) {
     Surface(
+        onClick = onClick,
         shape = shape,
         color = MaterialTheme.colorScheme.surfaceContainer,
-        modifier = modifier
-            .clip(shape)
-            .clickable(onClick = onClick),
+        modifier = modifier,
     ) {
         Row(
             modifier = Modifier
