@@ -120,6 +120,7 @@ import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsOffsetS
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsSystemBarsAppearance
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsTextColors
 import io.github.jayfunc.carpelines.presentation.components.lyrics.card.LyricsShareSheet
+import io.github.jayfunc.carpelines.presentation.components.lyrics.rememberArtworkBitmap
 import io.github.jayfunc.carpelines.presentation.components.lyrics.rememberArtworkPalette
 import io.github.jayfunc.carpelines.presentation.components.lyrics.rememberLyricsChromeState
 import io.github.jayfunc.carpelines.presentation.components.lyrics.rememberLyricsDisplaySettings
@@ -184,6 +185,7 @@ private data class LyricsHeader(
     val album: String,
     val artworkModel: Any?,
     val artworkBitmap: Bitmap?,
+    val artworkUri: String?,
 )
 
 /**
@@ -269,8 +271,9 @@ fun NowPlayingLyricsScreen(
 
     // The last cover's palette is kept while the next one loads, but the no-media states must
     // not be tinted by a song that has already ended.
-    val palette = rememberArtworkPalette(header?.artworkBitmap)?.takeIf { header != null }
-    val colors = resolveLyricsTextColors(palette, MaterialTheme.colorScheme)
+    val headerArtwork = rememberArtworkBitmap(header?.artworkBitmap, header?.artworkUri)
+    val palette = rememberArtworkPalette(headerArtwork)?.takeIf { header != null }
+    val colors = resolveLyricsTextColors(MaterialTheme.colorScheme)
     // `KaraokeLyricsView.textColor` is a single colour for every lyric layer, so the override is
     // resolved once here instead of per line.
     val lyricContentColor = resolveLyricContentColor(
@@ -647,7 +650,7 @@ fun NowPlayingLyricsScreen(
         LyricsShareSheet(
             title = header?.title.orEmpty(),
             artist = header?.artist.orEmpty(),
-            artwork = header?.artworkBitmap,
+            artwork = headerArtwork,
             accent = colors.accent,
             lyrics = lyrics,
             initialIndex = initialIndex,
@@ -1775,6 +1778,7 @@ private fun resolveHeader(
         album = externalMedia.album,
         artworkModel = externalMedia.artworkBitmap ?: externalMedia.artworkUri ?: localArtworkModel,
         artworkBitmap = externalMedia.artworkBitmap,
+        artworkUri = externalMedia.artworkUri,
     )
 }
 

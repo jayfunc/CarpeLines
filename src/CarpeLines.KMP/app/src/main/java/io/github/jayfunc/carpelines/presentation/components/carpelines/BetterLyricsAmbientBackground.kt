@@ -22,11 +22,15 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.google.android.material.color.utilities.Hct
+import com.google.android.material.color.utilities.MathUtils
 import io.github.jayfunc.carpelines.presentation.components.SmartImage
 import io.github.jayfunc.carpelines.presentation.components.lyrics.ArtworkPalette
+import io.github.jayfunc.carpelines.presentation.components.lyrics.isLightPage
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.floor
@@ -84,28 +88,21 @@ fun BetterLyricsAmbientBackground(
         isPlaying && ValueAnimator.areAnimatorsEnabled()
     }
 
-    // The WinUI page is tinted by the cover, not by the app's brand colour. The fluid shader takes
-    // four colours; with a palette in hand they are the artwork's own tones (vibrant → dominant,
-    // with two blends in between), without one they fall back to the theme so the page still works
-    // before the artwork has been sampled.
+    // The fluid shader takes four colours built from the same HCT seed as the app scheme, so the
+    // gradient cannot drift into a different hue family than the lyrics or the buttons. Without a
+    // palette they fall back to the theme roles so the page still works before artwork is sampled.
     val targetAccents = remember(palette, colorScheme) {
-        val vibrant = palette?.vibrant ?: palette?.dominant
-        val dominant = palette?.dominant ?: palette?.vibrant
-        if (vibrant == null || dominant == null) {
-            listOf(
+        buildAmbientAccents(
+            seed = palette?.seed,
+            partner = palette?.vibrant ?: palette?.dominant,
+            lightPage = isLightPage(colorScheme),
+            fallback = listOf(
                 colorScheme.primary,
                 colorScheme.secondary,
                 colorScheme.tertiary,
                 colorScheme.primaryContainer,
-            )
-        } else {
-            listOf(
-                vibrant,
-                blendTone(vibrant, dominant, secondWeight = 0.35f),
-                blendTone(dominant, vibrant, secondWeight = 0.65f),
-                dominant,
-            )
-        }
+            ),
+        )
     }
     // A track change swaps all four cover tones at once, which reads as a colour flash over the
     // page. Fading them keeps the background calm while the next cover is being sampled.
@@ -188,12 +185,49 @@ private fun CoverBackdrop(albumArtModel: Any, colorScheme: ColorScheme, modifier
     }
 }
 
-/** A mix of two artwork tones, so neighbouring shader colours are not a repeat of each other. */
-private fun blendTone(first: Color, second: Color, secondWeight: Float): Color = Color(
-    red = first.red * (1f - secondWeight) + second.red * secondWeight,
-    green = first.green * (1f - secondWeight) + second.green * secondWeight,
-    blue = first.blue * (1f - secondWeight) + second.blue * secondWeight,
-    alpha = 1f,
+private val DARK_PAGE_BACKGROUND_TONES = doubleArrayOf(22.0, 30.0, 40.0, 26.0)
+private val LIGHT_PAGE_BACKGROUND_TONES = doubleArrayOf(96.0, 90.0, 84.0, 93.0)
+private const val DARK_PAGE_MAX_BACKGROUND_CHROMA = 42.0
+private const val LIGHT_PAGE_MAX_BACKGROUND_CHROMA = 30.0
+private const val BACKGROUND_HUE_SPREAD_DEGREES = 10.0
+
+/**
+ * Builds the four shader stops in HCT instead of blending two swatches in linear RGB, which used to
+ * send complementary pairs through a muddy grey. The tone ladder is fixed per page polarity so a
+ * bright cover cannot wash the lyrics out, and the chroma is capped because this paints the whole
+ * page. Both hues are already inside Material's 15° harmonisation window of the seed.
+ */
+internal fun buildAmbientAccents(
+    seed: Color?,
+    partner: Color?,
+    lightPage: Boolean,
+    fallback: List<Color>,
+): List<Color> {
+    if (seed == null) return fallback
+    val seedHct = Hct.fromInt(seed.toArgb())
+    val partnerHct = partner?.let { Hct.fromInt(it.toArgb()) } ?: seedHct
+    val tones = if (lightPage) LIGHT_PAGE_BACKGROUND_TONES else DARK_PAGE_BACKGROUND_TONES
+    val maxChroma = if (lightPage) {
+        LIGHT_PAGE_MAX_BACKGROUND_CHROMA
+    } else {
+        DARK_PAGE_MAX_BACKGROUND_CHROMA
+    }
+    // A near-grey cover stays near-grey; the shader must not invent chroma the song does not have.
+    val chroma = seedHct.chroma.coerceAtMost(maxChroma)
+    return listOf(
+        ambientStop(seedHct.hue, chroma * 0.85, tones[0]),
+        ambientStop(partnerHct.hue, chroma, tones[1]),
+        ambientStop(seedHct.hue + BACKGROUND_HUE_SPREAD_DEGREES, chroma * 0.75, tones[2]),
+        ambientStop(partnerHct.hue - BACKGROUND_HUE_SPREAD_DEGREES, chroma * 0.9, tones[3]),
+    )
+}
+
+private fun ambientStop(hue: Double, chroma: Double, tone: Double): Color = Color(
+    Hct.from(
+        MathUtils.sanitizeDegreesDouble(hue),
+        chroma.coerceIn(0.0, 100.0),
+        tone.coerceIn(0.0, 100.0),
+    ).toInt(),
 )
 
 /**

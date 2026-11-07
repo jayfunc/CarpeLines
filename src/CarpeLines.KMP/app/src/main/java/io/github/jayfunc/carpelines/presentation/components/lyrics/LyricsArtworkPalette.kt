@@ -14,8 +14,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.palette.graphics.Palette
+import com.google.android.material.color.utilities.Blend
 import com.google.android.material.color.utilities.Hct
+import io.github.jayfunc.carpelines.data.external.decodeArtworkBitmap
+import io.github.jayfunc.carpelines.ui.theme.extractSeedColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -25,8 +29,8 @@ import kotlinx.coroutines.withContext
  * Polarity is read from the *page* behind the words (the theme surface, which the now-playing
  * colour scheme already derived from the cover), not from the cover itself: a bright cover under
  * a dark scrim still needs light text, and getting that backwards is how lyrics become
- * unreadable. Only the hue comes from the artwork or the theme; [legibleTint] re-lights it for
- * the page so a choice between the two is actually visible.
+ * unreadable. Only the hue comes from the song palette; [legibleTint] re-lights it for the page so
+ * the tinted mode stays readable.
  */
 @Immutable
 data class LyricsTextColors(
@@ -38,21 +42,48 @@ data class LyricsTextColors(
     val isLightBackground: Boolean,
 )
 
-/** The two things the lyrics page needs from the album art: its mood and its brightness. */
+/**
+ * The song's colour identity, sampled once and shared by the lyrics text and the ambient
+ * background. [seed] is the same colour the app-wide Material scheme is built from, so the page
+ * cannot drift into a different hue family than the rest of the UI.
+ */
 @Immutable
 data class ArtworkPalette(
     val dominant: Color?,
     val vibrant: Color?,
+    val seed: Color?,
     val isLight: Boolean,
 )
 
 private val paletteCache = LruCache<String, ArtworkPalette>(8)
 
 /**
+ * The cover bitmap to sample. Media sessions usually publish the bitmap, but a player that only
+ * exposes an artwork URI used to leave this page without a palette while the app-wide scheme
+ * decoded that URI and coloured every other component. Decoding it here as well keeps the gradient,
+ * the lyrics and the chrome on the same image.
+ */
+@Composable
+fun rememberArtworkBitmap(bitmap: Bitmap?, uri: String?): Bitmap? {
+    if (bitmap != null) return bitmap
+    if (uri.isNullOrBlank()) return null
+    val context = LocalContext.current.applicationContext
+    val decoded = produceState<Bitmap?>(initialValue = null, uri) {
+        value = withContext(Dispatchers.IO) { decodeArtworkBitmap(context, uri) }
+    }
+    return decoded.value
+}
+
+/**
  * Extracts the palette off the main thread and caches it per artwork identity, so scrolling the
  * lyrics never re-runs the quantizer. While the next cover is still being sampled — or the new
  * track publishes no artwork at all — the last sampled palette is returned so the ambient
  * background does not drop to the theme colours in the middle of a track change.
+ *
+ * The artwork swatches are harmonised towards [extractSeedColor]'s seed, which is what the app-wide
+ * scheme uses. A cover with a small high-chroma logo used to give the gradient a different hue than
+ * every button in the app; keeping them within Material's 15° harmonisation window removes that
+ * clash without flattening the artwork to one tone.
  */
 @Composable
 fun rememberArtworkPalette(bitmap: Bitmap?): ArtworkPalette? {
@@ -70,14 +101,18 @@ fun rememberArtworkPalette(bitmap: Bitmap?): ArtworkPalette? {
         }
         val sampled = withContext(Dispatchers.Default) {
             runCatching {
+                val seed = extractSeedColor(bitmap)
                 val palette = Palette.from(bitmap).clearFilters().maximumColorCount(24).generate()
-                val dominant = palette.dominantSwatch?.rgb?.let(::Color)
-                val vibrant = (palette.vibrantSwatch ?: palette.mutedSwatch)?.rgb?.let(::Color)
-                val base = dominant ?: vibrant
+                val dominant = palette.dominantSwatch?.rgb?.let(::Color)?.harmonizedTo(seed)
+                val vibrant = (palette.vibrantSwatch ?: palette.mutedSwatch)?.rgb
+                    ?.let(::Color)
+                    ?.harmonizedTo(seed)
+                val base = vibrant ?: dominant ?: seed
                 ArtworkPalette(
                     dominant = dominant,
                     vibrant = vibrant,
-                    isLight = base?.luminance()?.let { it > 0.55f } ?: false,
+                    seed = seed,
+                    isLight = base.luminance() > 0.55f,
                 )
             }.getOrNull()
         }
@@ -94,14 +129,10 @@ fun rememberArtworkPalette(bitmap: Bitmap?): ArtworkPalette? {
 }
 
 /**
- * The page-level lyric palette: polarity, accents and the neutral reading colour. The accent comes
- * from the cover, keeping the page tinted by the song without ever putting dark words on a dark
- * scrim. The text hue itself is chosen per [LyricsTextColorMode] by [resolveLyricContentColor].
+ * The page-level lyric palette: polarity, accents and the neutral reading colour. The accent is
+ * the scheme's own primary, so the playing line and the rest of the app stay on one hue.
  */
-fun resolveLyricsTextColors(
-    palette: ArtworkPalette?,
-    colorScheme: ColorScheme,
-): LyricsTextColors {
+fun resolveLyricsTextColors(colorScheme: ColorScheme): LyricsTextColors {
     val light = isLightPage(colorScheme)
     val base = neutralLyricColor(light)
     return LyricsTextColors(
@@ -109,15 +140,15 @@ fun resolveLyricsTextColors(
         unplayed = base.copy(alpha = WinLyricsVisualDefaults.UNPLAYED_LINE_OPACITY),
         translation = base.copy(alpha = WinLyricsVisualDefaults.TRANSLATION_OPACITY),
         romanization = base.copy(alpha = WinLyricsVisualDefaults.ROMANIZATION_OPACITY),
-        accent = palette?.vibrant ?: palette?.dominant ?: colorScheme.primary,
+        accent = colorScheme.primary,
         isLightBackground = light,
     )
 }
 
 /**
- * The lyric text colour for the "Lyric colour" setting. `ARTWORK` takes the cover's hue and
- * `THEME` the theme's primary tone, both re-lit for the page: without that, both modes resolved to
- * the same near-white/off-black as the neutral default and the setting did nothing.
+ * The lyric text colour for the "Lyric colour" setting. `ARTWORK` takes the harmonised cover hue,
+ * `NEUTRAL` follows the page polarity without a hue, and the fixed modes ignore both. The tinted
+ * mode is re-lit for the page so a dark cover tone cannot disappear into a dark page.
  */
 fun resolveLyricContentColor(
     mode: LyricsTextColorMode,
@@ -127,16 +158,16 @@ fun resolveLyricContentColor(
     val light = isLightPage(colorScheme)
     return when (mode) {
         LyricsTextColorMode.ARTWORK ->
-            (palette?.vibrant ?: palette?.dominant)?.let { legibleTint(it, light) }
+            (palette?.vibrant ?: palette?.seed)?.let { legibleTint(it, light) }
                 ?: neutralLyricColor(light)
 
-        LyricsTextColorMode.THEME -> legibleTint(colorScheme.primary, light)
+        LyricsTextColorMode.NEUTRAL -> neutralLyricColor(light)
         LyricsTextColorMode.LIGHT -> Color.White
         LyricsTextColorMode.DARK -> Color(0xFF101014)
     }
 }
 
-private fun isLightPage(colorScheme: ColorScheme): Boolean =
+internal fun isLightPage(colorScheme: ColorScheme): Boolean =
     colorScheme.surface.luminance() > 0.5f
 
 /** The reading colour used when the chosen source carries no hue of its own. */
@@ -144,9 +175,9 @@ private fun neutralLyricColor(lightPage: Boolean): Color =
     if (lightPage) Color(0xFF101014) else Color(0xFFF4F4F7)
 
 /**
- * Keeps the source hue and chroma but pins its Material tone to the page: a cover's mid-tone can
- * be a dark navy on a dark page or a pale yellow on a light one, and either disappears into the
- * scrim. A grey artwork has no hue to follow and falls back to neutral rather than inventing one.
+ * Keeps the source hue but pins its Material tone to the page: a cover's mid-tone can be a dark
+ * navy on a dark page or a pale yellow on a light one, and either disappears into the scrim. The
+ * chroma ceiling keeps a highly saturated cover from turning every word into a highlighter.
  */
 private fun legibleTint(source: Color, lightPage: Boolean): Color {
     val hct = Hct.fromInt(source.toArgb())
@@ -156,11 +187,15 @@ private fun legibleTint(source: Color, lightPage: Boolean): Color {
     return Color(hct.toInt())
 }
 
+/** Aligns an artwork swatch to the scheme seed without losing its own tone or chroma. */
+private fun Color.harmonizedTo(reference: Color): Color =
+    Color(Blend.harmonize(toArgb(), reference.toArgb()))
+
 /** HCT chroma below ~12 reads as grey; the same cutoff the artwork sampler uses. */
 private const val MIN_TINT_CHROMA = 12.0
-private const val MAX_TINT_CHROMA = 64.0
-private const val DARK_PAGE_TINT_TONE = 80.0
-private const val LIGHT_PAGE_TINT_TONE = 30.0
+private const val MAX_TINT_CHROMA = 28.0
+private const val DARK_PAGE_TINT_TONE = 84.0
+private const val LIGHT_PAGE_TINT_TONE = 24.0
 
 /** Stable identity for the palette cache, without hashing the whole bitmap. */
 private val Bitmap.generationId: Int

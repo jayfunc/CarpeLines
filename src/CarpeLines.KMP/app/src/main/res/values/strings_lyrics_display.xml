@@ -221,7 +221,7 @@
     <string name="lyrics_text_color_title">Lyric colour</string>
     <string name="lyrics_text_color_subtitle">Where the words take their colour from</string>
     <string name="lyrics_text_color_artwork">Match the artwork</string>
-    <string name="lyrics_text_color_theme">Match the theme</string>
+    <string name="lyrics_text_color_neutral">Neutral</string>
     <string name="lyrics_text_color_light">Always light</string>
     <string name="lyrics_text_color_dark">Always dark</string>
     <string name="lyrics_segmentation_title">Animation granularity</string>

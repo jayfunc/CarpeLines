@@ -24,6 +24,7 @@ class LyricsArtworkPaletteTest {
     private val redCover = ArtworkPalette(
         dominant = Color(0xFF8C1D18),
         vibrant = Color(0xFFB3261E),
+        seed = Color(0xFFB3261E),
         isLight = false,
     )
 
@@ -45,12 +46,31 @@ class LyricsArtworkPaletteTest {
     }
 
     @Test
-    fun themeMode_usesTheThemePrimaryInsteadOfItsOnSurfaceWhite() {
-        val tint = resolveLyricContentColor(LyricsTextColorMode.THEME, palette = null, colorScheme = dark)
+    fun neutralMode_ignoresTheCoverHue() {
+        val tint = resolveLyricContentColor(LyricsTextColorMode.NEUTRAL, redCover, dark)
 
-        assertThat(hueDistance(tint, dark.primary)).isAtMost(8.0)
-        assertThat(tint).isNotEqualTo(neutralDarkText)
+        assertThat(tint).isEqualTo(neutralDarkText)
         assertThat(contrastWith(tint, dark.surface)).isAtLeast(4.5f)
+    }
+
+    @Test
+    fun artworkMode_capsTheTintChroma() {
+        val neon = ArtworkPalette(
+            dominant = Color(0xFF00FF00),
+            vibrant = Color(0xFF00FF00),
+            seed = Color(0xFF00FF00),
+            isLight = false,
+        )
+
+        val tint = resolveLyricContentColor(LyricsTextColorMode.ARTWORK, neon, dark)
+
+        assertThat(Hct.fromInt(tint.toArgb()).chroma).isAtMost(28.5)
+    }
+
+    @Test
+    fun storedThemePreference_fallsBackToArtwork() {
+        assertThat(LyricsTextColorMode.fromStorage("theme"))
+            .isEqualTo(LyricsTextColorMode.ARTWORK)
     }
 
     @Test
@@ -66,6 +86,7 @@ class LyricsArtworkPaletteTest {
         val palette = ArtworkPalette(
             dominant = Color(0xFF808080),
             vibrant = Color(0xFF8A8A8A),
+            seed = Color(0xFF808080),
             isLight = false,
         )
 

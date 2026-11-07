@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import io.github.jayfunc.carpelines.utils.traceSection
@@ -110,8 +109,8 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.core.net.toUri
 import io.github.jayfunc.carpelines.data.external.ExternalMediaMonitor
+import io.github.jayfunc.carpelines.data.external.decodeArtworkBitmap
 import io.github.jayfunc.carpelines.data.preferences.AppThemeMode
 import io.github.jayfunc.carpelines.data.preferences.ThemePreferencesRepository
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
@@ -218,19 +217,10 @@ class MainActivity : ComponentActivity() {
         artworkBitmap: Bitmap?,
         artworkUri: String?,
     ): io.github.jayfunc.carpelines.presentation.viewmodel.ColorSchemePair? {
-        val bitmap = artworkBitmap ?: artworkUri?.let(::decodeArtworkBitmap) ?: return null
+        val bitmap = artworkBitmap ?: artworkUri?.let { decodeArtworkBitmap(this, it) } ?: return null
         val seed = extractSeedColor(bitmap)
         return generateColorSchemeFromSeed(seed)
     }
-
-    private fun decodeArtworkBitmap(rawUri: String): Bitmap? = runCatching {
-        rawUri.toUri().let { uri ->
-            contentResolver
-                ?.takeIf { uri.scheme == "content" || uri.scheme == "file" }
-                ?.openInputStream(uri)
-                ?.use(BitmapFactory::decodeStream)
-        }
-    }.getOrNull()
 
     @CallSuper
     override fun attachBaseContext(newBase: Context) {

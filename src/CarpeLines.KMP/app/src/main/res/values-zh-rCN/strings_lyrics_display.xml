@@ -221,7 +221,7 @@
     <string name="lyrics_text_color_title">歌词颜色</string>
     <string name="lyrics_text_color_subtitle">歌词文字取色的来源</string>
     <string name="lyrics_text_color_artwork">跟随封面</string>
-    <string name="lyrics_text_color_theme">跟随主题</string>
+    <string name="lyrics_text_color_neutral">中性</string>
     <string name="lyrics_text_color_light">始终浅色</string>
     <string name="lyrics_text_color_dark">始终深色</string>
     <string name="lyrics_segmentation_title">动画分词粒度</string>

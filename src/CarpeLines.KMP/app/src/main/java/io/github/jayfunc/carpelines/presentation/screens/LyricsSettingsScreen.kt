@@ -486,8 +486,8 @@ fun LyricsSettingsScreen(
                         options = mapOf(
                             LyricsTextColorMode.ARTWORK.storageValue to
                                 stringResource(R.string.lyrics_text_color_artwork),
-                            LyricsTextColorMode.THEME.storageValue to
-                                stringResource(R.string.lyrics_text_color_theme),
+                            LyricsTextColorMode.NEUTRAL.storageValue to
+                                stringResource(R.string.lyrics_text_color_neutral),
                             LyricsTextColorMode.LIGHT.storageValue to
                                 stringResource(R.string.lyrics_text_color_light),
                             LyricsTextColorMode.DARK.storageValue to
