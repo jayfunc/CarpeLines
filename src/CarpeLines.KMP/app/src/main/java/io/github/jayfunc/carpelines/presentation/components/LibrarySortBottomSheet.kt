@@ -31,11 +31,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDownward
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.SwitchDefaults
@@ -61,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import io.github.jayfunc.carpelines.R
+import io.github.jayfunc.carpelines.ui.m3e.M3EModalBottomSheet
 import io.github.jayfunc.carpelines.data.model.SortDirection
 import io.github.jayfunc.carpelines.data.model.SortOption
 import io.github.jayfunc.carpelines.ui.m3e.M3ESwitch
@@ -117,10 +116,9 @@ fun LibrarySortBottomSheet(
         label = "boxCornerRadiusAnimation"
     )
 
-    ModalBottomSheet(
+    M3EModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        dragHandle = { BottomSheetDefaults.DragHandle() },
         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         tonalElevation = 8.dp
     ) {

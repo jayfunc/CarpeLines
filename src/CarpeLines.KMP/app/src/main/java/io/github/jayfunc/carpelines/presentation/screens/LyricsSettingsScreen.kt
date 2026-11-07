@@ -27,7 +27,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ClearAll
-import androidx.compose.material.icons.outlined.LinearScale
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material.icons.rounded.Animation
 import androidx.compose.material.icons.rounded.AutoAwesome
@@ -41,8 +40,8 @@ import androidx.compose.material.icons.automirrored.rounded.FormatAlignLeft
 import androidx.compose.material.icons.automirrored.rounded.ManageSearch
 import androidx.compose.material.icons.rounded.Groups
 import androidx.compose.material.icons.rounded.Mic
-import androidx.compose.material.icons.rounded.MoreHoriz
 import androidx.compose.material.icons.rounded.Opacity
+import androidx.compose.material.icons.rounded.RestartAlt
 import androidx.compose.material.icons.rounded.SwapVert
 import androidx.compose.material.icons.rounded.VpnKey
 import androidx.compose.material3.Slider
@@ -88,56 +87,25 @@ import io.github.jayfunc.carpelines.presentation.components.lyrics.AMBIENT_ENABL
 import io.github.jayfunc.carpelines.presentation.components.lyrics.AMBIENT_STYLE_KEY
 import io.github.jayfunc.carpelines.presentation.components.lyrics.DEFAULT_PLAYING_LINE_TOP_OFFSET
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_ALIGNMENT_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_BACKGROUND_VOCAL_FONT_RATIO_KEY
+import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_ANNOTATION_FONT_RATIO_KEY
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_EDGE_FADE_REACH_KEY
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_EDGE_FEATHERING_KEY
+import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_FLOAT_EFFECT_KEY
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_FOLLOW_SCROLL_DURATION_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_FOLLOW_SPRING_DAMPING_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_FOLLOW_SPRING_STIFFNESS_KEY
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_FONT_FAMILY_KEY
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_FONT_WEIGHT_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_GAP_DOTS_COUNT_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_GAP_DOTS_SIZE_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_GAP_DOTS_SPACING_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_GAP_DOTS_ENTER_MS_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_GAP_DOTS_HOLD_MS_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_GAP_DOTS_PULSE_MS_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_GAP_DOTS_EXIT_MS_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_GAP_DOTS_ACCENT_COLOR_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_ANCHOR_MODE_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_ANCHOR_OFFSET_DP_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_BLEND_MODE_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_BOTTOM_FADE_DP_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_BOTTOM_FADE_FRACTION_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_EDGE_FADE_MODE_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_FLOAT_EFFECT_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_FOLLOW_SPRING_COUPLING_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_FOLLOW_SPRING_DISTANCE_FALLOFF_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_FOLLOW_SPRING_MIN_RESPONSE_KEY
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_GLOW_EFFECT_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_KEEP_ALIVE_ZONE_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_SCALE_EFFECT_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_SCROLL_EASING_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_SEGMENTATION_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_TOP_FADE_DP_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_TOP_FADE_FRACTION_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_TEXT_COLOR_MODE_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_LINE_HEIGHT_SCALE_KEY
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_LINE_SPACING_KEY
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_PLAYING_LINE_OFFSET_KEY
+import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_SCALE_EFFECT_KEY
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_SCROLL_RESUME_DELAY_KEY
+import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_TEXT_COLOR_MODE_KEY
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsAlignment
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsAnchorMode
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsBlendMode
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsFadeMode
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsFontFamily
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsFontWeight
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsScrollEasing
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsSegmentation
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsTextColorMode
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_ROMANIZATION_FONT_RATIO_KEY
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_TRANSLATION_FONT_RATIO_KEY
 import io.github.jayfunc.carpelines.presentation.components.lyrics.rememberLyricsDisplaySettings
+import io.github.jayfunc.carpelines.presentation.components.lyrics.resetLyricsDisplayPreferences
 import io.github.jayfunc.carpelines.data.preferences.MAX_LYRICS_FONT_SIZE_SP
 import io.github.jayfunc.carpelines.data.preferences.MIN_LYRICS_FONT_SIZE_SP
 import io.github.jayfunc.carpelines.presentation.components.CollapsibleCommonTopBar
@@ -154,8 +122,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-private const val MIN_LYRICS_BLUR_STRENGTH = 0.1f
-private const val MAX_LYRICS_BLUR_STRENGTH = 8f
 private const val MIN_PLAYING_LINE_OFFSET = 0.25f
 private const val MAX_PLAYING_LINE_OFFSET = 0.6f
 
@@ -170,69 +136,45 @@ private enum class LyricsSection(val itemKeys: Set<String>) {
             "item_lyrics_font_size",
             "item_lyrics_font_family",
             "item_lyrics_font_weight",
-            "item_lyrics_line_height",
             "item_lyrics_line_spacing",
-            "item_lyrics_alignment",
-            "item_lyrics_text_color",
-            "item_lyrics_segmentation"
+            "item_lyrics_alignment"
         )
     ),
+    COLOR(setOf("item_lyrics_text_color")),
     VOICES(
         setOf(
-            "item_lyrics_translation_font_ratio",
-            "item_lyrics_romanization_font_ratio",
+            "item_lyrics_annotation_font_ratio",
             "item_lyrics_duet_layout",
-            "item_lyrics_background_vocals",
-            "item_lyrics_background_vocal_font_ratio"
+            "item_lyrics_background_vocals"
         )
     ),
-    EFFECTS(
+    EDGE_FADE(
         setOf(
             "item_lyrics_edge_feathering",
-            "item_lyrics_edge_fade_reach",
-            "item_lyrics_edge_fade_mode",
-            "item_lyrics_top_fade",
-            "item_lyrics_bottom_fade",
-            "item_lyrics_keep_alive",
-            "item_lyrics_blend_mode",
-            "item_lyrics_glow",
-            "item_lyrics_scale",
-            "item_lyrics_float",
-            "item_lyrics_animated_blur"
+            "item_lyrics_edge_fade_reach"
         )
     ),
-    GAP_DOTS(
+    HIGHLIGHT_MOTION(
         setOf(
-            "item_lyrics_gap_dots_count",
-            "item_lyrics_gap_dots_size",
-            "item_lyrics_gap_dots_spacing",
-            "item_lyrics_gap_dots_enter",
-            "item_lyrics_gap_dots_hold",
-            "item_lyrics_gap_dots_pulse",
-            "item_lyrics_gap_dots_exit",
-            "item_lyrics_gap_dots_accent"
+            "item_lyrics_animated_blur",
+            "item_lyrics_glow",
+            "item_lyrics_scale",
+            "item_lyrics_float"
         )
     ),
     AMBIENT(setOf("item_lyrics_ambient_background")),
-    SCROLLING(
+    PLAYING_LINE(setOf("item_lyrics_playing_line")),
+    FOLLOW_SCROLL(
         setOf(
-            "item_lyrics_playing_line",
-            "item_lyrics_anchor_mode",
-            "item_lyrics_anchor_offset",
             "item_lyrics_scroll_duration",
-            "item_lyrics_scroll_easing",
-            "item_lyrics_scroll_resume_delay",
-            "item_lyrics_scroll_stiffness",
-            "item_lyrics_scroll_damping",
-            "item_lyrics_scroll_coupling",
-            "item_lyrics_scroll_distance_falloff",
-            "item_lyrics_scroll_min_response"
+            "item_lyrics_scroll_resume_delay"
         )
     ),
     MANAGEMENT(
         setOf(
             "item_lyrics_provider_settings",
             "item_lyrics_source_order",
+            "item_lyrics_reset_defaults",
             "item_lyrics_reset_imported"
         )
     );
@@ -253,10 +195,8 @@ fun LyricsSettingsScreen(
 ) {
     val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
     var fontSizeDraft by remember(uiState.lyricsFontSizeSp) { mutableFloatStateOf(uiState.lyricsFontSizeSp) }
-    var blurStrengthDraft by remember(uiState.animatedLyricsBlurStrength) {
-        mutableFloatStateOf(uiState.animatedLyricsBlurStrength)
-    }
     var showClearLyricsDialog by remember { mutableStateOf(false) }
+    var showResetDefaultsDialog by remember { mutableStateOf(false) }
 
     val density = LocalDensity.current
     val context = LocalContext.current
@@ -399,23 +339,6 @@ fun LyricsSettingsScreen(
                         modifier = Modifier.settingHighlight("item_lyrics_font_size", highlightKey)
                     )
 
-                    LyricsSettingSlider(
-                        title = stringResource(R.string.lyrics_line_height_title),
-                        subtitle = stringResource(R.string.lyrics_line_height_subtitle),
-                        icon = Icons.Rounded.FormatLineSpacing,
-                        value = visual.lineHeightScale,
-                        valueRange = 0.8f..1.6f,
-                        steps = 15,
-                        valueText = {
-                            stringResource(
-                                R.string.lyrics_line_height_value,
-                                (it * 100f).roundToInt()
-                            )
-                        },
-                        onValueCommit = { persistFloat(LYRICS_LINE_HEIGHT_SCALE_KEY, it) },
-                        modifier = Modifier.settingHighlight("item_lyrics_line_height", highlightKey)
-                    )
-
                     ThemeSelectorItem(
                         label = stringResource(R.string.lyrics_font_weight_title),
                         description = stringResource(R.string.lyrics_font_weight_subtitle),
@@ -479,7 +402,11 @@ fun LyricsSettingsScreen(
                         },
                         modifier = Modifier.settingHighlight("item_lyrics_alignment", highlightKey)
                     )
+                }
+            }
 
+            item(key = LyricsSection.COLOR.name) {
+                LyricsSettingsSubsection(title = stringResource(R.string.lyrics_color_section)) {
                     ThemeSelectorItem(
                         label = stringResource(R.string.lyrics_text_color_title),
                         description = stringResource(R.string.lyrics_text_color_subtitle),
@@ -500,62 +427,21 @@ fun LyricsSettingsScreen(
                         },
                         modifier = Modifier.settingHighlight("item_lyrics_text_color", highlightKey)
                     )
-
-                    ThemeSelectorItem(
-                        label = stringResource(R.string.lyrics_segmentation_title),
-                        description = stringResource(R.string.lyrics_segmentation_subtitle),
-                        options = mapOf(
-                            LyricsSegmentation.AUTO.storageValue to
-                                stringResource(R.string.lyrics_segmentation_auto),
-                            LyricsSegmentation.WORD.storageValue to
-                                stringResource(R.string.lyrics_segmentation_word),
-                        ),
-                        selectedKey = visual.segmentation.storageValue,
-                        onSelectionChanged = { persistString(LYRICS_SEGMENTATION_KEY, it) },
-                        leadingIcon = {
-                            Icon(Icons.Rounded.Groups, null, tint = MaterialTheme.colorScheme.secondary)
-                        },
-                        modifier = Modifier.settingHighlight("item_lyrics_segmentation", highlightKey)
-                    )
                 }
             }
 
             item(key = LyricsSection.VOICES.name) {
                 LyricsSettingsSubsection(title = stringResource(R.string.lyrics_voices_section)) {
                     LyricsSettingSlider(
-                        title = stringResource(R.string.lyrics_translation_font_ratio_title),
-                        subtitle = stringResource(R.string.lyrics_translation_font_ratio_subtitle),
+                        title = stringResource(R.string.lyrics_annotation_font_ratio_title),
+                        subtitle = stringResource(R.string.lyrics_annotation_font_ratio_subtitle),
                         icon = Icons.Rounded.FormatSize,
-                        value = visual.translationFontRatio,
+                        value = visual.annotationFontRatio,
                         valueRange = 0.4f..1f,
                         steps = 11,
                         valueText = { stringResource(R.string.lyrics_ratio_value, (it * 100f).roundToInt()) },
-                        onValueCommit = { persistFloat(LYRICS_TRANSLATION_FONT_RATIO_KEY, it) },
-                        modifier = Modifier.settingHighlight("item_lyrics_translation_font_ratio", highlightKey)
-                    )
-
-                    LyricsSettingSlider(
-                        title = stringResource(R.string.lyrics_romanization_font_ratio_title),
-                        subtitle = stringResource(R.string.lyrics_romanization_font_ratio_subtitle),
-                        icon = Icons.Rounded.FormatSize,
-                        value = visual.romanizationFontRatio,
-                        valueRange = 0.4f..1f,
-                        steps = 11,
-                        valueText = { stringResource(R.string.lyrics_ratio_value, (it * 100f).roundToInt()) },
-                        onValueCommit = { persistFloat(LYRICS_ROMANIZATION_FONT_RATIO_KEY, it) },
-                        modifier = Modifier.settingHighlight("item_lyrics_romanization_font_ratio", highlightKey)
-                    )
-
-                    LyricsSettingSlider(
-                        title = stringResource(R.string.lyrics_background_vocal_font_ratio_title),
-                        subtitle = stringResource(R.string.lyrics_background_vocal_font_ratio_subtitle),
-                        icon = Icons.Rounded.Mic,
-                        value = visual.backgroundVocalFontRatio,
-                        valueRange = 0.4f..1f,
-                        steps = 11,
-                        valueText = { stringResource(R.string.lyrics_ratio_value, (it * 100f).roundToInt()) },
-                        onValueCommit = { persistFloat(LYRICS_BACKGROUND_VOCAL_FONT_RATIO_KEY, it) },
-                        modifier = Modifier.settingHighlight("item_lyrics_background_vocal_font_ratio", highlightKey)
+                        onValueCommit = { persistFloat(LYRICS_ANNOTATION_FONT_RATIO_KEY, it) },
+                        modifier = Modifier.settingHighlight("item_lyrics_annotation_font_ratio", highlightKey)
                     )
 
                     SwitchSettingItem(
@@ -582,8 +468,8 @@ fun LyricsSettingsScreen(
                 }
             }
 
-            item(key = LyricsSection.EFFECTS.name) {
-                LyricsSettingsSubsection(title = stringResource(R.string.lyrics_effect_section)) {
+            item(key = LyricsSection.EDGE_FADE.name) {
+                LyricsSettingsSubsection(title = stringResource(R.string.lyrics_edge_fade_section)) {
                     SwitchSettingItem(
                         title = stringResource(R.string.lyrics_edge_feathering_title),
                         subtitle = stringResource(R.string.lyrics_edge_feathering_subtitle),
@@ -596,8 +482,7 @@ fun LyricsSettingsScreen(
                     )
 
                     AnimatedVisibility(
-                        visible = visual.edgeFeatheringEffectEnabled &&
-                            visual.edgeFadeMode == LyricsFadeMode.AUTO,
+                        visible = visual.edgeFeatheringEffectEnabled,
                         enter = fadeIn() + expandVertically(),
                         exit = fadeOut() + shrinkVertically()
                     ) {
@@ -618,136 +503,11 @@ fun LyricsSettingsScreen(
                             modifier = Modifier.settingHighlight("item_lyrics_edge_fade_reach", highlightKey)
                         )
                     }
+                }
+            }
 
-                    AnimatedVisibility(
-                        visible = visual.edgeFeatheringEffectEnabled,
-                        enter = fadeIn() + expandVertically(),
-                        exit = fadeOut() + shrinkVertically()
-                    ) {
-                        ThemeSelectorItem(
-                            label = stringResource(R.string.lyrics_fade_mode_title),
-                            description = stringResource(R.string.lyrics_fade_mode_subtitle),
-                            options = mapOf(
-                                LyricsFadeMode.AUTO.storageValue to
-                                    stringResource(R.string.lyrics_fade_mode_auto),
-                                LyricsFadeMode.FRACTION.storageValue to
-                                    stringResource(R.string.lyrics_fade_mode_fraction),
-                                LyricsFadeMode.FIXED.storageValue to
-                                    stringResource(R.string.lyrics_fade_mode_fixed),
-                                LyricsFadeMode.TO_ANCHOR.storageValue to
-                                    stringResource(R.string.lyrics_fade_mode_to_anchor),
-                            ),
-                            selectedKey = visual.edgeFadeMode.storageValue,
-                            onSelectionChanged = { persistString(LYRICS_EDGE_FADE_MODE_KEY, it) },
-                            leadingIcon = {
-                                Icon(Icons.Rounded.Gradient, null, tint = MaterialTheme.colorScheme.secondary)
-                            },
-                            modifier = Modifier.settingHighlight("item_lyrics_edge_fade_mode", highlightKey)
-                        )
-                    }
-
-                    AnimatedVisibility(
-                        visible = visual.edgeFeatheringEffectEnabled &&
-                            visual.edgeFadeMode != LyricsFadeMode.AUTO,
-                        enter = fadeIn() + expandVertically(),
-                        exit = fadeOut() + shrinkVertically()
-                    ) {
-                        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                            if (visual.edgeFadeMode.usesFraction) {
-                                LyricsSettingSlider(
-                                    title = stringResource(R.string.lyrics_top_fade_title),
-                                    subtitle = stringResource(R.string.lyrics_fade_length_subtitle),
-                                    icon = Icons.Rounded.SwapVert,
-                                    value = visual.topFadeFraction,
-                                    valueRange = 0f..1f,
-                                    steps = 19,
-                                    valueText = {
-                                        stringResource(
-                                            R.string.lyrics_fade_fraction_value,
-                                            (it * 100f).roundToInt()
-                                        )
-                                    },
-                                    onValueCommit = { persistFloat(LYRICS_TOP_FADE_FRACTION_KEY, it) },
-                                    modifier = Modifier.settingHighlight("item_lyrics_top_fade", highlightKey)
-                                )
-                                LyricsSettingSlider(
-                                    title = stringResource(R.string.lyrics_bottom_fade_title),
-                                    subtitle = stringResource(R.string.lyrics_fade_length_subtitle),
-                                    icon = Icons.Rounded.SwapVert,
-                                    value = visual.bottomFadeFraction,
-                                    valueRange = 0f..1f,
-                                    steps = 19,
-                                    valueText = {
-                                        stringResource(
-                                            R.string.lyrics_fade_fraction_value,
-                                            (it * 100f).roundToInt()
-                                        )
-                                    },
-                                    onValueCommit = { persistFloat(LYRICS_BOTTOM_FADE_FRACTION_KEY, it) },
-                                    modifier = Modifier.settingHighlight("item_lyrics_bottom_fade", highlightKey)
-                                )
-                            } else {
-                                LyricsSettingSlider(
-                                    title = stringResource(R.string.lyrics_top_fade_title),
-                                    subtitle = stringResource(R.string.lyrics_fade_length_subtitle),
-                                    icon = Icons.Rounded.SwapVert,
-                                    value = visual.topFadeDp,
-                                    valueRange = 0f..240f,
-                                    steps = 23,
-                                    valueText = {
-                                        stringResource(R.string.lyrics_fade_dp_value, it.roundToInt())
-                                    },
-                                    onValueCommit = { persistFloat(LYRICS_TOP_FADE_DP_KEY, it) },
-                                    modifier = Modifier.settingHighlight("item_lyrics_top_fade", highlightKey)
-                                )
-                                LyricsSettingSlider(
-                                    title = stringResource(R.string.lyrics_bottom_fade_title),
-                                    subtitle = stringResource(R.string.lyrics_fade_length_subtitle),
-                                    icon = Icons.Rounded.SwapVert,
-                                    value = visual.bottomFadeDp,
-                                    valueRange = 0f..240f,
-                                    steps = 23,
-                                    valueText = {
-                                        stringResource(R.string.lyrics_fade_dp_value, it.roundToInt())
-                                    },
-                                    onValueCommit = { persistFloat(LYRICS_BOTTOM_FADE_DP_KEY, it) },
-                                    modifier = Modifier.settingHighlight("item_lyrics_bottom_fade", highlightKey)
-                                )
-                            }
-                        }
-                    }
-
-                    LyricsSettingSlider(
-                        title = stringResource(R.string.lyrics_keep_alive_title),
-                        subtitle = stringResource(R.string.lyrics_keep_alive_subtitle),
-                        icon = Icons.Outlined.LinearScale,
-                        value = visual.keepAliveZoneDp,
-                        valueRange = 0f..240f,
-                        steps = 23,
-                        valueText = { stringResource(R.string.lyrics_keep_alive_value, it.roundToInt()) },
-                        onValueCommit = { persistFloat(LYRICS_KEEP_ALIVE_ZONE_KEY, it) },
-                        modifier = Modifier.settingHighlight("item_lyrics_keep_alive", highlightKey)
-                    )
-
-                    ThemeSelectorItem(
-                        label = stringResource(R.string.lyrics_blend_mode_title),
-                        description = stringResource(R.string.lyrics_blend_mode_subtitle),
-                        options = mapOf(
-                            LyricsBlendMode.NORMAL.storageValue to
-                                stringResource(R.string.lyrics_blend_mode_normal),
-                            LyricsBlendMode.PLUS.storageValue to
-                                stringResource(R.string.lyrics_blend_mode_plus),
-                            LyricsBlendMode.SCREEN.storageValue to
-                                stringResource(R.string.lyrics_blend_mode_screen),
-                        ),
-                        selectedKey = visual.blendMode.storageValue,
-                        onSelectionChanged = { persistString(LYRICS_BLEND_MODE_KEY, it) },
-                        leadingIcon = {
-                            Icon(Icons.Rounded.Opacity, null, tint = MaterialTheme.colorScheme.secondary)
-                        },
-                        modifier = Modifier.settingHighlight("item_lyrics_blend_mode", highlightKey)
-                    )
-
+            item(key = LyricsSection.HIGHLIGHT_MOTION.name) {
+                LyricsSettingsSubsection(title = stringResource(R.string.lyrics_highlight_motion_section)) {
                     SwitchSettingItem(
                         title = stringResource(R.string.presentation_batch_f_exp_lyric_blur_title),
                         subtitle = stringResource(R.string.presentation_batch_f_exp_lyric_blur_subtitle),
@@ -758,29 +518,6 @@ fun LyricsSettingsScreen(
                         },
                         modifier = Modifier.settingHighlight("item_lyrics_animated_blur", highlightKey)
                     )
-
-                    AnimatedVisibility(
-                        visible = uiState.animatedLyricsBlurEnabled,
-                        enter = fadeIn() + expandVertically(),
-                        exit = fadeOut() + shrinkVertically()
-                    ) {
-                        LyricsSliderItem(
-                            title = stringResource(R.string.presentation_batch_f_exp_blur_strength),
-                            subtitle = stringResource(R.string.presentation_batch_f_exp_blur_strength_subtitle),
-                            valueText = stringResource(
-                                R.string.presentation_batch_f_exp_blur_strength_value,
-                                blurStrengthDraft
-                            ),
-                            icon = Icons.Outlined.LinearScale,
-                            value = blurStrengthDraft,
-                            valueRange = MIN_LYRICS_BLUR_STRENGTH..MAX_LYRICS_BLUR_STRENGTH,
-                            steps = 78,
-                            onValueChange = { blurStrengthDraft = it },
-                            onValueChangeFinished = {
-                                settingsViewModel.setAnimatedLyricsBlurStrength(blurStrengthDraft)
-                            }
-                        )
-                    }
 
                     SwitchSettingItem(
                         title = stringResource(R.string.lyrics_glow_title),
@@ -813,120 +550,6 @@ fun LyricsSettingsScreen(
                             Icon(Icons.Rounded.Animation, null, tint = MaterialTheme.colorScheme.secondary)
                         },
                         modifier = Modifier.settingHighlight("item_lyrics_float", highlightKey)
-                    )
-                }
-            }
-
-            item(key = LyricsSection.GAP_DOTS.name) {
-                LyricsSettingsSubsection(title = stringResource(R.string.lyrics_gap_dots_title)) {
-                    LyricsSettingSlider(
-                        title = stringResource(R.string.lyrics_gap_dots_count_title),
-                        subtitle = stringResource(R.string.lyrics_gap_dots_count_subtitle),
-                        icon = Icons.Rounded.MoreHoriz,
-                        value = visual.gapDotsCount.toFloat(),
-                        valueRange = 1f..5f,
-                        steps = 3,
-                        valueText = {
-                            stringResource(
-                                R.string.lyrics_gap_dots_count_value,
-                                it.roundToInt()
-                            )
-                        },
-                        onValueCommit = { persistInt(LYRICS_GAP_DOTS_COUNT_KEY, it.roundToInt()) },
-                        modifier = Modifier.settingHighlight("item_lyrics_gap_dots_count", highlightKey)
-                    )
-
-                    LyricsSettingSlider(
-                        title = stringResource(R.string.lyrics_gap_dots_size_title),
-                        subtitle = stringResource(R.string.lyrics_gap_dots_size_subtitle),
-                        icon = Icons.Rounded.MoreHoriz,
-                        value = visual.gapDotsSizeDp,
-                        valueRange = 8f..24f,
-                        steps = 15,
-                        valueText = {
-                            stringResource(
-                                R.string.lyrics_gap_dots_size_value,
-                                it.roundToInt()
-                            )
-                        },
-                        onValueCommit = { persistFloat(LYRICS_GAP_DOTS_SIZE_KEY, it) },
-                        modifier = Modifier.settingHighlight("item_lyrics_gap_dots_size", highlightKey)
-                    )
-
-                    LyricsSettingSlider(
-                        title = stringResource(R.string.lyrics_gap_dots_spacing_title),
-                        subtitle = stringResource(R.string.lyrics_gap_dots_spacing_subtitle),
-                        icon = Icons.Rounded.MoreHoriz,
-                        value = visual.gapDotsSpacingDp,
-                        valueRange = 4f..24f,
-                        steps = 19,
-                        valueText = {
-                            stringResource(
-                                R.string.lyrics_gap_dots_spacing_value,
-                                it.roundToInt()
-                            )
-                        },
-                        onValueCommit = { persistFloat(LYRICS_GAP_DOTS_SPACING_KEY, it) },
-                        modifier = Modifier.settingHighlight("item_lyrics_gap_dots_spacing", highlightKey)
-                    )
-
-                    LyricsSettingSlider(
-                        title = stringResource(R.string.lyrics_gap_dots_enter_title),
-                        subtitle = stringResource(R.string.lyrics_gap_dots_enter_subtitle),
-                        icon = Icons.Rounded.MoreHoriz,
-                        value = visual.gapDotsEnterDurationMs.toFloat(),
-                        valueRange = 0f..5_000f,
-                        steps = 49,
-                        valueText = { stringResource(R.string.lyrics_gap_dots_timing_value, it.roundToInt()) },
-                        onValueCommit = { persistInt(LYRICS_GAP_DOTS_ENTER_MS_KEY, it.roundToInt()) },
-                        modifier = Modifier.settingHighlight("item_lyrics_gap_dots_enter", highlightKey)
-                    )
-
-                    LyricsSettingSlider(
-                        title = stringResource(R.string.lyrics_gap_dots_hold_title),
-                        subtitle = stringResource(R.string.lyrics_gap_dots_hold_subtitle),
-                        icon = Icons.Rounded.MoreHoriz,
-                        value = visual.gapDotsHoldDurationMs.toFloat(),
-                        valueRange = 0f..1_500f,
-                        steps = 29,
-                        valueText = { stringResource(R.string.lyrics_gap_dots_timing_value, it.roundToInt()) },
-                        onValueCommit = { persistInt(LYRICS_GAP_DOTS_HOLD_MS_KEY, it.roundToInt()) },
-                        modifier = Modifier.settingHighlight("item_lyrics_gap_dots_hold", highlightKey)
-                    )
-
-                    LyricsSettingSlider(
-                        title = stringResource(R.string.lyrics_gap_dots_pulse_title),
-                        subtitle = stringResource(R.string.lyrics_gap_dots_pulse_subtitle),
-                        icon = Icons.Rounded.MoreHoriz,
-                        value = visual.gapDotsPulseDurationMs.toFloat(),
-                        valueRange = 0f..6_000f,
-                        steps = 59,
-                        valueText = { stringResource(R.string.lyrics_gap_dots_timing_value, it.roundToInt()) },
-                        onValueCommit = { persistInt(LYRICS_GAP_DOTS_PULSE_MS_KEY, it.roundToInt()) },
-                        modifier = Modifier.settingHighlight("item_lyrics_gap_dots_pulse", highlightKey)
-                    )
-
-                    LyricsSettingSlider(
-                        title = stringResource(R.string.lyrics_gap_dots_exit_title),
-                        subtitle = stringResource(R.string.lyrics_gap_dots_exit_subtitle),
-                        icon = Icons.Rounded.MoreHoriz,
-                        value = visual.gapDotsExitDurationMs.toFloat(),
-                        valueRange = 0f..1_000f,
-                        steps = 19,
-                        valueText = { stringResource(R.string.lyrics_gap_dots_timing_value, it.roundToInt()) },
-                        onValueCommit = { persistInt(LYRICS_GAP_DOTS_EXIT_MS_KEY, it.roundToInt()) },
-                        modifier = Modifier.settingHighlight("item_lyrics_gap_dots_exit", highlightKey)
-                    )
-
-                    SwitchSettingItem(
-                        title = stringResource(R.string.lyrics_gap_dots_accent_title),
-                        subtitle = stringResource(R.string.lyrics_gap_dots_accent_subtitle),
-                        checked = visual.gapDotsUseAccentColor,
-                        onCheckedChange = { persistBoolean(LYRICS_GAP_DOTS_ACCENT_COLOR_KEY, it) },
-                        leadingIcon = {
-                            Icon(Icons.Rounded.MoreHoriz, null, tint = MaterialTheme.colorScheme.secondary)
-                        },
-                        modifier = Modifier.settingHighlight("item_lyrics_gap_dots_accent", highlightKey)
                     )
                 }
             }
@@ -1002,8 +625,8 @@ fun LyricsSettingsScreen(
                 }
             }
 
-            item(key = LyricsSection.SCROLLING.name) {
-                LyricsSettingsSubsection(title = stringResource(R.string.lyrics_scroll_section)) {
+            item(key = LyricsSection.PLAYING_LINE.name) {
+                LyricsSettingsSubsection(title = stringResource(R.string.lyrics_playing_line_section)) {
                     LyricsSliderItem(
                         title = stringResource(R.string.lyrics_playing_line_title),
                         subtitle = stringResource(R.string.lyrics_playing_line_subtitle),
@@ -1025,42 +648,11 @@ fun LyricsSettingsScreen(
                         },
                         modifier = Modifier.settingHighlight("item_lyrics_playing_line", highlightKey)
                     )
+                }
+            }
 
-                    ThemeSelectorItem(
-                        label = stringResource(R.string.lyrics_anchor_mode_title),
-                        description = stringResource(R.string.lyrics_anchor_mode_subtitle),
-                        options = mapOf(
-                            LyricsAnchorMode.FRACTION.storageValue to
-                                stringResource(R.string.lyrics_anchor_mode_fraction),
-                            LyricsAnchorMode.FIXED.storageValue to
-                                stringResource(R.string.lyrics_anchor_mode_fixed),
-                        ),
-                        selectedKey = visual.anchorMode.storageValue,
-                        onSelectionChanged = { persistString(LYRICS_ANCHOR_MODE_KEY, it) },
-                        leadingIcon = {
-                            Icon(Icons.Rounded.SwapVert, null, tint = MaterialTheme.colorScheme.secondary)
-                        },
-                        modifier = Modifier.settingHighlight("item_lyrics_anchor_mode", highlightKey)
-                    )
-
-                    AnimatedVisibility(
-                        visible = visual.anchorMode == LyricsAnchorMode.FIXED,
-                        enter = fadeIn() + expandVertically(),
-                        exit = fadeOut() + shrinkVertically()
-                    ) {
-                        LyricsSettingSlider(
-                            title = stringResource(R.string.lyrics_anchor_offset_title),
-                            subtitle = stringResource(R.string.lyrics_anchor_offset_subtitle),
-                            icon = Icons.Rounded.SwapVert,
-                            value = visual.anchorOffsetDp,
-                            valueRange = 0f..240f,
-                            steps = 23,
-                            valueText = { stringResource(R.string.lyrics_anchor_offset_value, it.roundToInt()) },
-                            onValueCommit = { persistFloat(LYRICS_ANCHOR_OFFSET_DP_KEY, it) },
-                            modifier = Modifier.settingHighlight("item_lyrics_anchor_offset", highlightKey)
-                        )
-                    }
-
+            item(key = LyricsSection.FOLLOW_SCROLL.name) {
+                LyricsSettingsSubsection(title = stringResource(R.string.lyrics_follow_scroll_section)) {
                     LyricsSettingSlider(
                         title = stringResource(R.string.lyrics_scroll_duration_title),
                         subtitle = stringResource(R.string.lyrics_scroll_duration_subtitle),
@@ -1080,27 +672,6 @@ fun LyricsSettingsScreen(
                         modifier = Modifier.settingHighlight("item_lyrics_scroll_duration", highlightKey)
                     )
 
-                    ThemeSelectorItem(
-                        label = stringResource(R.string.lyrics_scroll_easing_title),
-                        description = stringResource(R.string.lyrics_scroll_easing_subtitle),
-                        options = mapOf(
-                            LyricsScrollEasing.STANDARD.storageValue to
-                                stringResource(R.string.lyrics_scroll_easing_standard),
-                            LyricsScrollEasing.LINEAR.storageValue to
-                                stringResource(R.string.lyrics_scroll_easing_linear),
-                            LyricsScrollEasing.EASE_IN_OUT.storageValue to
-                                stringResource(R.string.lyrics_scroll_easing_ease_in_out),
-                            LyricsScrollEasing.DECELERATE.storageValue to
-                                stringResource(R.string.lyrics_scroll_easing_decelerate),
-                        ),
-                        selectedKey = visual.scrollEasing.storageValue,
-                        onSelectionChanged = { persistString(LYRICS_SCROLL_EASING_KEY, it) },
-                        leadingIcon = {
-                            Icon(Icons.Rounded.Animation, null, tint = MaterialTheme.colorScheme.secondary)
-                        },
-                        modifier = Modifier.settingHighlight("item_lyrics_scroll_easing", highlightKey)
-                    )
-
                     LyricsSettingSlider(
                         title = stringResource(R.string.lyrics_scroll_resume_delay_title),
                         subtitle = stringResource(R.string.lyrics_scroll_resume_delay_subtitle),
@@ -1118,88 +689,6 @@ fun LyricsSettingsScreen(
                             persistLong(LYRICS_SCROLL_RESUME_DELAY_KEY, it.roundToInt().toLong())
                         },
                         modifier = Modifier.settingHighlight("item_lyrics_scroll_resume_delay", highlightKey)
-                    )
-
-                    LyricsSettingSlider(
-                        title = stringResource(R.string.lyrics_scroll_stiffness_title),
-                        subtitle = stringResource(R.string.lyrics_scroll_stiffness_subtitle),
-                        icon = Icons.Rounded.Animation,
-                        value = visual.followSpringStiffness,
-                        valueRange = 20f..400f,
-                        steps = 37,
-                        valueText = {
-                            stringResource(
-                                R.string.lyrics_scroll_stiffness_value,
-                                it.roundToInt()
-                            )
-                        },
-                        onValueCommit = {
-                            persistFloat(LYRICS_FOLLOW_SPRING_STIFFNESS_KEY, it)
-                        },
-                        modifier = Modifier.settingHighlight("item_lyrics_scroll_stiffness", highlightKey)
-                    )
-
-                    LyricsSettingSlider(
-                        title = stringResource(R.string.lyrics_scroll_damping_title),
-                        subtitle = stringResource(R.string.lyrics_scroll_damping_subtitle),
-                        icon = Icons.Rounded.Animation,
-                        value = visual.followSpringDamping,
-                        valueRange = 4f..40f,
-                        steps = 35,
-                        valueText = {
-                            stringResource(
-                                R.string.lyrics_scroll_damping_value,
-                                it.roundToInt()
-                            )
-                        },
-                        onValueCommit = {
-                            persistFloat(LYRICS_FOLLOW_SPRING_DAMPING_KEY, it)
-                        },
-                        modifier = Modifier.settingHighlight("item_lyrics_scroll_damping", highlightKey)
-                    )
-
-                    LyricsSettingSlider(
-                        title = stringResource(R.string.lyrics_scroll_coupling_title),
-                        subtitle = stringResource(R.string.lyrics_scroll_coupling_subtitle),
-                        icon = Icons.Rounded.Animation,
-                        value = visual.followSpringCoupling,
-                        valueRange = 0f..0.95f,
-                        steps = 18,
-                        valueText = {
-                            stringResource(R.string.lyrics_percent_value, (it * 100f).roundToInt())
-                        },
-                        onValueCommit = { persistFloat(LYRICS_FOLLOW_SPRING_COUPLING_KEY, it) },
-                        modifier = Modifier.settingHighlight("item_lyrics_scroll_coupling", highlightKey)
-                    )
-
-                    LyricsSettingSlider(
-                        title = stringResource(R.string.lyrics_scroll_distance_falloff_title),
-                        subtitle = stringResource(R.string.lyrics_scroll_distance_falloff_subtitle),
-                        icon = Icons.Rounded.Animation,
-                        value = visual.followSpringDistanceFalloff,
-                        valueRange = 0f..1f,
-                        steps = 19,
-                        valueText = {
-                            stringResource(R.string.lyrics_percent_value, (it * 100f).roundToInt())
-                        },
-                        onValueCommit = {
-                            persistFloat(LYRICS_FOLLOW_SPRING_DISTANCE_FALLOFF_KEY, it)
-                        },
-                        modifier = Modifier.settingHighlight("item_lyrics_scroll_distance_falloff", highlightKey)
-                    )
-
-                    LyricsSettingSlider(
-                        title = stringResource(R.string.lyrics_scroll_min_response_title),
-                        subtitle = stringResource(R.string.lyrics_scroll_min_response_subtitle),
-                        icon = Icons.Rounded.Animation,
-                        value = visual.followSpringMinResponse,
-                        valueRange = 0.05f..1f,
-                        steps = 18,
-                        valueText = {
-                            stringResource(R.string.lyrics_percent_value, (it * 100f).roundToInt())
-                        },
-                        onValueCommit = { persistFloat(LYRICS_FOLLOW_SPRING_MIN_RESPONSE_KEY, it) },
-                        modifier = Modifier.settingHighlight("item_lyrics_scroll_min_response", highlightKey)
                     )
                 }
             }
@@ -1230,6 +719,15 @@ fun LyricsSettingsScreen(
                         onClick = { navController.navigate(Screen.LyricsSourceOrder.route) }
                     )
                     SettingsItem(
+                        title = stringResource(R.string.lyrics_reset_defaults_title),
+                        subtitle = stringResource(R.string.lyrics_reset_defaults_subtitle),
+                        leadingIcon = {
+                            Icon(Icons.Rounded.RestartAlt, null, tint = MaterialTheme.colorScheme.secondary)
+                        },
+                        modifier = Modifier.settingHighlight("item_lyrics_reset_defaults", highlightKey),
+                        onClick = { showResetDefaultsDialog = true }
+                    )
+                    SettingsItem(
                         title = stringResource(R.string.setcat_reset_imported_lyrics_title),
                         subtitle = stringResource(R.string.setcat_reset_imported_lyrics_subtitle),
                         leadingIcon = {
@@ -1247,6 +745,30 @@ fun LyricsSettingsScreen(
             collapseFraction = collapseFraction,
             headerHeight = currentTopBarHeight,
             onBackClick = { navController.popBackStack() }
+        )
+    }
+
+    if (showResetDefaultsDialog) {
+        AlertDialog(
+            icon = { Icon(Icons.Rounded.RestartAlt, null) },
+            title = { Text(stringResource(R.string.dialog_reset_lyrics_settings_title)) },
+            text = { Text(stringResource(R.string.dialog_reset_lyrics_settings_body)) },
+            onDismissRequest = { showResetDefaultsDialog = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showResetDefaultsDialog = false
+                        coroutineScope.launch { resetLyricsDisplayPreferences(context) }
+                    }
+                ) {
+                    Text(stringResource(R.string.confirm), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showResetDefaultsDialog = false }) {
+                    Text(stringResource(R.string.cancel), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+            }
         )
     }
 
@@ -1334,17 +856,9 @@ private fun LyricsSettingSlider(
 }
 
 private fun LyricsFontWeight.labelRes(): Int = when (this) {
-    LyricsFontWeight.THIN -> R.string.lyrics_font_weight_thin
-    LyricsFontWeight.EXTRA_LIGHT -> R.string.lyrics_font_weight_extra_light
-    LyricsFontWeight.LIGHT -> R.string.lyrics_font_weight_light
-    LyricsFontWeight.SEMI_LIGHT -> R.string.lyrics_font_weight_semi_light
     LyricsFontWeight.NORMAL -> R.string.lyrics_font_weight_normal
     LyricsFontWeight.MEDIUM -> R.string.lyrics_font_weight_medium
-    LyricsFontWeight.SEMI_BOLD -> R.string.lyrics_font_weight_semi_bold
     LyricsFontWeight.BOLD -> R.string.lyrics_font_weight_bold
-    LyricsFontWeight.EXTRA_BOLD -> R.string.lyrics_font_weight_extra_bold
-    LyricsFontWeight.BLACK -> R.string.lyrics_font_weight_black
-    LyricsFontWeight.EXTRA_BLACK -> R.string.lyrics_font_weight_extra_black
 }
 
 private fun LyricsFontFamily.labelRes(): Int = when (this) {

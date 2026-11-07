@@ -54,7 +54,16 @@ object M3EShape {
 
     val extraExtraLarge: Shape = ShapeCache.smooth48
 
-    /** Stadium / pill. Buttons, chips, active indicators, avatars. */
+    /**
+     * Filter chips.
+     *
+     * A chip is a small container, not a button, so it does not take the stadium silhouette: the
+     * 14dp smooth corner is the same one the licences page's category chips use, which keeps every
+     * filter row in the app on one silhouette.
+     */
+    val chip: CornerBasedShape = ShapeCache.smooth14
+
+    /** Stadium / pill. Buttons, active indicators, avatars. */
     val full: Shape = CircleShape
 
     /** Ad-hoc step for content that does not sit on the scale. Prefer a token when one fits. */

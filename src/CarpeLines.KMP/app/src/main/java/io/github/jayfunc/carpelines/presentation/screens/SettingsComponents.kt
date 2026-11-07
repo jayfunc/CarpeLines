@@ -62,6 +62,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.jayfunc.carpelines.R
+import io.github.jayfunc.carpelines.ui.m3e.M3EModalBottomSheet
 import io.github.jayfunc.carpelines.data.worker.SyncProgress
 import io.github.jayfunc.carpelines.presentation.viewmodel.LyricsRefreshProgress
 import io.github.jayfunc.carpelines.ui.m3e.M3EAction
@@ -306,7 +307,7 @@ fun OptionSelectionSheet(
         optionDescriptions: Map<String, String> = emptyMap(),
         disabledOptionKeys: Set<String> = emptySet()
 ) {
-    androidx.compose.material3.ModalBottomSheet(
+    M3EModalBottomSheet(
         onDismissRequest = onDismiss,
         containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface

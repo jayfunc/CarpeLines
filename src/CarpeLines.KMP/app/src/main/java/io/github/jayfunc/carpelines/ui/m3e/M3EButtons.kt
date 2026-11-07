@@ -192,7 +192,7 @@ fun M3EFilterChip(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
-        shape = M3EShape.small,
+        shape = M3EShape.chip,
         label = { Text(label) },
         leadingIcon = leadingIcon?.let { icon ->
             {

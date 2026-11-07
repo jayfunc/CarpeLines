@@ -47,7 +47,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LargeExtendedFloatingActionButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -81,6 +80,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import coil.size.Size
 import io.github.jayfunc.carpelines.R
+import io.github.jayfunc.carpelines.ui.m3e.M3EModalBottomSheet
 import io.github.jayfunc.carpelines.data.model.LibraryTabId
 import io.github.jayfunc.carpelines.data.model.Song
 import io.github.jayfunc.carpelines.presentation.screens.TabAnimation
@@ -111,7 +111,7 @@ fun SongPickerBottomSheet(
         }
     }
 
-    ModalBottomSheet(
+    M3EModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surface,

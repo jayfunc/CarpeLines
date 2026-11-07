@@ -578,6 +578,7 @@ class MainActivity : ComponentActivity() {
                 // bar stays out of the way in the overview and in immersive mode alike. Pushed
                 // detail pages do the same; the rail stays on large screens.
                 Screen.NowPlayingLyrics.route,
+                Screen.LyricsCard.route,
                 Screen.PlaylistDetail.route,
                 Screen.EditTransition.route,
                 Screen.About.route,

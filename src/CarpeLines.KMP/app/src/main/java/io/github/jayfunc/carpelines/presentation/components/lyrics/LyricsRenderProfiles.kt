@@ -11,31 +11,27 @@ import com.mocharealm.accompanist.lyrics.ui.profile.DefaultLyricsProfiles
 import com.mocharealm.accompanist.lyrics.ui.profile.LyricsProfile
 import com.mocharealm.accompanist.lyrics.ui.profile.ProfileGroupEffects
 import com.mocharealm.accompanist.lyrics.ui.profile.ProfileTextUnit
-import com.mocharealm.accompanist.lyrics.ui.profile.WordLevelLyricsProfile
 
 /**
  * The `renderProfiles` list handed to `KaraokeLyricsView`.
  *
- * `AUTO` keeps the library's script-aware profiles (CJK by grapheme, Latin by syllable); `WORD`
- * swaps them for a single word-level profile. The three focus-effect switches override the
- * per-script `ProfileGroupEffects` policy: the library decides *when* a long syllable should glow,
- * swell or float, and these switches only let the user turn that decision off again.
+ * The library's script-aware profiles are always used: CJK animates by grapheme and Latin by
+ * syllable, which is what the original "auto" option did. The three focus-effect switches override
+ * the per-script `ProfileGroupEffects` policy: the library decides *when* a long syllable should
+ * glow, swell or float, and these switches only let the user turn that decision off again.
  *
  * When nothing is overridden the untouched default list is returned, so the renderer keeps its
  * identity-based fast path.
  */
 fun lyricsRenderProfiles(
-    segmentation: LyricsSegmentation,
     scaleEffectEnabled: Boolean,
     glowEffectEnabled: Boolean,
     floatEffectEnabled: Boolean,
 ): List<LyricsProfile> {
-    val base = when (segmentation) {
-        LyricsSegmentation.AUTO -> DefaultLyricsProfiles
-        LyricsSegmentation.WORD -> listOf(WordLevelAnimationProfile)
+    if (scaleEffectEnabled && glowEffectEnabled && floatEffectEnabled) {
+        return DefaultLyricsProfiles
     }
-    if (scaleEffectEnabled && glowEffectEnabled && floatEffectEnabled) return base
-    return base.map { delegate ->
+    return DefaultLyricsProfiles.map { delegate ->
         EffectTunedLyricsProfile(
             delegate = delegate,
             scale = scaleEffectEnabled,
@@ -44,8 +40,6 @@ fun lyricsRenderProfiles(
         )
     }
 }
-
-private object WordLevelAnimationProfile : WordLevelLyricsProfile()
 
 /**
  * Delegates every preparation and drawing step to the library profile and only rewrites the

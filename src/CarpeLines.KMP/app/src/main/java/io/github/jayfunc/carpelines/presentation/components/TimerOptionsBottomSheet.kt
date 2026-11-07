@@ -22,7 +22,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.SwitchDefaults
@@ -57,6 +56,7 @@ import kotlin.math.roundToInt
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import io.github.jayfunc.carpelines.R
+import io.github.jayfunc.carpelines.ui.m3e.M3EModalBottomSheet
 import androidx.compose.ui.text.style.TextOverflow
 
 val predefinedTimes = listOf(0, 5, 10, 15, 20, 30, 45, 60)
@@ -117,7 +117,7 @@ fun TimerOptionsBottomSheet(
         }
     }
 
-    ModalBottomSheet(
+    M3EModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState
     ) {

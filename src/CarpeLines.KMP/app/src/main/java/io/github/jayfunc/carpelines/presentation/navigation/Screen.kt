@@ -12,6 +12,9 @@ sealed class Screen(val route: String) {
             if (highlightKey != null) "settings_category/$categoryId?highlightKey=$highlightKey" else "settings_category/$categoryId"
     }
     object NowPlayingLyrics : Screen("now_playing_lyrics")
+    object LyricsCard : Screen("lyrics_card/{initialIndex}") {
+        fun createRoute(initialIndex: Int) = "lyrics_card/$initialIndex"
+    }
     object LyricsSourceOrder : Screen("lyrics_source_order")
     object LyricsSettings : Screen("lyrics_settings?highlightKey={highlightKey}") {
         fun createRoute(highlightKey: String? = null) =

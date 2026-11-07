@@ -69,7 +69,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.TwoRowsTopAppBar
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -117,6 +116,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import coil.size.Size
 import io.github.jayfunc.carpelines.R
+import io.github.jayfunc.carpelines.ui.m3e.M3EModalBottomSheet
 import io.github.jayfunc.carpelines.data.model.Song
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.MusicOff
@@ -913,7 +913,7 @@ fun PlaylistDetailScreen(
     if (showPlaylistOptionsSheet && !isFolderPlaylist) {
         val sheetState = rememberModalSheetState(skipPartiallyExpanded = true)
 
-        ModalBottomSheet(
+        M3EModalBottomSheet(
             onDismissRequest = { showPlaylistOptionsSheet = false },
             sheetState = sheetState,
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,

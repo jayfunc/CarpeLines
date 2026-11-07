@@ -28,7 +28,6 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -55,6 +54,7 @@ import io.github.jayfunc.carpelines.R
 import io.github.jayfunc.carpelines.data.model.LyricsSourcePreference
 import io.github.jayfunc.carpelines.presentation.components.rememberSyncedSliderState
 import io.github.jayfunc.carpelines.ui.m3e.M3ELeadingIconContainer
+import io.github.jayfunc.carpelines.ui.m3e.M3EModalBottomSheet
 import io.github.jayfunc.carpelines.ui.m3e.M3EListItem
 import io.github.jayfunc.carpelines.ui.m3e.M3ESurface
 import io.github.jayfunc.carpelines.ui.m3e.M3ESurfaceLevel
@@ -98,7 +98,7 @@ fun LyricsLineActionsSheet(
     providerLabel: String? = null,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(
+    M3EModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         // Same pair the settings page uses: rows are `surfaceContainer` cards on `surface`, so a

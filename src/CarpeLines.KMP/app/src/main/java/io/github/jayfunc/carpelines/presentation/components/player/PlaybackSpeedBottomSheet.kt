@@ -8,11 +8,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -21,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.jayfunc.carpelines.R
+import io.github.jayfunc.carpelines.ui.m3e.M3EModalBottomSheet
 import io.github.jayfunc.carpelines.presentation.components.PlaybackSpeedControls
 import io.github.jayfunc.carpelines.presentation.components.rememberModalSheetState
 import io.github.jayfunc.carpelines.ui.theme.RoundedSans
@@ -41,14 +40,9 @@ fun PlaybackSpeedBottomSheet(
     val scope = rememberCoroutineScope()
     val colorScheme = MaterialTheme.colorScheme
 
-    ModalBottomSheet(
+    M3EModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        dragHandle = {
-            BottomSheetDefaults.DragHandle(
-                color = colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
-            )
-        },
         containerColor = colorScheme.surfaceContainerHigh,
         tonalElevation = 8.dp
     ) {

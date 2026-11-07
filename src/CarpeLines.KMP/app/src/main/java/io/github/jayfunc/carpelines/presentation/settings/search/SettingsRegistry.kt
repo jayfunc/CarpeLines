@@ -125,6 +125,19 @@ object SettingsRegistry {
                 )
             ),
             SettingSpec(
+                id = "lyrics_reset_defaults",
+                itemKey = "item_lyrics_reset_defaults",
+                titleRes = R.string.lyrics_reset_defaults_title,
+                subtitleRes = R.string.lyrics_reset_defaults_subtitle,
+                category = SettingsCategory.LYRICS,
+                subscreenRoute = Screen.LyricsSettings.createRoute(),
+                type = SettingType.NAVIGABLE_CARD,
+                keywordsStatic = listOf(
+                    "reset lyrics settings", "reset appearance", "restore defaults", "default settings",
+                    "恢复默认", "重置设置", "默认外观",
+                )
+            ),
+            SettingSpec(
                 id = "lyrics_reset_imported",
                 itemKey = "item_lyrics_reset_imported",
                 titleRes = R.string.setcat_reset_imported_lyrics_title,

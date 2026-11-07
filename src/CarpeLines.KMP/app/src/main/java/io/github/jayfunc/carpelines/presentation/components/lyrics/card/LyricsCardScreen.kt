@@ -1,17 +1,22 @@
 package io.github.jayfunc.carpelines.presentation.components.lyrics.card
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,17 +24,19 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Checklist
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.Share
@@ -41,10 +48,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -85,26 +90,29 @@ import io.github.jayfunc.carpelines.ui.theme.M3EShape
 import io.github.jayfunc.carpelines.ui.theme.M3ESize
 import io.github.jayfunc.carpelines.ui.theme.M3ESpacing
 import io.github.jayfunc.carpelines.ui.theme.emphasized
+import io.github.jayfunc.carpelines.ui.theme.m3eContentWidth
 import kotlinx.coroutines.launch
 
 private data class ShareLine(val card: LyricsCardLine, val sourceIndex: Int)
 
 /**
- * The lyric share page reachable from the long-press sheet.
+ * The lyric card page, reached from the long-press sheet on the lyrics page.
  *
- * It follows BetterLyrics' share window: pick lyric rows on one side, preview the card, choose one
- * of the ported templates and export the rendered composition. On a phone the lyric picker and the
- * style gallery are stacked under the preview instead of sitting in side columns.
+ * It follows BetterLyrics' share window: pick lyric rows, preview the card, choose one of the
+ * ported templates and export the rendered composition. On a phone the lyric picker and the style
+ * gallery are stacked under the preview instead of sitting in side columns.
  *
- * Structurally this is an M3 "sheet with a pinned action bar": the preview takes the flexible space
- * because it is the only element that must grow, everything that configures it sits in fixed
- * bands, and the export actions stay anchored to the bottom edge where the thumb expects them.
+ * Structurally this is a page with a pinned action bar: the header names the card, the middle band
+ * scrolls when the window is too short for every control, and the export actions stay anchored to
+ * the bottom edge where the thumb expects them. It used to be a modal sheet pinned to 97% of the
+ * window, which left no room to breathe and made the drag gesture fight the content.
+ *
  * Selection inside the style gallery is carried by a ring **and** a check badge, so it survives
  * both grayscale rendering and the wildly different swatches the templates use.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun LyricsShareSheet(
+internal fun LyricsCardScreen(
     title: String,
     artist: String,
     artwork: android.graphics.Bitmap?,
@@ -114,12 +122,11 @@ internal fun LyricsShareSheet(
     showBackground: Boolean,
     showTranslation: Boolean,
     showRomanization: Boolean,
-    onDismiss: () -> Unit,
+    onBack: () -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val showMessage = rememberAppMessage()
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val sourceLines = remember(lyrics, showBackground, showTranslation, showRomanization) {
         buildShareLines(lyrics, showBackground, showTranslation, showRomanization)
@@ -175,218 +182,265 @@ internal fun LyricsShareSheet(
     val cardLayer = rememberGraphicsLayer()
     val hasSelection = selectedLines.isNotEmpty()
 
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+    // One column, three bands: the header states what the card is and offers the font, the middle
+    // band scrolls when the window cannot hold it all, the export actions stay reachable at the
+    // bottom. A page gets to use the whole window instead of the 97% a sheet was allowed, so the
+    // bands no longer have to fight for the leftover space.
+    val contentScroll = rememberScrollState()
+
+    M3ESurface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
         contentColor = MaterialTheme.colorScheme.onSurface,
-        shape = M3EShape.extraLarge,
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.97f)
-                .navigationBarsPadding(),
-        ) {
-            ShareHeader(
-                title = title,
-                artist = artist,
-                fontMenuOpen = fontMenuOpen,
-                onOpenFontMenu = { fontMenuOpen = true },
-                onDismissFontMenu = { fontMenuOpen = false },
-                onChooseFont = ::chooseFont,
-                selectedFont = config.font,
-                onClose = onDismiss,
-            )
-
-            CardPreview(
-                style = style,
-                data = cardData,
-                config = config,
-                hasSelection = hasSelection,
-                cardLayer = cardLayer,
+        Box(modifier = Modifier.fillMaxSize()) {
+            BoxWithConstraints(
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .padding(horizontal = M3ESpacing.large),
-            )
-
-            // The lyric picker is a row that opens a sub-sheet, not a button that competes with
-            // the export actions: it is a destination, and destinations are rows in M3.
-            M3EListItem(
-                headline = stringResource(R.string.lyrics_card_select_lyrics),
-                supportingText = stringResource(
-                    R.string.lyrics_card_selected_count,
-                    selectedLines.size,
-                    sourceLines.size,
-                ),
-                // Same leading-icon treatment as the settings rows: a bare secondary-tinted icon,
-                // no container, so it reads as part of the row rather than a badge.
-                leadingContent = {
-                    Icon(
-                        imageVector = Icons.Rounded.Checklist,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.size(M3ESize.iconMedium),
-                    )
-                },
-                trailingContent = {
-                    Icon(
-                        imageVector = Icons.Rounded.ChevronRight,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(M3ESize.iconMedium),
-                    )
-                },
-                shape = M3EShape.large,
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                enabled = sourceLines.isNotEmpty(),
-                onClick = { showSelection = true },
-                modifier = Modifier.padding(
-                    start = M3ESpacing.large,
-                    end = M3ESpacing.large,
-                    top = M3ESpacing.medium,
-                ),
-            )
-
-            Text(
-                text = stringResource(R.string.lyrics_card_style),
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(
-                    start = M3ESpacing.large,
-                    end = M3ESpacing.large,
-                    top = M3ESpacing.medium,
-                    bottom = M3ESpacing.small,
-                ),
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .padding(horizontal = M3ESpacing.large),
-                horizontalArrangement = Arrangement.spacedBy(M3ESpacing.small),
+                    .fillMaxSize()
+                    .statusBarsPadding(),
             ) {
-                LyricsCardGroup.entries.forEach { candidate ->
-                    M3EFilterChip(
-                        label = stringResource(candidate.labelRes),
-                        selected = candidate == group,
-                        onClick = { group = candidate },
-                        leadingIcon = if (candidate == group) Icons.Rounded.Check else null,
-                    )
-                }
-            }
-            key(group) {
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(StyleTilePreviewHeight + StyleTileLabelReserve + StyleTileVerticalPadding * 2),
-                    contentPadding = PaddingValues(
-                        start = M3ESpacing.large,
-                        end = M3ESpacing.large,
-                        top = StyleTileVerticalPadding,
-                        bottom = StyleTileVerticalPadding,
-                    ),
-                    horizontalArrangement = Arrangement.spacedBy(M3ESpacing.small),
-                ) {
-                    items(LyricsCardStyle.entries.filter { it.group == group }, key = { it.key }) { candidate ->
-                        StyleTile(
-                            style = candidate,
-                            data = cardData,
-                            selected = candidate == style,
-                            onClick = { chooseStyle(candidate) },
-                        )
-                    }
-                }
-            }
+                // A short window — a landscape phone, or a large display size — cannot hold the
+                // pinned bands and the preview at once. The middle band scrolls instead of
+                // spilling out of the page: a child drawn past its parent's bounds is still
+                // painted but no longer hit-tested, which is exactly how a page ends up showing
+                // controls that do not answer a tap.
+                val previewHeight = (maxHeight * PreviewHeightFraction)
+                    .coerceIn(MinPreviewHeight, MaxPreviewHeight)
 
-            // One connected action bar instead of two floating pills: the two exports act on the
-            // same card, so they share a silhouette and are told apart by emphasis, not borders.
-            M3EConnectedActions(
-                actions = listOf(
-                    M3EAction(
-                        label = stringResource(R.string.lyrics_card_save),
-                        onClick = {
-                            scope.launch {
-                                val ok = LyricsCardExporter.save(context, cardLayer)
-                                showMessage(
-                                    context.getString(
-                                        if (ok) {
-                                            R.string.lyrics_card_saved
-                                        } else {
-                                            R.string.lyrics_card_save_failed
-                                        }
-                                    )
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .m3eContentWidth()
+                        .fillMaxSize()
+                        .navigationBarsPadding(),
+                ) {
+                    CardPageHeader(
+                        title = title,
+                        artist = artist,
+                        fontMenuOpen = fontMenuOpen,
+                        onOpenFontMenu = { fontMenuOpen = true },
+                        onDismissFontMenu = { fontMenuOpen = false },
+                        onChooseFont = ::chooseFont,
+                        selectedFont = config.font,
+                        onBack = onBack,
+                    )
+
+                    // Everything that configures the card scrolls between the two pinned bands, so
+                    // the page always keeps one way out at the top and one way to export at the
+                    // bottom.
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .verticalScroll(contentScroll),
+                    ) {
+                        CardPreview(
+                            style = style,
+                            data = cardData,
+                            config = config,
+                            hasSelection = hasSelection,
+                            cardLayer = cardLayer,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(previewHeight)
+                                .padding(horizontal = M3ESpacing.large),
+                        )
+
+                        // The lyric picker is a destination of its own, not a button competing with
+                        // the export actions.
+                        M3EListItem(
+                            headline = stringResource(R.string.lyrics_card_select_lyrics),
+                            supportingText = stringResource(
+                                R.string.lyrics_card_selected_count,
+                                selectedLines.size,
+                                sourceLines.size,
+                            ),
+                            // Same leading-icon treatment as the settings rows: a bare
+                            // secondary-tinted icon, no container, so it reads as part of the row
+                            // rather than a badge.
+                            leadingContent = {
+                                Icon(
+                                    imageVector = Icons.Rounded.Checklist,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier.size(M3ESize.iconMedium),
+                                )
+                            },
+                            trailingContent = {
+                                Icon(
+                                    imageVector = Icons.Rounded.ChevronRight,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.size(M3ESize.iconMedium),
+                                )
+                            },
+                            shape = M3EShape.large,
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            enabled = sourceLines.isNotEmpty(),
+                            onClick = { showSelection = true },
+                            modifier = Modifier.padding(
+                                start = M3ESpacing.large,
+                                end = M3ESpacing.large,
+                                top = M3ESpacing.medium,
+                            ),
+                        )
+
+                        Text(
+                            text = stringResource(R.string.lyrics_card_style),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(
+                                start = M3ESpacing.large,
+                                end = M3ESpacing.large,
+                                top = M3ESpacing.medium,
+                                bottom = M3ESpacing.small,
+                            ),
+                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .horizontalScroll(rememberScrollState())
+                                .padding(horizontal = M3ESpacing.large),
+                            horizontalArrangement = Arrangement.spacedBy(M3ESpacing.small),
+                        ) {
+                            LyricsCardGroup.entries.forEach { candidate ->
+                                M3EFilterChip(
+                                    label = stringResource(candidate.labelRes),
+                                    selected = candidate == group,
+                                    onClick = { group = candidate },
+                                    leadingIcon = if (candidate == group) {
+                                        Icons.Rounded.Check
+                                    } else {
+                                        null
+                                    },
                                 )
                             }
-                        },
-                        icon = Icons.Rounded.Download,
-                        emphasis = M3EActionEmphasis.Tonal,
-                        enabled = hasSelection,
-                    ),
-                    M3EAction(
-                        label = stringResource(R.string.lyrics_card_share),
-                        onClick = {
-                            scope.launch {
-                                val ok = LyricsCardExporter.share(
-                                    context = context,
-                                    layer = cardLayer,
-                                    chooserTitle = context.getString(
-                                        R.string.lyrics_card_share_chooser
+                        }
+                        key(group) {
+                            LazyRow(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(
+                                        StyleTilePreviewHeight +
+                                            StyleTileLabelReserve +
+                                            StyleTileVerticalPadding * 2
                                     ),
-                                )
-                                if (!ok) {
-                                    showMessage(context.getString(R.string.lyrics_card_share_failed))
+                                contentPadding = PaddingValues(
+                                    start = M3ESpacing.large,
+                                    end = M3ESpacing.large,
+                                    top = StyleTileVerticalPadding,
+                                    bottom = StyleTileVerticalPadding,
+                                ),
+                                horizontalArrangement = Arrangement.spacedBy(M3ESpacing.small),
+                            ) {
+                                items(
+                                    LyricsCardStyle.entries.filter { it.group == group },
+                                    key = { it.key },
+                                ) { candidate ->
+                                    StyleTile(
+                                        style = candidate,
+                                        data = cardData,
+                                        selected = candidate == style,
+                                        onClick = { chooseStyle(candidate) },
+                                    )
                                 }
                             }
-                        },
-                        icon = Icons.Rounded.Share,
-                        emphasis = M3EActionEmphasis.Filled,
-                        enabled = hasSelection,
-                    ),
-                ),
-                orientation = M3EConnectedOrientation.Horizontal,
-                // The bottom inset is the sheet's own padding, so it matches the 16dp the other
-                // sheets close with instead of hugging the navigation bar.
-                modifier = Modifier.padding(
-                    start = M3ESpacing.large,
-                    end = M3ESpacing.large,
-                    top = M3ESpacing.small,
-                    bottom = M3ESpacing.large,
-                ),
-            )
-        }
-
-        if (showSelection) {
-            LyricsSelectionSheet(
-                lines = sourceLines,
-                selected = selected,
-                onToggle = { index ->
-                    selected = if (index in selected) selected - index else selected + index
-                },
-                onToggleAll = {
-                    selected = if (selected.size == sourceLines.size) {
-                        emptySet()
-                    } else {
-                        sourceLines.indices.toSet()
+                        }
                     }
-                },
-                onDismiss = { showSelection = false },
-            )
+
+                    // One connected action bar instead of two floating pills: the two exports act
+                    // on the same card, so they share a silhouette and are told apart by emphasis,
+                    // not borders.
+                    M3EConnectedActions(
+                        actions = listOf(
+                            M3EAction(
+                                label = stringResource(R.string.lyrics_card_save),
+                                onClick = {
+                                    scope.launch {
+                                        val ok = LyricsCardExporter.save(context, cardLayer)
+                                        showMessage(
+                                            context.getString(
+                                                if (ok) {
+                                                    R.string.lyrics_card_saved
+                                                } else {
+                                                    R.string.lyrics_card_save_failed
+                                                }
+                                            )
+                                        )
+                                    }
+                                },
+                                icon = Icons.Rounded.Download,
+                                emphasis = M3EActionEmphasis.Tonal,
+                                enabled = hasSelection,
+                            ),
+                            M3EAction(
+                                label = stringResource(R.string.lyrics_card_share),
+                                onClick = {
+                                    scope.launch {
+                                        val ok = LyricsCardExporter.share(
+                                            context = context,
+                                            layer = cardLayer,
+                                            chooserTitle = context.getString(
+                                                R.string.lyrics_card_share_chooser
+                                            ),
+                                        )
+                                        if (!ok) {
+                                            showMessage(
+                                                context.getString(R.string.lyrics_card_share_failed)
+                                            )
+                                        }
+                                    }
+                                },
+                                icon = Icons.Rounded.Share,
+                                emphasis = M3EActionEmphasis.Filled,
+                                enabled = hasSelection,
+                            ),
+                        ),
+                        orientation = M3EConnectedOrientation.Horizontal,
+                        modifier = Modifier.padding(
+                            start = M3ESpacing.large,
+                            end = M3ESpacing.large,
+                            top = M3ESpacing.small,
+                            bottom = M3ESpacing.large,
+                        ),
+                    )
+                }
+            }
+
+            AnimatedVisibility(
+                visible = showSelection,
+                enter = fadeIn() + slideInVertically { it },
+                exit = fadeOut() + slideOutVertically { it },
+            ) {
+                LyricsSelectionPanel(
+                    lines = sourceLines,
+                    selected = selected,
+                    onToggle = { index ->
+                        selected = if (index in selected) selected - index else selected + index
+                    },
+                    onToggleAll = {
+                        selected = if (selected.size == sourceLines.size) {
+                            emptySet()
+                        } else {
+                            sourceLines.indices.toSet()
+                        }
+                    },
+                    onDismiss = { showSelection = false },
+                )
+            }
         }
     }
 }
 
 /**
- * Sheet header.
+ * Page header.
  *
- * The close affordance leads because the sheet is nearly full height — the same place a full-screen
- * dialog puts it — and the font picker is a sample pill on the trailing edge: the glyph is rendered
- * in the *active* family, so the control states its own value without borrowing a text label that
- * a CJK face cannot preview anyway.
+ * The back affordance leads, in the same place every pushed page puts it, and the font picker is a
+ * sample pill on the trailing edge: the glyph is rendered in the *active* family, so the control
+ * states its own value without borrowing a text label that a CJK face cannot preview anyway.
  */
 @Composable
-private fun ShareHeader(
+private fun CardPageHeader(
     title: String,
     artist: String,
     selectedFont: LyricsCardFont,
@@ -394,7 +448,7 @@ private fun ShareHeader(
     onOpenFontMenu: () -> Unit,
     onDismissFontMenu: () -> Unit,
     onChooseFont: (LyricsCardFont) -> Unit,
-    onClose: () -> Unit,
+    onBack: () -> Unit,
 ) {
     val fontDescription = "${stringResource(R.string.lyrics_card_font)}: " +
         stringResource(selectedFont.labelRes)
@@ -409,10 +463,10 @@ private fun ShareHeader(
             ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        IconButton(onClick = onClose) {
+        IconButton(onClick = onBack) {
             Icon(
-                imageVector = Icons.Rounded.Close,
-                contentDescription = stringResource(R.string.lyrics_card_close),
+                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                contentDescription = stringResource(R.string.auth_cd_back),
             )
         }
         Column(
@@ -675,40 +729,36 @@ private fun StyleTile(
 }
 
 /**
- * Lyric row picker.
+ * Lyric row picker, drawn as a page over the card page rather than as a second sheet.
  *
  * Rows are a connected list so the eye can run down the column. Selection is carried the M3 way —
  * the container turns into `secondaryContainer` and a check mark appears on the trailing edge —
- * instead of by a checkbox on every row, which is a control the sheet does not need: the whole row
- * is the switch, exposed as `Role.Checkbox` so the state is still announced.
+ * instead of by a checkbox on every row: the whole row is the switch, exposed as `Role.Checkbox`
+ * so the state is still announced.
  *
  * The header keeps one text action (select all / clear) and the running count lives under the
  * title, so the footer holds a single confirm that hugs its label instead of a third full-width
  * pill competing with the export bar underneath.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LyricsSelectionSheet(
+private fun LyricsSelectionPanel(
     lines: List<ShareLine>,
     selected: Set<Int>,
     onToggle: (Int) -> Unit,
     onToggleAll: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val allSelected = lines.isNotEmpty() && selected.size == lines.size
     BackHandler { onDismiss() }
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+    M3ESurface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
         contentColor = MaterialTheme.colorScheme.onSurface,
-        shape = M3EShape.extraLarge,
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.85f)
+                .fillMaxSize()
+                .statusBarsPadding()
                 .navigationBarsPadding(),
         ) {
             Row(
@@ -725,8 +775,8 @@ private fun LyricsSelectionSheet(
             ) {
                 IconButton(onClick = onDismiss) {
                     Icon(
-                        imageVector = Icons.Rounded.Close,
-                        contentDescription = stringResource(R.string.lyrics_card_close),
+                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                        contentDescription = stringResource(R.string.auth_cd_back),
                     )
                 }
                 Column(
@@ -830,8 +880,6 @@ private fun LyricsSelectionSheet(
                         emphasis = M3EActionEmphasis.Filled,
                     ),
                 ),
-                // The bottom inset is the sheet's own padding, so the confirm clears the
-                // navigation bar by the same 16dp the other sheets use.
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
@@ -864,6 +912,20 @@ private val StyleTileLabelReserve = 28.dp
 
 /** Vertical padding inside the gallery scroll, counted into the row height below. */
 private val StyleTileVerticalPadding = M3ESpacing.extraSmall
+
+/**
+ * Share of the page's height the preview claims.
+ *
+ * On a regular phone this matches what the leftover of the pinned bands gives it; on a short
+ * window the floors below take over and the band scrolls instead.
+ */
+private const val PreviewHeightFraction = 0.45f
+
+/** Floor for the preview so the template stays recognisable on a landscape phone. */
+private val MinPreviewHeight = 176.dp
+
+/** Ceiling for the preview so a tablet does not turn the page into one oversized card. */
+private val MaxPreviewHeight = 420.dp
 
 private val IdleRingWidth = 1.dp
 private val SelectedRingWidth = 2.dp

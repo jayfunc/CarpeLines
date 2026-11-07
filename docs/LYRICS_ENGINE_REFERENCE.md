@@ -32,18 +32,25 @@ ratios used by the settings and palette code.
 | --- | --- |
 | `PlayingLineTopOffset = 50` | `playingLineTopOffset`, default `0.5` on the immersive page; adjustable under Lyrics → Playing line position |
 | `_defaultScale = 0.75`, `_highlightedScale = 1.0` | The karaoke view's line focus; the app no longer animates scale itself |
-| `IsLyricsOutOfSightEffectEnabled`, fade, blur | `LyricsVisualSettings.animatedLyricsBlurEnabled` / `animatedLyricsBlurStrengthDp` passed to `KaraokeLyricsView(useBlurEffect = …)` |
+| `IsLyricsOutOfSightEffectEnabled`, fade, blur | `LyricsDisplaySettings.animatedLyricsBlurEnabled` gates `KaraokeLyricsView(useBlurEffect = …)`; the strength stays at WinUI's 5 dp and is no longer a preference |
 | `LyricsAnimator` line transitions and stagger delay | The karaoke view's line transition; there is no app-side stagger animator |
 | `DrawSubLineRegion` gradient stops | The karaoke view's syllable sweep |
-| `GapIndicatorRenderer` / `LyricsGapHelper` | The karaoke view's gap indicators |
-| `EdgeFadeMaskRenderer` | `LyricsFade.Fraction(topFadeFraction)` / `LyricsFade.Fraction(bottomFadeFraction)` in `SyncedLyricsList.kt`, plus the `edgeFeatheringEffectEnabled` switch |
+| `GapIndicatorRenderer` / `LyricsGapHelper` | The karaoke view's gap indicators, fed from `LyricsRenderDefaults` (count, size, spacing and the four phase budgets) instead of user settings |
+| Follow scroll spring, easing and keep-alive zone | `LyricsRenderDefaults` constants in `SyncedLyricsList.kt`; the page only exposes the follow duration and the resume delay |
+| `EdgeFadeMaskRenderer` | `SyncedLyricsList.kt` derives both masks from the playing-line split (`LyricsFade.Fraction`), scaled by `edgeFadeReach`; only the feathering switch and that reach remain preferences |
 | `Shaders/FluidBackgroundEffect.cs` (`FluidBackgroundRenderer`) | `BetterLyricsAmbientBackground`'s `FLUID` style: the same noise rotation, sine warp and four-colour two-layer composite, evaluated on the CPU into a small bitmap so it also runs on Android 11 (AGSL needs API 33). The shader's optional `enableLightWave` HSV pass is not ported; dithering is skipped because the buffer is upscaled |
 | `Shaders/RaindropEffect.cs` (`RaindropRenderer`) | `RAINDROP` style: `RaindropOverlay` runs the same HLSL as an AGSL runtime shader over the blurred cover. `RaindropSpeed`/`Size`/`Density`/`LightAngle`/`ShadowIntensity` keep the WinUI defaults (100 % / 100 % / 40 % / 135° / 0 %), because the Android settings only pick the style |
 | `Shaders/SnowEffect.cs` (`SnowRenderer`) | `SNOW` style: `SnowOverlay`, also AGSL, with `SnowFlakeOverlayAmount = 10 %` and `SnowFlakeOverlaySpeed = 1` as in WinUI |
 | Win2D album blur | `BetterLyricsAmbientBackground`'s `ALBUM_BLUR` style (`Modifier.blur`) |
-| `UnplayedOriginalLyricsOpacity`, `TranslatedLyricsOpacity`, `PhoneticLyricsOpacity` | `WinLyricsVisualDefaults` + `LyricsVisualSettings` (Lyrics → Text style) |
-| `LyricsLineOverallSpacingFactor`, `LyricsLineInnerSpacingFactor` | `LyricsVisualSettings.lineSpacingFactor` (Lyrics → Text style) |
-| `LyricsFontWeight`, CJK/Western font families | `LyricsFontWeight` / `LyricsFontFamily` (Lyrics → Text style) |
+| `UnplayedOriginalLyricsOpacity`, `TranslatedLyricsOpacity`, `PhoneticLyricsOpacity` | `WinLyricsVisualDefaults`, baked into the renderer; the settings page does not expose them |
+| `LyricsLineOverallSpacingFactor`, `LyricsLineInnerSpacingFactor` | `LyricsVisualSettings.lineSpacingFactor` (Lyrics → Text style); the line-height multiplier was folded into it |
+| `LyricsLayoutHelper` translation 0.70 / transliteration 0.55 ratios | `LyricsVisualSettings.annotationFontRatio`: one "translation and phonetic size" slider; romanization and backing vocals follow at fixed ratios |
+| `LyricsFontWeight`, CJK/Western font families | `LyricsFontWeight` (three steps) / `LyricsFontFamily` (Lyrics → Text style) |
+
+Renderer knobs that used to be preferences (gap-dot phases, follow spring, scroll easing, keep-alive
+zone, edge-fade measurement, blend mode, anchor mode, segmentation) are pinned in
+`LyricsRenderDefaults` and `SyncedLyricsList`. Only settings with a visible, user-describable outcome
+stay on the page.
 
 The renderer follows WinUI's data model rather than rebuilding a line per word:
 
@@ -58,16 +65,16 @@ The renderer follows WinUI's data model rather than rebuilding a line per word:
   the same settings as WinUI.
 - **Gaps.** Gaps come from explicit line ends or the next line start; the karaoke view paints the
   breathing dots at the boundary. Blank marker rows are not rendered.
-- **Edge fades.** Both fades are split at `playingLineTopOffset`; a single full-height fade made the
-  lines above the playing line look dimmer than the ones below it.
+- **Edge fades.** Both fades are split at `playingLineTopOffset` and scaled by `edgeFadeReach`; a
+  single full-height fade made the lines above the playing line look dimmer than the ones below it.
 
 ## Deliberate differences
 
 - **Colours.** WinUI's default palette is a neutral grey over a flat gradient. On a phone the
   background is the album cover, so the lyric colour comes from the artwork palette and a scrim
   sits under the whole column. The opacity values match WinUI's defaults (unplayed 30%,
-  translation/romanization 60%) and are adjustable under Lyrics → Text style instead of being
-  baked into the renderer.
+  translation/romanization 60%) and stay baked into the renderer instead of being exposed as
+  settings.
 - **Type.** WinUI renders Arial through DirectWrite; Android uses the platform typeface unless the
   user picks one. Glyph metrics, shaping and fallback therefore differ even when the layout and
   animation math are identical.
@@ -95,7 +102,8 @@ The renderer follows WinUI's data model rather than rebuilding a line per word:
   first line.
 - The edge fade is masked from the screen edges, so both fade fractions must split at the playing
   line. `LyricsFade.ToAnchor` / `Fraction(0.5f)` put every line above the current one inside the
-  top mask while the lines below were still fully opaque.
+  top mask while the lines below were still fully opaque, which is why the measurement mode is no
+  longer a setting.
 - The fluid gradient's CPU sample works because its output is a smooth field; raindrops and snow
   are not. `RaindropEffect` evaluates four cubic-noise gradients per pixel and `SnowEffect` loops
   over 66 cells, which is far past a phone CPU at any resolution where the drops are not mush, so

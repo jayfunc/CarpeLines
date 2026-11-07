@@ -1,8 +1,11 @@
 package io.github.jayfunc.carpelines.ui.m3e
 
 import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -24,13 +27,20 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -39,6 +49,8 @@ import io.github.jayfunc.carpelines.ui.theme.LocalReducedMotion
 import io.github.jayfunc.carpelines.ui.theme.M3EMotion
 import io.github.jayfunc.carpelines.ui.theme.M3ESize
 import io.github.jayfunc.carpelines.ui.theme.M3ESpacing
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /** Emphasis of one segment in a [M3EConnectedActions] bar, highest first. */
 @Immutable
@@ -87,6 +99,45 @@ private val PressedCorner: Dp = 16.dp
 private val RestingInnerCorner: Dp = 8.dp
 
 /**
+ * How much wider a pressed segment grows inside a horizontal bar.
+ *
+ * M3 Expressive's press feedback is spatial, not just tonal: the pressed segment claims the room
+ * it is about to act on while its neighbour yields, which reads as one bar reshaping rather than
+ * two independent buttons.
+ */
+private const val PressedWeightGain = 1.25f
+
+/** The label shrinks a touch under the finger, so the press lands before the action does. */
+private const val PressedContentScale = 0.95f
+
+/** Extra horizontal padding the label gains while pressed, widening the segment's content box. */
+private val PressedPaddingGrowth: Dp = 4.dp
+
+/** How long the pressed look outlives a quick tap, so the feedback is actually visible. */
+private const val TapLingerMillis = 100L
+
+/** Weight runs on a low-bouncy spring: the bar widens with a little overshoot, then settles. */
+private val PressedWeightSpec =
+    spring<Float>(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
+
+/** The label's scale is bouncier than the container: it is the part the eye is already on. */
+private val PressedContentSpec =
+    spring<Float>(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow)
+
+/**
+ * Press bookkeeping for one segment.
+ *
+ * The interaction source is shared with the weight animation in the bar's row, so the widening and
+ * the visual press cannot disagree about whether the segment is down.
+ */
+private class SegmentPress {
+    val interaction = MutableInteractionSource()
+
+    /** Held on for [TapLingerMillis] after a tap, so a flick still shows the press. */
+    var lingering by mutableStateOf(false)
+}
+
+/**
  * Related actions drawn as one Material 3 Expressive connected action bar.
  *
  * A lone action is a pill that hugs its label; two or more related actions become a single
@@ -95,9 +146,12 @@ private val RestingInnerCorner: Dp = 8.dp
  * one) is the Material 2 pattern this replaces: it reads as two unrelated controls and makes the
  * page look like a form.
  *
- * Pressing a segment squishes its corners toward [PressedCorner] on the expressive spatial
- * spring, so the touch is answered by shape — not only by a ripple. The squish is skipped when
- * the user asked for reduced motion.
+ * Pressing a segment is answered in four ways at once, which is what makes it read as expressive
+ * instead of merely tinted: the corners squish toward [PressedCorner], the label scales down a
+ * touch, its content box widens by [PressedPaddingGrowth], and in a [M3EConnectedOrientation.Horizontal]
+ * bar the pressed segment grows to [PressedWeightGain] of its share while its neighbour yields. A
+ * short [TapLingerMillis] hold keeps that visible after a flick, and a haptic tick lands at press
+ * time rather than at click time. Everything spatial is skipped under reduced motion.
  *
  * [orientation] picks the axis: [M3EConnectedOrientation.Vertical] stacks full-width segments so
  * long labels never get squeezed, while [M3EConnectedOrientation.Horizontal] keeps the bar on a
@@ -135,6 +189,14 @@ fun M3EConnectedActions(
             horizontalArrangement = Arrangement.spacedBy(ConnectedSpaceBetween)
         ) {
             actions.forEachIndexed { index, action ->
+                val press = remember { SegmentPress() }
+                val pressed by press.interaction.collectIsPressedAsState()
+                val active = pressed || press.lingering
+                val weight by animateFloatAsState(
+                    targetValue = if (active && action.enabled) PressedWeightGain else 1f,
+                    animationSpec = PressedWeightSpec,
+                    label = "segmentWeight",
+                )
                 ConnectedSegment(
                     action = action,
                     index = index,
@@ -142,7 +204,8 @@ fun M3EConnectedActions(
                     vertical = false,
                     height = height,
                     contentPadding = M3ESpacing.large,
-                    modifier = Modifier.weight(1f)
+                    press = press,
+                    modifier = Modifier.weight(weight)
                 )
             }
         }
@@ -175,44 +238,88 @@ private fun ConnectedSegment(
     height: Dp,
     modifier: Modifier = Modifier,
     contentPadding: Dp = M3ESpacing.extraLarge,
+    press: SegmentPress = remember { SegmentPress() },
 ) {
-    val interaction = remember { MutableInteractionSource() }
-    val pressed by interaction.collectIsPressedAsState()
+    val pressed by press.interaction.collectIsPressedAsState()
+    val active = pressed || press.lingering
+    val reducedMotion = LocalReducedMotion.current
+    val haptics = LocalHapticFeedback.current
+    val scope = rememberCoroutineScope()
 
-    val spec: FiniteAnimationSpec<Dp> =
-        if (LocalReducedMotion.current) snap() else M3EMotion.spatialFast()
+    // A tick at press time, not at click time: the finger wants to know the bar took the press
+    // even when the action behind it takes a moment to open a chooser.
+    LaunchedEffect(pressed) {
+        if (pressed && action.enabled) {
+            haptics.performHapticFeedback(HapticFeedbackType.ContextClick)
+        }
+    }
+
+    val spec: FiniteAnimationSpec<Dp> = if (reducedMotion) snap() else M3EMotion.spatialFast()
     val restingOuter = height / 2
     val outer by animateDpAsState(
-        targetValue = if (pressed) PressedCorner else restingOuter,
+        targetValue = if (active) PressedCorner else restingOuter,
         animationSpec = spec,
         label = "segmentOuterCorner"
     )
     val inner by animateDpAsState(
-        targetValue = if (pressed) PressedCorner else RestingInnerCorner,
+        targetValue = if (active) PressedCorner else RestingInnerCorner,
         animationSpec = spec,
         label = "segmentInnerCorner"
     )
+    val contentGrowth by animateDpAsState(
+        targetValue = if (active && !reducedMotion) PressedPaddingGrowth else 0.dp,
+        animationSpec = spec,
+        label = "segmentContentGrowth"
+    )
+    val contentScale by animateFloatAsState(
+        targetValue = if (active && !reducedMotion) PressedContentScale else 1f,
+        animationSpec = if (reducedMotion) snap() else PressedContentSpec,
+        label = "segmentContentScale"
+    )
 
     Surface(
-        onClick = action.onClick,
+        onClick = {
+            // Hold the pressed look briefly: without it a quick tap is over before the eyes catch
+            // the animation, and the button reads as unresponsive.
+            scope.launch {
+                press.lingering = true
+                delay(TapLingerMillis)
+                press.lingering = false
+            }
+            action.onClick()
+        },
         enabled = action.enabled,
         shape = connectedSegmentShape(index, count, vertical, outer, inner),
         color = action.emphasis.container(action.enabled),
         contentColor = action.emphasis.content(action.enabled),
         border = action.emphasis.border(action.enabled),
-        interactionSource = interaction,
+        interactionSource = press.interaction,
         modifier = modifier.heightIn(min = M3ESize.minimumTarget)
     ) {
-        SegmentContent(action = action, height = height, horizontalPadding = contentPadding)
+        SegmentContent(
+            action = action,
+            height = height,
+            horizontalPadding = contentPadding + contentGrowth,
+            contentScale = contentScale,
+        )
     }
 }
 
 @Composable
-private fun SegmentContent(action: M3EAction, height: Dp, horizontalPadding: Dp) {
+private fun SegmentContent(
+    action: M3EAction,
+    height: Dp,
+    horizontalPadding: Dp,
+    contentScale: Float,
+) {
     Row(
         modifier = Modifier
             .height(height)
-            .padding(horizontal = horizontalPadding),
+            .padding(horizontal = horizontalPadding)
+            .graphicsLayer {
+                scaleX = contentScale
+                scaleY = contentScale
+            },
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {

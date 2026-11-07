@@ -35,7 +35,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -56,6 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import android.view.HapticFeedbackConstants
 import io.github.jayfunc.carpelines.R
+import io.github.jayfunc.carpelines.ui.m3e.M3EModalBottomSheet
 import io.github.jayfunc.carpelines.presentation.library.LibraryTabId
 import io.github.jayfunc.carpelines.presentation.utils.LocalAppHapticsConfig
 import io.github.jayfunc.carpelines.presentation.utils.performAppCompatHapticFeedback
@@ -154,7 +154,7 @@ fun ReorderTabsSheet(
 
     val hiddenTabs = remember(localTabs) { hiddenLibraryTabs(localTabs) }
 
-    ModalBottomSheet(
+    M3EModalBottomSheet(
         onDismissRequest = { onDismiss() },
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surface

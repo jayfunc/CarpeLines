@@ -77,6 +77,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import io.github.jayfunc.carpelines.R
+import io.github.jayfunc.carpelines.ui.m3e.M3EModalBottomSheet
 import io.github.jayfunc.carpelines.data.model.Song
 import io.github.jayfunc.carpelines.data.offline.CloudOfflineRepository
 import io.github.jayfunc.carpelines.data.offline.OfflineDownloadStatus
@@ -319,7 +320,7 @@ fun SongInfoBottomSheet(
         heightAnimationEnabled = true
     }
 
-    ModalBottomSheet(
+    M3EModalBottomSheet(
         onDismissRequest = {
             if (!showEditSheet) {
                 onDismiss()

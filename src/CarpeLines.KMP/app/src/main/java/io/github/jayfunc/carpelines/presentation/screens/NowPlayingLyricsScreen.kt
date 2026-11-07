@@ -119,7 +119,6 @@ import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsLineAct
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsOffsetStore
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsSystemBarsAppearance
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsTextColors
-import io.github.jayfunc.carpelines.presentation.components.lyrics.card.LyricsShareSheet
 import io.github.jayfunc.carpelines.presentation.components.lyrics.rememberArtworkBitmap
 import io.github.jayfunc.carpelines.presentation.components.lyrics.rememberArtworkPalette
 import io.github.jayfunc.carpelines.presentation.components.lyrics.rememberLyricsChromeState
@@ -177,7 +176,7 @@ private val LyricsPlayerCardWidth = 640.dp
 /** Height the album face's control band is assumed to need until it has been measured. */
 private val LyricsAlbumBarReserve = 248.dp
 
-private data class LyricsHeader(
+internal data class LyricsHeader(
     /** Stable per-track identity, so a pause/play or artwork refresh does not replay the transition. */
     val key: String,
     val title: String,
@@ -200,6 +199,7 @@ fun NowPlayingLyricsScreen(
     lyricsViewModel: NowPlayingLyricsViewModel = hiltViewModel(),
     onOpenLyricsSettings: () -> Unit = {},
     onOpenManualLyricsSearch: () -> Unit = {},
+    onOpenShareCard: (Int) -> Unit = {},
 ) {
     val context = LocalContext.current
     val clipboard = LocalClipboard.current
@@ -303,13 +303,12 @@ fun NowPlayingLyricsScreen(
     // below and from the type colour itself, which is how the WinUI page reads too.
     val lyricStyle = remember(
         settings.fontSizeSp,
-        settings.visual.lineHeightScale,
         baseLyricTypography,
         settings.visual.fontWeight,
         settings.visual.fontFamily,
     ) {
         baseLyricTypography
-            .scaledForLyrics(settings.fontSizeSp, settings.visual.lineHeightScale)
+            .scaledForLyrics(settings.fontSizeSp)
             .copy(
                 fontWeight = settings.visual.fontWeight.weight,
                 fontFamily = settings.visual.fontFamily.resolve(baseLyricTypography.fontFamily),
@@ -317,7 +316,6 @@ fun NowPlayingLyricsScreen(
     }
 
     var actionLine by remember { mutableStateOf<SyncedLine?>(null) }
-    var shareInitialIndex by remember { mutableStateOf<Int?>(null) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (settings.ambientEnabled) {
@@ -506,7 +504,6 @@ fun NowPlayingLyricsScreen(
                                 lyricsSyncOffset = syncOffsetMs,
                                 contentColor = lyricContentColor,
                                 textStyle = lyricStyle,
-                                accentColor = colors.accent,
                                 onLineClick = { line ->
                                     ExternalMediaMonitor.seekTo(
                                         io.github.jayfunc.carpelines.presentation.components.resolveSeekPositionMs(
@@ -613,9 +610,9 @@ fun NowPlayingLyricsScreen(
             onSharePage = {
                 val synced = lyrics?.synced.orEmpty()
                 val index = synced.indexOfFirst { it.time == line.time }
-                shareInitialIndex = index.coerceAtLeast(0)
                 actionLine = null
                 chrome.hold()
+                onOpenShareCard(index.coerceAtLeast(0))
             },
             onOffsetChange = { targetMs ->
                 scope.launch {
@@ -646,20 +643,6 @@ fun NowPlayingLyricsScreen(
         )
     }
 
-    shareInitialIndex?.let { initialIndex ->
-        LyricsShareSheet(
-            title = header?.title.orEmpty(),
-            artist = header?.artist.orEmpty(),
-            artwork = headerArtwork,
-            accent = colors.accent,
-            lyrics = lyrics,
-            initialIndex = initialIndex,
-            showBackground = settings.showBackgroundVocals,
-            showTranslation = settings.showTranslation,
-            showRomanization = settings.showRomanization,
-            onDismiss = { shareInitialIndex = null },
-        )
-    }
 }
 
 /**
@@ -1766,7 +1749,7 @@ private fun LyricsScrim(colors: LyricsTextColors, modifier: Modifier = Modifier)
     )
 }
 
-private fun resolveHeader(
+internal fun resolveHeader(
     externalMedia: ExternalMediaState?,
     localArtworkModel: Any?,
 ): LyricsHeader? {

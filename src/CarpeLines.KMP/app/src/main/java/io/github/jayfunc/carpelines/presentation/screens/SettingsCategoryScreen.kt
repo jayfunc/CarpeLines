@@ -101,7 +101,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -150,6 +149,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import io.github.jayfunc.carpelines.R
+import io.github.jayfunc.carpelines.ui.m3e.M3EModalBottomSheet
 import io.github.jayfunc.carpelines.data.backup.model.BackupHistoryEntry
 import io.github.jayfunc.carpelines.data.backup.model.BackupOperationType
 import io.github.jayfunc.carpelines.data.backup.model.BackupSection
@@ -693,7 +693,7 @@ fun SettingsCategoryScreen(
     BackupTransferProgressDialogHost(progress = dataTransferProgress)
 
     if (showPaletteRegenerateSheet) {
-        ModalBottomSheet(
+        M3EModalBottomSheet(
             onDismissRequest = {
                 if (!isAnyPaletteRegenerateRunning) {
                     showPaletteRegenerateSheet = false

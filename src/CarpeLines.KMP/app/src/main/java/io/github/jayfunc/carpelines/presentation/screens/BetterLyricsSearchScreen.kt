@@ -42,7 +42,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -69,6 +68,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import io.github.jayfunc.carpelines.R
+import io.github.jayfunc.carpelines.ui.m3e.M3EModalBottomSheet
 import io.github.jayfunc.carpelines.data.betterlyrics.BetterLyricsCandidate
 import io.github.jayfunc.carpelines.data.external.ExternalMediaMonitor
 import io.github.jayfunc.carpelines.data.external.ExternalMediaState
@@ -284,7 +284,7 @@ fun BetterLyricsSearchScreen(
     val previewCandidate = uiState.previewCandidate
     if (previewCandidate != null || uiState.previewLoading) {
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        ModalBottomSheet(
+        M3EModalBottomSheet(
             onDismissRequest = viewModel::closePreview,
             sheetState = sheetState,
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,

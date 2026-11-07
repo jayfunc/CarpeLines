@@ -1,5 +1,6 @@
 package io.github.jayfunc.carpelines.presentation.components
 
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,9 +30,7 @@ import com.mocharealm.accompanist.lyrics.ui.composable.lyrics.LyricsAnchor
 import com.mocharealm.accompanist.lyrics.ui.composable.lyrics.LyricsFade
 import io.github.jayfunc.carpelines.data.model.SyncedLine
 import io.github.jayfunc.carpelines.presentation.components.lyrics.CoreLyricsRenderMapper
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsAnchorMode
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsBlendMode
-import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsFadeMode
+import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsRenderDefaults
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsVisualSettings
 import io.github.jayfunc.carpelines.presentation.components.lyrics.lyricsRenderProfiles
 import kotlinx.collections.immutable.ImmutableList
@@ -50,7 +49,6 @@ fun SyncedLyricsList(
     lyricsSyncOffset: Int,
     contentColor: Color,
     textStyle: TextStyle,
-    accentColor: Color? = null,
     onLineClick: (SyncedLine) -> Unit,
     onLineLongClick: ((SyncedLine) -> Unit)? = null,
     positionOverrideMs: Long? = null,
@@ -141,68 +139,43 @@ fun SyncedLyricsList(
     val normalStyle = remember(textStyle) {
         textStyle.copy(textMotion = TextMotion.Animated)
     }
-    val breathingDotsDefaults = remember(
-        contentColor,
-        visual.gapDotsCount,
-        visual.gapDotsSizeDp,
-        visual.gapDotsSpacingDp,
-        visual.gapDotsEnterDurationMs,
-        visual.gapDotsHoldDurationMs,
-        visual.gapDotsPulseDurationMs,
-        visual.gapDotsExitDurationMs,
-        visual.gapDotsUseAccentColor,
-        accentColor,
-    ) {
+    val breathingDotsDefaults = remember(contentColor) {
         KaraokeBreathingDotsDefaults(
-            number = visual.gapDotsCount.coerceIn(1, 5),
-            size = visual.gapDotsSizeDp.coerceIn(8f, 24f).dp,
-            margin = visual.gapDotsSpacingDp.coerceIn(4f, 24f).dp,
-            enterDurationMs = visual.gapDotsEnterDurationMs.coerceIn(0, 5_000),
-            preExitStillDuration = visual.gapDotsHoldDurationMs.coerceIn(0, 1_500),
-            preExitDipAndRiseDuration = visual.gapDotsPulseDurationMs.coerceIn(0, 6_000),
-            exitDurationMs = visual.gapDotsExitDurationMs.coerceIn(0, 1_000),
-            breathingDotsColor =
-                if (visual.gapDotsUseAccentColor) accentColor ?: contentColor else contentColor,
+            number = LyricsRenderDefaults.GAP_DOTS_COUNT,
+            size = LyricsRenderDefaults.GAP_DOTS_SIZE_DP.dp,
+            margin = LyricsRenderDefaults.GAP_DOTS_SPACING_DP.dp,
+            enterDurationMs = LyricsRenderDefaults.GAP_DOTS_ENTER_MS,
+            preExitStillDuration = LyricsRenderDefaults.GAP_DOTS_HOLD_MS,
+            preExitDipAndRiseDuration = LyricsRenderDefaults.GAP_DOTS_PULSE_MS,
+            exitDurationMs = LyricsRenderDefaults.GAP_DOTS_EXIT_MS,
+            breathingDotsColor = contentColor,
         )
     }
-    val followScrollSpec = remember(visual.followScrollDurationMs, visual.scrollEasing) {
+    val followScrollSpec = remember(visual.followScrollDurationMs) {
         tween<Float>(
             durationMillis = visual.followScrollDurationMs.coerceIn(0, 1_200),
-            easing = visual.scrollEasing.resolve(),
+            easing = FastOutSlowInEasing,
         )
     }
-    val scrollChain = remember(
-        visual.followSpringStiffness,
-        visual.followSpringDamping,
-        visual.followSpringCoupling,
-        visual.followSpringDistanceFalloff,
-        visual.followSpringMinResponse,
-    ) {
+    val scrollChain = remember {
         LyricsScrollChain(
-            stiffness = visual.followSpringStiffness.coerceIn(1f, 1_000f),
-            damping = visual.followSpringDamping.coerceIn(1f, 100f),
-            coupling = visual.followSpringCoupling.coerceIn(0f, 0.95f),
-            distanceFalloff = visual.followSpringDistanceFalloff.coerceIn(0f, 1f),
-            minResponse = visual.followSpringMinResponse.coerceIn(0.05f, 1f),
+            stiffness = LyricsRenderDefaults.FOLLOW_SPRING_STIFFNESS,
+            damping = LyricsRenderDefaults.FOLLOW_SPRING_DAMPING,
+            coupling = LyricsRenderDefaults.FOLLOW_SPRING_COUPLING,
+            distanceFalloff = LyricsRenderDefaults.FOLLOW_SPRING_DISTANCE_FALLOFF,
+            minResponse = LyricsRenderDefaults.FOLLOW_SPRING_MIN_RESPONSE,
         )
     }
     val renderProfiles = remember(
-        visual.segmentation,
         visual.scaleEffectEnabled,
         visual.glowEffectEnabled,
         visual.floatEffectEnabled,
     ) {
         lyricsRenderProfiles(
-            segmentation = visual.segmentation,
             scaleEffectEnabled = visual.scaleEffectEnabled,
             glowEffectEnabled = visual.glowEffectEnabled,
             floatEffectEnabled = visual.floatEffectEnabled,
         )
-    }
-    val blendMode = when (visual.blendMode) {
-        LyricsBlendMode.NORMAL -> BlendMode.SrcOver
-        LyricsBlendMode.PLUS -> BlendMode.Plus
-        LyricsBlendMode.SCREEN -> BlendMode.Screen
     }
     val edgeFadeEnabled = visual.edgeFeatheringEffectEnabled
     // The core view anchors the focused line's top edge; the app setting describes its centre.
@@ -215,32 +188,10 @@ fun SyncedLyricsList(
     val edgeFadeReach = visual.edgeFadeReach.coerceIn(0f, 1f)
     val autoTopFadeFraction = lineOffset * edgeFadeReach
     val autoBottomFadeFraction = (1f - lineOffset) * edgeFadeReach
-    fun fadeFor(top: Boolean): LyricsFade {
-        if (!edgeFadeEnabled) return LyricsFade.Fixed(0.dp)
-        return when (visual.edgeFadeMode) {
-            LyricsFadeMode.AUTO ->
-                LyricsFade.Fraction(if (top) autoTopFadeFraction else autoBottomFadeFraction)
-            LyricsFadeMode.FRACTION ->
-                LyricsFade.Fraction(
-                    (if (top) visual.topFadeFraction else visual.bottomFadeFraction)
-                        .coerceIn(0f, 1f)
-                )
-            LyricsFadeMode.FIXED ->
-                LyricsFade.Fixed(
-                    (if (top) visual.topFadeDp else visual.bottomFadeDp).coerceIn(0f, 240f).dp
-                )
-            LyricsFadeMode.TO_ANCHOR ->
-                LyricsFade.ToAnchor(
-                    (if (top) visual.topFadeDp else visual.bottomFadeDp).coerceIn(0f, 240f).dp
-                )
-        }
-    }
-    val topFade = fadeFor(top = true)
-    val bottomFade = fadeFor(top = false)
-    val anchor = when (visual.anchorMode) {
-        LyricsAnchorMode.FRACTION -> LyricsAnchor.Fraction(anchorFraction)
-        LyricsAnchorMode.FIXED -> LyricsAnchor.Fixed(visual.anchorOffsetDp.coerceIn(0f, 240f).dp)
-    }
+    val topFade = if (edgeFadeEnabled) LyricsFade.Fraction(autoTopFadeFraction) else LyricsFade.Fixed(0.dp)
+    val bottomFade =
+        if (edgeFadeEnabled) LyricsFade.Fraction(autoBottomFadeFraction) else LyricsFade.Fixed(0.dp)
+    val anchor = LyricsAnchor.Fraction(anchorFraction)
 
     Box(modifier) {
         key(rendered.lyrics) {
@@ -268,14 +219,14 @@ fun SyncedLyricsList(
                 phoneticTextStyle = phoneticStyle,
                 textColor = contentColor,
                 breathingDotsDefaults = breathingDotsDefaults,
-                blendMode = blendMode,
+                blendMode = BlendMode.SrcOver,
                 useBlurEffect = animatedLyricsBlurEnabled,
                 showTranslation = showTranslation,
                 showPhonetic = showRomanization,
                 anchor = anchor,
                 topFade = topFade,
                 bottomFade = bottomFade,
-                keepAliveZone = visual.keepAliveZoneDp.coerceIn(0f, 240f).dp,
+                keepAliveZone = LyricsRenderDefaults.KEEP_ALIVE_ZONE_DP.dp,
                 blurDelta = animatedLyricsBlurStrengthDp.coerceAtLeast(0.1f),
                 renderProfiles = renderProfiles,
                 itemSpacing = (baseFontSize * visual.lineSpacingFactor).dp,

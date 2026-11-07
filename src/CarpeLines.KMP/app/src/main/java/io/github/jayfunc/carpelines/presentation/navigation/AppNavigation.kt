@@ -35,6 +35,7 @@ import io.github.jayfunc.carpelines.presentation.model.SettingsCategory
 import io.github.jayfunc.carpelines.presentation.screens.EditTransitionScreen
 import io.github.jayfunc.carpelines.presentation.screens.PlaylistDetailScreen
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import io.github.jayfunc.carpelines.presentation.screens.LyricsCardRoute
 import io.github.jayfunc.carpelines.presentation.screens.LyricsProviderSettingsScreen
 import io.github.jayfunc.carpelines.presentation.screens.LyricsSettingsScreen
 import io.github.jayfunc.carpelines.presentation.screens.HomeScreen
@@ -275,7 +276,38 @@ fun AppNavigation(
                         onOpenManualLyricsSearch = {
                             navController.navigate(Screen.BetterLyricsSearch.route)
                         },
+                        onOpenShareCard = { initialIndex ->
+                            navController.navigateSafely(
+                                Screen.LyricsCard.createRoute(initialIndex)
+                            )
+                        },
                     )
+                }
+            }
+            composable(
+                route = Screen.LyricsCard.route,
+                arguments = listOf(navArgument("initialIndex") { type = NavType.IntType }),
+                enterTransition = { enterTransition() },
+                exitTransition = { exitTransition() },
+                popEnterTransition = { popEnterTransition() },
+                popExitTransition = { popExitTransition() },
+            ) { backStackEntry ->
+                val initialIndex = backStackEntry.arguments?.getInt("initialIndex") ?: 0
+                // The card is built from the track the lyrics page is already showing, so it reads
+                // that page's view model instead of resolving a second copy of the same lyrics.
+                val lyricsEntry = remember(backStackEntry) {
+                    runCatching {
+                        navController.getBackStackEntry(Screen.NowPlayingLyrics.route)
+                    }.getOrNull()
+                }
+                ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
+                    if (lyricsEntry != null) {
+                        LyricsCardRoute(
+                            initialIndex = initialIndex,
+                            onBack = { navController.popBackStack() },
+                            lyricsViewModel = hiltViewModel(lyricsEntry),
+                        )
+                    }
                 }
             }
             composable(
