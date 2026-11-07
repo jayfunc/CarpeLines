@@ -208,6 +208,20 @@ private val LyricsAlbumBarReserve = 248.dp
 private const val LyricsArrivalMillis = 550
 private val LyricsArrivalEasing: Easing = CubicBezierEasing(0.3f, 0f, 0.7f, 1f)
 
+/**
+ * How long one song hands over to the next: the identity text crossfades and the cover beneath it
+ * fades in over the outgoing picture on this same clock, so a track change reads as one gesture.
+ */
+private const val TrackHandoverMillis = 300
+
+/**
+ * How long the outgoing cover is kept when the new track's artwork has not been published yet.
+ *
+ * Media sessions announce a track before its picture, so this is the window in which a missing
+ * cover is a gap rather than an answer.
+ */
+private const val ArtworkHandoverGraceMillis = 700L
+
 internal data class LyricsHeader(
     /** Stable per-track identity, so a pause/play or artwork refresh does not replay the transition. */
     val key: String,
@@ -838,8 +852,9 @@ private fun LyricsOverviewPanel(
 
     // The cover lives in two places — a thumbnail next to the title while the lyrics are the page,
     // and the page's subject while they are not. It is one view in both: only the rectangle it
-    // occupies changes, and that rectangle is what is animated. The image never swaps out, so the
-    // eye follows the same cover moving up and growing instead of one picture replacing another.
+    // occupies changes, and that rectangle is what is animated. The move never swaps the picture
+    // out, so the eye follows the same cover moving up and growing instead of one image replacing
+    // another — the picture itself only changes when the queue does, and crossfades then.
     //
     // The focus itself is the page's, not this panel's: a new track inherits whichever face the
     // last one was left on, which is why the flag arrives as a parameter and is not cleared here.
@@ -1183,8 +1198,8 @@ private fun LyricsTransportChrome(
             targetState = header,
             contentKey = { it.key },
             transitionSpec = {
-                fadeIn(tween(300, easing = LinearEasing)) togetherWith
-                    fadeOut(tween(300, easing = LinearEasing))
+                fadeIn(tween(TrackHandoverMillis, easing = LinearEasing)) togetherWith
+                    fadeOut(tween(TrackHandoverMillis, easing = LinearEasing))
             },
             label = "lyricsIdentity",
             modifier = Modifier.fillMaxWidth(),
@@ -1771,12 +1786,71 @@ private fun LyricsPlayerPane(
  * The panel owns the size — the identity row's square in one state, the stage in the other — so this
  * view only has to fill the box it is put in. That is what lets one instance of the cover carry both
  * states instead of being swapped for a second image mid-flight.
+ *
+ * A new song's cover arrives as a handover, not as a replacement: the outgoing picture stays fully
+ * drawn underneath while the incoming one fades in on top of it. Fading both halves at once would
+ * take the art through half opacity on its way, and the cover is the page's subject — a dip in its
+ * presence reads as a glitch rather than as a transition.
  */
 @Composable
 private fun LyricsIdentityArtwork(track: LyricsHeader, modifier: Modifier = Modifier) {
-    if (track.artworkModel != null) {
+    // Which picture is on top, and the one it is covering while the fade runs. They are state
+    // rather than derived values so that a change is *observed* here and played as a handover,
+    // instead of the new model being drawn over the old one by recomposition in a single frame.
+    var shown by remember { mutableStateOf(track.artworkModel) }
+    var outgoing by remember { mutableStateOf<Any?>(null) }
+    val handover = remember { Animatable(1f) }
+    val reducedMotion = LocalReducedMotion.current
+
+    // Keyed on the artwork, not on the track: the fade belongs to whichever update actually
+    // carries a new picture, so a cover that arrives after its metadata is faded in when it lands
+    // instead of being snapped in behind an already finished transition.
+    LaunchedEffect(track.artworkModel) {
+        val next = track.artworkModel
+        if (next == shown) return@LaunchedEffect
+        if (next == null) {
+            // Players publish the next song's metadata a beat before its cover, so a missing
+            // picture is usually a gap rather than an answer. Holding the outgoing cover across
+            // it keeps two songs from flashing the empty silhouette between them — and a track
+            // that really carries no artwork still falls back to it once the gap has passed.
+            delay(ArtworkHandoverGraceMillis)
+        }
+        outgoing = shown
+        shown = next
+        if (reducedMotion) {
+            handover.snapTo(1f)
+            outgoing = null
+            return@LaunchedEffect
+        }
+        handover.snapTo(0f)
+        handover.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(TrackHandoverMillis, easing = LinearEasing),
+        )
+        outgoing = null
+    }
+
+    Box(modifier = modifier) {
+        outgoing?.let { previous ->
+            LyricsArtwork(model = previous, modifier = Modifier.fillMaxSize())
+        }
+        LyricsArtwork(
+            model = shown,
+            modifier = Modifier
+                .fillMaxSize()
+                // Read in the layer so the fade costs a redraw per frame, not a recomposition of
+                // the two images.
+                .graphicsLayer { alpha = handover.value },
+        )
+    }
+}
+
+/** One layer of the cover: the picture, or the silhouette a track without artwork keeps. */
+@Composable
+private fun LyricsArtwork(model: Any?, modifier: Modifier = Modifier) {
+    if (model != null) {
         SmartImage(
-            model = track.artworkModel,
+            model = model,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = modifier,
