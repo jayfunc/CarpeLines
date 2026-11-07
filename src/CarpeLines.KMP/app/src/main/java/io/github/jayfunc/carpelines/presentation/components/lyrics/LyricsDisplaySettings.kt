@@ -175,10 +175,11 @@ enum class LyricsFontFamily(val storageValue: String) {
 }
 
 /**
- * `KaraokeLyricsView.textColor`. `ARTWORK` tints the words with the song's harmonised palette
- * (the same seed the app scheme uses), `NEUTRAL` follows the page polarity without a hue, and the
- * remaining modes pin a fixed reading colour. Stored `"theme"` from older builds falls through to
- * the default because the app theme is itself cover-derived.
+ * `KaraokeLyricsView.textColor`. `ARTWORK` tints the words with the scheme's primary — the colour
+ * the song title and artist use, which the app scheme derives from the cover — `NEUTRAL` follows
+ * the page polarity without a hue, and the remaining modes pin a fixed reading colour. Stored
+ * `"theme"` from older builds falls through to the default because that colour is what the default
+ * now resolves to.
  */
 enum class LyricsTextColorMode(val storageValue: String) {
     ARTWORK("artwork"),

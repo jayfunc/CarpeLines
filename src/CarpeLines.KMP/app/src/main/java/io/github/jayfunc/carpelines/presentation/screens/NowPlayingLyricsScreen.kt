@@ -275,10 +275,10 @@ fun NowPlayingLyricsScreen(
     val palette = rememberArtworkPalette(headerArtwork)?.takeIf { header != null }
     val colors = resolveLyricsTextColors(MaterialTheme.colorScheme)
     // `KaraokeLyricsView.textColor` is a single colour for every lyric layer, so the override is
-    // resolved once here instead of per line.
+    // resolved once here instead of per line. The artwork mode takes the scheme's primary, which
+    // is the colour the title and artist below the words are drawn in.
     val lyricContentColor = resolveLyricContentColor(
         mode = settings.visual.textColorMode,
-        palette = palette,
         colorScheme = MaterialTheme.colorScheme,
     )
     // The bar goes away for the whole page, not just the lyrics-only face: the lyrics reach the top

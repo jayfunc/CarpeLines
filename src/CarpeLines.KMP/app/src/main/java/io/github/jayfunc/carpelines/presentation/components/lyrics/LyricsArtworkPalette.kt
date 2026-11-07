@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.palette.graphics.Palette
 import com.google.android.material.color.utilities.Blend
-import com.google.android.material.color.utilities.Hct
 import io.github.jayfunc.carpelines.data.external.decodeArtworkBitmap
 import io.github.jayfunc.carpelines.ui.theme.extractSeedColor
 import kotlinx.coroutines.Dispatchers
@@ -29,8 +28,8 @@ import kotlinx.coroutines.withContext
  * Polarity is read from the *page* behind the words (the theme surface, which the now-playing
  * colour scheme already derived from the cover), not from the cover itself: a bright cover under
  * a dark scrim still needs light text, and getting that backwards is how lyrics become
- * unreadable. Only the hue comes from the song palette; [legibleTint] re-lights it for the page so
- * the tinted mode stays readable.
+ * unreadable. The tinted mode takes the scheme's own primary, which already carries both the
+ * page's polarity and the cover's hue.
  */
 @Immutable
 data class LyricsTextColors(
@@ -146,25 +145,22 @@ fun resolveLyricsTextColors(colorScheme: ColorScheme): LyricsTextColors {
 }
 
 /**
- * The lyric text colour for the "Lyric colour" setting. `ARTWORK` takes the harmonised cover hue,
- * `NEUTRAL` follows the page polarity without a hue, and the fixed modes ignore both. The tinted
- * mode is re-lit for the page so a dark cover tone cannot disappear into a dark page.
+ * The lyric text colour for the "Lyric colour" setting. `ARTWORK` uses the scheme's `primary` —
+ * the very colour the song title and artist are drawn in, itself derived from the cover — so the
+ * words share the identity's hue instead of sampling a second tint off the same artwork.
+ * `NEUTRAL` follows the page polarity without a hue, and the fixed modes ignore the scheme.
+ *
+ * No re-lighting is needed here: `primary` is already tone-matched to the page, which is why the
+ * title and artist stay readable on the same background.
  */
 fun resolveLyricContentColor(
     mode: LyricsTextColorMode,
-    palette: ArtworkPalette?,
     colorScheme: ColorScheme,
-): Color {
-    val light = isLightPage(colorScheme)
-    return when (mode) {
-        LyricsTextColorMode.ARTWORK ->
-            (palette?.vibrant ?: palette?.seed)?.let { legibleTint(it, light) }
-                ?: neutralLyricColor(light)
-
-        LyricsTextColorMode.NEUTRAL -> neutralLyricColor(light)
-        LyricsTextColorMode.LIGHT -> Color.White
-        LyricsTextColorMode.DARK -> Color(0xFF101014)
-    }
+): Color = when (mode) {
+    LyricsTextColorMode.ARTWORK -> colorScheme.primary
+    LyricsTextColorMode.NEUTRAL -> neutralLyricColor(isLightPage(colorScheme))
+    LyricsTextColorMode.LIGHT -> Color.White
+    LyricsTextColorMode.DARK -> Color(0xFF101014)
 }
 
 internal fun isLightPage(colorScheme: ColorScheme): Boolean =
@@ -174,28 +170,9 @@ internal fun isLightPage(colorScheme: ColorScheme): Boolean =
 private fun neutralLyricColor(lightPage: Boolean): Color =
     if (lightPage) Color(0xFF101014) else Color(0xFFF4F4F7)
 
-/**
- * Keeps the source hue but pins its Material tone to the page: a cover's mid-tone can be a dark
- * navy on a dark page or a pale yellow on a light one, and either disappears into the scrim. The
- * chroma ceiling keeps a highly saturated cover from turning every word into a highlighter.
- */
-private fun legibleTint(source: Color, lightPage: Boolean): Color {
-    val hct = Hct.fromInt(source.toArgb())
-    if (hct.chroma < MIN_TINT_CHROMA) return neutralLyricColor(lightPage)
-    hct.chroma = hct.chroma.coerceIn(MIN_TINT_CHROMA, MAX_TINT_CHROMA)
-    hct.tone = if (lightPage) LIGHT_PAGE_TINT_TONE else DARK_PAGE_TINT_TONE
-    return Color(hct.toInt())
-}
-
 /** Aligns an artwork swatch to the scheme seed without losing its own tone or chroma. */
 private fun Color.harmonizedTo(reference: Color): Color =
     Color(Blend.harmonize(toArgb(), reference.toArgb()))
-
-/** HCT chroma below ~12 reads as grey; the same cutoff the artwork sampler uses. */
-private const val MIN_TINT_CHROMA = 12.0
-private const val MAX_TINT_CHROMA = 28.0
-private const val DARK_PAGE_TINT_TONE = 84.0
-private const val LIGHT_PAGE_TINT_TONE = 24.0
 
 /** Stable identity for the palette cache, without hashing the whole bitmap. */
 private val Bitmap.generationId: Int
