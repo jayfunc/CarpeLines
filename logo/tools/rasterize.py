@@ -8,6 +8,7 @@ Outputs
     app/src/main/res/mipmap-*dpi/ic_launcher_background.png 108dp adaptive layer
     app/src/main/res/mipmap-*dpi/ic_launcher_foreground.png 108dp adaptive layer
     logo/carpe-icon.png                                     512 brand icon (squircle)
+    app/src/main/ic_launcher-playstore.png                  512 store art (full square)
 
 Every PNG is a re-render of the same 108dp geometry, so the bitmaps can never
 drift from drawable/ic_launcher_foreground.xml. Rendering goes through Chrome,
@@ -146,6 +147,13 @@ def main() -> None:
 
     print("brand bitmap (72dp visible area, 512):")
     render(svg(ICON, 512, SURFACE_72 + SCALED_GLYPH, clip="icon"), 512, ROOT / "logo/carpe-icon.png")
+
+    print("store art (512, unmasked square):")
+    render(
+        svg(ICON, 512, SURFACE_72 + SCALED_GLYPH),
+        512,
+        ROOT / "src/CarpeLines.KMP/app/src/main/ic_launcher-playstore.png",
+    )
 
 
 if __name__ == "__main__":

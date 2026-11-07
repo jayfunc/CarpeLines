@@ -11,7 +11,7 @@
     line 2 unsung x 69 -> 84  (15)
     line 3        x 25 -> 55  (30)   still ahead
 
-  Deep ink on the warm paper background (#3B1F00 sung / knob, #9C6A1E unsung).
+  Deep ink on the warm paper background (#D9480F sung, #8A7663 unsung, #1C1917 knob).
   Line radius r4 = half the line height, so every line is a pill. Keep in sync with
   drawable/ic_launcher_monochrome.xml, drawable/splash_icon.xml and ../logo/.
 -->
@@ -54,7 +54,7 @@
 
     <!-- time knob -->
     <path
-        android:fillColor="#FFD9480F"
+        android:fillColor="#FF1C1917"
         android:pathData="M60,47 C63.865993,47 67,50.134007 67,54 C67,57.865993 63.865993,61 60,61 C56.134007,61 53,57.865993 53,54 C53,50.134007 56.134007,47 60,47 Z" />
 
     </group>
