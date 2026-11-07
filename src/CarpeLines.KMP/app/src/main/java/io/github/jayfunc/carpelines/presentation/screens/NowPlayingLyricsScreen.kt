@@ -6,6 +6,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
@@ -16,6 +17,8 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,17 +32,22 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.LinkOff
 import androidx.compose.material.icons.rounded.MusicOff
@@ -47,6 +55,7 @@ import androidx.compose.material.icons.rounded.NotificationsActive
 import androidx.compose.material.icons.rounded.SearchOff
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -58,6 +67,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
@@ -69,6 +79,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -90,6 +101,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.window.core.layout.WindowSizeClass
 import io.github.jayfunc.carpelines.R
 import io.github.jayfunc.carpelines.data.external.ExternalMediaMonitor
 import io.github.jayfunc.carpelines.data.external.ExternalMediaState
@@ -149,6 +161,21 @@ private val LyricsPageInset = 24.dp
  */
 private val LyricLineInset = 16.dp
 
+/**
+ * Reading width for the words on a wide page. A lyric line is followed while it is sung, so it
+ * stops growing before the eye has to travel across the whole window.
+ */
+private val LyricsReadingWidth = 680.dp
+
+/** The album face's control bar stops widening with the window, so its controls stay together. */
+private val LyricsControlBarWidth = 720.dp
+
+/** The split gives each side half the window; the card's own content stops growing before that. */
+private val LyricsPlayerCardWidth = 640.dp
+
+/** Height the album face's control band is assumed to need until it has been measured. */
+private val LyricsAlbumBarReserve = 248.dp
+
 private data class LyricsHeader(
     /** Stable per-track identity, so a pause/play or artwork refresh does not replay the transition. */
     val key: String,
@@ -184,6 +211,12 @@ fun NowPlayingLyricsScreen(
     val lyricsUi by lyricsViewModel.state.collectAsStateWithLifecycle()
     val sourcePreference by lyricsViewModel.sourcePreference.collectAsStateWithLifecycle()
     val settings = rememberLyricsDisplaySettings()
+
+    // Width alone decides the split. A short window scrolls the player card rather than falling
+    // back to the phone column, which would waste the extra width.
+    val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
+    val splitLayout =
+        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
 
     val header = resolveHeader(externalMedia, lyricsUi.localArtworkModel)
     val lyrics: Lyrics? = lyricsUi.lyrics
@@ -546,6 +579,7 @@ fun NowPlayingLyricsScreen(
                     }
                 },
                 bottomPadding = paddingValues.calculateBottomPadding(),
+                splitLayout = splitLayout,
                 modifier = Modifier.fillMaxSize(),
             )
         }
@@ -626,13 +660,14 @@ fun NowPlayingLyricsScreen(
 }
 
 /**
- * The one lyrics page, in both of its faces. With the chrome up it is the overview: the lyrics fill
- * the page from the top down, and everything the page *has* to say about the track sits at the
- * bottom in one stack — the cover shrunk to the height of two text lines beside the title and the
- * artist, the seek line under them, and the transport last. With the chrome away it is the
- * immersive face: the very same page, the very same lyrics view, only with that stack gone and the
- * lyrics given the whole height. That is why stepping into immersive lyrics reads as the controls
- * getting out of the way rather than as one screen replacing another.
+ * The lyrics page on a compact window, in both of its faces. A window wide enough for two panes
+ * gets [LyricsWidePanel] instead. With the chrome up it is the overview: the lyrics fill the page
+ * from the top down, and everything the page *has* to say about the track sits at the bottom in one
+ * stack — the cover shrunk to the height of two text lines beside the title and the artist, the seek
+ * line under them, and the transport last. With the chrome away it is the immersive face: the very
+ * same page, the very same lyrics view, only with that stack gone and the lyrics given the whole
+ * height. That is why stepping into immersive lyrics reads as the controls getting out of the way
+ * rather than as one screen replacing another.
  *
  * The cover is the page's one togglable element. Tapped, it trades places with the lyrics: it flies
  * from the identity row to a square in the middle of the band while the words fade and the title
@@ -665,8 +700,34 @@ private fun LyricsOverviewPanel(
     onSeek: (Long) -> Unit,
     lyricsContent: @Composable (Modifier) -> Unit,
     bottomPadding: Dp,
+    splitLayout: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    // A window wide enough for two panes gets the player card beside the words; the compact page
+    // is one column with the controls at its foot.
+    if (splitLayout) {
+        LyricsWidePanel(
+            header = header,
+            chromeVisible = chromeVisible,
+            progress = progress,
+            isPlaying = isPlaying,
+            elapsedLabel = elapsedLabel,
+            durationLabel = durationLabel,
+            durationMs = durationMs,
+            colors = colors,
+            onShowChrome = onShowChrome,
+            onHideChrome = onHideChrome,
+            onPrevious = onPrevious,
+            onPlayPause = onPlayPause,
+            onNext = onNext,
+            onSeek = onSeek,
+            lyricsContent = lyricsContent,
+            bottomPadding = bottomPadding,
+            modifier = modifier,
+        )
+        return
+    }
+
     val density = LocalDensity.current
     val identityArtworkSize = rememberLyricsIdentityArtworkSize(header.artist.isNotBlank())
     val identityArtworkSizePx = with(density) { identityArtworkSize.toPx() }
@@ -747,15 +808,6 @@ private fun LyricsOverviewPanel(
             label = "overviewLyricsBottomInset",
         )
 
-        // The transport and the elapsed part of the seek bar take the app's theme colour instead
-        // of the monochrome ink used for the lyrics, so the controls read as chrome rather than
-        // as part of the artwork tint.
-        val haptics = LocalHapticFeedback.current
-        val accent = MaterialTheme.colorScheme.primary
-        val accentContent = MaterialTheme.colorScheme.onPrimary
-        val skipContainer = accent.copy(alpha = 0.16f)
-        val remainingTrack = accent.copy(alpha = 0.35f)
-
         // One driver for the whole entrance: every stage slices the same 0..1 value, so the
         // panel arrives as a single gesture instead of six independent fades. The value is read
         // in the layer block, which keeps the 560 ms choreography out of recomposition.
@@ -774,23 +826,6 @@ private fun LyricsOverviewPanel(
                 )
             }
         }
-        fun Modifier.revealStage(
-            start: Float,
-            end: Float,
-            rise: Dp = 12.dp,
-            scaleFrom: Float = 1f,
-        ): Modifier = graphicsLayer {
-            val raw = ((reveal.value - start) / (end - start)).coerceIn(0f, 1f)
-            val staged = M3EMotion.Easings.emphasizedDecelerate.transform(raw)
-            alpha = staged
-            translationY = (1f - staged) * rise.toPx()
-            if (scaleFrom < 1f) {
-                val scale = scaleFrom + (1f - scaleFrom) * staged
-                scaleX = scale
-                scaleY = scale
-            }
-        }
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -904,33 +939,22 @@ private fun LyricsOverviewPanel(
                         .padding(horizontal = LyricsPageInset),
                 ) {
                     Spacer(Modifier.height(M3ESpacing.medium))
-
-                    // The identity belongs to the transport now: the lyrics own the page above it,
-                    // so the track's name sits with the controls it describes, its cover scaled
-                    // down to the two lines of text beside it. It crossfades only when the session
-                    // actually moves to another track, and leaves with the rest of the chrome.
-                    AnimatedContent(
-                        targetState = header,
-                        contentKey = { it.key },
-                        transitionSpec = {
-                            fadeIn(tween(300, easing = LinearEasing)) togetherWith
-                                fadeOut(tween(300, easing = LinearEasing))
-                        },
-                        label = "lyricsIdentity",
-                        modifier = Modifier.fillMaxWidth(),
-                    ) { track ->
-                        val hasArtist = track.artist.isNotBlank()
-                        Row(
-                            // Fades only, no rise: the cover is drawn outside this row and
-                            // tracks its layout position, so a translated row would leave the
-                            // artwork behind for the length of the entrance.
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .revealStage(0.10f, 0.56f, rise = 0.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            // The cover itself is drawn above the page (see the flight below), so
-                            // the row only keeps its place — the rectangle the cover returns to.
+                    LyricsTransportChrome(
+                        header = header,
+                        colors = colors,
+                        progress = progress,
+                        isPlaying = isPlaying,
+                        elapsedLabel = elapsedLabel,
+                        durationLabel = durationLabel,
+                        durationMs = durationMs,
+                        onSeek = onSeek,
+                        onPrevious = onPrevious,
+                        onPlayPause = onPlayPause,
+                        onNext = onNext,
+                        onHideChrome = onHideChrome,
+                        artworkSlot = {
+                            // The cover itself is drawn above the page (see the flight below),
+                            // so the row only keeps its place — the rectangle it returns to.
                             Spacer(
                                 modifier = Modifier
                                     .width(identityArtworkSize + M3ESpacing.medium)
@@ -942,148 +966,9 @@ private fun LyricsOverviewPanel(
                                         )
                                     },
                             )
-                            // One line each, scrolling with feathered edges when the text
-                            // outgrows the row, instead of truncating behind an ellipsis.
-                            //
-                            // The text slides into the place the cover left by moving its layer,
-                            // not by shrinking the row: re-laying the two marquees out on every
-                            // frame of the flight is what made it stutter. The cost is that the
-                            // line keeps the width it had beside the cover — invisible for one
-                            // left-aligned line, and a marquee simply starts a step earlier.
-                            Column(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .graphicsLayer {
-                                        translationX = -identitySlotWidthPx * focusProgress.value
-                                    },
-                            ) {
-                                AutoScrollingText(
-                                    text = track.title,
-                                    style = MaterialTheme.typography.emphasized.headlineSmall
-                                        .copy(color = MaterialTheme.colorScheme.primary),
-                                    gradientEdgeColor = Color.Black,
-                                    modifier = Modifier.fillMaxWidth(),
-                                )
-                                if (hasArtist) {
-                                    Spacer(Modifier.height(M3ESpacing.extraSmall))
-                                    AutoScrollingText(
-                                        text = track.artist,
-                                        style = MaterialTheme.typography.titleMedium
-                                            .copy(color = MaterialTheme.colorScheme.primary),
-                                        gradientEdgeColor = Color.Black,
-                                        modifier = Modifier.fillMaxWidth(),
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    Spacer(Modifier.height(M3ESpacing.medium))
-
-                    // Scrubbing holds the slider until the player reports the committed position,
-                    // so a seek does not visibly snap back for a tick.
-                    var sliderPosition by remember { mutableStateOf(progress) }
-                    var isUserScrubbing by remember { mutableStateOf(false) }
-                    var pendingSeekFraction by remember { mutableFloatStateOf(-1f) }
-                    var pendingSeekAtMs by remember { mutableLongStateOf(0L) }
-
-                    LaunchedEffect(header.title, header.artist) {
-                        isUserScrubbing = false
-                        pendingSeekFraction = -1f
-                        sliderPosition = progress
-                    }
-                    LaunchedEffect(progress, isUserScrubbing) {
-                        if (isUserScrubbing) return@LaunchedEffect
-                        if (pendingSeekFraction >= 0f) {
-                            val settled = abs(progress - pendingSeekFraction) < 0.04f ||
-                                System.currentTimeMillis() - pendingSeekAtMs > 5_000L
-                            if (!settled) return@LaunchedEffect
-                            pendingSeekFraction = -1f
-                        }
-                        sliderPosition = progress
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .revealStage(0.40f, 0.88f, rise = 8.dp)
-                    ) {
-                        WavySliderExpressive(
-                            value = { sliderPosition },
-                            enabled = durationMs > 0L,
-                            onValueChange = { newValue ->
-                                isUserScrubbing = true
-                                sliderPosition = newValue.coerceIn(0f, 1f)
-                            },
-                            onValueCommit = { finalValue ->
-                                val finalFraction = finalValue.coerceIn(0f, 1f)
-                                sliderPosition = finalFraction
-                                onSeek((finalFraction * durationMs).roundToLong())
-                                pendingSeekFraction = finalFraction
-                                pendingSeekAtMs = System.currentTimeMillis()
-                                isUserScrubbing = false
-                            },
-                            activeTrackColor = accent,
-                            inactiveTrackColor = remainingTrack,
-                            thumbColor = accent,
-                            wavelength = 30.dp,
-                            isPlaying = isPlaying,
-                            semanticsLabel = stringResource(R.string.cd_playback_position),
-                        )
-                    }
-                    Spacer(Modifier.height(M3ESpacing.small))
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .revealStage(0.44f, 0.92f, rise = 6.dp)
-                    ) {
-                        Text(
-                            text = elapsedLabel,
-                            style = MaterialTheme.typography.labelMedium,
-                            color = colors.translation,
-                        )
-                        Spacer(Modifier.weight(1f))
-                        Text(
-                            text = durationLabel,
-                            style = MaterialTheme.typography.labelMedium,
-                            color = colors.translation,
-                        )
-                    }
-
-                    Spacer(Modifier.height(M3ESpacing.large))
-
-                    val controlAnimationSpec = remember {
-                        spring<Float>(
-                            dampingRatio = Spring.DampingRatioNoBouncy,
-                            stiffness = Spring.StiffnessMedium,
-                        )
-                    }
-                    AnimatedPlaybackControls(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .revealStage(0.50f, 1f, rise = 10.dp)
-                            .padding(horizontal = 12.dp),
-                        isPlayingProvider = { isPlaying },
-                        onPrevious = onPrevious,
-                        onPlayPause = onPlayPause,
-                        onNext = onNext,
-                        height = 76.dp,
-                        pressAnimationSpec = controlAnimationSpec,
-                        colorOtherButtons = skipContainer,
-                        colorPlayPause = accent,
-                        tintPlayPauseIcon = accentContent,
-                        tintOtherIcons = accent,
-                        colorPreviousButton = skipContainer,
-                        colorNextButton = skipContainer,
-                        tintPreviousIcon = accent,
-                        tintNextIcon = accent,
-                        // The second way into the lyrics-only face, next to the auto-hide timer:
-                        // a hold on play/pause takes the chrome away and leaves the words.
-                        onPlayPauseLongClick = {
-                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                            onHideChrome()
                         },
-                        playPauseLongClickLabel = stringResource(R.string.lyrics_overview_lyrics_only),
+                        identityShiftPx = { -identitySlotWidthPx * focusProgress.value },
+                        reveal = reveal,
                     )
                 }
             }
@@ -1153,6 +1038,631 @@ private fun LyricsOverviewPanel(
 }
 
 /**
+ * The track's identity, seek line and transport, with no position of their own.
+ *
+ * The wide page needs the same controls twice — under the cover in the split and along the
+ * bottom of the album face — so they are one view the page places rather than two copies. The
+ * compact page adds its cover thumbnail through [artworkSlot]; the wide page keeps the cover
+ * beside the controls and passes none. [reveal] drives the compact page's entrance; the wide
+ * page passes none, so its controls are simply there.
+ */
+@Composable
+private fun LyricsTransportChrome(
+    header: LyricsHeader,
+    colors: LyricsTextColors,
+    progress: Float,
+    isPlaying: Boolean,
+    elapsedLabel: String,
+    durationLabel: String,
+    durationMs: Long,
+    onSeek: (Long) -> Unit,
+    onPrevious: () -> Unit,
+    onPlayPause: () -> Unit,
+    onNext: () -> Unit,
+    onHideChrome: () -> Unit,
+    modifier: Modifier = Modifier,
+    artworkSlot: (@Composable () -> Unit)? = null,
+    showAlbum: Boolean = false,
+    identityShiftPx: () -> Float = { 0f },
+    reveal: Animatable<Float, AnimationVector1D>? = null,
+) {
+    // The transport and the elapsed part of the seek bar take the app's theme colour instead of
+    // the monochrome ink used for the lyrics, so the controls read as chrome rather than as part
+    // of the artwork tint.
+    val haptics = LocalHapticFeedback.current
+    val accent = MaterialTheme.colorScheme.primary
+    val accentContent = MaterialTheme.colorScheme.onPrimary
+    val skipContainer = accent.copy(alpha = 0.16f)
+    val remainingTrack = accent.copy(alpha = 0.35f)
+
+    fun Modifier.entrance(start: Float, end: Float, rise: Dp): Modifier =
+        if (reveal == null) this else lyricsRevealStage(reveal, start, end, rise)
+
+    Column(modifier = modifier) {
+        // The identity belongs to the transport: the track's name sits with the controls it
+        // describes. It crossfades only when the session actually moves to another track.
+        AnimatedContent(
+            targetState = header,
+            contentKey = { it.key },
+            transitionSpec = {
+                fadeIn(tween(300, easing = LinearEasing)) togetherWith
+                    fadeOut(tween(300, easing = LinearEasing))
+            },
+            label = "lyricsIdentity",
+            modifier = Modifier.fillMaxWidth(),
+        ) { track ->
+            val hasArtist = track.artist.isNotBlank()
+            Row(
+                // Fades only, no rise: the cover is drawn outside this row and tracks its
+                // layout position, so a translated row would leave the artwork behind.
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .entrance(0.10f, 0.56f, 0.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                artworkSlot?.invoke()
+                // One line each, scrolling with feathered edges when the text outgrows the row,
+                // instead of truncating behind an ellipsis.
+                //
+                // The text slides into the place the cover left by moving its layer, not by
+                // shrinking the row: re-laying the marquees out on every frame of the flight is
+                // what made it stutter.
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .graphicsLayer { translationX = identityShiftPx() },
+                ) {
+                    AutoScrollingText(
+                        text = track.title,
+                        style = MaterialTheme.typography.emphasized.headlineSmall
+                            .copy(color = MaterialTheme.colorScheme.primary),
+                        gradientEdgeColor = Color.Black,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    if (hasArtist) {
+                        Spacer(Modifier.height(M3ESpacing.extraSmall))
+                        AutoScrollingText(
+                            text = track.artist,
+                            style = MaterialTheme.typography.titleMedium
+                                .copy(color = MaterialTheme.colorScheme.primary),
+                            gradientEdgeColor = Color.Black,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                    if (showAlbum && track.album.isNotBlank()) {
+                        Spacer(Modifier.height(M3ESpacing.extraSmall))
+                        Text(
+                            text = track.album,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = colors.translation,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                }
+            }
+        }
+
+        Spacer(Modifier.height(M3ESpacing.medium))
+
+        // Scrubbing holds the slider until the player reports the committed position,
+        // so a seek does not visibly snap back for a tick.
+        var sliderPosition by remember { mutableStateOf(progress) }
+        var isUserScrubbing by remember { mutableStateOf(false) }
+        var pendingSeekFraction by remember { mutableFloatStateOf(-1f) }
+        var pendingSeekAtMs by remember { mutableLongStateOf(0L) }
+
+        LaunchedEffect(header.title, header.artist) {
+            isUserScrubbing = false
+            pendingSeekFraction = -1f
+            sliderPosition = progress
+        }
+        LaunchedEffect(progress, isUserScrubbing) {
+            if (isUserScrubbing) return@LaunchedEffect
+            if (pendingSeekFraction >= 0f) {
+                val settled = abs(progress - pendingSeekFraction) < 0.04f ||
+                    System.currentTimeMillis() - pendingSeekAtMs > 5_000L
+                if (!settled) return@LaunchedEffect
+                pendingSeekFraction = -1f
+            }
+            sliderPosition = progress
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .entrance(0.40f, 0.88f, 8.dp)
+        ) {
+            WavySliderExpressive(
+                value = { sliderPosition },
+                enabled = durationMs > 0L,
+                onValueChange = { newValue ->
+                    isUserScrubbing = true
+                    sliderPosition = newValue.coerceIn(0f, 1f)
+                },
+                onValueCommit = { finalValue ->
+                    val finalFraction = finalValue.coerceIn(0f, 1f)
+                    sliderPosition = finalFraction
+                    onSeek((finalFraction * durationMs).roundToLong())
+                    pendingSeekFraction = finalFraction
+                    pendingSeekAtMs = System.currentTimeMillis()
+                    isUserScrubbing = false
+                },
+                activeTrackColor = accent,
+                inactiveTrackColor = remainingTrack,
+                thumbColor = accent,
+                wavelength = 30.dp,
+                isPlaying = isPlaying,
+                semanticsLabel = stringResource(R.string.cd_playback_position),
+            )
+        }
+        Spacer(Modifier.height(M3ESpacing.small))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .entrance(0.44f, 0.92f, 6.dp)
+        ) {
+            Text(
+                text = elapsedLabel,
+                style = MaterialTheme.typography.labelMedium,
+                color = colors.translation,
+            )
+            Spacer(Modifier.weight(1f))
+            Text(
+                text = durationLabel,
+                style = MaterialTheme.typography.labelMedium,
+                color = colors.translation,
+            )
+        }
+
+        Spacer(Modifier.height(M3ESpacing.large))
+
+        val controlAnimationSpec = remember {
+            spring<Float>(
+                dampingRatio = Spring.DampingRatioNoBouncy,
+                stiffness = Spring.StiffnessMedium,
+            )
+        }
+        AnimatedPlaybackControls(
+            modifier = Modifier
+                .fillMaxWidth()
+                .entrance(0.50f, 1f, 10.dp)
+                .padding(horizontal = 12.dp),
+            isPlayingProvider = { isPlaying },
+            onPrevious = onPrevious,
+            onPlayPause = onPlayPause,
+            onNext = onNext,
+            height = 76.dp,
+            pressAnimationSpec = controlAnimationSpec,
+            colorOtherButtons = skipContainer,
+            colorPlayPause = accent,
+            tintPlayPauseIcon = accentContent,
+            tintOtherIcons = accent,
+            colorPreviousButton = skipContainer,
+            colorNextButton = skipContainer,
+            tintPreviousIcon = accent,
+            tintNextIcon = accent,
+            // The second way into the lyrics-only face, next to the auto-hide timer: a hold on
+            // play/pause takes the chrome away and leaves the words.
+            onPlayPauseLongClick = {
+                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                onHideChrome()
+            },
+            playPauseLongClickLabel = stringResource(R.string.lyrics_overview_lyrics_only),
+        )
+    }
+}
+
+/** One stage of an entrance: slices 0..1 out of [reveal] into alpha and rise. */
+private fun Modifier.lyricsRevealStage(
+    reveal: Animatable<Float, AnimationVector1D>,
+    start: Float,
+    end: Float,
+    rise: Dp = 12.dp,
+): Modifier = graphicsLayer {
+    val raw = ((reveal.value - start) / (end - start)).coerceIn(0f, 1f)
+    val staged = M3EMotion.Easings.emphasizedDecelerate.transform(raw)
+    alpha = staged
+    translationY = (1f - staged) * rise.toPx()
+}
+
+/**
+ * The wide face of the lyrics page: a player card on the left and the words on the right.
+ *
+ * The three faces are answers to "which thing owns the window": both (the split), the cover (the
+ * album face), or the words (the lyrics-only face). The split is the page's home, so the other
+ * two always return to it — the album face by tapping the cover or Back, the lyrics face by
+ * tapping the words or Back.
+ */
+@Composable
+private fun LyricsWidePanel(
+    header: LyricsHeader,
+    chromeVisible: Boolean,
+    progress: Float,
+    isPlaying: Boolean,
+    elapsedLabel: String,
+    durationLabel: String,
+    durationMs: Long,
+    colors: LyricsTextColors,
+    onShowChrome: () -> Unit,
+    onHideChrome: () -> Unit,
+    onPrevious: () -> Unit,
+    onPlayPause: () -> Unit,
+    onNext: () -> Unit,
+    onSeek: (Long) -> Unit,
+    lyricsContent: @Composable (Modifier) -> Unit,
+    bottomPadding: Dp,
+    modifier: Modifier = Modifier,
+) {
+    var artworkFocused by remember { mutableStateOf(false) }
+    // A new track opens on the split, like it opens on its lyrics on the compact page.
+    LaunchedEffect(header.key) { artworkFocused = false }
+    val coverOnStage = artworkFocused && chromeVisible
+
+    // The tap shield outlives the flight by one animation: while the words are still translucent
+    // a tap on them would seek invisibly.
+    var artworkShield by remember { mutableStateOf(false) }
+    LaunchedEffect(coverOnStage) { if (coverOnStage) artworkShield = true }
+
+    val focusProgress = animateFloatAsState(
+        targetValue = if (coverOnStage) 1f else 0f,
+        animationSpec = tween(
+            durationMillis = if (coverOnStage) 420 else 340,
+            easing = if (coverOnStage) {
+                M3EMotion.Easings.emphasizedDecelerate
+            } else {
+                M3EMotion.Easings.emphasizedAccelerate
+            },
+        ),
+        label = "wideLyricsAlbumFocus",
+        finishedListener = { if (it <= 0.001f) artworkShield = false },
+    )
+    val chromeAlpha = animateFloatAsState(
+        targetValue = if (chromeVisible) 1f else 0f,
+        animationSpec = tween(
+            durationMillis = if (chromeVisible) 300 else 200,
+            easing = if (chromeVisible) {
+                M3EMotion.Easings.emphasizedDecelerate
+            } else {
+                M3EMotion.Easings.emphasizedAccelerate
+            },
+        ),
+        label = "wideLyricsChromeAlpha",
+    )
+
+    // Back steps out of the album face into the split rather than off the page.
+    BackHandler(enabled = coverOnStage) { artworkFocused = false }
+
+    val density = LocalDensity.current
+    var panelOrigin by remember { mutableStateOf(Offset.Zero) }
+    var coverRect by remember { mutableStateOf(Rect.Zero) }
+    var stageRect by remember { mutableStateOf(Rect.Zero) }
+    // The album bar holds the bottom of the face, so the cover has to stop above it. Measured
+    // rather than assumed: the identity can wrap and the text scale changes its height.
+    var controlBarHeightPx by remember { mutableStateOf(0) }
+    // Until the starting rectangle is measured the overlay stays invisible, so the first frame
+    // does not flash a zero-sized cover. A separate flag rather than a comparison, because the
+    // rectangle is also re-measured while the card scrolls and must not recompose the page.
+    var coverMeasured by remember { mutableStateOf(false) }
+
+    BoxWithConstraints(
+        modifier = modifier.onGloballyPositioned { panelOrigin = it.positionInRoot() },
+    ) {
+        // The two panes share the width evenly: the track and the words are peers on a tablet.
+        val playerWidth = maxWidth / 2
+        val lyricTopInset = WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding() +
+            M3ESpacing.medium
+        val lyricBottomInset = bottomPadding + M3ESpacing.medium
+
+        val controlBarHeight = if (controlBarHeightPx > 0) {
+            with(density) { controlBarHeightPx.toDp() }
+        } else {
+            LyricsAlbumBarReserve
+        }
+        // The cover's stage is the area above the control band, never behind it.
+        val stageBottom = (maxHeight - controlBarHeight - M3ESpacing.extraLarge)
+            .coerceAtLeast(lyricTopInset)
+        val stageAreaHeight = (stageBottom - lyricTopInset).coerceAtLeast(0.dp)
+        val stageSide = (minOf(maxWidth, stageAreaHeight) - ArtworkStageInset * 2)
+            .coerceAtLeast(0.dp)
+        val stageLeft = (maxWidth - stageSide) / 2
+        val stageTop = lyricTopInset + (stageAreaHeight - stageSide) / 2
+
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = lyricTopInset, bottom = lyricBottomInset),
+        ) {
+            LyricsPlayerPane(
+                visible = chromeVisible,
+                width = playerWidth,
+                header = header,
+                colors = colors,
+                progress = progress,
+                isPlaying = isPlaying,
+                elapsedLabel = elapsedLabel,
+                durationLabel = durationLabel,
+                durationMs = durationMs,
+                onSeek = onSeek,
+                onPrevious = onPrevious,
+                onPlayPause = onPlayPause,
+                onNext = onNext,
+                onHideChrome = onHideChrome,
+                chromeAlpha = { chromeAlpha.value },
+                albumFade = { focusProgress.value },
+                onCoverRect = { rect ->
+                    coverRect = rect
+                    if (!coverMeasured && rect.width > 0f) coverMeasured = true
+                },
+            )
+
+            // The words. On a wide window the reading column is already as wide as it can get, so
+            // stepping into the lyrics-only face only moves the room around it. Narrower windows
+            // do re-wrap, since the column is what widens.
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .then(
+                        if (chromeVisible) {
+                            Modifier
+                        } else {
+                            Modifier.clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = onShowChrome,
+                            )
+                        }
+                    ),
+                contentAlignment = Alignment.Center,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .widthIn(max = LyricsReadingWidth)
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(horizontal = (LyricsPageInset - LyricLineInset))
+                        .graphicsLayer { alpha = 1f - focusProgress.value },
+                ) {
+                    lyricsContent(Modifier.fillMaxSize())
+                }
+            }
+        }
+
+        // The album stage. Laid out even while the split is showing, so the cover never starts
+        // its flight from a zero rectangle.
+        Box(
+            modifier = Modifier
+                .offset { IntOffset(stageLeft.roundToPx(), stageTop.roundToPx()) }
+                .size(stageSide)
+                .onGloballyPositioned { stageRect = it.boundsInRoot() },
+        )
+
+        // A faded-out lyrics pane still reads taps, so while the cover owns the page the band
+        // listens for the way back instead.
+        if (artworkShield) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = {
+                            if (coverOnStage) {
+                                artworkFocused = false
+                            } else {
+                                onShowChrome()
+                            }
+                        },
+                    ),
+            )
+        }
+
+        // The cover, drawn once for both of its rectangles: the player card's square, the album
+        // stage's square, and the interpolation between them. Everything else in the change hangs
+        // off the same progress value, so it reads as one movement.
+        Box(
+            modifier = Modifier
+                .offset {
+                    val rect = lerpRect(coverRect, stageRect, focusProgress.value)
+                    IntOffset(
+                        (rect.left - panelOrigin.x).roundToInt(),
+                        (rect.top - panelOrigin.y).roundToInt(),
+                    )
+                }
+                .layout { measurable, _ ->
+                    val rect = lerpRect(coverRect, stageRect, focusProgress.value)
+                    val width = rect.width.roundToInt().coerceAtLeast(0)
+                    val height = rect.height.roundToInt().coerceAtLeast(0)
+                    val placeable = measurable.measure(Constraints.fixed(width, height))
+                    layout(width, height) { placeable.place(0, 0) }
+                }
+                .graphicsLayer {
+                    alpha = if (coverMeasured) chromeAlpha.value else 0f
+                    val focus = focusProgress.value
+                    shape = M3EShape.rounded(
+                        ArtworkCardCorner +
+                            (ArtworkStageCorner - ArtworkCardCorner) * focus
+                    )
+                    clip = true
+                }
+                .then(
+                    if (chromeVisible) {
+                        Modifier.clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            // Toggling is an interaction with the chrome, so it restarts the
+                            // auto-hide timer instead of racing it.
+                            onClick = {
+                                artworkFocused = !artworkFocused
+                                artworkShield = true
+                                onShowChrome()
+                            },
+                        )
+                    } else {
+                        Modifier
+                    },
+                ),
+        ) {
+            LyricsIdentityArtwork(track = header, modifier = Modifier.fillMaxSize())
+        }
+
+        // The controls follow the cover in the draw order, but no longer sit on it: the stage
+        // stops above this band, so the identity and transport read against the page, not the art.
+        AnimatedVisibility(
+            visible = coverOnStage,
+            enter = fadeIn(
+                tween(240, delayMillis = 120, easing = M3EMotion.Easings.emphasizedDecelerate)
+            ) + slideInVertically(
+                animationSpec = tween(
+                    durationMillis = 300,
+                    easing = M3EMotion.Easings.emphasizedDecelerate,
+                ),
+                initialOffsetY = { it / 4 },
+            ),
+            exit = fadeOut(tween(140, easing = M3EMotion.Easings.emphasizedAccelerate)) +
+                slideOutVertically(
+                    animationSpec = tween(
+                        durationMillis = 200,
+                        easing = M3EMotion.Easings.emphasizedAccelerate,
+                    ),
+                    targetOffsetY = { it / 4 },
+                ),
+            modifier = Modifier.align(Alignment.BottomCenter),
+        ) {
+            LyricsTransportChrome(
+                header = header,
+                colors = colors,
+                progress = progress,
+                isPlaying = isPlaying,
+                elapsedLabel = elapsedLabel,
+                durationLabel = durationLabel,
+                durationMs = durationMs,
+                onSeek = onSeek,
+                onPrevious = onPrevious,
+                onPlayPause = onPlayPause,
+                onNext = onNext,
+                onHideChrome = onHideChrome,
+                modifier = Modifier
+                    // Outermost, so the measurement includes the bar's own bottom padding and
+                    // the stage below can stop exactly above the band.
+                    .onSizeChanged { controlBarHeightPx = it.height }
+                    .widthIn(max = LyricsControlBarWidth)
+                    .fillMaxWidth()
+                    .padding(horizontal = LyricsPageInset)
+                    .padding(bottom = lyricBottomInset),
+            )
+        }
+    }
+}
+
+/**
+ * The split's player card: the cover's placeholder, the track's identity and its controls.
+ *
+ * The pane keeps its content at a fixed width and clips it while it slides out for the
+ * lyrics-only face, so the card is never squeezed into an intermediate layout on the way.
+ */
+@Composable
+private fun LyricsPlayerPane(
+    visible: Boolean,
+    width: Dp,
+    header: LyricsHeader,
+    colors: LyricsTextColors,
+    progress: Float,
+    isPlaying: Boolean,
+    elapsedLabel: String,
+    durationLabel: String,
+    durationMs: Long,
+    onSeek: (Long) -> Unit,
+    onPrevious: () -> Unit,
+    onPlayPause: () -> Unit,
+    onNext: () -> Unit,
+    onHideChrome: () -> Unit,
+    chromeAlpha: () -> Float,
+    albumFade: () -> Float,
+    onCoverRect: (Rect) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val density = LocalDensity.current
+    val paneWidth by animateDpAsState(
+        targetValue = if (visible) width else 0.dp,
+        animationSpec = tween(
+            durationMillis = 320,
+            easing = if (visible) {
+                M3EMotion.Easings.emphasizedDecelerate
+            } else {
+                M3EMotion.Easings.emphasizedAccelerate
+            },
+        ),
+        label = "wideLyricsPaneWidth",
+    )
+    val paneWidthPx = with(density) { paneWidth.toPx() }
+    val widthPx = with(density) { width.toPx() }
+
+    Box(
+        modifier = modifier
+            .width(paneWidth)
+            .fillMaxHeight()
+            .clipToBounds(),
+    ) {
+        BoxWithConstraints(
+            modifier = Modifier
+                .requiredWidth(width)
+                .fillMaxHeight()
+                .graphicsLayer {
+                    translationX = -(widthPx - paneWidthPx)
+                    alpha = chromeAlpha() * (1f - albumFade())
+                },
+        ) {
+            val coverSide = minOf(
+                maxWidth - LyricsPageInset * 2,
+                maxHeight * 0.46f,
+                420.dp,
+            ).coerceAtLeast(0.dp)
+            // Centred while it fits and scrollable when it does not — a very large text scale on
+            // a short window must not clip the transport off the bottom of the card.
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = LyricsPageInset),
+                contentAlignment = Alignment.Center,
+            ) {
+                Column(
+                    modifier = Modifier
+                        .widthIn(max = LyricsPlayerCardWidth)
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(coverSide)
+                            .onGloballyPositioned { onCoverRect(it.boundsInRoot()) },
+                    )
+                    Spacer(Modifier.height(M3ESpacing.extraLarge))
+                    LyricsTransportChrome(
+                        header = header,
+                        colors = colors,
+                        progress = progress,
+                        isPlaying = isPlaying,
+                        elapsedLabel = elapsedLabel,
+                        durationLabel = durationLabel,
+                        durationMs = durationMs,
+                        onSeek = onSeek,
+                        onPrevious = onPrevious,
+                        onPlayPause = onPlayPause,
+                        onNext = onNext,
+                        onHideChrome = onHideChrome,
+                        showAlbum = true,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
  * The track's cover, drawn at whatever rectangle the panel gives it.
  *
  * The panel owns the size — the identity row's square in one state, the stage in the other — so this
@@ -1186,6 +1696,9 @@ private fun LyricsIdentityArtwork(track: LyricsHeader, modifier: Modifier = Modi
 
 /** Corner of the cover while it is the row's thumbnail. */
 private val ArtworkThumbnailCorner = 8.dp
+
+/** Corner of the cover in the wide page's player card, where the cover is a surface of its own. */
+private val ArtworkCardCorner = 16.dp
 
 /** Corner of the cover while it holds the stage: one step softer, as a larger surface reads. */
 private val ArtworkStageCorner = 20.dp
