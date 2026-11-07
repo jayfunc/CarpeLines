@@ -5,7 +5,7 @@
     <string name="recap_card_subtitle">استعد عامك الموسيقي</string>
     <string name="recap_card_subtitle_so_far">اطّلع على ملامح عامك الموسيقي حتى الآن</string>
     <string name="recap_home_card_title">ملخّص %1$d الخاص بك جاهز</string>
-    <string name="recap_home_card_subtitle">استعد الأغاني والفنانين واللحظات التي ميّزت عامك.</string>
+    <string name="recap_home_card_subtitle">استعد الأغاني والفنانين واللحظات التي ميّزت عامك</string>
     <string name="recap_home_card_open">افتح الملخّص</string>
     <string name="recap_home_card_dismiss">إخفاء</string>
     <string name="recap_cd_close">إغلاق الملخّص</string>
@@ -16,11 +16,11 @@
     <string name="recap_action_previous_slide">الشريحة السابقة</string>
     <string name="recap_close">إغلاق</string>
     <string name="recap_not_enough_title">لا يوجد استماع كافٍ بعد</string>
-    <string name="recap_not_enough_subtitle">واصل الاستماع إلى الموسيقى وسيمتلئ ملخّص %1$d الخاص بك.</string>
+    <string name="recap_not_enough_subtitle">واصل الاستماع إلى الموسيقى وسيمتلئ ملخّص %1$d الخاص بك</string>
     <string name="recap_intro_kicker">ملخّص CarpeLines</string>
     <string name="recap_intro_title">عامك في الموسيقى</string>
     <string name="recap_intro_title_so_far">عامك حتى الآن</string>
-    <string name="recap_intro_subtitle">نظرة إلى الأغاني والفنانين واللحظات التي رافقت عامك.</string>
+    <string name="recap_intro_subtitle">نظرة إلى الأغاني والفنانين واللحظات التي رافقت عامك</string>
     <string name="recap_tap_hint">انقر للمتابعة</string>
     <string name="recap_minutes_kicker">استمعت في عام %1$d لمدة</string>
     <plurals name="recap_minutes_unit" tools:ignore="ImpliedQuantity">
@@ -32,20 +32,20 @@
         <item quantity="other">دقيقة</item>
     </plurals>
     <plurals name="recap_minutes_days_equivalent">
-        <item quantity="zero">أي ما يعادل %d يوم من الموسيقى المتواصلة.</item>
-        <item quantity="one">أي ما يعادل %d يوم من الموسيقى المتواصلة.</item>
-        <item quantity="two">أي ما يعادل %d يوم من الموسيقى المتواصلة.</item>
-        <item quantity="few">أي ما يعادل %d أيام من الموسيقى المتواصلة.</item>
-        <item quantity="many">أي ما يعادل %d يومًا من الموسيقى المتواصلة.</item>
-        <item quantity="other">أي ما يعادل %d يوم من الموسيقى المتواصلة.</item>
+        <item quantity="zero">أي ما يعادل %d يوم من الموسيقى المتواصلة</item>
+        <item quantity="one">أي ما يعادل %d يوم من الموسيقى المتواصلة</item>
+        <item quantity="two">أي ما يعادل %d يوم من الموسيقى المتواصلة</item>
+        <item quantity="few">أي ما يعادل %d أيام من الموسيقى المتواصلة</item>
+        <item quantity="many">أي ما يعادل %d يومًا من الموسيقى المتواصلة</item>
+        <item quantity="other">أي ما يعادل %d يوم من الموسيقى المتواصلة</item>
     </plurals>
     <plurals name="recap_minutes_hours_equivalent">
-        <item quantity="zero">أي ما يعادل %d ساعة من الموسيقى المتواصلة.</item>
-        <item quantity="one">أي ما يعادل %d ساعة من الموسيقى المتواصلة.</item>
-        <item quantity="two">أي ما يعادل %d ساعة من الموسيقى المتواصلة.</item>
-        <item quantity="few">أي ما يعادل %d ساعات من الموسيقى المتواصلة.</item>
-        <item quantity="many">أي ما يعادل %d ساعة من الموسيقى المتواصلة.</item>
-        <item quantity="other">أي ما يعادل %d ساعة من الموسيقى المتواصلة.</item>
+        <item quantity="zero">أي ما يعادل %d ساعة من الموسيقى المتواصلة</item>
+        <item quantity="one">أي ما يعادل %d ساعة من الموسيقى المتواصلة</item>
+        <item quantity="two">أي ما يعادل %d ساعة من الموسيقى المتواصلة</item>
+        <item quantity="few">أي ما يعادل %d ساعات من الموسيقى المتواصلة</item>
+        <item quantity="many">أي ما يعادل %d ساعة من الموسيقى المتواصلة</item>
+        <item quantity="other">أي ما يعادل %d ساعة من الموسيقى المتواصلة</item>
     </plurals>
     <string name="recap_minutes_daily_average">المتوسط اليومي</string>
     <string name="recap_minutes_active_days">أيام مع الموسيقى</string>
@@ -55,11 +55,11 @@
     <string name="recap_personality_early_bird">من محبي الصباح</string>
     <string name="recap_personality_early_bird_desc">بدأت يومك بالموسيقى. كان الصباح وقتك المفضّل.</string>
     <string name="recap_personality_daytime">مستمع النهار</string>
-    <string name="recap_personality_daytime_desc">رافقتك الموسيقى طوال اليوم، من أواخر الصباح حتى العصر.</string>
+    <string name="recap_personality_daytime_desc">رافقتك الموسيقى طوال اليوم، من أواخر الصباح حتى العصر</string>
     <string name="recap_personality_evening">مستمع المساء</string>
-    <string name="recap_personality_evening_desc">حين يهدأ اليوم، يعلو صوت الموسيقى.</string>
+    <string name="recap_personality_evening_desc">حين يهدأ اليوم، يعلو صوت الموسيقى</string>
     <string name="recap_personality_night_owl">بومة الليل</string>
-    <string name="recap_personality_night_owl_desc">كلما تأخر الوقت، زاد استماعك.</string>
+    <string name="recap_personality_night_owl_desc">كلما تأخر الوقت، زاد استماعك</string>
     <string name="recap_clock_favorite_day">يومك المفضّل: %1$s</string>
     <string name="recap_cd_chart_entry">%1$s: %2$s</string>
     <string name="recap_cd_months_chart">الاستماع حسب الشهر: %1$s</string>
@@ -80,7 +80,7 @@
     <string name="recap_genres_share">%1$s من استماعك</string>
     <string name="recap_decade_kicker">حقبتك</string>
     <string name="recap_decade_value">عقد %1$d</string>
-    <string name="recap_decade_detail">جاء %1$s من استماعك من موسيقى صدرت في هذا العقد.</string>
+    <string name="recap_decade_detail">جاء %1$s من استماعك من موسيقى صدرت في هذا العقد</string>
     <string name="recap_albums_kicker">ألبوماتك المفضّلة</string>
     <plurals name="recap_unique_albums">
         <item quantity="zero">%d ألبوم في قائمتك</item>

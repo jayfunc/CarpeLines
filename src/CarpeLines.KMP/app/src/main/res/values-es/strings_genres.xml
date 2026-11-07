@@ -2,5 +2,5 @@
 <resources>
     <string name="library_tab_genres">Géneros</string>
     <string name="lib_empty_genres_title">No se encontraron géneros</string>
-    <string name="lib_empty_genres_subtitle">Aquí aparecerán los géneros de las etiquetas de tus canciones.</string>
+    <string name="lib_empty_genres_subtitle">Aquí aparecerán los géneros de las etiquetas de tus canciones</string>
 </resources>

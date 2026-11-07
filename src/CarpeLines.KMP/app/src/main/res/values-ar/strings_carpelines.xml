@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tab_stats">الإحصاءات</string>
-    <string name="home_hero_subtitle">كلمات الأغاني كلمة بكلمة لكل ما يُشغَّل على هاتفك.</string>
+    <string name="home_hero_subtitle">كلمات الأغاني كلمة بكلمة لكل ما يُشغَّل على هاتفك</string>
     <string name="home_now_playing_eyebrow">قيد التشغيل</string>
 </resources>

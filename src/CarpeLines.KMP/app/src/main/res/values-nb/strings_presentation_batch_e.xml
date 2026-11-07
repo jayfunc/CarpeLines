@@ -14,10 +14,10 @@
     <string name="presentation_batch_e_cd_visible">Synlig</string>
     <string name="presentation_batch_e_clear_queue_dialog_message">Er du sikker på at du vil tømme alle sanger fra køen, bortsett fra den gjeldende?</string>
     <string name="presentation_batch_e_clear_queue_dialog_title">Tøm kø</string>
-    <string name="presentation_batch_e_create_playlist_subtitle">Velg opprettelsesmetode.</string>
+    <string name="presentation_batch_e_create_playlist_subtitle">Velg opprettelsesmetode</string>
     <string name="presentation_batch_e_create_playlist_title">Opprett spilleliste</string>
     <string name="presentation_batch_e_creation_mode_manual">Manuelt</string>
-    <string name="presentation_batch_e_creation_mode_manual_subtitle">Design grafikk, ikon og form, og velg sanger selv.</string>
+    <string name="presentation_batch_e_creation_mode_manual_subtitle">Design grafikk, ikon og form, og velg sanger selv</string>
     <string name="presentation_batch_e_deselect_all">Velg bort alle</string>
     <string name="presentation_batch_e_enter_playlist_name">Skriv inn et navn</string>
     <string name="presentation_batch_e_manage_presets_title">Administrer forhåndsinnstillinger</string>
@@ -26,20 +26,20 @@
         <item quantity="one">%d sang valgt</item>
         <item quantity="other">%d sanger valgt</item>
     </plurals>
-    <string name="presentation_batch_e_new_playlist_hint">Trykk på «Ny spilleliste»-knappen for å starte.</string>
+    <string name="presentation_batch_e_new_playlist_hint">Trykk på «Ny spilleliste»-knappen for å starte</string>
     <string name="presentation_batch_e_next_up">Neste</string>
-    <string name="presentation_batch_e_no_playlist_created">Ingen spillelister er opprettet ennå.</string>
+    <string name="presentation_batch_e_no_playlist_created">Ingen spillelister er opprettet ennå</string>
     <string name="presentation_batch_e_no_songs_match_query">Ingen sanger samsvarer med \"%1$s\"</string>
     <string name="presentation_batch_e_playlist_name_label">Navn på spilleliste</string>
     <string name="presentation_batch_e_presets_drag_hint">Dra for å endre rekkefølge • Trykk på øyet for å vise/skjule</string>
     <string name="presentation_batch_e_queue_current">Gjeldende kø</string>
-    <string name="presentation_batch_e_queue_empty">Køen er tom.</string>
+    <string name="presentation_batch_e_queue_empty">Køen er tom</string>
     <string name="presentation_batch_e_queue_named_suffix">%1$s-kø</string>
     <string name="presentation_batch_e_queue_source_fallback">Kø</string>
-    <string name="presentation_batch_e_queue_subtitle_empty">Køen er tom for øyeblikket.</string>
+    <string name="presentation_batch_e_queue_subtitle_empty">Køen er tom for øyeblikket</string>
     <plurals name="presentation_batch_e_queue_tracks_lined_up">
-        <item quantity="one">1 spor i kø.</item>
-        <item quantity="other">%d spor i kø.</item>
+        <item quantity="one">1 spor i kø</item>
+        <item quantity="other">%d spor i kø</item>
     </plurals>
     <string name="presentation_batch_e_removed">fjernet</string>
     <string name="presentation_batch_e_reset_presets_message">Dette vil gjenopprette standard rekkefølge og synlighet. Fortsette?</string>

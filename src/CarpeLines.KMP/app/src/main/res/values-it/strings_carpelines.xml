@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tab_stats">Statistiche</string>
-    <string name="home_hero_subtitle">Testi parola per parola per tutto ciò che riproduce il telefono.</string>
+    <string name="home_hero_subtitle">Testi parola per parola per tutto ciò che riproduce il telefono</string>
     <string name="home_now_playing_eyebrow">In riproduzione</string>
 </resources>

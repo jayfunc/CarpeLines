@@ -5,7 +5,7 @@
     <string name="recap_card_subtitle">Erlebe dein Musikjahr noch einmal</string>
     <string name="recap_card_subtitle_so_far">So entwickelt sich dein Musikjahr</string>
     <string name="recap_home_card_title">Dein Rückblick %1$d ist da</string>
-    <string name="recap_home_card_subtitle">Erlebe die Songs, Künstler und Momente noch einmal, die dein Jahr geprägt haben.</string>
+    <string name="recap_home_card_subtitle">Erlebe die Songs, Künstler und Momente noch einmal, die dein Jahr geprägt haben</string>
     <string name="recap_home_card_open">Rückblick öffnen</string>
     <string name="recap_home_card_dismiss">Ausblenden</string>
     <string name="recap_cd_close">Rückblick schließen</string>
@@ -16,11 +16,11 @@
     <string name="recap_action_previous_slide">Vorherige Folie</string>
     <string name="recap_close">Schließen</string>
     <string name="recap_not_enough_title">Noch nicht genug gehört</string>
-    <string name="recap_not_enough_subtitle">Hör weiter Musik, dann füllt sich dein Rückblick %1$d.</string>
+    <string name="recap_not_enough_subtitle">Hör weiter Musik, dann füllt sich dein Rückblick %1$d</string>
     <string name="recap_intro_kicker">CarpeLines Rückblick</string>
     <string name="recap_intro_title">Dein Jahr in Musik</string>
     <string name="recap_intro_title_so_far">Dein Jahr bisher</string>
-    <string name="recap_intro_subtitle">Ein Blick zurück auf die Songs, Künstler und Momente, die dein Jahr begleitet haben.</string>
+    <string name="recap_intro_subtitle">Ein Blick zurück auf die Songs, Künstler und Momente, die dein Jahr begleitet haben</string>
     <string name="recap_tap_hint">Tippen zum Fortfahren</string>
     <string name="recap_minutes_kicker">Deine Hörzeit %1$d</string>
     <plurals name="recap_minutes_unit" tools:ignore="ImpliedQuantity">
@@ -28,12 +28,12 @@
         <item quantity="other">Minuten</item>
     </plurals>
     <plurals name="recap_minutes_days_equivalent">
-        <item quantity="one">Das ist etwa %d Tag Musik am Stück.</item>
-        <item quantity="other">Das sind etwa %d Tage Musik am Stück.</item>
+        <item quantity="one">Das ist etwa %d Tag Musik am Stück</item>
+        <item quantity="other">Das sind etwa %d Tage Musik am Stück</item>
     </plurals>
     <plurals name="recap_minutes_hours_equivalent">
-        <item quantity="one">Das ist etwa %d Stunde Musik am Stück.</item>
-        <item quantity="other">Das sind etwa %d Stunden Musik am Stück.</item>
+        <item quantity="one">Das ist etwa %d Stunde Musik am Stück</item>
+        <item quantity="other">Das sind etwa %d Stunden Musik am Stück</item>
     </plurals>
     <string name="recap_minutes_daily_average">Tagesdurchschnitt</string>
     <string name="recap_minutes_active_days">Tage mit Musik</string>
@@ -43,11 +43,11 @@
     <string name="recap_personality_early_bird">Frühaufsteher</string>
     <string name="recap_personality_early_bird_desc">Dein Tag begann mit Musik. Morgens warst du in Bestform.</string>
     <string name="recap_personality_daytime">Tagmensch</string>
-    <string name="recap_personality_daytime_desc">Deine Musik hat dich durch den Tag begleitet, vom späten Vormittag bis in den Nachmittag.</string>
+    <string name="recap_personality_daytime_desc">Deine Musik hat dich durch den Tag begleitet, vom späten Vormittag bis in den Nachmittag</string>
     <string name="recap_personality_evening">Feierabend-Genießer</string>
-    <string name="recap_personality_evening_desc">Als der Tag ruhiger wurde, wurde die Musik lauter.</string>
+    <string name="recap_personality_evening_desc">Als der Tag ruhiger wurde, wurde die Musik lauter</string>
     <string name="recap_personality_night_owl">Nachteule</string>
-    <string name="recap_personality_night_owl_desc">Je später es wurde, desto mehr hast du gehört.</string>
+    <string name="recap_personality_night_owl_desc">Je später es wurde, desto mehr hast du gehört</string>
     <string name="recap_clock_favorite_day">Lieblingstag: %1$s</string>
     <string name="recap_cd_chart_entry">%1$s: %2$s</string>
     <string name="recap_cd_months_chart">Hörzeit nach Monat: %1$s</string>
@@ -64,7 +64,7 @@
     <string name="recap_genres_share">%1$s deiner Hörzeit</string>
     <string name="recap_decade_kicker">Deine Ära</string>
     <string name="recap_decade_value">%1$der</string>
-    <string name="recap_decade_detail">%1$s deiner Hörzeit entfiel auf Musik aus diesem Jahrzehnt.</string>
+    <string name="recap_decade_detail">%1$s deiner Hörzeit entfiel auf Musik aus diesem Jahrzehnt</string>
     <string name="recap_albums_kicker">Deine Top-Alben</string>
     <plurals name="recap_unique_albums">
         <item quantity="one">%d Album in deiner Rotation</item>

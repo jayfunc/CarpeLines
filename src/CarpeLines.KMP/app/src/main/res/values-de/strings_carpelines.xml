@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tab_stats">Statistiken</string>
-    <string name="home_hero_subtitle">Wortgenaue Lyrics für alles, was auf deinem Handy läuft.</string>
+    <string name="home_hero_subtitle">Wortgenaue Lyrics für alles, was auf deinem Handy läuft</string>
     <string name="home_now_playing_eyebrow">Läuft gerade</string>
 </resources>

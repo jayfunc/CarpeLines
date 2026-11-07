@@ -84,6 +84,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -142,6 +143,8 @@ fun RecapScreen(
     val context = LocalContext.current
     val showMessage = rememberAppMessage()
     val onClose: () -> Unit = { navController.popBackStack() }
+
+    HideRecapStatusBar()
 
     when (val state = uiState) {
         RecapUiState.Loading -> RecapStatusPage(onClose = onClose) {
@@ -516,6 +519,20 @@ private fun RecapNotEnoughData(year: Int, onClose: () -> Unit) {
             Text(stringResource(R.string.recap_close))
         }
     }
+}
+
+/** The story owns the window, so the status bar retracts until the user leaves the recap. */
+@Composable
+private fun HideRecapStatusBar() {
+    val view = LocalView.current
+    val window = remember(view) { view.context.findActivity()?.window }
+    if (window == null || view.isInEditMode) return
+    val controller = remember(window, view) { WindowCompat.getInsetsController(window, view) }
+    DisposableEffect(controller) {
+        onDispose { controller.show(WindowInsetsCompat.Type.statusBars()) }
+    }
+    // Re-applied on every composition so a transient swipe cannot leave the bar over the story.
+    SideEffect { controller.hide(WindowInsetsCompat.Type.statusBars()) }
 }
 
 /** Matches status and navigation bar icons to the slide colour, and restores them on exit. */

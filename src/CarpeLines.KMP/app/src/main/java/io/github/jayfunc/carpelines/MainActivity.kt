@@ -625,10 +625,13 @@ class MainActivity : ComponentActivity() {
                 } ?: false
             }
         }
-        // The lyrics page gives up the rail as well as the bar: it is a reading surface that owns
-        // the whole window on every size class. Pushed detail pages keep the rail, since that is
+        // The lyrics page and the recap story give up the rail as well as the bar: both own the
+        // whole window on every size class. Pushed detail pages keep the rail, since that is
         // their only visible way back on a wide window.
-        val shouldHideNavigationRail = currentRoute == Screen.NowPlayingLyrics.route
+        val recapRoutePrefix = Screen.Recap.route.substringBefore("{")
+        val shouldHideNavigationRail = currentRoute == Screen.NowPlayingLyrics.route ||
+            currentRoute == Screen.Recap.route ||
+            currentRoute?.startsWith(recapRoutePrefix) == true
 
         val hapticsEnabled by playerViewModel.hapticsEnabled.collectAsStateWithLifecycle()
         val rootView = LocalView.current

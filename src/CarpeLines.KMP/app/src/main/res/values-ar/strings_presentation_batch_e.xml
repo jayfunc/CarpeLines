@@ -14,10 +14,10 @@
     <string name="presentation_batch_e_cd_visible">مرئي</string>
     <string name="presentation_batch_e_clear_queue_dialog_message">هل أنت متأكد من أنك تريد مسح جميع الأغاني من قائمة الانتظار باستثناء الأغنية الحالية؟</string>
     <string name="presentation_batch_e_clear_queue_dialog_title">مسح قائمة الانتظار</string>
-    <string name="presentation_batch_e_create_playlist_subtitle">اختر طريقة الإنشاء.</string>
+    <string name="presentation_batch_e_create_playlist_subtitle">اختر طريقة الإنشاء</string>
     <string name="presentation_batch_e_create_playlist_title">إنشاء قائمة تشغيل</string>
     <string name="presentation_batch_e_creation_mode_manual">يدوياً</string>
-    <string name="presentation_batch_e_creation_mode_manual_subtitle">صمم الغلاف، الأيقونة، الشكل، واشحن الأغاني بنفسك.</string>
+    <string name="presentation_batch_e_creation_mode_manual_subtitle">صمم الغلاف، الأيقونة، الشكل، واشحن الأغاني بنفسك</string>
     <string name="presentation_batch_e_deselect_all">إلغاء تحديد الكل</string>
     <string name="presentation_batch_e_enter_playlist_name">أدخل اسماً لقائمة التشغيل</string>
     <string name="presentation_batch_e_manage_presets_title">إدارة الإعدادات المسبقة</string>
@@ -30,24 +30,24 @@
         <item quantity="many">تم تحديد %d أغنية</item>
         <item quantity="other">تم تحديد %d أغنية</item>
     </plurals>
-    <string name="presentation_batch_e_new_playlist_hint">المس زر "قائمة تشغيل جديدة" للبدء.</string>
+    <string name="presentation_batch_e_new_playlist_hint">المس زر "قائمة تشغيل جديدة" للبدء</string>
     <string name="presentation_batch_e_next_up">التالي في القائمة</string>
-    <string name="presentation_batch_e_no_playlist_created">لم يتم إنشاء أي قائمة تشغيل بعد.</string>
+    <string name="presentation_batch_e_no_playlist_created">لم يتم إنشاء أي قائمة تشغيل بعد</string>
     <string name="presentation_batch_e_no_songs_match_query">لا توجد أغانٍ تطابق \"%1$s\"</string>
     <string name="presentation_batch_e_playlist_name_label">اسم قائمة التشغيل</string>
     <string name="presentation_batch_e_presets_drag_hint">اسحب لإعادة الترتيب • انقر على أيقونة العين للإظهار أو الإخفاء</string>
     <string name="presentation_batch_e_queue_current">قائمة الانتظار الحالية</string>
-    <string name="presentation_batch_e_queue_empty">قائمة الانتظار فارغة.</string>
+    <string name="presentation_batch_e_queue_empty">قائمة الانتظار فارغة</string>
     <string name="presentation_batch_e_queue_named_suffix">قائمة انتظار %1$s</string>
     <string name="presentation_batch_e_queue_source_fallback">قائمة الانتظار</string>
-    <string name="presentation_batch_e_queue_subtitle_empty">قائمة الانتظار فارغة حالياً.</string>
+    <string name="presentation_batch_e_queue_subtitle_empty">قائمة الانتظار فارغة حالياً</string>
     <plurals name="presentation_batch_e_queue_tracks_lined_up">
-        <item quantity="zero">لا توجد مسارات منتظرة.</item>
-        <item quantity="one">مسار واحد منتظر.</item>
-        <item quantity="two">مساران منتظران.</item>
-        <item quantity="few">%d مسارات منتظرة.</item>
-        <item quantity="many">%d مساراً منتظراً.</item>
-        <item quantity="other">%d مسار منتظر.</item>
+        <item quantity="zero">لا توجد مسارات منتظرة</item>
+        <item quantity="one">مسار واحد منتظر</item>
+        <item quantity="two">مساران منتظران</item>
+        <item quantity="few">%d مسارات منتظرة</item>
+        <item quantity="many">%d مساراً منتظراً</item>
+        <item quantity="other">%d مسار منتظر</item>
     </plurals>
     <string name="presentation_batch_e_removed">تمت الإزالة</string>
     <string name="presentation_batch_e_reset_presets_message">سيؤدي هذا إلى استعادة الترتيب الافتراضي وظهور الإعدادات المسبقة. هل تريد المتابعة؟</string>

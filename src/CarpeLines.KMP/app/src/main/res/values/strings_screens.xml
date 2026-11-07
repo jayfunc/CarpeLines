@@ -56,28 +56,28 @@
     <string name="delimiter_label_space">Space</string>
     <string name="cd_add_path_delimiter">Add delimiter</string>
 
-    <string name="accounts_unable_open_screen">Unable to open this screen right now.</string>
+    <string name="accounts_unable_open_screen">Unable to open this screen right now</string>
 
     <string name="setup_welcome_prefix">Welcome to </string>
     <string name="setup_beta_symbol">β</string>
     <string name="setup_beta_label">Beta</string>
-    <string name="setup_intro_body">Let\'s get everything set up for you.</string>
+    <string name="setup_intro_body">Let\'s get everything set up for you</string>
     <string name="setup_checking_backup">Checking backup package…</string>
     <string name="setup_theme_title">App Theme</string>
-    <string name="setup_theme_subtitle">Pick the look you want before you start following lyrics.</string>
-    <string name="setup_theme_footer">You can change this later in Settings &gt; Appearance &gt; App Theme.</string>
+    <string name="setup_theme_subtitle">Pick the look you want before you start following lyrics</string>
+    <string name="setup_theme_footer">You can change this later in Settings &gt; Appearance &gt; App Theme</string>
     <string name="setup_recommended">Recommended</string>
     <string name="setup_external_services_title">Online Services</string>
     <string name="setup_external_services_subtitle">Online lyric lookup is on by default. Turn off anything you don\'t want.</string>
     <string name="setup_external_lyrics_title">Online lyrics</string>
-    <string name="setup_external_lyrics_description">Search QQ Music, NetEase, Kugou, LRCLIB and Apple Music when local lyrics are missing.</string>
+    <string name="setup_external_lyrics_description">Search QQ Music, NetEase, Kugou, LRCLIB and Apple Music when local lyrics are missing</string>
     <string name="setup_external_artist_images_title">Artist artwork from Deezer</string>
-    <string name="setup_external_artist_images_description">Fetch missing artist photos from Deezer and cache them locally.</string>
-    <string name="setup_external_services_footer">You can change these later in Settings &gt; Online Services.</string>
+    <string name="setup_external_artist_images_description">Fetch missing artist photos from Deezer and cache them locally</string>
+    <string name="setup_external_services_footer">You can change these later in Settings &gt; Online Services</string>
     <string name="setup_library_layout_title">Library Layout</string>
-    <string name="setup_library_layout_subtitle">Choose your preferred way to navigate your library.</string>
+    <string name="setup_library_layout_subtitle">Choose your preferred way to navigate your library</string>
     <string name="setup_compact_mode">Compact Mode</string>
-    <string name="setup_library_layout_footer">You can change this later in Settings &gt; Appearance &gt; Library Navigation.</string>
+    <string name="setup_library_layout_footer">You can change this later in Settings &gt; Appearance &gt; Library Navigation</string>
     <string name="tab_library">Library</string>
     <string name="tab_songs">SONGS</string>
     <string name="tab_albums">ALBUMS</string>
@@ -85,7 +85,7 @@
     <string name="setup_all_set_title">All Set!</string>
     <string name="setup_all_set_body">CarpeLines is ready. Start playback in any music player and the lyrics will follow.</string>
     <string name="setup_restore_backup_title">Restore Backup</string>
-    <string name="setup_restore_backup_subtitle">Review what you want to import before finishing setup.</string>
+    <string name="setup_restore_backup_subtitle">Review what you want to import before finishing setup</string>
     <string name="setup_modules_selected_format">%1$d of %2$d modules selected</string>
     <string name="setup_backup_created_format">Created %1$s</string>
     <string name="setup_backup_from_version">Backup from %1$s</string>
@@ -93,16 +93,16 @@
     <string name="setup_lets_go">Let\'s Go!</string>
     <string name="setup_step_format">Step %1$d of %2$d</string>
     <string name="setup_app_navigation_title">App Navigation</string>
-    <string name="setup_app_navigation_subtitle">Choose the style of the bottom navigation bar.</string>
+    <string name="setup_app_navigation_subtitle">Choose the style of the bottom navigation bar</string>
     <string name="setup_navbar_default_style">Default Style</string>
-    <string name="setup_navbar_footer">You can change this later in Settings &gt; Appearance &gt; Navbar Style.</string>
+    <string name="setup_navbar_footer">You can change this later in Settings &gt; Appearance &gt; Navbar Style</string>
     <string name="skip_for_now">Skip for now</string>
     <string name="skip_not_now">Skip / Not now</string>
     <string name="restoring">Restoring</string>
     <string name="restore_selected">Restore selected</string>
     <string name="customize_corner_radius">Customize Corner Radius</string>
-    <string name="toast_grant_permission_first">Please grant the required permission first.</string>
-    <string name="toast_grant_all_permissions">Please grant all required permissions.</string>
+    <string name="toast_grant_permission_first">Please grant the required permission first</string>
+    <string name="toast_grant_all_permissions">Please grant all required permissions</string>
     <string name="toast_grant_storage_first">Grant storage permissions first</string>
 
     <string name="cd_expand_menu">Expand menu</string>
@@ -121,25 +121,25 @@
     <string name="setup_permission_granted">Permission Granted</string>
     <string name="setup_grant_media_permission">Grant Media Permission</string>
     <string name="setup_permission_notifications_title">Notifications</string>
-    <string name="setup_permission_notifications_description">Enable notifications to control your music from the lock screen and notification shade.</string>
+    <string name="setup_permission_notifications_description">Enable notifications to control your music from the lock screen and notification shade</string>
     <string name="setup_enable_notifications">Enable Notifications</string>
     <string name="setup_permission_alarms_title">Alarms &amp; Reminders</string>
-    <string name="setup_permission_alarms_description">Optional, but recommended if you use Sleep Timer and want CarpeLines to stop playback exactly on time.</string>
+    <string name="setup_permission_alarms_description">Optional, but recommended if you use Sleep Timer and want CarpeLines to stop playback exactly on time</string>
     <string name="setup_battery_optimization_title">Battery Optimization</string>
     <string name="setup_battery_optimization_description">Some Android devices aggressively kill background apps. Disable battery optimization for CarpeLines so media-session monitoring, widgets and lyric lookups keep working in the background.</string>
     <string name="setup_disable_battery_optimization">Disable Optimization</string>
     <string name="setup_grant_permission_generic">Grant Permission</string>
     <string name="setup_backup_have_title">Do you have a backup?</string>
-    <string name="setup_backup_have_description">If you already have a CarpeLines backup, restore it now and skip most of the remaining setup on this device.</string>
+    <string name="setup_backup_have_description">If you already have a CarpeLines backup, restore it now and skip most of the remaining setup on this device</string>
     <string name="setup_inspecting_backup">Inspecting backup</string>
     <string name="setup_restoring_backup">Restoring backup</string>
     <string name="setup_import_backup">Import backup</string>
     <string name="setup_theme_dark_title">Dark</string>
-    <string name="setup_theme_dark_description">The default Material 3 dark look for CarpeLines.</string>
+    <string name="setup_theme_dark_description">The default Material 3 dark look for CarpeLines</string>
     <string name="setup_theme_light_title">Light</string>
-    <string name="setup_theme_light_description">A brighter Material 3 look across the app.</string>
+    <string name="setup_theme_light_description">A brighter Material 3 look across the app</string>
     <string name="setup_theme_follow_title">Follow system</string>
-    <string name="setup_theme_follow_description">Match your phone\'s current appearance setting.</string>
+    <string name="setup_theme_follow_description">Match your phone\'s current appearance setting</string>
     <string name="setup_compact_mode_pill_hint">Using minimal pill navigation</string>
     <string name="setup_compact_mode_tab_hint">Using standard tab row</string>
     <string name="setup_preview_songs_label">Songs</string>
@@ -147,11 +147,11 @@
     <string name="setup_nav_full_width_description">Standard full-width bar</string>
 
     <string name="dialog_delete_song_title">Delete song?</string>
-    <string name="dialog_delete_song_message">\"%1$s\" by %2$s\n\nThis song will be permanently deleted from your device and cannot be recovered.</string>
+    <string name="dialog_delete_song_message">\"%1$s\" by %2$s\n\nThis song will be permanently deleted from your device and cannot be recovered</string>
 
     <string name="home_your_mix_title">Your\nMix</string>
     <string name="home_empty_placeholder_title">No data to show yet</string>
-    <string name="home_empty_placeholder_subtitle">Your mix will appear here when CarpeLines finds songs or syncs a source.</string>
+    <string name="home_empty_placeholder_subtitle">Your mix will appear here when CarpeLines finds songs or syncs a source</string>
     <string name="home_empty_placeholder_refresh">Refresh</string>
     <string name="cd_shuffle_play">Shuffle Play</string>
     <string name="cd_album_art_for_title">Album art for %1$s</string>
@@ -199,30 +199,30 @@
     <string name="cd_no_search_results">No results</string>
     <string name="search_no_results_for_query">No results for \"%1$s\"</string>
     <string name="search_nothing_found">Nothing found</string>
-    <string name="search_try_different_or_filters">Try a different search term or check your filters.</string>
+    <string name="search_try_different_or_filters">Try a different search term or check your filters</string>
     <string name="search_filter_all">All</string>
-    <string name="search_no_results_found">No results found.</string>
+    <string name="search_no_results_found">No results found</string>
 
     <string name="browse_by_genre">Browse by genre</string>
-    <string name="no_genres_available">No genres available.</string>
+    <string name="no_genres_available">No genres available</string>
 
     <string name="about_app_name" translatable="false">CarpeLines</string>
     <string name="about_slogan" tools:ignore="MissingTranslation">Seize the Line, Keep the Time</string>
-    <string name="about_tagline">Word-by-word synced lyrics for whatever is playing on your phone.</string>
+    <string name="about_tagline">Word-by-word synced lyrics for whatever is playing on your phone</string>
     <string name="about_version_format">Version v%1$s</string>
     <string name="about_build_time_format" tools:ignore="MissingTranslation">Build time: %1$s</string>
     <string name="about_commit_format" tools:ignore="MissingTranslation">Commit %1$s</string>
     <string name="cd_about_open_commit" tools:ignore="MissingTranslation">Open commit %1$s on GitHub</string>
     <string name="screen_about">About</string>
     <string name="about_maintainer_title">Maintainer</string>
-    <string name="about_maintainer_subtitle">CarpeLines is built and maintained by @jayfunc.</string>
+    <string name="about_maintainer_subtitle">CarpeLines is built and maintained by @jayfunc</string>
     <string name="about_project_title">Project</string>
-    <string name="about_project_subtitle">Source, releases, and community entry points.</string>
+    <string name="about_project_subtitle">Source, releases, and community entry points</string>
     <string name="about_link_source_title">Source code</string>
     <string name="about_link_source_subtitle" translatable="false">github.com/jayfunc/CarpeLines</string>
     <string name="about_licenses_title">Licenses &amp; attribution</string>
     <string name="about_licenses_subtitle">Open-source libraries, fonts and bundled data</string>
-    <string name="about_licenses_sheet_subtitle">Third-party software, fonts and data bundled with this app.</string>
+    <string name="about_licenses_sheet_subtitle">Third-party software, fonts and data bundled with this app</string>
     <string name="licenses_tab_all">All</string>
     <string name="licenses_tab_libraries">Libraries</string>
     <string name="licenses_tab_fonts">Fonts</string>
@@ -265,15 +265,15 @@
     <string name="dash_playlists_empty_hint_subsonic">Tap sync to fetch your playlists</string>
     <string name="dash_playlists_empty_hint_jellyfin">Tap sync to fetch your Jellyfin playlists</string>
     <string name="dash_quick_actions">Quick actions</string>
-    <string name="dash_quick_actions_subsonic_subtitle">Manage Navidrome, Airsonic and other Subsonic-compatible servers.</string>
-    <string name="dash_quick_actions_jellyfin_subtitle">Manage your Jellyfin server connection.</string>
+    <string name="dash_quick_actions_subsonic_subtitle">Manage Navidrome, Airsonic and other Subsonic-compatible servers</string>
+    <string name="dash_quick_actions_jellyfin_subtitle">Manage your Jellyfin server connection</string>
     <string name="dash_libraries_title">Libraries</string>
     <string name="dash_libraries_all">All libraries</string>
     <string name="dash_libraries_selected_count">%1$d of %2$d selected</string>
     <string name="dash_libraries_more_count">+%1$d more</string>
     <string name="dash_libraries_change">Change</string>
     <string name="dash_libraries_load_failed">Could not load libraries; sync uses all</string>
-    <string name="dash_libraries_sheet_subtitle">Choose which server libraries are included when syncing the main library.</string>
+    <string name="dash_libraries_sheet_subtitle">Choose which server libraries are included when syncing the main library</string>
     <string name="dash_libraries_all_subtitle">Include every library exposed by this server</string>
     <string name="dash_libraries_folder_subtitle">Include this library in the next library sync</string>
     <string name="dash_libraries_sync_needed">Sync library to apply changes</string>

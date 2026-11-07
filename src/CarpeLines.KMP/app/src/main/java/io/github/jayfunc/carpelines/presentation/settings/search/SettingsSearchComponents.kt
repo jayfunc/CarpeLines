@@ -40,6 +40,7 @@ import io.github.jayfunc.carpelines.presentation.screens.settingsGroupItemShape
 import io.github.jayfunc.carpelines.presentation.viewmodel.SettingsUiState
 import io.github.jayfunc.carpelines.ui.m3e.M3ESwitch
 import io.github.jayfunc.carpelines.presentation.viewmodel.SettingsViewModel
+import io.github.jayfunc.carpelines.ui.theme.m3eContentWidth
 
 @Composable
 fun SettingsSearchResultsContent(
@@ -81,86 +82,91 @@ fun SettingsSearchResultsContent(
         return
     }
 
-    LazyColumn(
-        contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = modifier.fillMaxSize()
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
     ) {
-        // Group items by category across all sections
-        val seenKeys = mutableSetOf<String>()
-        val groupedByCategory = mutableMapOf<SettingsCategory, MutableList<SearchResultItem>>()
-        for (section in results) {
-            for (resItem in section.items) {
-                if (seenKeys.add(resItem.spec.itemKey)) {
-                    groupedByCategory.getOrPut(resItem.spec.category) { mutableListOf() }.add(resItem)
+        LazyColumn(
+            contentPadding = contentPadding,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.m3eContentWidth().fillMaxSize()
+        ) {
+            // Group items by category across all sections
+            val seenKeys = mutableSetOf<String>()
+            val groupedByCategory = mutableMapOf<SettingsCategory, MutableList<SearchResultItem>>()
+            for (section in results) {
+                for (resItem in section.items) {
+                    if (seenKeys.add(resItem.spec.itemKey)) {
+                        groupedByCategory.getOrPut(resItem.spec.category) { mutableListOf() }.add(resItem)
+                    }
                 }
             }
-        }
 
-        groupedByCategory.forEach { (category, items) ->
-            item {
-                Text(
-                    text = stringResource(category.titleRes),
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                )
-            }
+            groupedByCategory.forEach { (category, items) ->
+                item {
+                    Text(
+                        text = stringResource(category.titleRes),
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+                }
 
-            item {
-                val accentColor = MaterialTheme.colorScheme.primary
-                ExpressiveSettingsGroup {
-                    items.forEachIndexed { index, resultItem ->
-                        val spec = resultItem.spec
-                        val total = items.size
-                        val shape = settingsGroupItemShape(index, total)
+                item {
+                    val accentColor = MaterialTheme.colorScheme.primary
+                    ExpressiveSettingsGroup {
+                        items.forEachIndexed { index, resultItem ->
+                            val spec = resultItem.spec
+                            val total = items.size
+                            val shape = settingsGroupItemShape(index, total)
 
-                        when (spec.type) {
-                            SettingType.SWITCH -> {
-                                val isChecked = spec.getValue?.invoke(uiState) ?: false
-                                SearchResultSwitchItem(
-                                    title = resultItem.matchedTitle,
-                                    subtitle = resultItem.matchedSubtitle,
-                                    accentColor = accentColor,
-                                    checked = isChecked,
-                                    onToggle = { checked ->
-                                        spec.onToggle?.invoke(settingsViewModel, checked)
-                                    },
-                                    onCardClick = {
-                                        navController.navigateSafely(spec.createNavigationRoute())
-                                    },
-                                    shape = shape
-                                )
-                            }
-                            SettingType.NAVIGABLE_CARD -> {
-                                SearchResultNavigableItem(
-                                    title = resultItem.matchedTitle,
-                                    subtitle = resultItem.matchedSubtitle,
-                                    accentColor = accentColor,
-                                    onClick = {
-                                        navController.navigateSafely(spec.createNavigationRoute())
-                                    },
-                                    shape = shape
-                                )
-                            }
-                            SettingType.ACTION -> {
-                                SearchResultNavigableItem(
-                                    title = resultItem.matchedTitle,
-                                    subtitle = resultItem.matchedSubtitle,
-                                    accentColor = accentColor,
-                                    onClick = {
-                                        spec.onAction?.invoke(navController) ?: run {
+                            when (spec.type) {
+                                SettingType.SWITCH -> {
+                                    val isChecked = spec.getValue?.invoke(uiState) ?: false
+                                    SearchResultSwitchItem(
+                                        title = resultItem.matchedTitle,
+                                        subtitle = resultItem.matchedSubtitle,
+                                        accentColor = accentColor,
+                                        checked = isChecked,
+                                        onToggle = { checked ->
+                                            spec.onToggle?.invoke(settingsViewModel, checked)
+                                        },
+                                        onCardClick = {
                                             navController.navigateSafely(spec.createNavigationRoute())
-                                        }
-                                    },
-                                    shape = shape
-                                )
+                                        },
+                                        shape = shape
+                                    )
+                                }
+                                SettingType.NAVIGABLE_CARD -> {
+                                    SearchResultNavigableItem(
+                                        title = resultItem.matchedTitle,
+                                        subtitle = resultItem.matchedSubtitle,
+                                        accentColor = accentColor,
+                                        onClick = {
+                                            navController.navigateSafely(spec.createNavigationRoute())
+                                        },
+                                        shape = shape
+                                    )
+                                }
+                                SettingType.ACTION -> {
+                                    SearchResultNavigableItem(
+                                        title = resultItem.matchedTitle,
+                                        subtitle = resultItem.matchedSubtitle,
+                                        accentColor = accentColor,
+                                        onClick = {
+                                            spec.onAction?.invoke(navController) ?: run {
+                                                navController.navigateSafely(spec.createNavigationRoute())
+                                            }
+                                        },
+                                        shape = shape
+                                    )
+                                }
                             }
-                        }
 
-                        if (index < total - 1) {
-                            Spacer(modifier = Modifier.height(2.dp))
+                            if (index < total - 1) {
+                                Spacer(modifier = Modifier.height(2.dp))
+                            }
                         }
                     }
                 }

@@ -5,7 +5,7 @@
     <string name="presentation_batch_b_accounts_open_service">Open Service</string>
     <string name="presentation_batch_b_accounts_logging_out">Logging out…</string>
     <string name="presentation_batch_b_accounts_no_linked_title">No linked accounts yet</string>
-    <string name="presentation_batch_b_accounts_no_linked_body">Connect a provider to manage it from this screen.</string>
+    <string name="presentation_batch_b_accounts_no_linked_body">Connect a provider to manage it from this screen</string>
     <string name="presentation_batch_b_accounts_connect_service">Connect %1$s</string>
 
     <string name="presentation_batch_b_sort_songs">Sort Songs</string>
@@ -17,10 +17,10 @@
     <string name="presentation_batch_b_reorder_songs">Reorder songs</string>
     <string name="presentation_batch_b_reorder">Reorder</string>
     <string name="presentation_batch_b_reorder_song">Reorder song</string>
-    <string name="presentation_batch_b_playlist_empty_title">This playlist is empty.</string>
-    <string name="presentation_batch_b_playlist_empty_folder_body">This folder doesn\'t contain songs.</string>
-    <string name="presentation_batch_b_playlist_empty_add_hint">Tap on \'Add Songs\' to begin.</string>
-    <string name="presentation_batch_b_playlist_empty_smart_body">No songs match this smart rule yet.</string>
+    <string name="presentation_batch_b_playlist_empty_title">This playlist is empty</string>
+    <string name="presentation_batch_b_playlist_empty_folder_body">This folder doesn\'t contain songs</string>
+    <string name="presentation_batch_b_playlist_empty_add_hint">Tap on \'Add Songs\' to begin</string>
+    <string name="presentation_batch_b_playlist_empty_smart_body">No songs match this smart rule yet</string>
     <string name="presentation_batch_b_playlist_options_title">Playlist options</string>
     <string name="presentation_batch_b_edit_playlist">Edit playlist</string>
     <string name="presentation_batch_b_delete_playlist">Delete playlist</string>
@@ -50,13 +50,13 @@
     <string name="presentation_batch_b_recently_played_title">Recently Played</string>
     <string name="presentation_batch_b_play_latest">Play latest</string>
     <string name="presentation_batch_b_recent_empty_title">No recent plays in %1$s</string>
-    <string name="presentation_batch_b_recent_empty_subtitle">Change the range or play more songs to fill this timeline.</string>
+    <string name="presentation_batch_b_recent_empty_subtitle">Change the range or play more songs to fill this timeline</string>
     <string name="presentation_batch_b_queue_recently_played">Recently Played</string>
     <string name="presentation_batch_b_date_today">Today</string>
     <string name="presentation_batch_b_date_yesterday">Yesterday</string>
 
     <string name="presentation_batch_b_navbar_adjust_title">Adjust Corner Radius</string>
-    <string name="presentation_batch_b_navbar_adjust_subtitle">Match the navbar shape\'s corners with your device\'s physical corners for a seamless look.</string>
+    <string name="presentation_batch_b_navbar_adjust_subtitle">Match the navbar shape\'s corners with your device\'s physical corners for a seamless look</string>
     <string name="presentation_batch_b_corner_radius_label">Corner Radius</string>
     <string name="presentation_batch_b_corner_dp_format">%1$d dp</string>
 

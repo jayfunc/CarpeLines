@@ -2,5 +2,5 @@
 <resources>
     <string name="library_tab_genres">Genres</string>
     <string name="lib_empty_genres_title">No genres found</string>
-    <string name="lib_empty_genres_subtitle">Genres from your songs\' tags will appear here.</string>
+    <string name="lib_empty_genres_subtitle">Genres from your songs\' tags will appear here</string>
 </resources>

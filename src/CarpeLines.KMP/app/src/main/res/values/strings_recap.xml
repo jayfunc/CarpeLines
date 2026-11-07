@@ -6,7 +6,7 @@
     <string name="recap_card_subtitle">Relive your year in music</string>
     <string name="recap_card_subtitle_so_far">See how your year in music is shaping up</string>
     <string name="recap_home_card_title" tools:ignore="PluralsCandidate">Your %1$d Recap is here</string>
-    <string name="recap_home_card_subtitle">Relive the songs, artists and moments that defined your year.</string>
+    <string name="recap_home_card_subtitle">Relive the songs, artists and moments that defined your year</string>
     <string name="recap_home_card_open">Open recap</string>
     <string name="recap_home_card_dismiss">Dismiss</string>
 
@@ -19,13 +19,13 @@
     <string name="recap_action_previous_slide">Previous slide</string>
     <string name="recap_close">Close</string>
     <string name="recap_not_enough_title">Not enough listening yet</string>
-    <string name="recap_not_enough_subtitle" tools:ignore="PluralsCandidate">Keep playing music and your %1$d recap will fill up.</string>
+    <string name="recap_not_enough_subtitle" tools:ignore="PluralsCandidate">Keep playing music and your %1$d recap will fill up</string>
 
     <!-- Intro -->
     <string name="recap_intro_kicker">CarpeLines Recap</string>
     <string name="recap_intro_title">Your year in music</string>
     <string name="recap_intro_title_so_far">Your year so far</string>
-    <string name="recap_intro_subtitle">A look back at the songs, artists and moments that soundtracked your year.</string>
+    <string name="recap_intro_subtitle">A look back at the songs, artists and moments that soundtracked your year</string>
     <string name="recap_tap_hint">Tap to continue</string>
 
     <!-- Listening time -->
@@ -36,12 +36,12 @@
         <item quantity="other">minutes</item>
     </plurals>
     <plurals name="recap_minutes_days_equivalent">
-        <item quantity="one">That’s about %d day of nonstop music.</item>
-        <item quantity="other">That’s about %d days of nonstop music.</item>
+        <item quantity="one">That’s about %d day of nonstop music</item>
+        <item quantity="other">That’s about %d days of nonstop music</item>
     </plurals>
     <plurals name="recap_minutes_hours_equivalent">
-        <item quantity="one">That’s about %d hour of nonstop music.</item>
-        <item quantity="other">That’s about %d hours of nonstop music.</item>
+        <item quantity="one">That’s about %d hour of nonstop music</item>
+        <item quantity="other">That’s about %d hours of nonstop music</item>
     </plurals>
     <string name="recap_minutes_daily_average">Daily average</string>
     <string name="recap_minutes_active_days">Days with music</string>
@@ -55,11 +55,11 @@
     <string name="recap_personality_early_bird">Early bird</string>
     <string name="recap_personality_early_bird_desc">You started the day with music. Mornings were your prime time.</string>
     <string name="recap_personality_daytime">Daytime listener</string>
-    <string name="recap_personality_daytime_desc">Your music kept you company through the day, from late morning into the afternoon.</string>
+    <string name="recap_personality_daytime_desc">Your music kept you company through the day, from late morning into the afternoon</string>
     <string name="recap_personality_evening">Evening unwinder</string>
-    <string name="recap_personality_evening_desc">When the day wound down, the music turned up.</string>
+    <string name="recap_personality_evening_desc">When the day wound down, the music turned up</string>
     <string name="recap_personality_night_owl">Night owl</string>
-    <string name="recap_personality_night_owl_desc">The later it got, the more you listened.</string>
+    <string name="recap_personality_night_owl_desc">The later it got, the more you listened</string>
     <!-- %1$s is a weekday name, e.g. "Saturday". -->
     <string name="recap_clock_favorite_day">Favorite day: %1$s</string>
     <!-- Screen reader text for the month and hour charts. %1$s in the chart strings is a list of
@@ -85,7 +85,7 @@
     <string name="recap_decade_kicker">Your era</string>
     <!-- %1$d is the first year of a decade, e.g. 1990 for "1990s". -->
     <string name="recap_decade_value">%1$ds</string>
-    <string name="recap_decade_detail">%1$s of your listening came from music released in this decade.</string>
+    <string name="recap_decade_detail">%1$s of your listening came from music released in this decade</string>
 
     <!-- Top albums, artists and songs -->
     <string name="recap_albums_kicker">Your top albums</string>

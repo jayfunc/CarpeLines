@@ -32,12 +32,12 @@
     <string name="cd_lyrics_align_right">歌词居右</string>
 
     <string name="no_internet_dialog_title">无网络连接</string>
-    <string name="no_internet_dialog_message">该内容需要网络，请检查网络设置后重试。</string>
+    <string name="no_internet_dialog_message">该内容需要网络，请检查网络设置后重试</string>
     <string name="offline_screen_title">当前处于离线状态</string>
-    <string name="offline_screen_message">请检查网络，重新连接后访问该内容。</string>
+    <string name="offline_screen_message">请检查网络，重新连接后访问该内容</string>
 
     <string name="equalizer_save_custom_preset_title">保存自定义预设</string>
-    <string name="equalizer_save_custom_preset_body">为你的均衡器预设设置名称。</string>
+    <string name="equalizer_save_custom_preset_body">为你的均衡器预设设置名称</string>
     <string name="equalizer_preset_name_label">预设名称</string>
     <string name="equalizer_rename_preset_title">重命名预设</string>
     <string name="error_name_empty">名称不能为空</string>
@@ -71,13 +71,13 @@
     <string name="cd_disc_number_icon">光盘号</string>
     <string name="cd_search_lyrics_lrclib">在 lrclib.net 搜索歌词</string>
     <string name="edit_song_cover_art_heading">专辑封面</string>
-    <string name="edit_song_cover_art_hint">选择一张正方形图片并调整，让封面在应用内显示效果更佳。</string>
+    <string name="edit_song_cover_art_hint">选择一张正方形图片并调整，让封面在应用内显示效果更佳</string>
     <string name="edit_song_change_cover_art">更换封面</string>
     <string name="edit_song_delete_cover_art">删除封面</string>
     <string name="cd_cover_art_preview">新封面预览</string>
     <string name="cd_current_song_cover_art">当前歌曲封面</string>
     <string name="edit_song_crop_dialog_title">调整封面</string>
-    <string name="edit_song_crop_dialog_hint">双指缩放、拖动调整画面构图。</string>
+    <string name="edit_song_crop_dialog_hint">双指缩放、拖动调整画面构图</string>
     <string name="edit_song_apply_cover_art">应用封面</string>
     <string name="edit_song_unable_to_load_image">所选图片加载失败</string>
 
@@ -93,7 +93,7 @@
     <string name="song_info_choose_tone">设置提示音</string>
     <string name="cd_choose_song_tone">选择将该歌曲用作系统音效</string>
     <string name="song_info_tone_picker_title">将歌曲用作</string>
-    <string name="song_info_tone_picker_body">选择 CarpeLines 将该音效设置为何种系统声音。</string>
+    <string name="song_info_tone_picker_body">选择 CarpeLines 将该音效设置为何种系统声音</string>
     <string name="song_info_tone_ringtone_title">手机铃声</string>
     <string name="song_info_tone_ringtone_subtitle">来电铃声</string>
     <string name="song_info_tone_notification_title">通知提示音</string>
@@ -107,10 +107,10 @@
     <string name="song_info_tone_ringtone_label">铃声</string>
     <string name="song_info_tone_notification_label">通知音</string>
     <string name="song_info_tone_alarm_label">闹钟音</string>
-    <string name="song_info_ringtone_permission_prompt">请开启修改系统设置权限，返回 CarpeLines 自动完成设置。</string>
-    <string name="song_info_ringtone_permission_missing">未授予修改系统设置权限。</string>
-    <string name="song_info_ringtone_local_only">仅本地歌曲可以设置为铃声。</string>
-    <string name="song_info_ringtone_missing_file">无法处理该音频文件作为铃声。</string>
+    <string name="song_info_ringtone_permission_prompt">请开启修改系统设置权限，返回 CarpeLines 自动完成设置</string>
+    <string name="song_info_ringtone_permission_missing">未授予修改系统设置权限</string>
+    <string name="song_info_ringtone_local_only">仅本地歌曲可以设置为铃声</string>
+    <string name="song_info_ringtone_missing_file">无法处理该音频文件作为铃声</string>
     <string name="song_info_ringtone_failed">设置铃声失败：%1$s</string>
     <string name="song_info_label_duration">时长</string>
     <string name="song_info_label_song_metadata">歌曲信息</string>
@@ -154,7 +154,7 @@
 
     <string name="multi_selection_playlists_count_upper">%1$d 个歌单</string>
     <string name="multi_selection_genres_count_upper">%1$d 个流派</string>
-    <string name="multi_selection_genres_queue_hint">对这些流派中的所有歌曲进行批量操作。</string>
+    <string name="multi_selection_genres_queue_hint">对这些流派中的所有歌曲进行批量操作</string>
     <string name="cd_export_all">全部导出</string>
     <string name="cd_merge_all">全部合并</string>
     <string name="cd_share_all">全部分享</string>
@@ -181,13 +181,13 @@
     <string name="folder_state_excluded">已排除</string>
     <string name="folder_state_included">已包含</string>
     <string name="edit_song_custom_metadata_heading">可选元数据</string>
-    <string name="edit_song_custom_metadata_description">设置 0–5 的评分，或添加 MOOD、COMMENT、YEAR、BPM 等文本字段。</string>
+    <string name="edit_song_custom_metadata_description">设置 0–5 的评分，或添加 MOOD、COMMENT、YEAR、BPM 等文本字段</string>
     <string name="edit_song_rating">评分（0–5）</string>
     <string name="edit_song_rating_not_set">未设置</string>
     <string name="edit_song_custom_field_name">字段名称</string>
     <string name="edit_song_custom_field_value">值</string>
     <string name="edit_song_add_custom_field">添加元数据字段</string>
     <string name="edit_song_remove_custom_field">移除字段</string>
-    <string name="edit_song_custom_metadata_formats">评分和自定义字段可写入 MP3、WAV、AIFF、FLAC、OGG、Opus、M4A、M4B 和 MP4 文件。</string>
-    <string name="edit_song_custom_metadata_invalid">请检查可选元数据字段。</string>
+    <string name="edit_song_custom_metadata_formats">评分和自定义字段可写入 MP3、WAV、AIFF、FLAC、OGG、Opus、M4A、M4B 和 MP4 文件</string>
+    <string name="edit_song_custom_metadata_invalid">请检查可选元数据字段</string>
 </resources>

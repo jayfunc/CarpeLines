@@ -161,7 +161,6 @@ import io.github.jayfunc.carpelines.presentation.navigation.Screen
 import io.github.jayfunc.carpelines.presentation.navigation.navigateSafely
 import io.github.jayfunc.carpelines.presentation.recap.RecapStatsCard
 import io.github.jayfunc.carpelines.presentation.stats.displayNameRes
-import io.github.jayfunc.carpelines.presentation.viewmodel.PlayerViewModel
 import io.github.jayfunc.carpelines.presentation.viewmodel.RecapEntryViewModel
 import io.github.jayfunc.carpelines.presentation.viewmodel.StatsViewModel
 import io.github.jayfunc.carpelines.ui.theme.m3eContentWidth
@@ -191,7 +190,6 @@ private val ScreenGutter = 20.dp
 @Composable
 fun StatsScreen(
     navController: NavController,
-    playerViewModel: PlayerViewModel,
     /** Padding of the app shell, so the floating navigation bar never covers the timeline. */
     paddingValues: PaddingValues = PaddingValues(),
     /** Stats is a bottom-bar tab, so its root instance shows no back affordance. */
@@ -321,20 +319,6 @@ fun StatsScreen(
         }
     }
 
-    val heavyRotationQueueName = stringResource(R.string.presentation_batch_g_stats_section_heavy_rotation)
-    // Only tracks lead somewhere: artist, album and genre rows are read-only statistics, so they
-    // are rendered without a click target.
-    val onRotationEntryClick: (RotationEntry) -> Unit = { entry ->
-        if (entry.dimension == RotationDimension.Tracks) {
-            val playedSongIds = summary?.songs.orEmpty().map { it.songId }
-            coroutineScope.launch {
-                val queue = statsViewModel.resolveSongs(playedSongIds.ifEmpty { listOf(entry.key) })
-                val song = queue.firstOrNull { it.id == entry.key } ?: return@launch
-                playerViewModel.showAndPlaySong(song, queue, queueName = heavyRotationQueueName)
-            }
-        }
-    }
-
     PullToRefreshBox(
         isRefreshing = isPullRefreshAnimating,
         onRefresh = onPullRefresh,
@@ -427,7 +411,6 @@ fun StatsScreen(
                                 artistImages = artistImages,
                                 selected = selectedRotation,
                                 onSelected = { selectedRotation = it },
-                                onEntryClick = onRotationEntryClick,
                                 modifier = Modifier.padding(horizontal = ScreenGutter)
                             )
                         }
@@ -1902,7 +1885,6 @@ private fun HeavyRotationSection(
     artistImages: Map<String, String>,
     selected: RotationDimension,
     onSelected: (RotationDimension) -> Unit,
-    onEntryClick: (RotationEntry) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val haptics = LocalHapticFeedback.current
@@ -1949,9 +1931,8 @@ private fun HeavyRotationSection(
             } else {
                 val leader = entries.first()
                 val chasers = entries.drop(1)
-                val entryClick = onEntryClick.takeIf { dimension == RotationDimension.Tracks }
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    RotationSpotlightCard(entry = leader, onClick = entryClick)
+                    RotationSpotlightCard(entry = leader, onClick = null)
                     if (chasers.isNotEmpty()) {
                         Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
                             chasers.forEachIndexed { index, entry ->
@@ -1961,7 +1942,7 @@ private fun HeavyRotationSection(
                                     fractionOfLeader = (entry.durationMs.toFloat() / leader.durationMs.coerceAtLeast(1L))
                                         .coerceIn(0f, 1f),
                                     shape = segmentedItemShape(index, chasers.size),
-                                    onClick = entryClick
+                                    onClick = null
                                 )
                             }
                         }

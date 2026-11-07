@@ -323,7 +323,6 @@ fun AppNavigation(
                 ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
                     StatsScreen(
                         navController = navController,
-                        playerViewModel = playerViewModel,
                         paddingValues = paddingValues,
                         isRootDestination = true
                     )

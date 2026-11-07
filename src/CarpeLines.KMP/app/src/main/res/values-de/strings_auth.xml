@@ -14,11 +14,11 @@
     <string name="auth_jellyfin_subtitle">Mit deinem Jellyfin-Server verbinden</string>
     <string name="auth_jellyfin_title">Jellyfin</string>
     <string name="auth_jellyfin_username_hint">Dein Jellyfin-Benutzername</string>
-    <string name="auth_local_network_permission_denied">Erlaube den Zugriff auf Geräte in der Nähe, um dich mit einem Server im lokalen Netzwerk zu verbinden.</string>
+    <string name="auth_local_network_permission_denied">Erlaube den Zugriff auf Geräte in der Nähe, um dich mit einem Server im lokalen Netzwerk zu verbinden</string>
     <string name="auth_navidrome_footer">Kompatibel mit Navidrome, Gonic, Airsonic und anderen Subsonic-Servern</string>
-    <string name="auth_navidrome_info_card">Unterstützt Navidrome, Airsonic, Gonic, Ampache und andere Subsonic-kompatible Server.</string>
+    <string name="auth_navidrome_info_card">Unterstützt Navidrome, Airsonic, Gonic, Ampache und andere Subsonic-kompatible Server</string>
     <string name="auth_navidrome_password_hint">App-Passwort wird unterstützt, falls der Server das erlaubt</string>
-    <string name="auth_navidrome_server_url_hint">Gib die vollständige Server-URL an – http:// für lokale Server, https:// für entfernte Server.</string>
+    <string name="auth_navidrome_server_url_hint">Gib die vollständige Server-URL an – http:// für lokale Server, https:// für entfernte Server</string>
     <string name="auth_navidrome_subtitle">Mit deinem selbst gehosteten Musikserver verbinden</string>
     <string name="auth_navidrome_title">Subsonic / Navidrome</string>
     <string name="auth_navidrome_username_hint">Dein Subsonic- oder Navidrome-Benutzername</string>

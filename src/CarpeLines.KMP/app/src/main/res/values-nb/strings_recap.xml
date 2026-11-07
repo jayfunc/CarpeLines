@@ -5,7 +5,7 @@
     <string name="recap_card_subtitle">Gjenopplev musikkåret ditt</string>
     <string name="recap_card_subtitle_so_far">Se hvordan musikkåret ditt tar form</string>
     <string name="recap_home_card_title">%1$d-oppsummeringen din er her</string>
-    <string name="recap_home_card_subtitle">Gjenopplev sangene, artistene og øyeblikkene som preget året ditt.</string>
+    <string name="recap_home_card_subtitle">Gjenopplev sangene, artistene og øyeblikkene som preget året ditt</string>
     <string name="recap_home_card_open">Åpne oppsummering</string>
     <string name="recap_home_card_dismiss">Avvis</string>
     <string name="recap_cd_close">Lukk oppsummering</string>
@@ -16,11 +16,11 @@
     <string name="recap_action_previous_slide">Forrige lysbilde</string>
     <string name="recap_close">Lukk</string>
     <string name="recap_not_enough_title">Ikke nok lytting ennå</string>
-    <string name="recap_not_enough_subtitle">Fortsett å spille musikk, så fylles %1$d-oppsummeringen din opp.</string>
+    <string name="recap_not_enough_subtitle">Fortsett å spille musikk, så fylles %1$d-oppsummeringen din opp</string>
     <string name="recap_intro_kicker">CarpeLines-oppsummering</string>
     <string name="recap_intro_title">Året ditt i musikk</string>
     <string name="recap_intro_title_so_far">Året ditt så langt</string>
-    <string name="recap_intro_subtitle">Et tilbakeblikk på sangene, artistene og øyeblikkene som ga året ditt et lydspor.</string>
+    <string name="recap_intro_subtitle">Et tilbakeblikk på sangene, artistene og øyeblikkene som ga året ditt et lydspor</string>
     <string name="recap_tap_hint">Trykk for å fortsette</string>
     <string name="recap_minutes_kicker">I %1$d lyttet du i</string>
     <plurals name="recap_minutes_unit" tools:ignore="ImpliedQuantity">
@@ -28,12 +28,12 @@
         <item quantity="other">minutter</item>
     </plurals>
     <plurals name="recap_minutes_days_equivalent">
-        <item quantity="one">Det er omtrent %d døgn med musikk uten pause.</item>
-        <item quantity="other">Det er omtrent %d døgn med musikk uten pause.</item>
+        <item quantity="one">Det er omtrent %d døgn med musikk uten pause</item>
+        <item quantity="other">Det er omtrent %d døgn med musikk uten pause</item>
     </plurals>
     <plurals name="recap_minutes_hours_equivalent">
-        <item quantity="one">Det er omtrent %d time med musikk uten pause.</item>
-        <item quantity="other">Det er omtrent %d timer med musikk uten pause.</item>
+        <item quantity="one">Det er omtrent %d time med musikk uten pause</item>
+        <item quantity="other">Det er omtrent %d timer med musikk uten pause</item>
     </plurals>
     <string name="recap_minutes_daily_average">Daglig snitt</string>
     <string name="recap_minutes_active_days">Dager med musikk</string>
@@ -43,11 +43,11 @@
     <string name="recap_personality_early_bird">Morgenfugl</string>
     <string name="recap_personality_early_bird_desc">Du startet dagen med musikk. Morgenen var din beste tid.</string>
     <string name="recap_personality_daytime">Daglytter</string>
-    <string name="recap_personality_daytime_desc">Musikken holdt deg med selskap gjennom dagen, fra sen formiddag til ettermiddag.</string>
+    <string name="recap_personality_daytime_desc">Musikken holdt deg med selskap gjennom dagen, fra sen formiddag til ettermiddag</string>
     <string name="recap_personality_evening">Kveldsnyter</string>
-    <string name="recap_personality_evening_desc">Når dagen roet seg, skrudde du opp musikken.</string>
+    <string name="recap_personality_evening_desc">Når dagen roet seg, skrudde du opp musikken</string>
     <string name="recap_personality_night_owl">Nattugle</string>
-    <string name="recap_personality_night_owl_desc">Jo senere det ble, jo mer lyttet du.</string>
+    <string name="recap_personality_night_owl_desc">Jo senere det ble, jo mer lyttet du</string>
     <string name="recap_clock_favorite_day">Favorittdag: %1$s</string>
     <string name="recap_cd_chart_entry">%1$s: %2$s</string>
     <string name="recap_cd_months_chart">Lytting per måned: %1$s</string>
@@ -64,7 +64,7 @@
     <string name="recap_genres_share">%1$s av lyttingen din</string>
     <string name="recap_decade_kicker">Din æra</string>
     <string name="recap_decade_value">%1$d-tallet</string>
-    <string name="recap_decade_detail">%1$s av lyttingen din var musikk utgitt i dette tiåret.</string>
+    <string name="recap_decade_detail">%1$s av lyttingen din var musikk utgitt i dette tiåret</string>
     <string name="recap_albums_kicker">Dine toppalbum</string>
     <plurals name="recap_unique_albums">
         <item quantity="one">%d album i rotasjonen din</item>

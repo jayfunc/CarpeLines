@@ -219,12 +219,6 @@ class StatsViewModel @Inject constructor(
         return library + external.filterNot { it.id in knownIds }
     }
 
-    /** Library songs for [songIds], in the given order; ids no longer in the library are dropped. */
-    suspend fun resolveSongs(songIds: List<String>): List<Song> = withContext(dispatchers.io) {
-        val byId = loadSongs().associateBy { it.id }
-        songIds.mapNotNull { byId[it] }
-    }
-
     /**
      * The artist pictures the rest of the app shows: the user's custom image or a local folder
      * portrait, otherwise the Deezer picture when external artist images are enabled.

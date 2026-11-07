@@ -2,10 +2,10 @@
 <resources>
     <string name="tab_stats">Stats</string>
     <string name="home_hero_title" translatable="false">CarpeLines</string>
-    <string name="home_hero_subtitle">Word-by-word lyrics for whatever your phone is playing.</string>
+    <string name="home_hero_subtitle">Word-by-word lyrics for whatever your phone is playing</string>
     <string name="home_now_playing_eyebrow">Now playing</string>
     <string name="home_idle_title">Play something in any player</string>
-    <string name="home_idle_subtitle">The moment music starts, its lyrics follow — no need to switch apps.</string>
+    <string name="home_idle_subtitle">The moment music starts, its lyrics follow — no need to switch apps</string>
     <string name="home_now_playing_in_app">%1$s · Now playing</string>
     <string name="home_paused_eyebrow">Paused</string>
     <string name="home_paused_in_app">%1$s · Paused</string>

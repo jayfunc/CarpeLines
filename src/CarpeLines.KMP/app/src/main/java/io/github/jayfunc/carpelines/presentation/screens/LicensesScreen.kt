@@ -80,6 +80,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -104,6 +105,7 @@ import io.github.jayfunc.carpelines.presentation.components.rememberAppMessage
 import io.github.jayfunc.carpelines.presentation.components.subcomps.SineWaveLine
 import io.github.jayfunc.carpelines.ui.m3e.M3ESearchField
 import io.github.jayfunc.carpelines.ui.theme.emphasized
+import io.github.jayfunc.carpelines.ui.theme.m3eContentWidth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -286,6 +288,7 @@ fun LicensesScreen(
                 alpha = contentAlpha
                 translationY = contentOffset.toPx()
             },
+        contentAlignment = Alignment.TopCenter,
     ) {
         val currentTopBarHeightDp = with(density) { topBarHeight.value.toDp() }
 
@@ -309,7 +312,7 @@ fun LicensesScreen(
                             .asPaddingValues()
                             .calculateBottomPadding() + 24.dp,
                 ),
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.m3eContentWidth().fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 item(key = "licenses_hero") {
@@ -429,15 +432,14 @@ fun LicensesScreen(
                     itemsIndexed(
                         items = loadedContent.rawParagraphs,
                         key = { index, _ -> "raw_para_$index" },
-                    ) { _, paragraph ->
+                    ) { index, paragraph ->
                         Surface(
-                            shape = AbsoluteSmoothCornerShape(14.dp, 60),
+                            shape = settingsGroupItemShape(index, loadedContent.rawParagraphs.size),
                             color = MaterialTheme.colorScheme.surfaceContainerLow,
-                            tonalElevation = 1.dp,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
-                                .padding(top = 8.dp),
+                                .padding(top = if (index == 0) 10.dp else 2.dp),
                         ) {
                             Text(
                                 text = paragraph,
@@ -473,10 +475,11 @@ fun LicensesScreen(
                     ) { index, item ->
                         LicenseCardRow(
                             item = item,
+                            shape = settingsGroupItemShape(index, filteredItems.size),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
-                                .padding(top = if (index == 0) 10.dp else 4.dp),
+                                .padding(top = if (index == 0) 10.dp else 2.dp),
                             onClick = { activeDetailItem = item },
                         )
                     }
@@ -508,17 +511,15 @@ fun LicensesScreen(
 @Composable
 private fun LicenseCardRow(
     item: LicenseNotice,
+    shape: Shape,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val cardShape = AbsoluteSmoothCornerShape(16.dp, 60)
-
     Surface(
-        shape = cardShape,
+        shape = shape,
         color = MaterialTheme.colorScheme.surfaceContainer,
-        tonalElevation = 2.dp,
         modifier = modifier
-            .clip(cardShape)
+            .clip(shape)
             .clickable(onClick = onClick),
     ) {
         Row(

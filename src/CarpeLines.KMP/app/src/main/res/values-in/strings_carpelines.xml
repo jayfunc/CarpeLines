@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tab_stats">Statistik</string>
-    <string name="home_hero_subtitle">Lirik kata demi kata untuk apa pun yang diputar di ponsel Anda.</string>
+    <string name="home_hero_subtitle">Lirik kata demi kata untuk apa pun yang diputar di ponsel Anda</string>
     <string name="home_now_playing_eyebrow">Sedang diputar</string>
 </resources>

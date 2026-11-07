@@ -29,14 +29,14 @@
 
 ## Table of Contents
 
-- [Highlighted Features](#highlighted-features)
-- [Download & Install](#download--install)
-- [Lyrics Engine](#lyrics-engine)
-- [Documentation](#documentation)
-- [Community](#community)
-- [Contribute & Build](#contribute--build)
-- [Tech Stack](#tech-stack)
-- [License & Credits](#license--credits)
+- [Highlighted Features](#-highlighted-features)
+- [Download & Install](#-download--install)
+- [Lyrics Engine](#-lyrics-engine)
+- [Documentation](#-documentation)
+- [Community](#-community)
+- [Contribute & Build](#-contribute--build)
+- [Tech Stack](#-tech-stack)
+- [License & Credits](#-license--credits)
 
 ---
 

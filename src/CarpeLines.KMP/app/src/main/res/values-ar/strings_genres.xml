@@ -2,5 +2,5 @@
 <resources>
     <string name="library_tab_genres">الأنواع</string>
     <string name="lib_empty_genres_title">لم يتم العثور على أنواع</string>
-    <string name="lib_empty_genres_subtitle">ستظهر هنا الأنواع المأخوذة من وسوم أغانيك.</string>
+    <string name="lib_empty_genres_subtitle">ستظهر هنا الأنواع المأخوذة من وسوم أغانيك</string>
 </resources>
