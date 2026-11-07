@@ -71,6 +71,7 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -267,6 +268,12 @@ fun NowPlayingLyricsScreen(
         autoHideEnabled = hasLyricsContent && settings.immersiveLyricsEnabled,
         autoHideMillis = settings.immersiveLyricsTimeoutMs,
     )
+
+    // The album face is a mode, not a stop on a single track: once the cover is brought up it
+    // stays up while the queue moves on. It is held here rather than inside the panels so the
+    // compact and split layouts share one flag, and saved with the page so leaving it — or the
+    // process being recreated — does not silently drop the cover back into the identity row.
+    var albumFocused by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(externalMedia?.identity, externalMedia?.durationMs, lyricsViewModel.orderKey) {
         lyricsViewModel.resolveExternal(externalMedia)
@@ -480,6 +487,8 @@ fun NowPlayingLyricsScreen(
             LyricsOverviewPanel(
                 header = header,
                 chromeVisible = chrome.visible,
+                albumFocused = albumFocused,
+                onAlbumFocusChange = { albumFocused = it },
                 progress = progress,
                 isPlaying = isPlaying,
                 playbackSpeed = playbackSpeed,
@@ -773,6 +782,8 @@ fun NowPlayingLyricsScreen(
 private fun LyricsOverviewPanel(
     header: LyricsHeader,
     chromeVisible: Boolean,
+    albumFocused: Boolean,
+    onAlbumFocusChange: (Boolean) -> Unit,
     progress: Float,
     isPlaying: Boolean,
     playbackSpeed: Float,
@@ -797,6 +808,8 @@ private fun LyricsOverviewPanel(
         LyricsWidePanel(
             header = header,
             chromeVisible = chromeVisible,
+            albumFocused = albumFocused,
+            onAlbumFocusChange = onAlbumFocusChange,
             progress = progress,
             isPlaying = isPlaying,
             elapsedLabel = elapsedLabel,
@@ -827,21 +840,18 @@ private fun LyricsOverviewPanel(
     // and the page's subject while they are not. It is one view in both: only the rectangle it
     // occupies changes, and that rectangle is what is animated. The image never swaps out, so the
     // eye follows the same cover moving up and growing instead of one picture replacing another.
-    var artworkFocused by remember { mutableStateOf(false) }
-    // The stage belongs to the overview, so the focus only *applies* while the chrome is up: the
-    // immersive face is always the lyrics. The flag itself is kept rather than cleared, which is
-    // what brings the cover back onto the stage when the chrome returns.
-    val coverOnStage = artworkFocused && chromeVisible
+    //
+    // The focus itself is the page's, not this panel's: a new track inherits whichever face the
+    // last one was left on, which is why the flag arrives as a parameter and is not cleared here.
+    // The stage belongs to the overview, so it only *applies* while the chrome is up: the
+    // immersive face is always the lyrics. The flag is kept rather than cleared, which is what
+    // brings the cover back onto the stage when the chrome returns.
+    val coverOnStage = albumFocused && chromeVisible
     // The band's tap shield follows the stage and outlives it by one animation: while the cover
     // shrinks back into the row the words are still translucent, and a tap on them would seek
     // invisibly.
     var artworkShield by remember { mutableStateOf(false) }
     LaunchedEffect(coverOnStage) { if (coverOnStage) artworkShield = true }
-    // A new track opens on its lyrics.
-    LaunchedEffect(header.key) {
-        artworkFocused = false
-        artworkShield = false
-    }
     // Nothing below reads this value in composition on purpose. Every consumer — the cover's
     // rectangle, its corner, the text's offset, the words' alpha — reads it inside a layout or a
     // layer block, so a frame of the flight costs a measure and a layer update instead of
@@ -990,7 +1000,7 @@ private fun LyricsOverviewPanel(
                                 indication = null,
                                 onClick = {
                                     if (chromeVisible) {
-                                        artworkFocused = false
+                                        onAlbumFocusChange(false)
                                     } else {
                                         onShowChrome()
                                     }
@@ -1108,7 +1118,7 @@ private fun LyricsOverviewPanel(
                             // Toggling is an interaction with the chrome, so it restarts the
                             // auto-hide timer instead of racing it.
                             onClick = {
-                                artworkFocused = !artworkFocused
+                                onAlbumFocusChange(!albumFocused)
                                 artworkShield = true
                                 onShowChrome()
                             },
@@ -1367,6 +1377,8 @@ private fun Modifier.lyricsRevealStage(
 private fun LyricsWidePanel(
     header: LyricsHeader,
     chromeVisible: Boolean,
+    albumFocused: Boolean,
+    onAlbumFocusChange: (Boolean) -> Unit,
     progress: Float,
     isPlaying: Boolean,
     elapsedLabel: String,
@@ -1383,10 +1395,9 @@ private fun LyricsWidePanel(
     bottomPadding: Dp,
     modifier: Modifier = Modifier,
 ) {
-    var artworkFocused by remember { mutableStateOf(false) }
-    // A new track opens on the split, like it opens on its lyrics on the compact page.
-    LaunchedEffect(header.key) { artworkFocused = false }
-    val coverOnStage = artworkFocused && chromeVisible
+    // The face is the page's, not the track's: the split is only where a *new* page starts, so a
+    // track change keeps the cover up and the next song arrives on the same face as the last.
+    val coverOnStage = albumFocused && chromeVisible
 
     // The tap shield outlives the flight by one animation: while the words are still translucent
     // a tap on them would seek invisibly.
@@ -1420,7 +1431,7 @@ private fun LyricsWidePanel(
     )
 
     // Back steps out of the album face into the split rather than off the page.
-    BackHandler(enabled = coverOnStage) { artworkFocused = false }
+    BackHandler(enabled = coverOnStage) { onAlbumFocusChange(false) }
 
     val density = LocalDensity.current
     var panelOrigin by remember { mutableStateOf(Offset.Zero) }
@@ -1540,7 +1551,7 @@ private fun LyricsWidePanel(
                         indication = null,
                         onClick = {
                             if (coverOnStage) {
-                                artworkFocused = false
+                                onAlbumFocusChange(false)
                             } else {
                                 onShowChrome()
                             }
@@ -1585,7 +1596,7 @@ private fun LyricsWidePanel(
                             // Toggling is an interaction with the chrome, so it restarts the
                             // auto-hide timer instead of racing it.
                             onClick = {
-                                artworkFocused = !artworkFocused
+                                onAlbumFocusChange(!albumFocused)
                                 artworkShield = true
                                 onShowChrome()
                             },
