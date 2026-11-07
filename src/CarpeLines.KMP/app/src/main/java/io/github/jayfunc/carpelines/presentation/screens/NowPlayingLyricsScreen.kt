@@ -5,9 +5,14 @@ import android.graphics.Bitmap
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -16,6 +21,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -185,6 +192,20 @@ private val LyricsPlayerCardWidth = 640.dp
 
 /** Height the album face's control band is assumed to need until it has been measured. */
 private val LyricsAlbumBarReserve = 248.dp
+
+/**
+ * How the words arrive on the page, and on which curve.
+ *
+ * The karaoke view shapes and measures every line on a worker thread before it paints anything,
+ * so the first word can reach the screen a few hundred milliseconds after the lyrics model does.
+ * A fade measured on the model's own arrival cannot survive that: M3's emphasized decelerate is
+ * half opaque at 7 % of its duration and 76 % by 18 %, so the earlier 320 ms entrance (76 % gone
+ * in 58 ms) was spent before the list had a line to draw, and the words still snapped in. This
+ * curve stays near transparent through its first third, so the reveal is still running when the
+ * prepared scene paints.
+ */
+private const val LyricsArrivalMillis = 550
+private val LyricsArrivalEasing: Easing = CubicBezierEasing(0.3f, 0f, 0.7f, 1f)
 
 internal data class LyricsHeader(
     /** Stable per-track identity, so a pause/play or artwork refresh does not replay the transition. */
@@ -514,104 +535,148 @@ fun NowPlayingLyricsScreen(
                             arrival.snapTo(1f)
                         } else {
                             arrival.snapTo(0f)
+                            // The fade starts with the composition of the words, not with their
+                            // first paint — the karaoke view still has to prepare its scene, and
+                            // [LyricsArrivalEasing] is what keeps the reveal visible until it can
+                            // actually draw.
                             arrival.animateTo(
                                 targetValue = 1f,
                                 animationSpec = tween(
-                                    durationMillis = 320,
-                                    easing = M3EMotion.Easings.emphasizedDecelerate,
+                                    durationMillis = LyricsArrivalMillis,
+                                    easing = LyricsArrivalEasing,
                                 ),
                             )
                         }
                     }
                     // Read in the layer block, not in composition: the fade then costs one layer
                     // update per frame instead of rebuilding the karaoke list.
-                    val lyricsArrival = if (showsSynced || showsPlain) {
+                    val showsWords = showsSynced || showsPlain
+                    val lyricsArrival = if (showsWords) {
                         lyricsModifier.graphicsLayer { alpha = arrival.value }
                     } else {
                         lyricsModifier
                     }
-                    when {
-                        lyrics?.synced?.isNotEmpty() == true -> {
-                            val synced = remember(lyrics) { lyrics.synced.orEmpty().toImmutableList() }
-                            SyncedLyricsList(
-                                lines = synced,
-                                playbackPositionFlow = ExternalMediaMonitor.positionMs,
-                                isPlaying = isPlaying,
-                                playbackSpeed = playbackSpeed,
-                                lyricsSyncOffset = syncOffsetMs,
-                                contentColor = lyricContentColor,
-                                textStyle = lyricStyle,
-                                onLineClick = { line ->
-                                    ExternalMediaMonitor.seekTo(
-                                        io.github.jayfunc.carpelines.presentation.components.resolveSeekPositionMs(
-                                            lineTimeMs = line.time.toLong(),
-                                            lyricsSyncOffsetMs = syncOffsetMs,
+                    // The band shows three things in turn — the spinner, the words, the settled
+                    // miss — and a `when` can only ever put the next one in place: the branch it
+                    // replaces is gone before it could animate out. The two transient faces are
+                    // therefore overlays that keep their slot in the tree, so both their arrival
+                    // and their exit go through the same fade-through as the rest of the page.
+                    val bandEnter = if (reducedMotion) {
+                        EnterTransition.None
+                    } else {
+                        fadeIn(
+                            tween(220, delayMillis = 60, easing = M3EMotion.Easings.emphasizedDecelerate)
+                        ) + scaleIn(
+                            initialScale = 0.92f,
+                            animationSpec = tween(
+                                durationMillis = 280,
+                                delayMillis = 60,
+                                easing = M3EMotion.Easings.emphasizedDecelerate,
+                            ),
+                        )
+                    }
+                    val bandExit = if (reducedMotion) {
+                        ExitTransition.None
+                    } else {
+                        fadeOut(tween(110, easing = M3EMotion.Easings.emphasizedAccelerate)) +
+                            scaleOut(
+                                targetScale = 0.96f,
+                                animationSpec = tween(
+                                    durationMillis = 110,
+                                    easing = M3EMotion.Easings.emphasizedAccelerate,
+                                ),
+                            )
+                    }
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        when {
+                            lyrics?.synced?.isNotEmpty() == true -> {
+                                val synced = remember(lyrics) { lyrics.synced.orEmpty().toImmutableList() }
+                                SyncedLyricsList(
+                                    lines = synced,
+                                    playbackPositionFlow = ExternalMediaMonitor.positionMs,
+                                    isPlaying = isPlaying,
+                                    playbackSpeed = playbackSpeed,
+                                    lyricsSyncOffset = syncOffsetMs,
+                                    contentColor = lyricContentColor,
+                                    textStyle = lyricStyle,
+                                    onLineClick = { line ->
+                                        ExternalMediaMonitor.seekTo(
+                                            io.github.jayfunc.carpelines.presentation.components.resolveSeekPositionMs(
+                                                lineTimeMs = line.time.toLong(),
+                                                lyricsSyncOffsetMs = syncOffsetMs,
+                                            )
                                         )
-                                    )
-                                    chrome.hold()
-                                },
-                                onLineLongClick = { line ->
-                                    actionLine = line
-                                    chrome.hold()
-                                },
-                                playingLineTopOffset = settings.playingLineTopOffset,
-                                animatedLyricsBlurEnabled = settings.animatedLyricsBlurEnabled,
-                                animatedLyricsBlurStrengthDp = settings.animatedLyricsBlurStrengthDp,
-                                showTranslation = settings.showTranslation,
-                                showRomanization = settings.showRomanization,
-                                duetLayoutEnabled = settings.duetLayoutEnabled,
-                                showBackgroundVocals = settings.showBackgroundVocals,
-                                visual = settings.visual,
+                                        chrome.hold()
+                                    },
+                                    onLineLongClick = { line ->
+                                        actionLine = line
+                                        chrome.hold()
+                                    },
+                                    playingLineTopOffset = settings.playingLineTopOffset,
+                                    animatedLyricsBlurEnabled = settings.animatedLyricsBlurEnabled,
+                                    animatedLyricsBlurStrengthDp = settings.animatedLyricsBlurStrengthDp,
+                                    showTranslation = settings.showTranslation,
+                                    showRomanization = settings.showRomanization,
+                                    duetLayoutEnabled = settings.duetLayoutEnabled,
+                                    showBackgroundVocals = settings.showBackgroundVocals,
+                                    visual = settings.visual,
+                                    modifier = lyricsArrival,
+                                )
+                            }
+
+                            lyrics?.plain?.isNotEmpty() == true -> PlainLyrics(
+                                lyrics = lyrics,
+                                textStyle = lyricStyle,
+                                lyricsAlignment = settings.visual.alignment,
+                                bottomPadding = 32.dp,
+                                contentColor = lyricContentColor,
                                 modifier = lyricsArrival,
                             )
                         }
 
-                        lyrics?.plain?.isNotEmpty() == true -> PlainLyrics(
-                            lyrics = lyrics,
-                            textStyle = lyricStyle,
-                            lyricsAlignment = settings.visual.alignment,
-                            bottomPadding = 32.dp,
-                            contentColor = lyricContentColor,
-                            modifier = lyricsArrival,
-                        )
-
-                        isLoading -> M3ELoadingState(
-                            label = stringResource(R.string.lyrics_loading),
+                        val loadingVisible = remember { MutableTransitionState(false) }
+                        loadingVisible.targetState = !showsWords && isLoading
+                        AnimatedVisibility(
+                            visibleState = loadingVisible,
+                            enter = bandEnter,
+                            exit = bandExit,
                             modifier = lyricsModifier,
-                        )
+                        ) {
+                            M3ELoadingState(
+                                label = stringResource(R.string.lyrics_loading),
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        }
 
                         // Anything left over is a settled miss — including a local file that parsed
                         // to nothing. It must never fall back to the loading indicator: that is what
                         // made the page spin forever while the header already said "Local".
-                        else -> {
-                            // The miss replaces the spinner after an asynchronous search, so it
-                            // fades in instead of appearing as a hard cut.
-                            var errorVisible by remember { mutableStateOf(false) }
-                            LaunchedEffect(Unit) { errorVisible = true }
-                            AnimatedVisibility(
-                                visible = errorVisible,
-                                enter = fadeIn(tween(360)),
-                                modifier = lyricsModifier,
-                            ) {
-                                M3EErrorState(
-                                    icon = Icons.Rounded.SearchOff,
-                                    title = stringResource(R.string.external_lyrics_not_found),
-                                    description = stringResource(R.string.lyrics_not_found_local_hint),
-                                    action = {
-                                        M3EButtonGroup {
-                                            M3ETonalButton(
-                                                label = stringResource(R.string.external_lyrics_retry),
-                                                onClick = { lyricsViewModel.retry(externalMedia) },
-                                            )
-                                            M3ESecondaryButton(
-                                                label = stringResource(R.string.lyrics_line_actions_manual_search),
-                                                onClick = onOpenManualLyricsSearch,
-                                            )
-                                        }
-                                    },
-                                    modifier = lyricsModifier,
-                                )
-                            }
+                        val missVisible = remember { MutableTransitionState(false) }
+                        missVisible.targetState = !showsWords && !isLoading
+                        AnimatedVisibility(
+                            visibleState = missVisible,
+                            enter = bandEnter,
+                            exit = bandExit,
+                            modifier = lyricsModifier,
+                        ) {
+                            M3EErrorState(
+                                icon = Icons.Rounded.SearchOff,
+                                title = stringResource(R.string.external_lyrics_not_found),
+                                description = stringResource(R.string.lyrics_not_found_local_hint),
+                                action = {
+                                    M3EButtonGroup {
+                                        M3ETonalButton(
+                                            label = stringResource(R.string.external_lyrics_retry),
+                                            onClick = { lyricsViewModel.retry(externalMedia) },
+                                        )
+                                        M3ESecondaryButton(
+                                            label = stringResource(R.string.lyrics_line_actions_manual_search),
+                                            onClick = onOpenManualLyricsSearch,
+                                        )
+                                    }
+                                },
+                                modifier = Modifier.fillMaxSize(),
+                            )
                         }
                     }
                 },
