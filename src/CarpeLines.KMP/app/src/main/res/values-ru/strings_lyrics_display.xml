@@ -83,7 +83,7 @@
     <string name="betterlyrics_ambient_style_title">Стиль фона</string>
     <string name="betterlyrics_ambient_style_subtitle">Как выглядит анимированный фон за текстом</string>
     <string name="lyrics_source_order_title">Порядок источников текста</string>
-    <string name="lyrics_source_order_subtitle">Изменить порядок локальных и онлайн-источников для внутреннего и внешнего воспроизведения</string>
+    <string name="lyrics_source_order_subtitle">Порядок поиска по локальным и онлайн-источникам</string>
     <string name="lyrics_source_order_intro">Включённые источники перебираются сверху вниз. Локальные источники выигрывают, только если стоят выше онлайн-источников.</string>
     <string name="lyrics_source_order_local_music_hint">Для локальных источников трек должен быть в библиотеке. Отсканируйте его в разделе «Локальная музыка»</string>
     <string name="lyrics_source_order_enabled">Включён</string>
@@ -155,7 +155,7 @@
     <string name="external_lyrics_title">Текст внешних медиа</string>
     <string name="external_lyrics_subtitle">Слушать системный медиасеанс и показывать текст для других плееров</string>
     <string name="external_lyrics_no_media_title">Ничего не воспроизводится</string>
-    <string name="external_lyrics_no_media_body">Запустите воспроизведение в другом плеере, чтобы увидеть его текст здесь. Библиотека приложения теперь используется только как источник текста и обложек.</string>
+    <string name="external_lyrics_no_media_body">Запустите воспроизведение в другом плеере</string>
     <string name="external_lyrics_no_media_check_again">Проверить снова</string>
     <string name="external_lyrics_connecting_media_title">Медиаслушатель не подключён</string>
     <string name="external_lyrics_connecting_media_body">Доступ к уведомлениям предоставлен, но системный медиаслушатель не привязан. Подключите его заново или выключите и снова включите доступ к уведомлениям (особенно после обновления приложения или принудительной остановки).</string>

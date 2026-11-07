@@ -83,7 +83,7 @@
     <string name="betterlyrics_ambient_style_title">Ambient-Stil</string>
     <string name="betterlyrics_ambient_style_subtitle">Wie der animierte Hintergrund hinter den Lyrics aussieht</string>
     <string name="lyrics_source_order_title">Reihenfolge der Lyrikquellen</string>
-    <string name="lyrics_source_order_subtitle">Lokale und Online-Quellen für interne und externe Wiedergabe neu ordnen</string>
+    <string name="lyrics_source_order_subtitle">Reihenfolge der lokalen und Online-Quellen festlegen</string>
     <string name="lyrics_source_order_intro">Aktivierte Quellen werden von oben nach unten versucht. Lokale Quellen gewinnen nur, wenn sie über den Online-Quellen stehen.</string>
     <string name="lyrics_source_order_local_music_hint">Lokale Quellen benötigen den Titel in der Bibliothek. Scanne ihn unter Lokale Musik oder scanne ihn erneut</string>
     <string name="lyrics_source_order_enabled">Aktiviert</string>
@@ -155,7 +155,7 @@
     <string name="external_lyrics_title">Lyrics externer Medien</string>
     <string name="external_lyrics_subtitle">System-Mediensitzung abhören und Lyrics für andere Player anzeigen</string>
     <string name="external_lyrics_no_media_title">Keine Wiedergabe</string>
-    <string name="external_lyrics_no_media_body">Starte die Wiedergabe in einem anderen Player, um hier dessen Lyrics zu sehen. Die App-Bibliothek dient jetzt nur noch als Lyrik- und Coverquelle.</string>
+    <string name="external_lyrics_no_media_body">Starte die Wiedergabe in einem anderen Player</string>
     <string name="external_lyrics_no_media_check_again">Erneut prüfen</string>
     <string name="external_lyrics_connecting_media_title">Medien-Listener nicht verbunden</string>
     <string name="external_lyrics_connecting_media_body">Der Benachrichtigungszugriff ist erteilt, aber der System-Medien-Listener ist nicht gebunden. Verbinde ihn neu oder schalte den Benachrichtigungszugriff aus und wieder ein (besonders nach einem App-Update oder erzwungenen Stopp).</string>

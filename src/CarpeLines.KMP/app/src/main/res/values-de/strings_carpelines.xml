@@ -3,13 +3,13 @@
     <string name="tab_stats">Statistiken</string>
     <string name="home_hero_subtitle">Wortgenaue Lyrics für alles, was auf deinem Handy läuft</string>
     <string name="home_now_playing_eyebrow">Läuft gerade</string>
-    <string name="home_idle_title">Spiele etwas in einem beliebigen Player</string>
-    <string name="home_idle_subtitle">Sobald die Musik startet, folgen die Lyrics — ohne App-Wechsel</string>
+    <string name="home_idle_title">Es wird nichts abgespielt</string>
+    <string name="home_idle_subtitle">Mit jedem Player kompatibel</string>
     <string name="home_now_playing_in_app">%1$s · Wird wiedergegeben</string>
     <string name="home_paused_eyebrow">Pausiert</string>
     <string name="home_paused_in_app">%1$s · Pausiert</string>
     <string name="home_played_players_title">Verwendete Player</string>
     <string name="home_played_players_count">%1$d Titel</string>
     <string name="home_played_players_empty">Noch keine Wiedergabe. Starte etwas in einem Player, dann erscheint sein Symbol hier.</string>
-    <string name="lyrics_not_found_local_hint">Für diesen Titel wurden auf diesem Gerät keine Lyrics gefunden. Prüfe die Audio-Tags oder eine passende .lrc-Datei oder aktiviere weitere Lyrikquellen in den Einstellungen.</string>
+    <string name="lyrics_not_found_local_hint">Keine Lyrics gefunden</string>
 </resources>

@@ -83,7 +83,7 @@
     <string name="betterlyrics_ambient_style_title">Ortam stili</string>
     <string name="betterlyrics_ambient_style_subtitle">Sözlerin arkasındaki animasyonlu arka planın görünümü</string>
     <string name="lyrics_source_order_title">Şarkı sözü kaynak sırası</string>
-    <string name="lyrics_source_order_subtitle">Dahili ve harici oynatma için yerel ve çevrimiçi kaynakları yeniden sırala</string>
+    <string name="lyrics_source_order_subtitle">Yerel ve çevrimiçi söz kaynaklarının arama sırasını ayarla</string>
     <string name="lyrics_source_order_intro">Etkin kaynaklar yukarıdan aşağıya denenir. Yerel kaynaklar yalnızca çevrimiçi kaynakların üzerindeyse kazanır.</string>
     <string name="lyrics_source_order_local_music_hint">Yerel kaynaklar için parçanın kitaplıkta olması gerekir. Yerel Müzik bölümünde tarayın veya yeniden tarayın</string>
     <string name="lyrics_source_order_enabled">Etkin</string>
@@ -155,7 +155,7 @@
     <string name="external_lyrics_title">Harici medya şarkı sözleri</string>
     <string name="external_lyrics_subtitle">Sistem medya oturumunu dinle ve diğer oynatıcılar için şarkı sözlerini göster</string>
     <string name="external_lyrics_no_media_title">Çalan medya yok</string>
-    <string name="external_lyrics_no_media_body">Şarkı sözlerini burada görmek için başka bir oynatıcıda oynatmayı başlatın. Uygulama içi kitaplık artık yalnızca şarkı sözü ve kapak kaynağı olarak kullanılıyor.</string>
+    <string name="external_lyrics_no_media_body">Başka bir oynatıcıda oynatmayı başlatın</string>
     <string name="external_lyrics_no_media_check_again">Yeniden denetle</string>
     <string name="external_lyrics_connecting_media_title">Medya dinleyicisi bağlı değil</string>
     <string name="external_lyrics_connecting_media_body">Bildirim erişimi verilmiş, ancak sistem medya dinleyicisi bağlanmamış. Yeniden bağlayın veya bildirim erişimini kapatıp yeniden açın (özellikle uygulama güncellemesi veya zorla durdurmadan sonra).</string>

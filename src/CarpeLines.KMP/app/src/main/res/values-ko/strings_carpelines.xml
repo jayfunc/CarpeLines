@@ -3,13 +3,13 @@
     <string name="tab_stats">통계</string>
     <string name="home_hero_subtitle">휴대폰에서 재생 중인 음악의 가사를 단어별로 표시합니다</string>
     <string name="home_now_playing_eyebrow">재생 중</string>
-    <string name="home_idle_title">어떤 플레이어에서든 재생해 보세요</string>
-    <string name="home_idle_subtitle">음악이 시작되면 가사가 따라옵니다 — 앱을 전환할 필요 없이</string>
+    <string name="home_idle_title">재생 중인 곡이 없습니다</string>
+    <string name="home_idle_subtitle">모든 플레이어를 지원합니다</string>
     <string name="home_now_playing_in_app">%1$s · 재생 중</string>
     <string name="home_paused_eyebrow">일시정지됨</string>
     <string name="home_paused_in_app">%1$s · 일시정지됨</string>
     <string name="home_played_players_title">사용한 플레이어</string>
     <string name="home_played_players_count">%1$d곡</string>
     <string name="home_played_players_empty">아직 재생 기록이 없습니다. 어떤 플레이어에서든 재생하면 아이콘이 여기에 표시됩니다.</string>
-    <string name="lyrics_not_found_local_hint">이 기기에서 이 트랙의 가사를 찾지 못했습니다. 오디오 태그나 일치하는 .lrc 파일을 확인하거나 설정에서 더 많은 가사 소스를 활성화하세요.</string>
+    <string name="lyrics_not_found_local_hint">가사를 찾지 못했습니다</string>
 </resources>

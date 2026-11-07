@@ -83,7 +83,7 @@
     <string name="betterlyrics_ambient_style_title">نمط الخلفية المحيطة</string>
     <string name="betterlyrics_ambient_style_subtitle">شكل الخلفية المتحركة خلف الكلمات</string>
     <string name="lyrics_source_order_title">ترتيب مصادر الكلمات</string>
-    <string name="lyrics_source_order_subtitle">أعد ترتيب المصادر المحلية وعبر الإنترنت للتشغيل الداخلي والخارجي</string>
+    <string name="lyrics_source_order_subtitle">اضبط ترتيب البحث في المصادر المحلية وعبر الإنترنت</string>
     <string name="lyrics_source_order_intro">تُجرَّب المصادر الممكّنة من الأعلى إلى الأسفل. تفوز المصادر المحلية فقط عندما تكون فوق المصادر عبر الإنترنت.</string>
     <string name="lyrics_source_order_local_music_hint">تحتاج المصادر المحلية إلى وجود المقطع في المكتبة. امسحه أو أعد مسحه في الموسيقى المحلية</string>
     <string name="lyrics_source_order_enabled">ممكّن</string>
@@ -155,7 +155,7 @@
     <string name="external_lyrics_title">كلمات الوسائط الخارجية</string>
     <string name="external_lyrics_subtitle">استمع إلى جلسة الوسائط في النظام واعرض الكلمات للمشغلات الأخرى</string>
     <string name="external_lyrics_no_media_title">لا توجد وسائط قيد التشغيل</string>
-    <string name="external_lyrics_no_media_body">ابدأ التشغيل في مشغل آخر لترى كلماته هنا. أصبحت مكتبة التطبيق الآن مصدرًا للكلمات وأغلفة الألبومات فقط.</string>
+    <string name="external_lyrics_no_media_body">ابدأ التشغيل في مشغل آخر</string>
     <string name="external_lyrics_no_media_check_again">تحقق مجددًا</string>
     <string name="external_lyrics_connecting_media_title">مستمع الوسائط غير متصل</string>
     <string name="external_lyrics_connecting_media_body">الوصول إلى الإشعارات ممنوح، لكن مستمع الوسائط في النظام غير مرتبط. أعد ربطه، أو أوقف الوصول إلى الإشعارات ثم أعد تشغيله (خصوصًا بعد تحديث التطبيق أو الإيقاف القسري).</string>

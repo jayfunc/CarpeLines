@@ -3,13 +3,13 @@
     <string name="tab_stats">Statistikk</string>
     <string name="home_hero_subtitle">Ord-for-ord-tekster for det som spilles på telefonen</string>
     <string name="home_now_playing_eyebrow">Spiller nå</string>
-    <string name="home_idle_title">Spill noe i hvilken som helst spiller</string>
-    <string name="home_idle_subtitle">I det musikken starter, følger sangteksten med — uten å bytte app</string>
+    <string name="home_idle_title">Ingenting spilles av</string>
+    <string name="home_idle_subtitle">Kompatibel med alle spillere</string>
     <string name="home_now_playing_in_app">%1$s · Spilles nå</string>
     <string name="home_paused_eyebrow">Pauset</string>
     <string name="home_paused_in_app">%1$s · Pauset</string>
     <string name="home_played_players_title">Spillere du har brukt</string>
     <string name="home_played_players_count">%1$d spor</string>
     <string name="home_played_players_empty">Ingen avspillinger ennå. Start noe i hvilken som helst spiller, så vises ikonet her.</string>
-    <string name="lyrics_not_found_local_hint">Fant ingen sangtekst for dette sporet på denne enheten. Sjekk lydtaggene eller en samsvarende .lrc-fil, eller aktiver flere sangtekstkilder i Innstillinger.</string>
+    <string name="lyrics_not_found_local_hint">Fant ingen sangtekst</string>
 </resources>

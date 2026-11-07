@@ -79,7 +79,7 @@
     <string name="betterlyrics_ambient_style_title">Ambient style</string>
     <string name="betterlyrics_ambient_style_subtitle">How the animated background behind lyrics looks</string>
     <string name="lyrics_source_order_title">Lyrics source order</string>
-    <string name="lyrics_source_order_subtitle">Reorder local and online sources for internal and external playback</string>
+    <string name="lyrics_source_order_subtitle">Set the lookup order for local and online lyrics sources</string>
     <string name="lyrics_source_order_intro">Enabled sources are tried from top to bottom. Local sources win only when they are above online sources.</string>
     <string name="lyrics_source_order_local_music_hint">Local sources need the track in the library. Scan or rescan it under Local Music</string>
     <string name="lyrics_source_order_enabled">Enabled</string>
@@ -154,7 +154,7 @@
     <string name="external_lyrics_permission_body">Android only exposes media sessions from other apps to notification listeners. Grant access, then start playback in any music player.</string>
     <string name="external_lyrics_grant_access">Open notification access</string>
     <string name="external_lyrics_no_media_title">No media playing</string>
-    <string name="external_lyrics_no_media_body">Start playback in another player to see its lyrics here. The in-app library is only used as a lyrics and artwork source now.</string>
+    <string name="external_lyrics_no_media_body">Start playback in another player</string>
     <string name="external_lyrics_no_media_check_again">Check again</string>
     <string name="external_lyrics_connecting_media_title">Media listener not connected</string>
     <string name="external_lyrics_connecting_media_body">Notification access is granted, but the system media listener is not bound. Reconnect it, or turn notification access off and on again (especially after an app update or force stop).</string>

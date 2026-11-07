@@ -83,7 +83,7 @@
     <string name="betterlyrics_ambient_style_title">Stile ambientale</string>
     <string name="betterlyrics_ambient_style_subtitle">Aspetto dello sfondo animato dietro il testo</string>
     <string name="lyrics_source_order_title">Ordine delle fonti dei testi</string>
-    <string name="lyrics_source_order_subtitle">Riordina le fonti locali e online per la riproduzione interna ed esterna</string>
+    <string name="lyrics_source_order_subtitle">Imposta l\'ordine di ricerca delle fonti locali e online</string>
     <string name="lyrics_source_order_intro">Le fonti abilitate vengono provate dall\'alto verso il basso. Le fonti locali vincono solo se sono sopra quelle online.</string>
     <string name="lyrics_source_order_local_music_hint">Le fonti locali richiedono il brano nella libreria. Scansionalo o ripeti la scansione in Musica locale</string>
     <string name="lyrics_source_order_enabled">Abilitata</string>
@@ -155,7 +155,7 @@
     <string name="external_lyrics_title">Testi dei media esterni</string>
     <string name="external_lyrics_subtitle">Ascolta la sessione multimediale di sistema e mostra i testi degli altri lettori</string>
     <string name="external_lyrics_no_media_title">Nessun contenuto in riproduzione</string>
-    <string name="external_lyrics_no_media_body">Avvia la riproduzione in un altro lettore per vederne i testi qui. La libreria dell\'app ora serve solo come fonte di testi e copertine.</string>
+    <string name="external_lyrics_no_media_body">Avvia la riproduzione in un altro lettore</string>
     <string name="external_lyrics_no_media_check_again">Controlla di nuovo</string>
     <string name="external_lyrics_connecting_media_title">Lettore multimediale non connesso</string>
     <string name="external_lyrics_connecting_media_body">L\'accesso alle notifiche è concesso, ma il lettore multimediale di sistema non è collegato. Ricollegalo oppure disattiva e riattiva l\'accesso alle notifiche (soprattutto dopo un aggiornamento o un arresto forzato).</string>

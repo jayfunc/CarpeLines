@@ -79,7 +79,7 @@
     <string name="betterlyrics_ambient_style_title">アンビエントスタイル</string>
     <string name="betterlyrics_ambient_style_subtitle">歌詞の背景アニメーションの見た目</string>
     <string name="lyrics_source_order_title">歌詞ソースの順序</string>
-    <string name="lyrics_source_order_subtitle">アプリ内再生と外部再生のローカル/オンラインソースを並べ替えます</string>
+    <string name="lyrics_source_order_subtitle">ローカルとオンラインの歌詞ソースの検索順を設定</string>
     <string name="lyrics_source_order_intro">有効なソースは上から順に試されます。ローカルソースはオンラインソースより上にある場合にのみ優先されます。</string>
     <string name="lyrics_source_order_local_music_hint">ローカルソースはライブラリに曲が必要です。「ローカル音楽」でスキャンまたは再スキャンしてください</string>
     <string name="lyrics_source_order_enabled">有効</string>
@@ -154,7 +154,7 @@
     <string name="external_lyrics_permission_body">Android は他のアプリのメディアセッションを通知リスナーにのみ公開します。アクセスを許可してから、任意の音楽プレーヤーで再生を開始してください。</string>
     <string name="external_lyrics_grant_access">通知へのアクセスを開く</string>
     <string name="external_lyrics_no_media_title">再生中のメディアがありません</string>
-    <string name="external_lyrics_no_media_body">他のプレーヤーで再生を開始すると、ここに歌詞が表示されます。アプリ内ライブラリは現在、歌詞とアートワークのソースとしてのみ使用されます。</string>
+    <string name="external_lyrics_no_media_body">他のプレーヤーで再生を開始してください</string>
     <string name="external_lyrics_no_media_check_again">再確認</string>
     <string name="external_lyrics_connecting_media_title">メディアリスナーが接続されていません</string>
     <string name="external_lyrics_connecting_media_body">通知へのアクセスは許可されていますが、システムのメディアリスナーがバインドされていません。再接続するか、通知へのアクセスをオフにしてから再度オンにしてください（特にアプリの更新後や強制停止後）。</string>

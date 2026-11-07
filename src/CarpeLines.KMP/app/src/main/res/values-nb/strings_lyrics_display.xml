@@ -83,7 +83,7 @@
     <string name="betterlyrics_ambient_style_title">Omgivelsesstil</string>
     <string name="betterlyrics_ambient_style_subtitle">Hvordan den animerte bakgrunnen bak teksten ser ut</string>
     <string name="lyrics_source_order_title">Rekkefølge for sangtekstkilder</string>
-    <string name="lyrics_source_order_subtitle">Endre rekkefølgen på lokale og nettbaserte kilder for intern og ekstern avspilling</string>
+    <string name="lyrics_source_order_subtitle">Angi søkerekkefølgen for lokale og nettbaserte kilder</string>
     <string name="lyrics_source_order_intro">Aktiverte kilder prøves ovenfra og ned. Lokale kilder vinner bare når de står over nettbaserte kilder.</string>
     <string name="lyrics_source_order_local_music_hint">Lokale kilder krever sporet i biblioteket. Skann eller skann på nytt under Lokal musikk</string>
     <string name="lyrics_source_order_enabled">Aktivert</string>
@@ -155,7 +155,7 @@
     <string name="external_lyrics_title">Sangtekst for eksterne medier</string>
     <string name="external_lyrics_subtitle">Lytt til systemets medieøkt og vis sangtekst for andre spillere</string>
     <string name="external_lyrics_no_media_title">Ingen medier spilles</string>
-    <string name="external_lyrics_no_media_body">Start avspilling i en annen spiller for å se sangteksten her. Appbiblioteket brukes nå bare som kilde for sangtekst og omslag.</string>
+    <string name="external_lyrics_no_media_body">Start avspilling i en annen spiller</string>
     <string name="external_lyrics_no_media_check_again">Sjekk igjen</string>
     <string name="external_lyrics_connecting_media_title">Mediallytteren er ikke tilkoblet</string>
     <string name="external_lyrics_connecting_media_body">Tilgang til varsler er gitt, men systemets mediallytter er ikke bundet. Koble den til på nytt, eller slå tilgangen til varsler av og på igjen (særlig etter en appoppdatering eller tvangslukking).</string>

@@ -83,7 +83,7 @@
     <string name="betterlyrics_ambient_style_title">Style d\'ambiance</string>
     <string name="betterlyrics_ambient_style_subtitle">Aspect de l\'arrière-plan animé derrière les paroles</string>
     <string name="lyrics_source_order_title">Ordre des sources de paroles</string>
-    <string name="lyrics_source_order_subtitle">Réorganiser les sources locales et en ligne pour la lecture interne et externe</string>
+    <string name="lyrics_source_order_subtitle">Définir l\'ordre de recherche des sources locales et en ligne</string>
     <string name="lyrics_source_order_intro">Les sources activées sont essayées de haut en bas. Les sources locales ne l\'emportent que si elles sont au-dessus des sources en ligne.</string>
     <string name="lyrics_source_order_local_music_hint">Les sources locales nécessitent le titre dans la bibliothèque. Scannez-le ou relancez le scan dans Musique locale</string>
     <string name="lyrics_source_order_enabled">Activée</string>
@@ -155,7 +155,7 @@
     <string name="external_lyrics_title">Paroles des médias externes</string>
     <string name="external_lyrics_subtitle">Écouter la session multimédia du système et afficher les paroles des autres lecteurs</string>
     <string name="external_lyrics_no_media_title">Aucune lecture en cours</string>
-    <string name="external_lyrics_no_media_body">Lancez la lecture dans un autre lecteur pour voir ses paroles ici. La bibliothèque de l\'application ne sert plus que de source de paroles et de pochettes.</string>
+    <string name="external_lyrics_no_media_body">Démarrez la lecture dans un autre lecteur</string>
     <string name="external_lyrics_no_media_check_again">Vérifier à nouveau</string>
     <string name="external_lyrics_connecting_media_title">Lecteur multimédia non connecté</string>
     <string name="external_lyrics_connecting_media_body">L\'accès aux notifications est accordé, mais le lecteur multimédia système n\'est pas lié. Reconnectez-le ou désactivez puis réactivez l\'accès aux notifications (surtout après une mise à jour ou un arrêt forcé).</string>

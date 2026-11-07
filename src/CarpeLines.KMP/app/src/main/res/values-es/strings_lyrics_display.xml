@@ -83,7 +83,7 @@
     <string name="betterlyrics_ambient_style_title">Estilo ambiental</string>
     <string name="betterlyrics_ambient_style_subtitle">Aspecto del fondo animado tras la letra</string>
     <string name="lyrics_source_order_title">Orden de las fuentes de letras</string>
-    <string name="lyrics_source_order_subtitle">Reordenar las fuentes locales y en línea para la reproducción interna y externa</string>
+    <string name="lyrics_source_order_subtitle">Definir el orden de búsqueda de las fuentes locales y en línea</string>
     <string name="lyrics_source_order_intro">Las fuentes activadas se prueban de arriba abajo. Las fuentes locales solo ganan si están por encima de las fuentes en línea.</string>
     <string name="lyrics_source_order_local_music_hint">Las fuentes locales necesitan la pista en la biblioteca. Escanéala o vuelve a escanearla en Música local</string>
     <string name="lyrics_source_order_enabled">Activada</string>
@@ -155,7 +155,7 @@
     <string name="external_lyrics_title">Letras de medios externos</string>
     <string name="external_lyrics_subtitle">Escucha la sesión multimedia del sistema y muestra la letra de otros reproductores</string>
     <string name="external_lyrics_no_media_title">No se está reproduciendo nada</string>
-    <string name="external_lyrics_no_media_body">Inicia la reproducción en otro reproductor para ver su letra aquí. La biblioteca de la app ahora solo se usa como fuente de letras y carátulas.</string>
+    <string name="external_lyrics_no_media_body">Inicia la reproducción en otro reproductor</string>
     <string name="external_lyrics_no_media_check_again">Comprobar de nuevo</string>
     <string name="external_lyrics_connecting_media_title">Escucha multimedia no conectada</string>
     <string name="external_lyrics_connecting_media_body">El acceso a las notificaciones está concedido, pero el escucha multimedia del sistema no está vinculado. Vuelve a conectarlo o desactiva y reactiva el acceso a las notificaciones (sobre todo tras una actualización o un cierre forzado).</string>

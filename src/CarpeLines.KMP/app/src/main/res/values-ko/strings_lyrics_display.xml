@@ -83,7 +83,7 @@
     <string name="betterlyrics_ambient_style_title">앰비언트 스타일</string>
     <string name="betterlyrics_ambient_style_subtitle">가사 뒤 애니메이션 배경의 모양</string>
     <string name="lyrics_source_order_title">가사 소스 순서</string>
-    <string name="lyrics_source_order_subtitle">내부 및 외부 재생을 위한 로컬 및 온라인 소스 순서 변경</string>
+    <string name="lyrics_source_order_subtitle">로컬 및 온라인 가사 소스의 검색 순서 설정</string>
     <string name="lyrics_source_order_intro">활성화된 소스는 위에서 아래로 시도됩니다. 로컬 소스는 온라인 소스보다 위에 있을 때만 우선합니다.</string>
     <string name="lyrics_source_order_local_music_hint">로컬 소스는 라이브러리에 트랙이 있어야 합니다. 로컬 음악에서 스캔하거나 다시 스캔하세요</string>
     <string name="lyrics_source_order_enabled">활성화됨</string>
@@ -155,7 +155,7 @@
     <string name="external_lyrics_title">외부 미디어 가사</string>
     <string name="external_lyrics_subtitle">시스템 미디어 세션을 수신하고 다른 플레이어의 가사를 표시합니다</string>
     <string name="external_lyrics_no_media_title">재생 중인 미디어 없음</string>
-    <string name="external_lyrics_no_media_body">다른 플레이어에서 재생을 시작하면 여기에 가사가 표시됩니다. 앱 내 라이브러리는 이제 가사와 앨범 아트 소스로만 사용됩니다.</string>
+    <string name="external_lyrics_no_media_body">다른 플레이어에서 재생을 시작하세요</string>
     <string name="external_lyrics_no_media_check_again">다시 확인</string>
     <string name="external_lyrics_connecting_media_title">미디어 리스너가 연결되지 않음</string>
     <string name="external_lyrics_connecting_media_body">알림 접근 권한은 있지만 시스템 미디어 리스너가 바인딩되지 않았습니다. 다시 연결하거나 알림 접근 권한을 껐다가 다시 켜세요(특히 앱 업데이트나 강제 종료 후).</string>

@@ -79,7 +79,7 @@
     <string name="betterlyrics_ambient_style_title">氛围背景风格</string>
     <string name="betterlyrics_ambient_style_subtitle">选择歌词背后动态背景的视觉风格</string>
     <string name="lyrics_source_order_title">歌词源顺序</string>
-    <string name="lyrics_source_order_subtitle">为内置与外置播放统一排序本地和在线歌词源</string>
+    <string name="lyrics_source_order_subtitle">设置本地与在线歌词源的查找顺序</string>
     <string name="lyrics_source_order_intro">已启用的歌词源会从上到下依次尝试；本地源排在在线源之上时优先使用本地歌词</string>
     <string name="lyrics_source_order_local_music_hint">本地源需要曲库中已有这首歌。去「本地音乐」扫描或重扫</string>
     <string name="lyrics_source_order_enabled">已启用</string>
@@ -154,7 +154,7 @@
     <string name="external_lyrics_permission_body">Android 只向通知监听器开放其他应用的媒体会话。请授予通知使用权，然后在任意音乐播放器中开始播放。</string>
     <string name="external_lyrics_grant_access">打开通知使用权设置</string>
     <string name="external_lyrics_no_media_title">未检测到正在播放的媒体</string>
-    <string name="external_lyrics_no_media_body">请先在其他播放器中开始播放。应用内音乐库现在仅作为歌词与封面来源，不再在应用内播放。</string>
+    <string name="external_lyrics_no_media_body">请在其他播放器中开始播放</string>
     <string name="external_lyrics_no_media_check_again">重新检测</string>
     <string name="external_lyrics_connecting_media_title">系统媒体监听未连接</string>
     <string name="external_lyrics_connecting_media_body">通知使用权已开启，但系统媒体监听服务尚未绑定。请尝试重新连接；若仍无效，请关闭再重新开启通知使用权（应用更新或强行停止后尤其常见）。</string>
