@@ -120,7 +120,7 @@ if __name__ == "__main__":
     for name, fg in (
         ("sung     #D9480F", "#D9480F"),
         ("unsung   #8A7663", "#8A7663"),
-        ("knob     #1C1917", "#1C1917"),
+        ("knob     #D9480F", "#D9480F"),
         ("wordmark #1C1917", "#1C1917"),
     ):
         vals = [contrast(fg, b) for b in bgs]

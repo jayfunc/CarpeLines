@@ -18,6 +18,6 @@
     <!-- line 3 — still ahead -->
     <rect x="25" y="66" width="30" height="8" rx="4" fill="#8A7663"/>
     <!-- time knob -->
-    <circle cx="60" cy="54" r="7" fill="#1C1917"/>
+    <circle cx="60" cy="54" r="7" fill="#D9480F"/>
   </g>
 </svg>

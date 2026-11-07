@@ -3,7 +3,7 @@
      All content stays inside the 66dp safe circle centred on the canvas
      (measured ink box: 59 x 40, centred at 54.5 / 54).
 
-     Warm paper: #D9480F sung, #8A7663 unsung, #1C1917 time knob. -->
+     Warm paper: #D9480F sung + time knob, #8A7663 unsung. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
@@ -39,7 +39,7 @@
 
     <!-- time knob -->
     <path
-        android:fillColor="#1C1917"
+        android:fillColor="#D9480F"
         android:pathData="M60,47 C63.865993,47 67,50.134007 67,54 C67,57.865993 63.865993,61 60,61 C56.134007,61 53,57.865993 53,54 C53,50.134007 56.134007,47 60,47 Z" />
 
     </group>

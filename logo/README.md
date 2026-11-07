@@ -60,16 +60,19 @@ that 72dp.
 | Role | Value | Contrast |
 | --- | --- | --- |
 | Container (top → bottom) | `#FFF6EA` → `#FFE4C6` | baseline |
-| Sung / current character | `#D9480F` | 3.5–4.0 : 1 |
+| Sung / current character, time cursor | `#D9480F` | 3.5–4.0 : 1 |
 | Unsung | `#8A7663` | 3.5–4.0 : 1 |
-| Time cursor / wordmark | `#1C1917` | 14.3–16.3 : 1 |
+| Wordmark | `#1C1917` | 14.3–16.3 : 1 |
 
 **Push the background close to white and keep colour for the sung line alone.**
 Once the background drifts yellow, the strokes drift brown and the whole surface
 slides towards "caramel on old paper" — the easiest way for this mark to look
 dated. The container carries a single faint gradient of the same hue and no glow;
 orange and warm grey are pulled down to just clear the 3 : 1 floor for graphics,
-and deep ink is reserved for the cursor and the wordmark.
+and deep ink is reserved for the wordmark. The cursor wears the same vermilion as
+the sung line: at Ø14 it is a large graphic, so 3.5 : 1 clears the floor, and the
+circle's shape plus 2 units of clearance are what keep it from reading as a bulge
+in the stroke.
 
 Lockups carry **no background rectangle** — they sit directly on whatever surface
 embeds them. The wordmark is `#1C1917` ink on light and flips to the `#F7F2E9`
@@ -83,8 +86,8 @@ number derived from it means nothing.
 
 **The mark does not take part in dynamic colour.** At runtime the UI derives 48
 semantic roles from the album artwork, but brand assets must stay constant. The
-table above mirrors the relationship between `primary` (sung), `primary` dark
-(unsung) and `onSurface` (cursor / wordmark), yet the values are hard-coded in
+table above mirrors the relationship between `primary` (sung / cursor), `primary`
+dark (unsung) and `onSurface` (wordmark), yet the values are hard-coded in
 resources and never read from `ColorScheme`.
 
 ## Android integration

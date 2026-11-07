@@ -35,7 +35,7 @@ GLYPH = """
 <rect x="25" y="50" width="26" height="8" rx="4" fill="#D9480F"/>
 <rect x="69" y="50" width="15" height="8" rx="4" fill="#8A7663"/>
 <rect x="25" y="66" width="30" height="8" rx="4" fill="#8A7663"/>
-<circle cx="60" cy="54" r="7" fill="#1C1917"/>
+<circle cx="60" cy="54" r="7" fill="#D9480F"/>
 """
 
 # The launcher keeps only the middle 72dp of the 108dp canvas, so the mark is output
