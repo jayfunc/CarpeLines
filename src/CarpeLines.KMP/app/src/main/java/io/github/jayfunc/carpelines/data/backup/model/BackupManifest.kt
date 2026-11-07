@@ -9,7 +9,8 @@ data class BackupManifest(
     val modules: Map<String, BackupModuleInfo> = emptyMap()
 ) {
     companion object {
-        const val CURRENT_SCHEMA_VERSION = 4
+        // v5: the lyrics module backs up hand-picked lyrics instead of the legacy lyrics table.
+        const val CURRENT_SCHEMA_VERSION = 5
         const val MIN_SUPPORTED_VERSION = 1
         const val MANIFEST_FILENAME = "manifest.json"
     }

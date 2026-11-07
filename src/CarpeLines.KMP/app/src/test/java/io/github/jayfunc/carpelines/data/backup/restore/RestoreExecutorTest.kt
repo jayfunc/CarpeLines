@@ -30,7 +30,7 @@ class RestoreExecutorTest {
 
     private val backupReader: BackupReader = mockk()
     private val validationPipeline: ValidationPipeline = mockk()
-    private val favoritesHandler: BackupModuleHandler = mockk(relaxed = true)
+    private val lyricsHandler: BackupModuleHandler = mockk(relaxed = true)
     private val playbackHistoryHandler: BackupModuleHandler = mockk(relaxed = true)
     private val context: Context = mockk(relaxed = true)
 
@@ -39,7 +39,7 @@ class RestoreExecutorTest {
         backupReader = backupReader,
         validationPipeline = validationPipeline,
         handlers = mapOf(
-            BackupSection.FAVORITES to favoritesHandler,
+            BackupSection.LYRICS to lyricsHandler,
             BackupSection.PLAYBACK_HISTORY to playbackHistoryHandler
         )
     )
@@ -49,7 +49,7 @@ class RestoreExecutorTest {
     init {
         every { context.getString(any<Int>()) } answers {
             when (firstArg<Int>()) {
-                BackupSection.FAVORITES.labelRes -> "Favorites"
+                BackupSection.LYRICS.labelRes -> "Lyrics"
                 BackupSection.PLAYBACK_HISTORY.labelRes -> "Playback History"
                 else -> "text"
             }
@@ -80,47 +80,47 @@ class RestoreExecutorTest {
     @Test
     fun `execute rolls back the module that fails during restore`() = runTest {
         val plan = restorePlan(
-            selectedModules = setOf(BackupSection.FAVORITES, BackupSection.PLAYBACK_HISTORY)
+            selectedModules = setOf(BackupSection.LYRICS, BackupSection.PLAYBACK_HISTORY)
         )
 
-        coEvery { favoritesHandler.snapshot() } returns "favorites-snapshot"
+        coEvery { lyricsHandler.snapshot() } returns "lyrics-snapshot"
         coEvery { playbackHistoryHandler.snapshot() } returns "history-snapshot"
-        coEvery { backupReader.readModulePayload(backupUri, BackupSection.FAVORITES.key) } returns
-            Result.success("favorites-payload")
+        coEvery { backupReader.readModulePayload(backupUri, BackupSection.LYRICS.key) } returns
+            Result.success("lyrics-payload")
         coEvery { backupReader.readModulePayload(backupUri, BackupSection.PLAYBACK_HISTORY.key) } returns
             Result.success("history-payload")
         every {
             validationPipeline.validateModulePayload(any(), any(), any())
         } returns BackupValidationResult.Valid
-        coEvery { favoritesHandler.restore("favorites-payload") } returns Unit
+        coEvery { lyricsHandler.restore("lyrics-payload") } returns Unit
         coEvery { playbackHistoryHandler.restore("history-payload") } throws IllegalStateException("boom")
-        coEvery { favoritesHandler.rollback("favorites-snapshot") } returns Unit
+        coEvery { lyricsHandler.rollback("lyrics-snapshot") } returns Unit
         coEvery { playbackHistoryHandler.rollback("history-snapshot") } returns Unit
 
         val result = executor.execute(backupUri, plan) { }
 
         val failure = assertInstanceOf(RestoreResult.TotalFailure::class.java, result)
         assertTrue(failure.error.contains("Playback History"))
-        coVerify(exactly = 1) { favoritesHandler.rollback("favorites-snapshot") }
+        coVerify(exactly = 1) { lyricsHandler.rollback("lyrics-snapshot") }
         coVerify(exactly = 1) { playbackHistoryHandler.rollback("history-snapshot") }
     }
 
     @Test
     fun `execute fails when a selected module payload is missing`() = runTest {
-        val plan = restorePlan(selectedModules = setOf(BackupSection.FAVORITES))
+        val plan = restorePlan(selectedModules = setOf(BackupSection.LYRICS))
 
-        coEvery { favoritesHandler.snapshot() } returns "favorites-snapshot"
-        coEvery { backupReader.readModulePayload(backupUri, BackupSection.FAVORITES.key) } returns
-            Result.failure(IllegalArgumentException("Module 'favorites' not found in backup"))
+        coEvery { lyricsHandler.snapshot() } returns "lyrics-snapshot"
+        coEvery { backupReader.readModulePayload(backupUri, BackupSection.LYRICS.key) } returns
+            Result.failure(IllegalArgumentException("Module 'lyrics' not found in backup"))
 
         val result = executor.execute(backupUri, plan) { }
 
         val failure = assertInstanceOf(RestoreResult.TotalFailure::class.java, result)
         assertEquals(
-            "Restore failed at Favorites: Module 'favorites' not found in backup. All applied changes were rolled back.",
+            "Restore failed at Lyrics: Module 'lyrics' not found in backup. All applied changes were rolled back.",
             failure.error
         )
-        coVerify(exactly = 0) { favoritesHandler.restore(any()) }
+        coVerify(exactly = 0) { lyricsHandler.restore(any()) }
     }
 
     @Test

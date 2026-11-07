@@ -111,20 +111,20 @@ class BackupManagerTest {
 
     @Test
     fun `inspectBackup fails when the manifest lists a module without payload`() = runTest {
-        val plan = restorePlan(selectedModules = setOf(BackupSection.FAVORITES))
+        val plan = restorePlan(selectedModules = setOf(BackupSection.LYRICS))
 
         every { validationPipeline.validateFile(backupUri) } returns BackupValidationResult.Valid
         coEvery { restorePlanner.buildRestorePlan(backupUri) } returns Result.success(plan)
         every { validationPipeline.validateManifest(plan.manifest) } returns BackupValidationResult.Valid
         coEvery {
-            backupReader.readModulePayload(backupUri, BackupSection.FAVORITES.key)
-        } returns Result.failure(IllegalArgumentException("Module 'favorites' not found in backup"))
+            backupReader.readModulePayload(backupUri, BackupSection.LYRICS.key)
+        } returns Result.failure(IllegalArgumentException("Module 'lyrics' not found in backup"))
 
         val result = manager.inspectBackup(backupUri)
 
         assertTrue(result.isFailure)
         assertEquals(
-            "Module 'favorites' not found in backup",
+            "Module 'lyrics' not found in backup",
             result.exceptionOrNull()?.message
         )
     }

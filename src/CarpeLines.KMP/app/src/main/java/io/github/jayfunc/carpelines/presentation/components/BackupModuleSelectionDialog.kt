@@ -28,11 +28,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material.icons.rounded.Restore
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -44,7 +42,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -57,10 +54,8 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextGeometricTransform
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.view.HapticFeedbackConstantsCompat
@@ -144,37 +139,9 @@ fun BackupModuleSelectionDialog(
                         containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
                         contentWindowInsets = WindowInsets.systemBars,
                         topBar = {
-                            CenterAlignedTopAppBar(
-                                title = {
-                                    Text(
-                                        text = stringResource(R.string.presentation_batch_g_backup_restore_modules),
-                                        style = MaterialTheme.typography.titleMedium.copy(
-                                            fontSize = 24.sp,
-                                            textGeometricTransform = TextGeometricTransform(scaleX = 1.2f),
-                                        ),
-                                        fontFamily = RoundedSans,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                },
-                                navigationIcon = {
-                                    FilledIconButton(
-                                        modifier = Modifier.padding(start = 6.dp),
-                                        onClick = { closeDialog(onBack) },
-                                        colors = IconButtonDefaults.filledIconButtonColors(
-                                            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-                                            contentColor = MaterialTheme.colorScheme.onSurface
-                                        )
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                                            contentDescription = stringResource(R.string.auth_cd_back)
-                                        )
-                                    }
-                                },
-                                colors = TopAppBarDefaults.topAppBarColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceContainer
-                                )
+                            BackupDialogHeader(
+                                title = stringResource(R.string.presentation_batch_g_backup_restore_modules),
+                                onBackClick = { closeDialog(onBack) }
                             )
                         },
                         bottomBar = {
@@ -568,4 +535,19 @@ private fun BackupSectionSelectableCardShared(
             }
         }
     }
+}
+
+@Composable
+fun BackupDialogHeader(
+    title: String,
+    onBackClick: () -> Unit
+) {
+    val isLongTitle = title.length > 13
+    CollapsibleCommonTopBar(
+        title = title,
+        collapseFraction = 0f,
+        headerHeight = if (isLongTitle) 200.dp else 180.dp,
+        onBackClick = onBackClick,
+        maxLines = if (isLongTitle) 2 else 1
+    )
 }

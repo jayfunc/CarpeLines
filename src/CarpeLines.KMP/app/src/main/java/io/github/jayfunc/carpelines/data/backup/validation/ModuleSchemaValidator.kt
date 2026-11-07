@@ -5,6 +5,7 @@ import io.github.jayfunc.carpelines.data.backup.model.BackupSection
 import io.github.jayfunc.carpelines.data.backup.model.BackupValidationResult
 import io.github.jayfunc.carpelines.data.backup.model.Severity
 import io.github.jayfunc.carpelines.data.backup.model.ValidationError
+import io.github.jayfunc.carpelines.data.carpelines.ManualLyricsStore
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -33,45 +34,24 @@ class ModuleSchemaValidator @Inject constructor(
             return BackupValidationResult.Invalid(errors)
         }
 
-        if (section == BackupSection.PLAYLISTS) {
-            validatePlaylistsModule(jsonElement, errors)
-            return if (errors.any { it.severity == Severity.ERROR }) {
-                BackupValidationResult.Invalid(errors)
-            } else if (errors.isNotEmpty()) {
-                BackupValidationResult.Invalid(errors)
-            } else {
-                BackupValidationResult.Valid
-            }
+        if (!jsonElement.isJsonArray) {
+            errors.add(ValidationError("NOT_ARRAY", "Module '${section.key}' should be a JSON array.", module = section.key))
+            return BackupValidationResult.Invalid(errors)
         }
-
-        if (section != BackupSection.QUICK_FILL && section != BackupSection.EQUALIZER) {
-            if (!jsonElement.isJsonArray) {
-                errors.add(ValidationError("NOT_ARRAY", "Module '${section.key}' should be a JSON array.", module = section.key))
-                return BackupValidationResult.Invalid(errors)
-            }
-            val array = jsonElement.asJsonArray
-            if (array.size() > MAX_ENTRIES_PER_MODULE) {
-                errors.add(ValidationError("TOO_MANY_ENTRIES", "Module '${section.key}' has ${array.size()} entries (max $MAX_ENTRIES_PER_MODULE).", module = section.key))
-                return BackupValidationResult.Invalid(errors)
-            }
+        val array = jsonElement.asJsonArray
+        if (array.size() > MAX_ENTRIES_PER_MODULE) {
+            errors.add(ValidationError("TOO_MANY_ENTRIES", "Module '${section.key}' has ${array.size()} entries (max $MAX_ENTRIES_PER_MODULE).", module = section.key))
+            return BackupValidationResult.Invalid(errors)
         }
 
         when (section) {
-            BackupSection.PLAYLISTS -> {
-            }
-            BackupSection.FAVORITES -> validateFavorites(jsonElement.asJsonArray, errors)
             BackupSection.LYRICS -> validateLyrics(jsonElement.asJsonArray, errors)
-            BackupSection.SEARCH_HISTORY -> validateSearchHistory(jsonElement.asJsonArray, errors)
             BackupSection.ENGAGEMENT_STATS -> validateEngagementStats(jsonElement.asJsonArray, errors)
             BackupSection.PLAYBACK_HISTORY -> validatePlaybackHistory(jsonElement.asJsonArray, errors)
             BackupSection.ARTIST_IMAGES -> validateArtistImages(jsonElement.asJsonArray, errors)
-            BackupSection.TRANSITIONS -> validateTransitions(jsonElement.asJsonArray, errors)
-            BackupSection.GLOBAL_SETTINGS,
-            BackupSection.QUICK_FILL,
-            BackupSection.EQUALIZER -> {
+            BackupSection.GLOBAL_SETTINGS -> {
                 validatePreferenceEntries(jsonElement, section.key, errors)
             }
-            BackupSection.AUDIO_BOOKMARKS -> validateAudioBookmarks(jsonElement.asJsonArray, errors)
         }
 
         return if (errors.any { it.severity == Severity.ERROR }) {
@@ -83,125 +63,72 @@ class ModuleSchemaValidator @Inject constructor(
         }
     }
 
-    private fun validatePlaylistsModule(
-        jsonElement: com.google.gson.JsonElement,
-        errors: MutableList<ValidationError>
-    ) {
-        if (jsonElement.isJsonArray) {
-            validatePreferenceEntries(jsonElement, BackupSection.PLAYLISTS.key, errors)
-            return
+    private fun validateLyrics(array: com.google.gson.JsonArray, errors: MutableList<ValidationError>) {
+        val isLegacyPayload = array.any { element ->
+            element.isJsonObject &&
+                element.asJsonObject.has("songId") &&
+                !element.asJsonObject.has("selection")
         }
-
-        if (!jsonElement.isJsonObject) {
+        if (isLegacyPayload) {
             errors.add(
                 ValidationError(
-                    "INVALID_PLAYLISTS_PAYLOAD",
-                    "Module '${BackupSection.PLAYLISTS.key}' should be a JSON object or legacy array.",
-                    module = BackupSection.PLAYLISTS.key
+                    "LEGACY_LYRICS_FORMAT",
+                    "Lyrics payload uses the legacy format and will be skipped.",
+                    module = "lyrics",
+                    severity = Severity.WARNING
                 )
             )
             return
         }
 
-        val obj = jsonElement.asJsonObject
-        val playlistsArray = obj.getAsJsonArray("playlists")
-        if (playlistsArray != null && playlistsArray.size() > MAX_ENTRIES_PER_MODULE) {
-            errors.add(
-                ValidationError(
-                    "TOO_MANY_ENTRIES",
-                    "Module '${BackupSection.PLAYLISTS.key}' has ${playlistsArray.size()} playlists (max $MAX_ENTRIES_PER_MODULE).",
-                    module = BackupSection.PLAYLISTS.key
-                )
-            )
-            return
-        }
-
-        playlistsArray?.forEachIndexed { index, element ->
+        array.forEachIndexed { i, element ->
             if (!element.isJsonObject) {
                 errors.add(
                     ValidationError(
-                        "INVALID_PLAYLIST_ENTRY",
-                        "Playlists[$index] is not a JSON object.",
-                        module = BackupSection.PLAYLISTS.key,
+                        "INVALID_LYRICS_ENTRY",
+                        "Lyrics[$i]: entry is not a JSON object",
+                        module = "lyrics",
                         severity = Severity.WARNING
                     )
                 )
                 return@forEachIndexed
             }
-            val playlistObj = element.asJsonObject
-            val id = playlistObj.get("id")?.asString
-            val name = playlistObj.get("name")?.asString
-            if (id.isNullOrBlank()) {
+            val obj = element.asJsonObject
+            val key = obj.get("key")
+                ?.takeIf { it.isJsonPrimitive && it.asJsonPrimitive.isString }
+                ?.asString
+            if (key == null || !ManualLyricsStore.isValidKey(key)) {
                 errors.add(
                     ValidationError(
-                        "MISSING_PLAYLIST_ID",
-                        "Playlists[$index] is missing id.",
-                        module = BackupSection.PLAYLISTS.key,
+                        "INVALID_LYRICS_KEY",
+                        "Lyrics[$i]: invalid track key",
+                        module = "lyrics",
                         severity = Severity.WARNING
                     )
                 )
             }
-            if (name.isNullOrBlank()) {
+            val selection = obj.get("selection")
+            if (selection == null || !selection.isJsonObject) {
                 errors.add(
                     ValidationError(
-                        "MISSING_PLAYLIST_NAME",
-                        "Playlists[$index] is missing name.",
-                        module = BackupSection.PLAYLISTS.key,
+                        "MISSING_LYRICS_SELECTION",
+                        "Lyrics[$i]: missing selection",
+                        module = "lyrics",
                         severity = Severity.WARNING
                     )
                 )
+                return@forEachIndexed
             }
-        }
-
-        val sortOption = obj.get("playlistsSortOption")?.asString
-        if (sortOption != null && sortOption.length > 200) {
-            errors.add(
-                ValidationError(
-                    "INVALID_SORT_OPTION",
-                    "playlistsSortOption looks invalid (too long).",
-                    module = BackupSection.PLAYLISTS.key,
-                    severity = Severity.WARNING
-                )
-            )
-        }
-    }
-
-    private fun validateFavorites(array: com.google.gson.JsonArray, errors: MutableList<ValidationError>) {
-        array.forEachIndexed { i, element ->
-            if (!element.isJsonObject) return@forEachIndexed
-            val obj = element.asJsonObject
-            val songId = readNumericField(obj, "songId", "song_id")
-            if (!songId.present || songId.value == null || songId.value <= 0L) {
+            val document = selection.asJsonObject.get("document")
+            if (document == null || !document.isJsonObject) {
                 errors.add(
                     ValidationError(
-                        "INVALID_SONG_ID",
-                        "Favorites[$i]: invalid songId",
-                        module = "favorites",
+                        "MISSING_LYRICS_DOCUMENT",
+                        "Lyrics[$i]: missing lyrics document",
+                        module = "lyrics",
                         severity = Severity.WARNING
                     )
                 )
-            }
-        }
-    }
-
-    private fun validateLyrics(array: com.google.gson.JsonArray, errors: MutableList<ValidationError>) {
-        array.forEachIndexed { i, element ->
-            if (!element.isJsonObject) return@forEachIndexed
-            val obj = element.asJsonObject
-            val content = obj.get("content")?.asString ?: ""
-            if (content.length > MAX_STRING_LENGTH) {
-                errors.add(ValidationError("LYRICS_TOO_LONG", "Lyrics[$i]: content exceeds max length", module = "lyrics", severity = Severity.WARNING))
-            }
-        }
-    }
-
-    private fun validateSearchHistory(array: com.google.gson.JsonArray, errors: MutableList<ValidationError>) {
-        array.forEachIndexed { i, element ->
-            if (!element.isJsonObject) return@forEachIndexed
-            val obj = element.asJsonObject
-            val query = obj.get("query")?.asString ?: ""
-            if (query.length > 500) {
-                errors.add(ValidationError("QUERY_TOO_LONG", "SearchHistory[$i]: query exceeds 500 chars", module = "search_history", severity = Severity.WARNING))
             }
         }
     }
@@ -343,35 +270,6 @@ class ModuleSchemaValidator @Inject constructor(
             }
             if (imageUrl.length > 2000) {
                 errors.add(ValidationError("URL_TOO_LONG", "ArtistImages[$i]: URL exceeds 2000 chars", module = "artist_images", severity = Severity.WARNING))
-            }
-        }
-    }
-
-    private fun validateTransitions(array: com.google.gson.JsonArray, errors: MutableList<ValidationError>) {
-        array.forEachIndexed { i, element ->
-            if (!element.isJsonObject) return@forEachIndexed
-            val obj = element.asJsonObject
-            val settings = obj.getAsJsonObject("settings")
-            if (settings != null) {
-                val durationMs = settings.get("durationMs")?.asInt ?: 0
-                if (durationMs < 0 || durationMs > 30_000) {
-                    errors.add(ValidationError("INVALID_TRANSITION_DURATION", "Transitions[$i]: duration out of range", module = "transitions", severity = Severity.WARNING))
-                }
-            }
-        }
-    }
-
-    private fun validateAudioBookmarks(array: com.google.gson.JsonArray, errors: MutableList<ValidationError>) {
-        array.forEachIndexed { i, element ->
-            if (!element.isJsonObject) return@forEachIndexed
-            val obj = element.asJsonObject
-            val songId = readStringField(obj, "songId", "song_id")
-            if (songId.isNullOrBlank()) {
-                errors.add(ValidationError("MISSING_SONG_ID", "AudioBookmarks[$i]: missing songId", module = "audio_bookmarks", severity = Severity.WARNING))
-            }
-            val timestamp = readNumericField(obj, "timestampMs", "timestamp_ms")
-            if (timestamp.present && (timestamp.value == null || timestamp.value < 0)) {
-                errors.add(ValidationError("INVALID_TIMESTAMP", "AudioBookmarks[$i]: invalid timestampMs", module = "audio_bookmarks", severity = Severity.WARNING))
             }
         }
     }

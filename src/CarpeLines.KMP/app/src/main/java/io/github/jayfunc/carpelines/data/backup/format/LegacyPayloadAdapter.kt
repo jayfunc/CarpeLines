@@ -7,13 +7,15 @@ import com.google.gson.JsonParser
 import io.github.jayfunc.carpelines.data.backup.model.BackupManifest
 import io.github.jayfunc.carpelines.data.backup.model.BackupModuleInfo
 import io.github.jayfunc.carpelines.data.backup.model.DeviceInfo
-import io.github.jayfunc.carpelines.data.backup.module.PlaylistsModuleHandler
 import java.security.MessageDigest
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
  * Converts v1/v2 AppDataBackupPayload JSON into v3-compatible manifest + module map.
+ *
+ * Playlist preferences are folded into `global_settings`, since the current app no longer
+ * exposes a separate playlists backup module.
  */
 @Singleton
 class LegacyPayloadAdapter @Inject constructor() {
@@ -33,28 +35,26 @@ class LegacyPayloadAdapter @Inject constructor() {
 
         if (formatVersion == 1) {
             val preferences = root.getAsJsonArray("preferences")
-            if (preferences != null && preferences.size() > 0) {
-                val (playlistEntries, globalEntries) = splitLegacyPreferences(preferences)
-                if (playlistEntries.size() > 0 && "playlists" in availableSections) {
-                    val json = gson.toJson(playlistEntries)
-                    modules["playlists"] = json
-                    modulesInfo["playlists"] = buildModuleInfo(json)
-                }
-                if (globalEntries.size() > 0 && "global_settings" in availableSections) {
-                    val json = gson.toJson(globalEntries)
-                    modules["global_settings"] = json
-                    modulesInfo["global_settings"] = buildModuleInfo(json)
-                }
+            if (preferences != null && preferences.size() > 0 &&
+                ("global_settings" in availableSections || "playlists" in availableSections)
+            ) {
+                val json = gson.toJson(preferences)
+                modules["global_settings"] = json
+                modulesInfo["global_settings"] = buildModuleInfo(json)
             }
         } else {
-            extractJsonArrayModule(root, "playlists", "playlists", availableSections, modules, modulesInfo, gson)
-            extractJsonArrayModule(root, "globalSettings", "global_settings", availableSections, modules, modulesInfo, gson)
+            val preferences = JsonArray()
+            root.getAsJsonArray("playlists")?.let { preferences.addAll(it) }
+            root.getAsJsonArray("globalSettings")?.let { preferences.addAll(it) }
+            if (preferences.size() > 0 &&
+                ("global_settings" in availableSections || "playlists" in availableSections)
+            ) {
+                val json = gson.toJson(preferences)
+                modules["global_settings"] = json
+                modulesInfo["global_settings"] = buildModuleInfo(json)
+            }
         }
 
-        extractJsonArrayModule(root, "favorites", "favorites", availableSections, modules, modulesInfo, gson)
-        extractJsonArrayModule(root, "lyrics", "lyrics", availableSections, modules, modulesInfo, gson)
-        extractJsonArrayModule(root, "searchHistory", "search_history", availableSections, modules, modulesInfo, gson)
-        extractJsonArrayModule(root, "transitions", "transitions", availableSections, modules, modulesInfo, gson)
         extractJsonArrayModule(root, "engagementStats", "engagement_stats", availableSections, modules, modulesInfo, gson)
         extractJsonArrayModule(root, "playbackHistory", "playback_history", availableSections, modules, modulesInfo, gson)
 
@@ -68,21 +68,6 @@ class LegacyPayloadAdapter @Inject constructor() {
         )
 
         return manifest to modules
-    }
-
-    private fun splitLegacyPreferences(preferences: JsonArray): Pair<JsonArray, JsonArray> {
-        val playlistEntries = JsonArray()
-        val globalEntries = JsonArray()
-        preferences.forEach { element ->
-            val obj = element.asJsonObject
-            val key = obj.get("key")?.asString ?: ""
-            if (key in PlaylistsModuleHandler.PLAYLIST_KEYS) {
-                playlistEntries.add(element)
-            } else {
-                globalEntries.add(element)
-            }
-        }
-        return playlistEntries to globalEntries
     }
 
     private fun extractJsonArrayModule(

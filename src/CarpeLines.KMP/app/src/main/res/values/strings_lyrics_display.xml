@@ -198,7 +198,7 @@
     <string name="lyrics_open_player">Open player</string>
     <string name="lyrics_loading">Loading lyrics…</string>
     <string name="lyrics_font_weight_title">Lyric weight</string>
-    <string name="lyrics_font_weight_subtitle">Thickness of every lyric layer, like BetterLyrics</string>
+    <string name="lyrics_font_weight_subtitle">Thickness of every lyric layer.</string>
     <string name="lyrics_font_weight_thin">Thin</string>
     <string name="lyrics_font_weight_extra_light">Extra light</string>
     <string name="lyrics_font_weight_light">Light</string>

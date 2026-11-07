@@ -76,10 +76,8 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PlayCircle
 import androidx.compose.material.icons.outlined.Style
 import androidx.compose.material.icons.outlined.Warning
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.SystemUpdate
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material.icons.rounded.History
@@ -92,7 +90,6 @@ import androidx.compose.material.icons.rounded.UnfoldMore
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -109,7 +106,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.Lifecycle
@@ -140,11 +136,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextGeometricTransform
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
@@ -172,6 +166,7 @@ import io.github.jayfunc.carpelines.data.preferences.ThemePreference
 import io.github.jayfunc.carpelines.utils.isIgnoringBatteryOptimizations
 import io.github.jayfunc.carpelines.utils.openBatteryOptimizationSettings
 import io.github.jayfunc.carpelines.data.model.Song
+import io.github.jayfunc.carpelines.presentation.components.BackupDialogHeader
 import io.github.jayfunc.carpelines.presentation.components.CollapsibleCommonTopBar
 import io.github.jayfunc.carpelines.presentation.components.ExpressiveTopBarContent
 import io.github.jayfunc.carpelines.presentation.components.MiniPlayerHeight
@@ -1133,36 +1128,9 @@ private fun BackupSectionSelectionDialog(
                         containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
                         contentWindowInsets = WindowInsets.systemBars,
                         topBar = {
-                            CenterAlignedTopAppBar(
-                                title = {
-                                    Text(
-                                        text = title,
-                                        style = MaterialTheme.typography.headlineSmall.copy(
-                                            textGeometricTransform = TextGeometricTransform(scaleX = 1.2f),
-                                        ),
-                                        fontFamily = RoundedSans,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                },
-                                navigationIcon = {
-                                    FilledIconButton(
-                                        modifier = Modifier.padding(start = 6.dp),
-                                        onClick = { closeDialog(onDismiss) },
-                                        colors = IconButtonDefaults.filledIconButtonColors(
-                                            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-                                            contentColor = MaterialTheme.colorScheme.onSurface
-                                        )
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Rounded.Close,
-                                            contentDescription = stringResource(R.string.cd_close)
-                                        )
-                                    }
-                                },
-                                colors = TopAppBarDefaults.topAppBarColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceContainer
-                                )
+                            BackupDialogHeader(
+                                title = title,
+                                onBackClick = { closeDialog(onDismiss) }
                             )
                         },
                         bottomBar = {
@@ -1665,36 +1633,9 @@ private fun ImportFileSelectionDialog(
                         containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
                         contentWindowInsets = WindowInsets.systemBars,
                         topBar = {
-                            CenterAlignedTopAppBar(
-                                title = {
-                                    Text(
-                                        text = stringResource(R.string.import_backup_toolbar_title),
-                                        style = MaterialTheme.typography.headlineSmall.copy(
-                                            textGeometricTransform = TextGeometricTransform(scaleX = 1.2f),
-                                        ),
-                                        fontFamily = RoundedSans,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                },
-                                navigationIcon = {
-                                    FilledIconButton(
-                                        modifier = Modifier.padding(start = 6.dp),
-                                        onClick = { closeDialog(onDismiss) },
-                                        colors = IconButtonDefaults.filledIconButtonColors(
-                                            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-                                            contentColor = MaterialTheme.colorScheme.onSurface
-                                        )
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Rounded.Close,
-                                            contentDescription = stringResource(R.string.cd_close)
-                                        )
-                                    }
-                                },
-                                colors = TopAppBarDefaults.topAppBarColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceContainer
-                                )
+                            BackupDialogHeader(
+                                title = stringResource(R.string.import_backup_toolbar_title),
+                                onBackClick = { closeDialog(onDismiss) }
                             )
                         },
                         bottomBar = {

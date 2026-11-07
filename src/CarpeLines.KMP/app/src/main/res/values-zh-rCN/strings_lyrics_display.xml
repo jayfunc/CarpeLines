@@ -198,7 +198,7 @@
     <string name="lyrics_open_player">打开播放器</string>
     <string name="lyrics_loading">正在加载歌词…</string>
     <string name="lyrics_font_weight_title">歌词字重</string>
-    <string name="lyrics_font_weight_subtitle">原文、翻译、音译统一使用的粗细，与 BetterLyrics 对齐</string>
+    <string name="lyrics_font_weight_subtitle">原文、翻译、音译统一使用的粗细。</string>
     <string name="lyrics_font_weight_thin">极细</string>
     <string name="lyrics_font_weight_extra_light">特细</string>
     <string name="lyrics_font_weight_light">细体</string>

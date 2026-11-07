@@ -12,16 +12,25 @@ class ModuleSchemaValidatorTest {
     private val validator = ModuleSchemaValidator(sanitizer)
 
     @Test
-    fun `valid favorites array passes validation`() {
-        val payload = """[{"songId": 123, "addedAt": 1700000000000}]"""
-        val result = validator.validate(BackupSection.FAVORITES, payload)
+    fun `valid lyrics array passes validation`() {
+        val payload = """[{"key": "0123456789abcdef", "selection": {"document": {}}}]"""
+        val result = validator.validate(BackupSection.LYRICS, payload)
         assertTrue(result.isValid())
+    }
+
+    @Test
+    fun `legacy lyrics payload emits warning`() {
+        val payload = """[{"songId": 123, "content": "la la"}]"""
+        val result = validator.validate(BackupSection.LYRICS, payload)
+        assertTrue(result is BackupValidationResult.Invalid)
+        val warnings = (result as BackupValidationResult.Invalid).warnings
+        assertTrue(warnings.any { it.code == "LEGACY_LYRICS_FORMAT" })
     }
 
     @Test
     fun `invalid JSON fails validation`() {
         val payload = "not valid json{"
-        val result = validator.validate(BackupSection.FAVORITES, payload)
+        val result = validator.validate(BackupSection.LYRICS, payload)
         assertTrue(result is BackupValidationResult.Invalid)
         val errors = (result as BackupValidationResult.Invalid).fatalErrors
         assertTrue(errors.any { it.code == "INVALID_JSON" })
@@ -30,25 +39,9 @@ class ModuleSchemaValidatorTest {
     @Test
     fun `non-array module fails validation`() {
         val payload = """{"key": "value"}"""
-        val result = validator.validate(BackupSection.FAVORITES, payload)
+        val result = validator.validate(BackupSection.LYRICS, payload)
         assertTrue(result is BackupValidationResult.Invalid)
         assertTrue((result as BackupValidationResult.Invalid).fatalErrors.any { it.code == "NOT_ARRAY" })
-    }
-
-    @Test
-    fun `favorites with invalid songId emits warning`() {
-        val payload = """[{"songId": 0, "addedAt": 1700000000000}]"""
-        val result = validator.validate(BackupSection.FAVORITES, payload)
-        assertTrue(result is BackupValidationResult.Invalid)
-        val warnings = (result as BackupValidationResult.Invalid).warnings
-        assertTrue(warnings.any { it.code == "INVALID_SONG_ID" })
-    }
-
-    @Test
-    fun `favorites with snake case song id pass validation`() {
-        val payload = """[{"song_id": "123", "added_at": 1700000000000}]"""
-        val result = validator.validate(BackupSection.FAVORITES, payload)
-        assertTrue(result.isValid())
     }
 
     @Test
@@ -97,15 +90,6 @@ class ModuleSchemaValidatorTest {
     }
 
     @Test
-    fun `transitions with out-of-range duration emit warning`() {
-        val payload = """[{"fromSongId": "1", "toSongId": "2", "settings": {"durationMs": 50000}}]"""
-        val result = validator.validate(BackupSection.TRANSITIONS, payload)
-        assertTrue(result is BackupValidationResult.Invalid)
-        val warnings = (result as BackupValidationResult.Invalid).warnings
-        assertTrue(warnings.any { it.code == "INVALID_TRANSITION_DURATION" })
-    }
-
-    @Test
     fun `engagement stats with negative play count emit warning`() {
         val payload = """[{"songId": "123", "playCount": -1, "totalDuration": 0}]"""
         val result = validator.validate(BackupSection.ENGAGEMENT_STATS, payload)
@@ -141,7 +125,7 @@ class ModuleSchemaValidatorTest {
     @Test
     fun `empty array passes validation`() {
         val payload = "[]"
-        val result = validator.validate(BackupSection.FAVORITES, payload)
+        val result = validator.validate(BackupSection.LYRICS, payload)
         assertTrue(result.isValid())
     }
 }

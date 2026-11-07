@@ -64,10 +64,10 @@ class ContentSanitizerTest {
     fun `isValidModuleKey accepts known keys`() {
         assertTrue(sanitizer.isValidModuleKey("playlists"))
         assertTrue(sanitizer.isValidModuleKey("global_settings"))
-        assertTrue(sanitizer.isValidModuleKey("favorites"))
-        assertTrue(sanitizer.isValidModuleKey("quick_fill"))
+        assertTrue(sanitizer.isValidModuleKey("lyrics"))
+        assertTrue(sanitizer.isValidModuleKey("playback_history"))
         assertTrue(sanitizer.isValidModuleKey("artist_images"))
-        assertTrue(sanitizer.isValidModuleKey("equalizer"))
+        assertTrue(sanitizer.isValidModuleKey("global_settings"))
     }
 
     @Test

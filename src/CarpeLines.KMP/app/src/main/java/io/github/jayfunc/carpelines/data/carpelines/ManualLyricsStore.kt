@@ -46,6 +46,9 @@ sealed interface ManualLyricsChange {
     data class Cleared(override val key: String) : ManualLyricsChange
 }
 
+/** One raw manual-lyrics file: [key] is the on-disk track key, [json] the stored document. */
+data class RawManualLyrics(val key: String, val json: String)
+
 /**
  * Stores manual selections as one JSON file per track under the app's private files directory.
  *
@@ -108,6 +111,30 @@ class ManualLyricsStore @Inject constructor(
         changesFlow.emit(ManualLyricsChange.Cleared(key))
     }
 
+    /** Every stored selection, for backup. Damaged or foreign files are skipped. */
+    suspend fun exportRaw(): List<RawManualLyrics> = withContext(Dispatchers.IO) {
+        directory().listFiles { file -> file.isFile && file.extension == "json" }
+            ?.mapNotNull { file ->
+                val key = file.nameWithoutExtension
+                if (!isValidKey(key)) return@mapNotNull null
+                runCatching { RawManualLyrics(key, file.readText()) }.getOrNull()
+            }
+            ?: emptyList()
+    }
+
+    /** Replaces every stored selection, used by restore. Invalid keys are skipped. */
+    suspend fun replaceRaw(entries: List<RawManualLyrics>) = withContext(Dispatchers.IO) {
+        val directory = directory()
+        directory.mkdirs()
+        directory.listFiles { file -> file.isFile && file.extension == "json" }
+            ?.forEach { it.delete() }
+        entries.forEach { entry ->
+            if (!isValidKey(entry.key)) return@forEach
+            runCatching { fileFor(entry.key).writeText(entry.json) }
+        }
+        prune()
+    }
+
     private fun directory(): File = File(context.filesDir, DIRECTORY_NAME)
 
     private fun fileFor(key: String): File = File(directory(), "$key.json")
@@ -120,13 +147,17 @@ class ManualLyricsStore @Inject constructor(
             .forEach { it.delete() }
     }
 
-    private companion object {
-        const val DIRECTORY_NAME = "manual_lyrics"
+    companion object {
+        private const val DIRECTORY_NAME = "manual_lyrics"
 
         /** The old per-track offset store caps at 300 entries; keep the same order of magnitude. */
-        const val MAX_ENTRIES = 300
+        private const val MAX_ENTRIES = 300
 
         /** 64 bits of SHA-256 is plenty for a local filename and keeps names short. */
-        const val KEY_BYTES = 8
+        private const val KEY_BYTES = 8
+
+        private val KEY_PATTERN = Regex("^[0-9a-f]{${KEY_BYTES * 2}}$")
+
+        fun isValidKey(key: String): Boolean = KEY_PATTERN.matches(key)
     }
 }

@@ -20,14 +20,11 @@ class GlobalSettingsModuleHandler @Inject constructor(
     override val section = BackupSection.GLOBAL_SETTINGS
 
     override suspend fun export(): String = withContext(Dispatchers.IO) {
-        val entries = userPreferencesRepository.exportPreferencesForBackup()
-            .filter { it.key !in EXCLUDED_KEYS }
-        gson.toJson(entries)
+        gson.toJson(userPreferencesRepository.exportPreferencesForBackup())
     }
 
     override suspend fun countEntries(): Int = withContext(Dispatchers.IO) {
-        userPreferencesRepository.exportPreferencesForBackup()
-            .count { it.key !in EXCLUDED_KEYS }
+        userPreferencesRepository.exportPreferencesForBackup().size
     }
 
     override suspend fun snapshot(): String = export()
@@ -35,23 +32,8 @@ class GlobalSettingsModuleHandler @Inject constructor(
     override suspend fun restore(payload: String) = withContext(Dispatchers.IO) {
         val type = TypeToken.getParameterized(List::class.java, PreferenceBackupEntry::class.java).type
         val entries: List<PreferenceBackupEntry> = gson.fromJson(payload, type)
-        val safeEntries = entries.filter { it.key !in EXCLUDED_KEYS }
-        userPreferencesRepository.clearPreferencesExceptKeys(
-            PlaylistsModuleHandler.PLAYLIST_KEYS +
-            QuickFillModuleHandler.QUICK_FILL_KEYS +
-            EqualizerModuleHandler.EQUALIZER_KEYS
-        )
-        if (safeEntries.isNotEmpty()) {
-            userPreferencesRepository.importPreferencesFromBackup(safeEntries, clearExisting = false)
-        }
+        userPreferencesRepository.importPreferencesFromBackup(entries, clearExisting = true)
     }
 
     override suspend fun rollback(snapshot: String) = restore(snapshot)
-
-    companion object {
-        /** Keys managed by dedicated module handlers, excluded from global settings. */
-        val EXCLUDED_KEYS = PlaylistsModuleHandler.PLAYLIST_KEYS +
-            QuickFillModuleHandler.QUICK_FILL_KEYS +
-            EqualizerModuleHandler.EQUALIZER_KEYS
-    }
 }

@@ -22,18 +22,11 @@ class BackupSectionTest {
 
     @Test
     fun `fromKey returns correct section for known keys`() {
-        assertEquals(BackupSection.PLAYLISTS, BackupSection.fromKey("playlists"))
         assertEquals(BackupSection.GLOBAL_SETTINGS, BackupSection.fromKey("global_settings"))
-        assertEquals(BackupSection.FAVORITES, BackupSection.fromKey("favorites"))
         assertEquals(BackupSection.LYRICS, BackupSection.fromKey("lyrics"))
-        assertEquals(BackupSection.SEARCH_HISTORY, BackupSection.fromKey("search_history"))
-        assertEquals(BackupSection.TRANSITIONS, BackupSection.fromKey("transitions"))
         assertEquals(BackupSection.ENGAGEMENT_STATS, BackupSection.fromKey("engagement_stats"))
         assertEquals(BackupSection.PLAYBACK_HISTORY, BackupSection.fromKey("playback_history"))
-        assertEquals(BackupSection.QUICK_FILL, BackupSection.fromKey("quick_fill"))
         assertEquals(BackupSection.ARTIST_IMAGES, BackupSection.fromKey("artist_images"))
-        assertEquals(BackupSection.EQUALIZER, BackupSection.fromKey("equalizer"))
-        assertEquals(BackupSection.AUDIO_BOOKMARKS, BackupSection.fromKey("audio_bookmarks"))
     }
 
     @Test
@@ -48,31 +41,20 @@ class BackupSectionTest {
     }
 
     @Test
-    fun `there are exactly 12 backup sections`() {
-        assertEquals(12, BackupSection.entries.size)
-    }
-
-    @Test
-    fun `v4 sections have sinceVersion 4`() {
-        assertEquals(4, BackupSection.AUDIO_BOOKMARKS.sinceVersion)
+    fun `there are exactly 5 backup sections`() {
+        assertEquals(5, BackupSection.entries.size)
     }
 
     @Test
     fun `new sections have sinceVersion 3`() {
-        assertEquals(3, BackupSection.QUICK_FILL.sinceVersion)
         assertEquals(3, BackupSection.ARTIST_IMAGES.sinceVersion)
-        assertEquals(3, BackupSection.EQUALIZER.sinceVersion)
     }
 
     @Test
     fun `original sections have sinceVersion 1`() {
         val originalSections = listOf(
-            BackupSection.PLAYLISTS,
             BackupSection.GLOBAL_SETTINGS,
-            BackupSection.FAVORITES,
             BackupSection.LYRICS,
-            BackupSection.SEARCH_HISTORY,
-            BackupSection.TRANSITIONS,
             BackupSection.ENGAGEMENT_STATS,
             BackupSection.PLAYBACK_HISTORY
         )

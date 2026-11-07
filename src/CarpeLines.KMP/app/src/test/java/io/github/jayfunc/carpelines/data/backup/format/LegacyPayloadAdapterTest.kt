@@ -11,20 +11,17 @@ class LegacyPayloadAdapterTest {
     private val gson = GsonBuilder().setPrettyPrinting().create()
 
     @Test
-    fun `adapts v2 backup with separate playlists and globalSettings`() {
+    fun `adapts v2 backup with playlists folded into globalSettings`() {
         val json = """
         {
             "formatVersion": 2,
             "exportedAtEpochMs": 1700000000000,
-            "availableSections": ["playlists", "global_settings", "favorites"],
+            "availableSections": ["playlists", "global_settings"],
             "playlists": [
                 {"key": "user_playlists_json_v1", "type": "string", "stringValue": "[]"}
             ],
             "globalSettings": [
                 {"key": "app_theme", "type": "string", "stringValue": "dark"}
-            ],
-            "favorites": [
-                {"songId": 123, "addedAt": 1700000000000}
             ]
         }
         """.trimIndent()
@@ -33,10 +30,10 @@ class LegacyPayloadAdapterTest {
 
         assertEquals(2, manifest.schemaVersion)
         assertEquals(1700000000000, manifest.createdAt)
-        assertEquals(3, modules.size)
-        assertTrue(modules.containsKey("playlists"))
+        assertEquals(1, modules.size)
         assertTrue(modules.containsKey("global_settings"))
-        assertTrue(modules.containsKey("favorites"))
+        assertTrue(modules["global_settings"]!!.contains("user_playlists_json_v1"))
+        assertTrue(modules["global_settings"]!!.contains("app_theme"))
     }
 
     @Test
@@ -57,9 +54,10 @@ class LegacyPayloadAdapterTest {
         val (manifest, modules) = adapter.adapt(json, gson)
 
         assertEquals(1, manifest.schemaVersion)
-        assertEquals(2, modules.size)
-        assertTrue(modules.containsKey("playlists"))
+        assertEquals(1, modules.size)
         assertTrue(modules.containsKey("global_settings"))
+        assertTrue(modules["global_settings"]!!.contains("user_playlists_json_v1"))
+        assertTrue(modules["global_settings"]!!.contains("crossfade_duration"))
     }
 
     @Test
@@ -68,12 +66,12 @@ class LegacyPayloadAdapterTest {
         {
             "formatVersion": 2,
             "exportedAtEpochMs": 1700000000000,
-            "availableSections": ["favorites"],
+            "availableSections": ["playback_history"],
             "playlists": [
                 {"key": "user_playlists_json_v1", "type": "string", "stringValue": "[]"}
             ],
-            "favorites": [
-                {"songId": 123}
+            "playbackHistory": [
+                {"songId": "123", "timestamp": 1700000000000, "durationMs": 1000}
             ]
         }
         """.trimIndent()
@@ -81,7 +79,7 @@ class LegacyPayloadAdapterTest {
         val (_, modules) = adapter.adapt(json, gson)
 
         assertEquals(1, modules.size)
-        assertTrue(modules.containsKey("favorites"))
+        assertTrue(modules.containsKey("playback_history"))
     }
 
     @Test
@@ -90,20 +88,20 @@ class LegacyPayloadAdapterTest {
         {
             "formatVersion": 2,
             "exportedAtEpochMs": 1700000000000,
-            "availableSections": ["favorites"],
-            "favorites": [
-                {"songId": 123}
+            "availableSections": ["playback_history"],
+            "playbackHistory": [
+                {"songId": "123", "timestamp": 1700000000000, "durationMs": 1000}
             ]
         }
         """.trimIndent()
 
         val (manifest, _) = adapter.adapt(json, gson)
 
-        val favoritesInfo = manifest.modules["favorites"]
-        assertTrue(favoritesInfo != null)
-        assertTrue(favoritesInfo!!.checksum.startsWith("sha256:"))
-        assertTrue(favoritesInfo.entryCount > 0)
-        assertTrue(favoritesInfo.sizeBytes > 0)
+        val historyInfo = manifest.modules["playback_history"]
+        assertTrue(historyInfo != null)
+        assertTrue(historyInfo!!.checksum.startsWith("sha256:"))
+        assertTrue(historyInfo.entryCount > 0)
+        assertTrue(historyInfo.sizeBytes > 0)
     }
 
     @Test
