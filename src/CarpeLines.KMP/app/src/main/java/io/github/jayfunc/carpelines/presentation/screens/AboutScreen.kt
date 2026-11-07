@@ -78,12 +78,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp as lerpDp
@@ -137,14 +133,6 @@ private val CoreMaintainer = Contributor(
 )
 
 private val AboutMaintainers = listOf(CoreMaintainer)
-
-/** Brand amber. The icon itself is a light-surface asset (deep ink on warm paper); this is the
- *  in-app accent, so the wordmark stays legible on both light and dark themes. */
-private val CarpeAmber = Color(0xFFFFB84D)
-
-/** The "Lines" half of the wordmark. Derived from the theme, so it follows light/dark. */
-private val CarpeLinesInk: Color
-    @Composable get() = MaterialTheme.colorScheme.onSurface
 
 private const val SourceRepoUrl = "https://github.com/jayfunc/CarpeLines"
 
@@ -529,24 +517,17 @@ private fun CarpeLinesWordmarkIcon() {
 }
 
 /**
- * The app wordmark, set rather than drawn: "Carpe" in the brand amber, "Lines" in
- * the surrounding onSurface. Both halves share one [AnnotatedString] so the gap
- * never shifts and the row still ellipsises as a single line.
+ * The app wordmark, set rather than drawn: one flat onSurface colour for the whole
+ * name, so it reads as a single mark on both light and dark themes.
  */
 @Composable
 private fun CarpeLinesWordmark(modifier: Modifier = Modifier) {
     Text(
-        text = buildAnnotatedString {
-            withStyle(SpanStyle(color = CarpeAmber)) {
-                append(BrandName.HEAD)
-            }
-            withStyle(SpanStyle(color = CarpeLinesInk)) {
-                append(BrandName.TAIL)
-            }
-        },
+        text = BrandName.FULL,
         modifier = modifier,
         style = MaterialTheme.typography.headlineSmall,
         fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onSurface,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
     )

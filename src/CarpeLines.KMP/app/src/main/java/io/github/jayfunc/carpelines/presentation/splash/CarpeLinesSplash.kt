@@ -184,7 +184,9 @@ fun CarpeLinesSplash(
         val t = blend.value
         val r = reveal.value
         val background = lerp(startBackground, scheme.surface, t)
-        val glyphColor = lerp(startGlyph, scheme.onPrimaryContainer, t)
+        // The mark stays a single neutral ink: the launch screen deliberately carries no
+        // brand hue, so it reads the same on every wallpaper-derived palette.
+        val glyphColor = lerp(startGlyph, scheme.onSurface, t)
         val emblemAlpha = (1f - r / 0.6f).coerceIn(0f, 1f)
         val emblemScale = (1f + 0.07f * emblemBeat.value) * (1f + 0.6f * r)
 
@@ -218,7 +220,7 @@ fun CarpeLinesSplash(
             scratch = scratch,
             diameter = containerDiameter * HaloToContainer * enter.value * emblemScale,
             rotation = 40f - 130f * spin.value,
-            color = scheme.tertiary.copy(alpha = 0.22f * emblemAlpha * t)
+            color = scheme.onSurface.copy(alpha = 0.10f * emblemAlpha * t)
         )
         drawMorph(
             chain = containerMorphs,
@@ -226,7 +228,7 @@ fun CarpeLinesSplash(
             scratch = scratch,
             diameter = containerDiameter * enter.value * emblemScale,
             rotation = containerRotation,
-            color = scheme.primaryContainer.copy(alpha = emblemAlpha)
+            color = scheme.surfaceContainerHighest.copy(alpha = emblemAlpha)
         )
 
         val iconSize = glyph.viewport * unit

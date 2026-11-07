@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- System splash colours. CarpeLinesSplash starts from these and blends into the app theme.
-     Brand palette (see logo/README.md): night mode uses the mark as a single-colour
-     silhouette on a dark surface, exactly like the monochrome launcher layer. -->
+     Night mode uses the mark as a single-colour neutral silhouette on a dark surface,
+     exactly like the monochrome launcher layer: no brand amber, so the splash stays
+     monochrome in both themes. -->
 <resources>
     <color name="splash_background">#FF1A1104</color>
-    <color name="splash_glyph">#FFFFB84D</color>
+    <color name="splash_glyph">#FFF7F2E9</color>
 </resources>
