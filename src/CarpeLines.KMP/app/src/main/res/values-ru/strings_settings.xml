@@ -355,4 +355,26 @@
     <string name="playback_speed_custom_supporting">От %1$s× до %2$s×, не более двух знаков после запятой</string>
     <string name="playback_speed_custom_error">Введите скорость от %1$s× до %2$s×</string>
     <string name="playback_speed_multiplier_suffix">×</string>
+    <string name="settings_category_local_music_title">Локальная музыка</string>
+    <string name="settings_category_local_music_subtitle">Сканировать устройство, чтобы находить текст из тегов и файлы .lrc</string>
+    <string name="local_music_section_library">Библиотека</string>
+    <string name="local_music_song_count">Просканировано треков: %1$d</string>
+    <string name="local_music_song_count_empty">Пока ничего не просканировано</string>
+    <string name="local_music_intro">CarpeLines никогда не воспроизводит звук, но читает музыку, уже имеющуюся на телефоне. Трек может дать текст из тегов или соседний файл .lrc только после того, как сканирование добавит его в библиотеку.</string>
+    <string name="local_music_section_actions">Сканирование</string>
+    <string name="local_music_scan_title">Искать изменения</string>
+    <string name="local_music_scan_subtitle">Добавляет новые треки и убирает исчезнувшие</string>
+    <string name="local_music_rescan_title">Пересканировать всё</string>
+    <string name="local_music_rescan_subtitle">Заново читает каждый файл. Медленнее; исправляет устаревшие названия и обложки</string>
+    <string name="local_music_rebuild_title">Перестроить данные библиотеки</string>
+    <string name="local_music_rebuild_subtitle">Начинает библиотеку с нуля. Импортированный текст и правки метаданных будут потеряны</string>
+    <string name="local_music_auto_lrc_title">Прикреплять .lrc при сканировании</string>
+    <string name="local_music_auto_lrc_subtitle">Сохраняет файл .lrc рядом с треком как текст этого трека</string>
+    <string name="local_music_section_permission">Разрешение</string>
+    <string name="local_music_permission_title">Доступ к аудио выключен</string>
+    <string name="local_music_permission_subtitle">Без него сканирование ничего не найдёт, а текст из тегов и .lrc будет недоступен</string>
+    <string name="local_music_permission_grant">Разрешить доступ</string>
+    <string name="local_music_syncing">%1$s · %2$d%%</string>
+    <string name="local_music_syncing_indeterminate">%1$s…</string>
+    <string name="updates_channel_beta_description">Предварительные сборки, прошедшие стадию альфа, опубликованные на GitHub</string>
 </resources>

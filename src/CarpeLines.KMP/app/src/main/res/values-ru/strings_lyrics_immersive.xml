@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_immersive_show_chrome">Показать элементы управления</string>
+    <string name="lyrics_immersive_close">Выйти с экрана текста</string>
+    <string name="lyrics_immersive_previous">Предыдущий трек</string>
+    <string name="lyrics_immersive_next">Следующий трек</string>
+    <string name="lyrics_immersive_source">через %1$s</string>
+    <string name="lyrics_overview_lyrics_only">Показывать только текст</string>
+    <string name="lyrics_line_actions_title">Действия со строкой</string>
+    <string name="lyrics_line_actions_instrumental">Инструментальный проигрыш</string>
+    <string name="lyrics_line_actions_offset_label">Смещение строки</string>
+    <string name="lyrics_line_actions_group_lyrics">Текст</string>
+    <string name="lyrics_line_actions_copy">Копировать эту строку</string>
+    <string name="lyrics_line_actions_earlier">Сдвинуть текст раньше</string>
+    <string name="lyrics_line_actions_later">Сдвинуть текст позже</string>
+    <string name="lyrics_line_actions_reset_offset">Сбросить смещение для этого трека</string>
+    <string name="lyrics_line_actions_refresh">Загрузить текст заново</string>
+    <string name="lyrics_line_actions_manual_search">Искать текст вручную</string>
+    <string name="lyrics_line_actions_settings">Оформление текста</string>
+    <string name="lyrics_layout_mode_title">Макет</string>
+    <string name="lyrics_layout_mode_subtitle">Сколько строк текста помещается на экране</string>
+    <string name="lyrics_layout_mode_scroll">Прокручиваемый список</string>
+    <string name="lyrics_layout_mode_scroll_desc">Видны все строки, а активная находится в центре</string>
+    <string name="lyrics_layout_mode_single">Одна строка</string>
+    <string name="lyrics_layout_mode_single_desc">Активная строка занимает весь экран</string>
+    <string name="lyrics_layout_mode_dual">Две строки</string>
+    <string name="lyrics_layout_mode_dual_desc">Активная и следующая строка, готовая к показу</string>
+    <string name="lyrics_playing_line_title">Положение активной строки</string>
+    <string name="lyrics_playing_line_subtitle">Где на экране находится исполняемая строка</string>
+    <string name="lyrics_playing_line_value">%1$d%% от верха</string>
+</resources>

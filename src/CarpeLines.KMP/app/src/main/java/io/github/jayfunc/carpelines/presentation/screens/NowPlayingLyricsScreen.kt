@@ -140,6 +140,8 @@ import io.github.jayfunc.carpelines.ui.theme.M3EMotion
 import io.github.jayfunc.carpelines.ui.theme.emphasized
 import io.github.jayfunc.carpelines.ui.theme.M3EShape
 import io.github.jayfunc.carpelines.ui.theme.M3ESpacing
+import io.github.jayfunc.carpelines.utils.isMiuiFamilyDevice
+import io.github.jayfunc.carpelines.utils.openAutoStartSettings
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -252,20 +254,29 @@ fun NowPlayingLyricsScreen(
     var hasNotificationAccess by remember {
         mutableStateOf(ExternalMediaMonitor.hasNotificationAccess(context))
     }
+    val isMiuiRom = remember { isMiuiFamilyDevice() }
+    // MIUI/HyperOS can keep the listener unbound although access is granted, and the only way
+    // out is its auto-start switch. Surface that only after the automatic rebind attempts have
+    // had time to fail, so a slow bind is not reported as a ROM restriction.
+    var connectionStalled by remember { mutableStateOf(false) }
+
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         hasNotificationAccess = ExternalMediaMonitor.hasNotificationAccess(context)
         if (hasNotificationAccess) ExternalMediaMonitor.ensureConnected(context)
     }
 
     // The listener can stay unbound after an app update, force-stop or ROM restriction even
-    // though notification access is still granted. Retry once when the screen settles.
+    // though notification access is still granted. Retry once when the screen settles, then
+    // stop treating it as a transient state and point at the control that is blocking it.
     LaunchedEffect(hasNotificationAccess, monitorConnected) {
-        if (hasNotificationAccess && !monitorConnected) {
-            delay(1_200)
-            if (!ExternalMediaMonitor.connected.value) {
-                ExternalMediaMonitor.reconnect(context)
-            }
+        connectionStalled = false
+        if (!hasNotificationAccess || monitorConnected) return@LaunchedEffect
+        delay(1_200)
+        if (!ExternalMediaMonitor.connected.value) {
+            ExternalMediaMonitor.reconnect(context)
         }
+        delay(8_800)
+        connectionStalled = !ExternalMediaMonitor.connected.value
     }
 
     // Per-track calibration, for playback CarpeLines does not own.
@@ -379,12 +390,22 @@ fun NowPlayingLyricsScreen(
                     !monitorConnected -> M3EErrorState(
                         icon = Icons.Rounded.LinkOff,
                         title = stringResource(R.string.external_lyrics_connecting_media_title),
-                        description = stringResource(R.string.external_lyrics_connecting_media_body),
+                        description = stringResource(
+                            if (connectionStalled && isMiuiRom) {
+                                R.string.external_lyrics_autostart_blocked_body
+                            } else {
+                                R.string.external_lyrics_connecting_media_body
+                            }
+                        ),
                         action = {
                             // A rebind is not always enough: after an app update some ROMs keep the
-                            // listener unbound until the permission is toggled, so the settings page
-                            // has to be one tap away instead of being described in the copy.
-                            M3EButtonGroup {
+                            // listener unbound until the permission is toggled, and MIUI/HyperOS
+                            // additionally needs its auto-start switch before the system binds the
+                            // listener again after a force-stop, so both pages stay one tap away.
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(M3ESpacing.small),
+                            ) {
                                 M3ETonalButton(
                                     label = stringResource(R.string.external_lyrics_reconnect),
                                     onClick = {
@@ -393,12 +414,20 @@ fun NowPlayingLyricsScreen(
                                         ExternalMediaMonitor.reconnect(context)
                                     },
                                 )
-                                M3ESecondaryButton(
-                                    label = stringResource(R.string.external_lyrics_open_access_settings),
-                                    onClick = {
-                                        ExternalMediaMonitor.openNotificationAccessSettings(context)
-                                    },
-                                )
+                                M3EButtonGroup {
+                                    if (connectionStalled && isMiuiRom) {
+                                        M3ESecondaryButton(
+                                            label = stringResource(R.string.external_lyrics_open_autostart_settings),
+                                            onClick = { openAutoStartSettings(context) },
+                                        )
+                                    }
+                                    M3ESecondaryButton(
+                                        label = stringResource(R.string.external_lyrics_open_access_settings),
+                                        onClick = {
+                                            ExternalMediaMonitor.openNotificationAccessSettings(context)
+                                        },
+                                    )
+                                }
                             }
                         },
                         modifier = Modifier

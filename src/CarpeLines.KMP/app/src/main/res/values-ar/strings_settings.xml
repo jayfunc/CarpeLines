@@ -355,4 +355,26 @@
     <string name="playback_speed_custom_supporting">من %1$s× إلى %2$s×، بحد أقصى منزلتين عشريتين</string>
     <string name="playback_speed_custom_error">أدخل سرعة من %1$s× إلى %2$s×</string>
     <string name="playback_speed_multiplier_suffix">×</string>
+    <string name="settings_category_local_music_title">الموسيقى المحلية</string>
+    <string name="settings_category_local_music_subtitle">امسح الجهاز للعثور على كلمات الوسوم وملفات .lrc</string>
+    <string name="local_music_section_library">المكتبة</string>
+    <string name="local_music_song_count">تم فحص %1$d أغنية</string>
+    <string name="local_music_song_count_empty">لم يتم فحص أي شيء بعد</string>
+    <string name="local_music_intro">لا يشغّل CarpeLines الصوت أبدًا، لكنه يقرأ الموسيقى الموجودة على هذا الهاتف. لا يمكن للمقطع تقديم كلمات الوسوم أو ملف .lrc بجانبه إلا بعد أن يضيفه الفحص إلى المكتبة.</string>
+    <string name="local_music_section_actions">الفحص</string>
+    <string name="local_music_scan_title">فحص التغييرات</string>
+    <string name="local_music_scan_subtitle">يضيف المقاطع الجديدة ويزيل التي اختفت</string>
+    <string name="local_music_rescan_title">إعادة فحص كل شيء</string>
+    <string name="local_music_rescan_subtitle">يقرأ كل ملف مجددًا. أبطأ؛ يصحح العناوين والأغلفة القديمة</string>
+    <string name="local_music_rebuild_title">إعادة بناء بيانات المكتبة</string>
+    <string name="local_music_rebuild_subtitle">يبدأ المكتبة من الصفر. تُفقد الكلمات المستوردة وتعديلات البيانات الوصفية</string>
+    <string name="local_music_auto_lrc_title">إرفاق ملفات .lrc أثناء الفحص</string>
+    <string name="local_music_auto_lrc_subtitle">يحفظ ملف .lrc بجانب المقطع ككلمات لذلك المقطع</string>
+    <string name="local_music_section_permission">الإذن</string>
+    <string name="local_music_permission_title">الوصول إلى الصوت غير مفعّل</string>
+    <string name="local_music_permission_subtitle">بدونه لا يجد الفحص شيئًا ولا يمكن استخدام كلمات الوسوم أو .lrc</string>
+    <string name="local_music_permission_grant">السماح بالوصول</string>
+    <string name="local_music_syncing">%1$s · %2$d%%</string>
+    <string name="local_music_syncing_indeterminate">%1$s…</string>
+    <string name="updates_channel_beta_description">إصدارات معاينة تجاوزت مرحلة ألفا، منشورة على GitHub</string>
 </resources>

@@ -3,4 +3,13 @@
     <string name="tab_stats">Estadísticas</string>
     <string name="home_hero_subtitle">Letras palabra por palabra para lo que suene en tu teléfono</string>
     <string name="home_now_playing_eyebrow">Reproduciendo</string>
+    <string name="home_idle_title">Reproduce algo en cualquier reproductor</string>
+    <string name="home_idle_subtitle">En cuanto empieza la música, su letra la sigue — sin cambiar de app</string>
+    <string name="home_now_playing_in_app">%1$s · Reproduciendo</string>
+    <string name="home_paused_eyebrow">En pausa</string>
+    <string name="home_paused_in_app">%1$s · En pausa</string>
+    <string name="home_played_players_title">Reproductores usados</string>
+    <string name="home_played_players_count">%1$d pistas</string>
+    <string name="home_played_players_empty">Aún no hay reproducciones. Reproduce algo en cualquier reproductor y su icono aparecerá aquí.</string>
+    <string name="lyrics_not_found_local_hint">No se encontraron letras de esta pista en este dispositivo. Revisa las etiquetas de audio o un archivo .lrc correspondiente, o activa más fuentes de letras en Ajustes.</string>
 </resources>

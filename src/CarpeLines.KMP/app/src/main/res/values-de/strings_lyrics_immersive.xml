@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_immersive_show_chrome">Steuerung anzeigen</string>
+    <string name="lyrics_immersive_close">Lyrikbildschirm verlassen</string>
+    <string name="lyrics_immersive_previous">Vorheriger Titel</string>
+    <string name="lyrics_immersive_next">Nächster Titel</string>
+    <string name="lyrics_immersive_source">über %1$s</string>
+    <string name="lyrics_overview_lyrics_only">Nur die Lyrics anzeigen</string>
+    <string name="lyrics_line_actions_title">Zeilenaktionen</string>
+    <string name="lyrics_line_actions_instrumental">Instrumentalpassage</string>
+    <string name="lyrics_line_actions_offset_label">Zeilenversatz</string>
+    <string name="lyrics_line_actions_group_lyrics">Lyrics</string>
+    <string name="lyrics_line_actions_copy">Diese Zeile kopieren</string>
+    <string name="lyrics_line_actions_earlier">Lyrics früher verschieben</string>
+    <string name="lyrics_line_actions_later">Lyrics später verschieben</string>
+    <string name="lyrics_line_actions_reset_offset">Versatz für diesen Titel zurücksetzen</string>
+    <string name="lyrics_line_actions_refresh">Lyrics erneut abrufen</string>
+    <string name="lyrics_line_actions_manual_search">Lyrics manuell suchen</string>
+    <string name="lyrics_line_actions_settings">Lyrik-Darstellung</string>
+    <string name="lyrics_layout_mode_title">Layout</string>
+    <string name="lyrics_layout_mode_subtitle">Wie viele Lyrikzeilen den Bildschirm teilen</string>
+    <string name="lyrics_layout_mode_scroll">Scrollende Liste</string>
+    <string name="lyrics_layout_mode_scroll_desc">Jede Zeile ist sichtbar, die aktive Zeile sitzt in der Mitte</string>
+    <string name="lyrics_layout_mode_single">Eine Zeile</string>
+    <string name="lyrics_layout_mode_single_desc">Die aktive Zeile füllt den Bildschirm</string>
+    <string name="lyrics_layout_mode_dual">Zwei Zeilen</string>
+    <string name="lyrics_layout_mode_dual_desc">Die aktive und die nächste Zeile, bereit zum Mitlaufen</string>
+    <string name="lyrics_playing_line_title">Position der aktiven Zeile</string>
+    <string name="lyrics_playing_line_subtitle">Wo die gesungene Zeile auf dem Bildschirm sitzt</string>
+    <string name="lyrics_playing_line_value">%1$d%% von oben</string>
+</resources>

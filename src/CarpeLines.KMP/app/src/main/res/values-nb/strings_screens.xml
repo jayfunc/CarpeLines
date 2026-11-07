@@ -281,4 +281,8 @@
     <string name="home_empty_placeholder_subtitle">Miksen din vises her når CarpeLines finner sanger eller synkroniserer en kilde</string>
     <string name="crash_report_share_subject">Krasjrapport for CarpeLines</string>
     <string name="about_support_title">Støtt CarpeLines</string>
+    <string name="about_build_time_format">Byggetid: %1$s</string>
+    <string name="about_commit_format">Commit %1$s</string>
+    <string name="cd_about_open_commit">Åpne commit %1$s på GitHub</string>
+    <string name="about_support_cta">Støtt via Afdian</string>
 </resources>

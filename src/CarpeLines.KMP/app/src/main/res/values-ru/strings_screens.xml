@@ -287,4 +287,8 @@
     <string name="home_empty_placeholder_subtitle">Ваш микс появится здесь, когда CarpeLines найдёт треки или синхронизирует источник</string>
     <string name="crash_report_share_subject">Отчёт о сбое CarpeLines</string>
     <string name="about_support_title">Поддержите CarpeLines</string>
+    <string name="about_build_time_format">Время сборки: %1$s</string>
+    <string name="about_commit_format">Коммит %1$s</string>
+    <string name="cd_about_open_commit">Открыть коммит %1$s на GitHub</string>
+    <string name="about_support_cta">Поддержать через Afdian</string>
 </resources>

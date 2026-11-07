@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_card_title">Şarkı sözü kartı</string>
+    <string name="lyrics_card_share">Paylaş</string>
+    <string name="lyrics_card_save">Görseli kaydet</string>
+    <string name="lyrics_card_close">Kapat</string>
+    <string name="lyrics_card_style">Stil</string>
+    <string name="lyrics_card_font">Yazı tipi</string>
+    <string name="lyrics_card_select_lyrics">Sözleri seç</string>
+    <string name="lyrics_card_select_all">Tümünü seç</string>
+    <string name="lyrics_card_clear_selection">Seçimi temizle</string>
+    <string name="lyrics_card_selected_count">%2$d satırın %1$d tanesi</string>
+    <string name="lyrics_card_selection_empty">En az bir şarkı sözü satırı seçin</string>
+    <string name="lyrics_card_done">Bitti</string>
+    <string name="lyrics_card_saved">Galerinize kaydedildi</string>
+    <string name="lyrics_card_save_failed">Görsel kaydedilemedi</string>
+    <string name="lyrics_card_share_failed">Görsel paylaşılamadı</string>
+    <string name="lyrics_card_share_chooser">Şarkı sözü kartını paylaş</string>
+    <string name="lyrics_line_actions_share_page">Paylaşılacak sözleri seç</string>
+
+    <string name="lyrics_card_group_classic">Klasik Tasarım</string>
+    <string name="lyrics_card_group_physical">Fiziksel</string>
+    <string name="lyrics_card_group_traces">Zamanın İzleri</string>
+    <string name="lyrics_card_group_retro">Dijital Retro</string>
+    <string name="lyrics_card_group_modern">Modern Vizyon</string>
+    <string name="lyrics_card_group_atmosphere">Atmosfer</string>
+    <string name="lyrics_card_group_chinese">Çin Zarafeti</string>
+
+    <string name="lyrics_card_style_minimal">Minimal</string>
+    <string name="lyrics_card_style_swiss">İsviçre</string>
+    <string name="lyrics_card_style_magazine">Dergi</string>
+    <string name="lyrics_card_style_vinyl">Plak</string>
+    <string name="lyrics_card_style_cd">CD kutusu</string>
+    <string name="lyrics_card_style_polaroid">Polaroid</string>
+    <string name="lyrics_card_style_ticket">Bilet</string>
+    <string name="lyrics_card_style_receipt">Fiş</string>
+    <string name="lyrics_card_style_journal">Günlük</string>
+    <string name="lyrics_card_style_sticky_note">Yapışkan not</string>
+    <string name="lyrics_card_style_pod">iPod</string>
+    <string name="lyrics_card_style_windows_phone">Windows Phone</string>
+    <string name="lyrics_card_style_retro_qq">Retro QQ</string>
+    <string name="lyrics_card_style_retro_msn">Retro MSN</string>
+    <string name="lyrics_card_style_qq">QQ</string>
+    <string name="lyrics_card_style_wechat">WeChat</string>
+    <string name="lyrics_card_style_whatsapp">WhatsApp</string>
+    <string name="lyrics_card_style_telegram">Telegram</string>
+    <string name="lyrics_card_style_line">LINE</string>
+    <string name="lyrics_card_style_cinematic">Sinematik</string>
+    <string name="lyrics_card_style_cyberpunk">Cyberpunk</string>
+    <string name="lyrics_card_style_ink_wash">Mürekkep</string>
+    <string name="lyrics_card_style_ancient_book">Eski kitap</string>
+    <string name="lyrics_card_style_bamboo_slips">Bambu dilimleri</string>
+    <string name="lyrics_card_style_dunhuang">Dunhuang</string>
+
+    <string name="lyrics_card_font_sans">Sans</string>
+    <string name="lyrics_card_font_serif">Serif</string>
+    <string name="lyrics_card_font_mono">Tek aralıklı</string>
+    <string name="lyrics_card_font_hand">El yazısı</string>
+</resources>

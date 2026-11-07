@@ -279,4 +279,11 @@
 «Hent artister fra tittel» gjenkjenner mønstre som (feat. Artist) i sangtitler.
 
 Skråstrek bakover (\) kan brukes til å escape tegndelimitere.</string>
+    <string name="presentation_batch_g_stats_section_listening_heatmap">Lyttetavle</string>
+    <string name="presentation_batch_g_stats_heatmap_subtitle">Hver dag det siste året</string>
+    <string name="presentation_batch_g_stats_heatmap_active_days">%1$d aktive dager</string>
+    <string name="presentation_batch_g_stats_heatmap_total">%1$s totalt</string>
+    <string name="presentation_batch_g_stats_heatmap_less">Mindre</string>
+    <string name="presentation_batch_g_stats_heatmap_more">Mer</string>
+    <string name="presentation_batch_g_stats_heatmap_day_description">%1$s · %2$s</string>
 </resources>

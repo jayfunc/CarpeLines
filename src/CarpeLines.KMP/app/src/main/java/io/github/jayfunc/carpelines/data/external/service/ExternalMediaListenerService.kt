@@ -23,6 +23,9 @@ class ExternalMediaListenerService : NotificationListenerService() {
     override fun onListenerDisconnected() {
         Log.d("ExternalMediaService", "onListenerDisconnected")
         ExternalMediaMonitor.detach()
+        // Some ROMs (MIUI/HyperOS in particular) keep the listener unbound after a force-stop.
+        // Asking for a rebind here is the documented way back; it is a no-op without access.
+        ExternalMediaMonitor.onSystemUnbound(this)
         super.onListenerDisconnected()
     }
 

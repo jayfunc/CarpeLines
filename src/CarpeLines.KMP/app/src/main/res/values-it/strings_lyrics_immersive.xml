@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_immersive_show_chrome">Mostra controlli</string>
+    <string name="lyrics_immersive_close">Esci dalla schermata dei testi</string>
+    <string name="lyrics_immersive_previous">Brano precedente</string>
+    <string name="lyrics_immersive_next">Brano successivo</string>
+    <string name="lyrics_immersive_source">tramite %1$s</string>
+    <string name="lyrics_overview_lyrics_only">Mostra solo i testi</string>
+    <string name="lyrics_line_actions_title">Azioni sulla riga</string>
+    <string name="lyrics_line_actions_instrumental">Passaggio strumentale</string>
+    <string name="lyrics_line_actions_offset_label">Scostamento della riga</string>
+    <string name="lyrics_line_actions_group_lyrics">Testi</string>
+    <string name="lyrics_line_actions_copy">Copia questa riga</string>
+    <string name="lyrics_line_actions_earlier">Anticipa i testi</string>
+    <string name="lyrics_line_actions_later">Posticipa i testi</string>
+    <string name="lyrics_line_actions_reset_offset">Ripristina lo scostamento per questo brano</string>
+    <string name="lyrics_line_actions_refresh">Recupera di nuovo i testi</string>
+    <string name="lyrics_line_actions_manual_search">Cerca i testi manualmente</string>
+    <string name="lyrics_line_actions_settings">Aspetto dei testi</string>
+    <string name="lyrics_layout_mode_title">Disposizione</string>
+    <string name="lyrics_layout_mode_subtitle">Quante righe di testo condividono lo schermo</string>
+    <string name="lyrics_layout_mode_scroll">Elenco scorrevole</string>
+    <string name="lyrics_layout_mode_scroll_desc">Ogni riga è visibile e quella in riproduzione è al centro</string>
+    <string name="lyrics_layout_mode_single">Una riga</string>
+    <string name="lyrics_layout_mode_single_desc">La riga in riproduzione riempie lo schermo</string>
+    <string name="lyrics_layout_mode_dual">Due righe</string>
+    <string name="lyrics_layout_mode_dual_desc">La riga in riproduzione e la successiva, pronte a seguire</string>
+    <string name="lyrics_playing_line_title">Posizione della riga attiva</string>
+    <string name="lyrics_playing_line_subtitle">Dove si trova sullo schermo la riga cantata</string>
+    <string name="lyrics_playing_line_value">%1$d%% dall\'alto</string>
+</resources>

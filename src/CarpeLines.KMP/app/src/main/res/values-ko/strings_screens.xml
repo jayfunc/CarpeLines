@@ -278,4 +278,8 @@
     <string name="home_empty_placeholder_subtitle">CarpeLines가 곡을 찾거나 소스를 동기화하면 여기에 믹스가 표시됩니다</string>
     <string name="crash_report_share_subject">CarpeLines 크래시 보고서</string>
     <string name="about_support_title">CarpeLines 후원하기</string>
+    <string name="about_build_time_format">빌드 시간: %1$s</string>
+    <string name="about_commit_format">커밋 %1$s</string>
+    <string name="cd_about_open_commit">GitHub에서 커밋 %1$s 열기</string>
+    <string name="about_support_cta">Afdian으로 후원하기</string>
 </resources>

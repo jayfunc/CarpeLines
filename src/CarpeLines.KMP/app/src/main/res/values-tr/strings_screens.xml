@@ -281,4 +281,8 @@
     <string name="home_empty_placeholder_subtitle">CarpeLines şarkı bulduğunda veya bir kaynağı senkronize ettiğinde miksiniz burada görünecek</string>
     <string name="crash_report_share_subject">CarpeLines çökme raporu</string>
     <string name="about_support_title">CarpeLines\'e destek ol</string>
+    <string name="about_build_time_format">Derleme zamanı: %1$s</string>
+    <string name="about_commit_format">Commit %1$s</string>
+    <string name="cd_about_open_commit">GitHub\'da %1$s commit\'ini aç</string>
+    <string name="about_support_cta">Afdian üzerinden destek ol</string>
 </resources>

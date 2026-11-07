@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_card_title">가사 카드</string>
+    <string name="lyrics_card_share">공유</string>
+    <string name="lyrics_card_save">이미지 저장</string>
+    <string name="lyrics_card_close">닫기</string>
+    <string name="lyrics_card_style">스타일</string>
+    <string name="lyrics_card_font">글꼴</string>
+    <string name="lyrics_card_select_lyrics">가사 선택</string>
+    <string name="lyrics_card_select_all">모두 선택</string>
+    <string name="lyrics_card_clear_selection">선택 해제</string>
+    <string name="lyrics_card_selected_count">%2$d줄 중 %1$d줄</string>
+    <string name="lyrics_card_selection_empty">가사 줄을 하나 이상 선택하세요</string>
+    <string name="lyrics_card_done">완료</string>
+    <string name="lyrics_card_saved">갤러리에 저장했습니다</string>
+    <string name="lyrics_card_save_failed">이미지를 저장할 수 없습니다</string>
+    <string name="lyrics_card_share_failed">이미지를 공유할 수 없습니다</string>
+    <string name="lyrics_card_share_chooser">가사 카드 공유</string>
+    <string name="lyrics_line_actions_share_page">공유할 가사 선택</string>
+
+    <string name="lyrics_card_group_classic">클래식 디자인</string>
+    <string name="lyrics_card_group_physical">실물</string>
+    <string name="lyrics_card_group_traces">시간의 흔적</string>
+    <string name="lyrics_card_group_retro">디지털 레트로</string>
+    <string name="lyrics_card_group_modern">모던 비전</string>
+    <string name="lyrics_card_group_atmosphere">분위기</string>
+    <string name="lyrics_card_group_chinese">중국풍 우아함</string>
+
+    <string name="lyrics_card_style_minimal">미니멀</string>
+    <string name="lyrics_card_style_swiss">스위스</string>
+    <string name="lyrics_card_style_magazine">매거진</string>
+    <string name="lyrics_card_style_vinyl">바이닐</string>
+    <string name="lyrics_card_style_cd">CD 케이스</string>
+    <string name="lyrics_card_style_polaroid">폴라로이드</string>
+    <string name="lyrics_card_style_ticket">티켓</string>
+    <string name="lyrics_card_style_receipt">영수증</string>
+    <string name="lyrics_card_style_journal">다이어리</string>
+    <string name="lyrics_card_style_sticky_note">메모지</string>
+    <string name="lyrics_card_style_pod">iPod</string>
+    <string name="lyrics_card_style_windows_phone">Windows Phone</string>
+    <string name="lyrics_card_style_retro_qq">레트로 QQ</string>
+    <string name="lyrics_card_style_retro_msn">레트로 MSN</string>
+    <string name="lyrics_card_style_qq">QQ</string>
+    <string name="lyrics_card_style_wechat">WeChat</string>
+    <string name="lyrics_card_style_whatsapp">WhatsApp</string>
+    <string name="lyrics_card_style_telegram">Telegram</string>
+    <string name="lyrics_card_style_line">LINE</string>
+    <string name="lyrics_card_style_cinematic">시네마틱</string>
+    <string name="lyrics_card_style_cyberpunk">사이버펑크</string>
+    <string name="lyrics_card_style_ink_wash">수묵</string>
+    <string name="lyrics_card_style_ancient_book">고서</string>
+    <string name="lyrics_card_style_bamboo_slips">죽간</string>
+    <string name="lyrics_card_style_dunhuang">둔황</string>
+
+    <string name="lyrics_card_font_sans">산세리프</string>
+    <string name="lyrics_card_font_serif">세리프</string>
+    <string name="lyrics_card_font_mono">고정폭</string>
+    <string name="lyrics_card_font_hand">손글씨</string>
+</resources>

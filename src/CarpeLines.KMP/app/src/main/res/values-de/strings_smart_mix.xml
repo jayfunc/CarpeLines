@@ -39,4 +39,12 @@
         <item quantity="one">%1$d passender Song · %2$d Min.</item>
         <item quantity="other">%1$d passende Songs · %2$d Min.</item>
     </plurals>
+    <string name="mix_moment_morning">Munterer Morgen</string>
+    <string name="mix_moment_study">Musik zum Lernen</string>
+    <string name="mix_moment_workout">Training</string>
+    <string name="mix_moment_feel_good">Gute Laune</string>
+    <string name="mix_moment_chill_evening">Entspannter Abend</string>
+    <string name="mix_moment_late_night">Sanfte späte Nacht</string>
+    <string name="mix_moment_party">Party</string>
+    <string name="mix_suggest_decade_genre">%1$s %2$s</string>
 </resources>

@@ -279,4 +279,11 @@
 \"Ekstrak Artis dari Judul\" mendeteksi pola seperti (feat. Artis) pada judul lagu.
 
 Garis miring terbalik (\) dapat digunakan untuk meloloskan pemisah karakter.</string>
+    <string name="presentation_batch_g_stats_section_listening_heatmap">Dinding mendengarkan</string>
+    <string name="presentation_batch_g_stats_heatmap_subtitle">Setiap hari dalam setahun terakhir</string>
+    <string name="presentation_batch_g_stats_heatmap_active_days">%1$d hari aktif</string>
+    <string name="presentation_batch_g_stats_heatmap_total">Total %1$s</string>
+    <string name="presentation_batch_g_stats_heatmap_less">Sedikit</string>
+    <string name="presentation_batch_g_stats_heatmap_more">Banyak</string>
+    <string name="presentation_batch_g_stats_heatmap_day_description">%1$s · %2$s</string>
 </resources>

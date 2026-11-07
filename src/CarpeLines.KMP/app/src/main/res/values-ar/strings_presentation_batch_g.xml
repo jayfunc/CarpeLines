@@ -279,4 +279,11 @@
 "استخراج الفنانين من العنوان" يكتشف أنماطاً مثل (feat. Artist) في عناوين الأغاني.
 
 يمكن استخدام الشرطة المائلة العكسية (\) لتعطيل مفعول محددات الأحرف.</string>
+    <string name="presentation_batch_g_stats_section_listening_heatmap">جدار الاستماع</string>
+    <string name="presentation_batch_g_stats_heatmap_subtitle">كل يوم من العام الماضي</string>
+    <string name="presentation_batch_g_stats_heatmap_active_days">%1$d يومًا نشطًا</string>
+    <string name="presentation_batch_g_stats_heatmap_total">الإجمالي %1$s</string>
+    <string name="presentation_batch_g_stats_heatmap_less">أقل</string>
+    <string name="presentation_batch_g_stats_heatmap_more">أكثر</string>
+    <string name="presentation_batch_g_stats_heatmap_day_description">%1$s · %2$s</string>
 </resources>

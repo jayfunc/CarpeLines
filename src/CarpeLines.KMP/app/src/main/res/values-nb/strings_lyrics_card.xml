@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_card_title">Sangtekstkort</string>
+    <string name="lyrics_card_share">Del</string>
+    <string name="lyrics_card_save">Lagre bilde</string>
+    <string name="lyrics_card_close">Lukk</string>
+    <string name="lyrics_card_style">Stil</string>
+    <string name="lyrics_card_font">Skrift</string>
+    <string name="lyrics_card_select_lyrics">Velg sangtekst</string>
+    <string name="lyrics_card_select_all">Velg alle</string>
+    <string name="lyrics_card_clear_selection">Fjern valg</string>
+    <string name="lyrics_card_selected_count">%1$d av %2$d linjer</string>
+    <string name="lyrics_card_selection_empty">Velg minst én sangtekstlinje</string>
+    <string name="lyrics_card_done">Ferdig</string>
+    <string name="lyrics_card_saved">Lagret i galleriet</string>
+    <string name="lyrics_card_save_failed">Kunne ikke lagre bildet</string>
+    <string name="lyrics_card_share_failed">Kunne ikke dele bildet</string>
+    <string name="lyrics_card_share_chooser">Del sangtekstkort</string>
+    <string name="lyrics_line_actions_share_page">Velg sangtekst som skal deles</string>
+
+    <string name="lyrics_card_group_classic">Klassisk design</string>
+    <string name="lyrics_card_group_physical">Fysisk</string>
+    <string name="lyrics_card_group_traces">Tidens spor</string>
+    <string name="lyrics_card_group_retro">Digital retro</string>
+    <string name="lyrics_card_group_modern">Moderne visjon</string>
+    <string name="lyrics_card_group_atmosphere">Atmosfære</string>
+    <string name="lyrics_card_group_chinese">Kinesisk eleganse</string>
+
+    <string name="lyrics_card_style_minimal">Minimal</string>
+    <string name="lyrics_card_style_swiss">Sveitsisk</string>
+    <string name="lyrics_card_style_magazine">Magasin</string>
+    <string name="lyrics_card_style_vinyl">Vinyl</string>
+    <string name="lyrics_card_style_cd">CD-etui</string>
+    <string name="lyrics_card_style_polaroid">Polaroid</string>
+    <string name="lyrics_card_style_ticket">Billett</string>
+    <string name="lyrics_card_style_receipt">Kvittering</string>
+    <string name="lyrics_card_style_journal">Dagbok</string>
+    <string name="lyrics_card_style_sticky_note">Klistrelapp</string>
+    <string name="lyrics_card_style_pod">iPod</string>
+    <string name="lyrics_card_style_windows_phone">Windows Phone</string>
+    <string name="lyrics_card_style_retro_qq">Retro QQ</string>
+    <string name="lyrics_card_style_retro_msn">Retro MSN</string>
+    <string name="lyrics_card_style_qq">QQ</string>
+    <string name="lyrics_card_style_wechat">WeChat</string>
+    <string name="lyrics_card_style_whatsapp">WhatsApp</string>
+    <string name="lyrics_card_style_telegram">Telegram</string>
+    <string name="lyrics_card_style_line">LINE</string>
+    <string name="lyrics_card_style_cinematic">Filmisk</string>
+    <string name="lyrics_card_style_cyberpunk">Cyberpunk</string>
+    <string name="lyrics_card_style_ink_wash">Tusjvask</string>
+    <string name="lyrics_card_style_ancient_book">Gammel bok</string>
+    <string name="lyrics_card_style_bamboo_slips">Bambusfliser</string>
+    <string name="lyrics_card_style_dunhuang">Dunhuang</string>
+
+    <string name="lyrics_card_font_sans">Sans</string>
+    <string name="lyrics_card_font_serif">Serif</string>
+    <string name="lyrics_card_font_mono">Fast bredde</string>
+    <string name="lyrics_card_font_hand">Håndskrift</string>
+</resources>

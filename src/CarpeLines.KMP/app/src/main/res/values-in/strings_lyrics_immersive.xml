@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_immersive_show_chrome">Tampilkan kontrol</string>
+    <string name="lyrics_immersive_close">Keluar dari layar lirik</string>
+    <string name="lyrics_immersive_previous">Trek sebelumnya</string>
+    <string name="lyrics_immersive_next">Trek berikutnya</string>
+    <string name="lyrics_immersive_source">melalui %1$s</string>
+    <string name="lyrics_overview_lyrics_only">Tampilkan lirik saja</string>
+    <string name="lyrics_line_actions_title">Tindakan baris</string>
+    <string name="lyrics_line_actions_instrumental">Bagian instrumental</string>
+    <string name="lyrics_line_actions_offset_label">Offset baris</string>
+    <string name="lyrics_line_actions_group_lyrics">Lirik</string>
+    <string name="lyrics_line_actions_copy">Salin baris ini</string>
+    <string name="lyrics_line_actions_earlier">Majukan lirik</string>
+    <string name="lyrics_line_actions_later">Mundurkan lirik</string>
+    <string name="lyrics_line_actions_reset_offset">Atur ulang offset untuk trek ini</string>
+    <string name="lyrics_line_actions_refresh">Ambil lirik lagi</string>
+    <string name="lyrics_line_actions_manual_search">Cari lirik secara manual</string>
+    <string name="lyrics_line_actions_settings">Tampilan lirik</string>
+    <string name="lyrics_layout_mode_title">Tata letak</string>
+    <string name="lyrics_layout_mode_subtitle">Berapa banyak baris lirik berbagi layar</string>
+    <string name="lyrics_layout_mode_scroll">Daftar bergulir</string>
+    <string name="lyrics_layout_mode_scroll_desc">Setiap baris terlihat dan baris yang diputar berada di tengah</string>
+    <string name="lyrics_layout_mode_single">Satu baris</string>
+    <string name="lyrics_layout_mode_single_desc">Baris yang diputar memenuhi layar</string>
+    <string name="lyrics_layout_mode_dual">Dua baris</string>
+    <string name="lyrics_layout_mode_dual_desc">Baris yang diputar dan baris berikutnya, siap mengikuti</string>
+    <string name="lyrics_playing_line_title">Posisi baris aktif</string>
+    <string name="lyrics_playing_line_subtitle">Di mana baris yang dinyanyikan berada di layar</string>
+    <string name="lyrics_playing_line_value">%1$d%% dari atas</string>
+</resources>

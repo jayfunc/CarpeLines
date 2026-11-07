@@ -279,4 +279,11 @@
 «Извлекать исполнителей из названия» находит шаблоны вида (feat. Artist) в названиях треков.
 
 Обратную косую черту (\) можно использовать для экранирования символов-разделителей.</string>
+    <string name="presentation_batch_g_stats_section_listening_heatmap">Стена прослушивания</string>
+    <string name="presentation_batch_g_stats_heatmap_subtitle">Каждый день за последний год</string>
+    <string name="presentation_batch_g_stats_heatmap_active_days">Активных дней: %1$d</string>
+    <string name="presentation_batch_g_stats_heatmap_total">Всего %1$s</string>
+    <string name="presentation_batch_g_stats_heatmap_less">Меньше</string>
+    <string name="presentation_batch_g_stats_heatmap_more">Больше</string>
+    <string name="presentation_batch_g_stats_heatmap_day_description">%1$s · %2$s</string>
 </resources>

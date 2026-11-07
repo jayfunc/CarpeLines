@@ -158,6 +158,8 @@
     <string name="external_lyrics_no_media_check_again">Check again</string>
     <string name="external_lyrics_connecting_media_title">Media listener not connected</string>
     <string name="external_lyrics_connecting_media_body">Notification access is granted, but the system media listener is not bound. Reconnect it, or turn notification access off and on again (especially after an app update or force stop).</string>
+    <string name="external_lyrics_autostart_blocked_body">Notification access is still granted, but the system is blocking the media listener from binding. On MIUI/HyperOS, allow auto-start for CarpeLines; if that does not help, turn notification access off and on again.</string>
+    <string name="external_lyrics_open_autostart_settings">Auto-start settings</string>
     <string name="external_lyrics_reconnect">Reconnect</string>
     <string name="external_lyrics_open_access_settings">Notification access settings</string>
     <string name="external_lyrics_searching">Finding lyrics…</string>

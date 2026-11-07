@@ -355,4 +355,26 @@
     <string name="playback_speed_custom_supporting">Da %1$s× a %2$s×, fino a due decimali</string>
     <string name="playback_speed_custom_error">Inserisci una velocità da %1$s× a %2$s×</string>
     <string name="playback_speed_multiplier_suffix">×</string>
+    <string name="settings_category_local_music_title">Musica locale</string>
+    <string name="settings_category_local_music_subtitle">Analizza il dispositivo per trovare i testi dei tag e i file .lrc</string>
+    <string name="local_music_section_library">Libreria</string>
+    <string name="local_music_song_count">%1$d brani analizzati</string>
+    <string name="local_music_song_count_empty">Niente ancora analizzato</string>
+    <string name="local_music_intro">CarpeLines non riproduce mai audio, ma legge la musica già presente su questo telefono. Un brano può fornire testi dei tag o un file .lrc accanto solo dopo che l\'analisi lo ha aggiunto alla libreria.</string>
+    <string name="local_music_section_actions">Analisi</string>
+    <string name="local_music_scan_title">Cerca modifiche</string>
+    <string name="local_music_scan_subtitle">Aggiunge i nuovi brani e rimuove quelli spariti</string>
+    <string name="local_music_rescan_title">Rianalizza tutto</string>
+    <string name="local_music_rescan_subtitle">Rilegge ogni file. Più lento; corregge titoli e copertine obsoleti</string>
+    <string name="local_music_rebuild_title">Ricostruisci i dati della libreria</string>
+    <string name="local_music_rebuild_subtitle">Riparte da zero. I testi importati e le modifiche ai metadati vanno persi</string>
+    <string name="local_music_auto_lrc_title">Allega file .lrc durante l\'analisi</string>
+    <string name="local_music_auto_lrc_subtitle">Salva un file .lrc accanto a un brano come testo di quel brano</string>
+    <string name="local_music_section_permission">Autorizzazione</string>
+    <string name="local_music_permission_title">L\'accesso audio è disattivato</string>
+    <string name="local_music_permission_subtitle">Senza di esso l\'analisi non trova nulla e i testi dei tag o .lrc non sono utilizzabili</string>
+    <string name="local_music_permission_grant">Consenti accesso</string>
+    <string name="local_music_syncing">%1$s · %2$d%%</string>
+    <string name="local_music_syncing_indeterminate">%1$s…</string>
+    <string name="updates_channel_beta_description">Versioni di anteprima che hanno superato la fase alpha, pubblicate su GitHub</string>
 </resources>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_card_title">Tarjeta de letras</string>
+    <string name="lyrics_card_share">Compartir</string>
+    <string name="lyrics_card_save">Guardar imagen</string>
+    <string name="lyrics_card_close">Cerrar</string>
+    <string name="lyrics_card_style">Estilo</string>
+    <string name="lyrics_card_font">Fuente</string>
+    <string name="lyrics_card_select_lyrics">Seleccionar letras</string>
+    <string name="lyrics_card_select_all">Seleccionar todo</string>
+    <string name="lyrics_card_clear_selection">Borrar selección</string>
+    <string name="lyrics_card_selected_count">%1$d de %2$d líneas</string>
+    <string name="lyrics_card_selection_empty">Selecciona al menos una línea de letra</string>
+    <string name="lyrics_card_done">Listo</string>
+    <string name="lyrics_card_saved">Guardado en tu galería</string>
+    <string name="lyrics_card_save_failed">No se pudo guardar la imagen</string>
+    <string name="lyrics_card_share_failed">No se pudo compartir la imagen</string>
+    <string name="lyrics_card_share_chooser">Compartir tarjeta de letras</string>
+    <string name="lyrics_line_actions_share_page">Elegir letras para compartir</string>
+
+    <string name="lyrics_card_group_classic">Diseño clásico</string>
+    <string name="lyrics_card_group_physical">Físico</string>
+    <string name="lyrics_card_group_traces">Huellas del tiempo</string>
+    <string name="lyrics_card_group_retro">Retro digital</string>
+    <string name="lyrics_card_group_modern">Visión moderna</string>
+    <string name="lyrics_card_group_atmosphere">Atmósfera</string>
+    <string name="lyrics_card_group_chinese">Elegancia china</string>
+
+    <string name="lyrics_card_style_minimal">Minimalista</string>
+    <string name="lyrics_card_style_swiss">Suizo</string>
+    <string name="lyrics_card_style_magazine">Revista</string>
+    <string name="lyrics_card_style_vinyl">Vinilo</string>
+    <string name="lyrics_card_style_cd">Estuche de CD</string>
+    <string name="lyrics_card_style_polaroid">Polaroid</string>
+    <string name="lyrics_card_style_ticket">Entrada</string>
+    <string name="lyrics_card_style_receipt">Recibo</string>
+    <string name="lyrics_card_style_journal">Diario</string>
+    <string name="lyrics_card_style_sticky_note">Nota adhesiva</string>
+    <string name="lyrics_card_style_pod">iPod</string>
+    <string name="lyrics_card_style_windows_phone">Windows Phone</string>
+    <string name="lyrics_card_style_retro_qq">Retro QQ</string>
+    <string name="lyrics_card_style_retro_msn">Retro MSN</string>
+    <string name="lyrics_card_style_qq">QQ</string>
+    <string name="lyrics_card_style_wechat">WeChat</string>
+    <string name="lyrics_card_style_whatsapp">WhatsApp</string>
+    <string name="lyrics_card_style_telegram">Telegram</string>
+    <string name="lyrics_card_style_line">LINE</string>
+    <string name="lyrics_card_style_cinematic">Cinematográfico</string>
+    <string name="lyrics_card_style_cyberpunk">Cyberpunk</string>
+    <string name="lyrics_card_style_ink_wash">Tinta aguada</string>
+    <string name="lyrics_card_style_ancient_book">Libro antiguo</string>
+    <string name="lyrics_card_style_bamboo_slips">Tablillas de bambú</string>
+    <string name="lyrics_card_style_dunhuang">Dunhuang</string>
+
+    <string name="lyrics_card_font_sans">Sans</string>
+    <string name="lyrics_card_font_serif">Serif</string>
+    <string name="lyrics_card_font_mono">Monoespaciada</string>
+    <string name="lyrics_card_font_hand">Manuscrita</string>
+</resources>

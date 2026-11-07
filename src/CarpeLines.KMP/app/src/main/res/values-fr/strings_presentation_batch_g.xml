@@ -279,4 +279,11 @@
 « Extraire les artistes du titre » détecte les motifs comme (feat. Artiste) dans les titres des chansons.
 
 La barre oblique inverse (\) permet d\'échapper les délimiteurs de caractères.</string>
+    <string name="presentation_batch_g_stats_section_listening_heatmap">Mur d\'écoute</string>
+    <string name="presentation_batch_g_stats_heatmap_subtitle">Chaque jour de l\'année dernière</string>
+    <string name="presentation_batch_g_stats_heatmap_active_days">%1$d jours actifs</string>
+    <string name="presentation_batch_g_stats_heatmap_total">%1$s au total</string>
+    <string name="presentation_batch_g_stats_heatmap_less">Moins</string>
+    <string name="presentation_batch_g_stats_heatmap_more">Plus</string>
+    <string name="presentation_batch_g_stats_heatmap_day_description">%1$s · %2$s</string>
 </resources>

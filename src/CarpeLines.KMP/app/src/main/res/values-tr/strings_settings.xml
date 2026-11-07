@@ -357,4 +357,26 @@
     <string name="playback_speed_custom_supporting">%1$s× ile %2$s× arası, en fazla iki ondalık basamak</string>
     <string name="playback_speed_custom_error">%1$s× ile %2$s× arasında bir hız girin</string>
     <string name="playback_speed_multiplier_suffix">×</string>
+    <string name="settings_category_local_music_title">Yerel müzik</string>
+    <string name="settings_category_local_music_subtitle">Etiket ve .lrc şarkı sözlerinin bulunması için cihazı tarayın</string>
+    <string name="local_music_section_library">Kitaplık</string>
+    <string name="local_music_song_count">%1$d şarkı tarandı</string>
+    <string name="local_music_song_count_empty">Henüz hiçbir şey taranmadı</string>
+    <string name="local_music_intro">CarpeLines hiç ses çalmaz, ancak bu telefonda bulunan müziği okur. Bir parça ancak tarama onu kitaplığa ekledikten sonra etiket sözleri veya yanındaki bir .lrc dosyası sağlayabilir.</string>
+    <string name="local_music_section_actions">Tarama</string>
+    <string name="local_music_scan_title">Değişiklikleri tara</string>
+    <string name="local_music_scan_subtitle">Yeni parçaları ekler ve kaybolanları kaldırır</string>
+    <string name="local_music_rescan_title">Her şeyi yeniden tara</string>
+    <string name="local_music_rescan_subtitle">Her dosyayı yeniden okur. Daha yavaş; eski başlıkları ve kapakları düzeltir</string>
+    <string name="local_music_rebuild_title">Kitaplık verilerini yeniden oluştur</string>
+    <string name="local_music_rebuild_subtitle">Kitaplığı sıfırdan başlatır. İçe aktarılan sözler ve meta veri düzenlemeleri kaybolur</string>
+    <string name="local_music_auto_lrc_title">Tarama sırasında .lrc dosyalarını ekle</string>
+    <string name="local_music_auto_lrc_subtitle">Bir parçanın yanındaki .lrc dosyasını o parçanın sözleri olarak kaydeder</string>
+    <string name="local_music_section_permission">İzin</string>
+    <string name="local_music_permission_title">Ses erişimi kapalı</string>
+    <string name="local_music_permission_subtitle">Olmadan tarama hiçbir şey bulamaz ve etiket veya .lrc sözleri kullanılamaz</string>
+    <string name="local_music_permission_grant">Erişime izin ver</string>
+    <string name="local_music_syncing">%1$s · %2$d%%</string>
+    <string name="local_music_syncing_indeterminate">%1$s…</string>
+    <string name="updates_channel_beta_description">Alfa aşamasını geçen ve GitHub\'da yayımlanan önizleme sürümleri</string>
 </resources>

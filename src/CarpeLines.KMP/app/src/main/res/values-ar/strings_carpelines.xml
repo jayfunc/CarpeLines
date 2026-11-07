@@ -3,4 +3,13 @@
     <string name="tab_stats">الإحصاءات</string>
     <string name="home_hero_subtitle">كلمات الأغاني كلمة بكلمة لكل ما يُشغَّل على هاتفك</string>
     <string name="home_now_playing_eyebrow">قيد التشغيل</string>
+    <string name="home_idle_title">شغّل شيئًا في أي مشغل</string>
+    <string name="home_idle_subtitle">بمجرد أن تبدأ الموسيقى، تتبعها الكلمات — دون الحاجة إلى تبديل التطبيقات</string>
+    <string name="home_now_playing_in_app">%1$s · قيد التشغيل الآن</string>
+    <string name="home_paused_eyebrow">متوقف مؤقتًا</string>
+    <string name="home_paused_in_app">%1$s · متوقف مؤقتًا</string>
+    <string name="home_played_players_title">المشغلات التي استخدمتها</string>
+    <string name="home_played_players_count">%1$d مقطع</string>
+    <string name="home_played_players_empty">لا توجد عمليات تشغيل بعد. ابدأ شيئًا في أي مشغل وسيظهر رمزه هنا.</string>
+    <string name="lyrics_not_found_local_hint">لم يتم العثور على كلمات لهذا المقطع على هذا الجهاز. تحقق من وسوم الصوت أو ملف .lrc مطابق، أو فعّل مصادر كلمات إضافية في الإعدادات.</string>
 </resources>

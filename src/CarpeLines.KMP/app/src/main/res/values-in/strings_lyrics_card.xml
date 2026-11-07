@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_card_title">Kartu lirik</string>
+    <string name="lyrics_card_share">Bagikan</string>
+    <string name="lyrics_card_save">Simpan gambar</string>
+    <string name="lyrics_card_close">Tutup</string>
+    <string name="lyrics_card_style">Gaya</string>
+    <string name="lyrics_card_font">Font</string>
+    <string name="lyrics_card_select_lyrics">Pilih lirik</string>
+    <string name="lyrics_card_select_all">Pilih semua</string>
+    <string name="lyrics_card_clear_selection">Hapus pilihan</string>
+    <string name="lyrics_card_selected_count">%1$d dari %2$d baris</string>
+    <string name="lyrics_card_selection_empty">Pilih setidaknya satu baris lirik</string>
+    <string name="lyrics_card_done">Selesai</string>
+    <string name="lyrics_card_saved">Disimpan ke galeri</string>
+    <string name="lyrics_card_save_failed">Tidak dapat menyimpan gambar</string>
+    <string name="lyrics_card_share_failed">Tidak dapat membagikan gambar</string>
+    <string name="lyrics_card_share_chooser">Bagikan kartu lirik</string>
+    <string name="lyrics_line_actions_share_page">Pilih lirik untuk dibagikan</string>
+
+    <string name="lyrics_card_group_classic">Desain Klasik</string>
+    <string name="lyrics_card_group_physical">Fisik</string>
+    <string name="lyrics_card_group_traces">Jejak Waktu</string>
+    <string name="lyrics_card_group_retro">Retro Digital</string>
+    <string name="lyrics_card_group_modern">Visi Modern</string>
+    <string name="lyrics_card_group_atmosphere">Suasana</string>
+    <string name="lyrics_card_group_chinese">Keanggunan Tionghoa</string>
+
+    <string name="lyrics_card_style_minimal">Minimal</string>
+    <string name="lyrics_card_style_swiss">Swiss</string>
+    <string name="lyrics_card_style_magazine">Majalah</string>
+    <string name="lyrics_card_style_vinyl">Vinyl</string>
+    <string name="lyrics_card_style_cd">Kotak CD</string>
+    <string name="lyrics_card_style_polaroid">Polaroid</string>
+    <string name="lyrics_card_style_ticket">Tiket</string>
+    <string name="lyrics_card_style_receipt">Struk</string>
+    <string name="lyrics_card_style_journal">Jurnal</string>
+    <string name="lyrics_card_style_sticky_note">Catatan tempel</string>
+    <string name="lyrics_card_style_pod">iPod</string>
+    <string name="lyrics_card_style_windows_phone">Windows Phone</string>
+    <string name="lyrics_card_style_retro_qq">Retro QQ</string>
+    <string name="lyrics_card_style_retro_msn">Retro MSN</string>
+    <string name="lyrics_card_style_qq">QQ</string>
+    <string name="lyrics_card_style_wechat">WeChat</string>
+    <string name="lyrics_card_style_whatsapp">WhatsApp</string>
+    <string name="lyrics_card_style_telegram">Telegram</string>
+    <string name="lyrics_card_style_line">LINE</string>
+    <string name="lyrics_card_style_cinematic">Sinematik</string>
+    <string name="lyrics_card_style_cyberpunk">Cyberpunk</string>
+    <string name="lyrics_card_style_ink_wash">Cat air</string>
+    <string name="lyrics_card_style_ancient_book">Buku kuno</string>
+    <string name="lyrics_card_style_bamboo_slips">Bilah bambu</string>
+    <string name="lyrics_card_style_dunhuang">Dunhuang</string>
+
+    <string name="lyrics_card_font_sans">Sans</string>
+    <string name="lyrics_card_font_serif">Serif</string>
+    <string name="lyrics_card_font_mono">Monospace</string>
+    <string name="lyrics_card_font_hand">Tulisan tangan</string>
+</resources>

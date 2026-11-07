@@ -107,6 +107,11 @@ class CarpeLinesApplication : Application(), ImageLoaderFactory, Configuration.P
         override fun onResume(owner: LifecycleOwner) {
             // Image access can change while system settings is open, without restarting us.
             startupScope.launch { folderArtworkSettingsCoordinator.get().reconcile() }
+            // The listener can also come back while the user was in the ROM's auto-start or
+            // notification-access settings; ask for a rebind as soon as we are in front again.
+            io.github.jayfunc.carpelines.data.external.ExternalMediaMonitor.ensureConnected(
+                this@CarpeLinesApplication
+            )
         }
 
         override fun onStop(owner: LifecycleOwner) {

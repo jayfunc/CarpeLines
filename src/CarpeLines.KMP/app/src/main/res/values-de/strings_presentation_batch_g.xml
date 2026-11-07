@@ -279,4 +279,11 @@
 „Künstler aus Titel extrahieren“ erkennt Muster wie (feat. Künstler) in Songtiteln.
 
 Mit einem Backslash (\) lassen sich Zeichen-Trennzeichen maskieren.</string>
+    <string name="presentation_batch_g_stats_section_listening_heatmap">Hörwand</string>
+    <string name="presentation_batch_g_stats_heatmap_subtitle">Jeder Tag des letzten Jahres</string>
+    <string name="presentation_batch_g_stats_heatmap_active_days">%1$d aktive Tage</string>
+    <string name="presentation_batch_g_stats_heatmap_total">%1$s insgesamt</string>
+    <string name="presentation_batch_g_stats_heatmap_less">Weniger</string>
+    <string name="presentation_batch_g_stats_heatmap_more">Mehr</string>
+    <string name="presentation_batch_g_stats_heatmap_day_description">%1$s · %2$s</string>
 </resources>

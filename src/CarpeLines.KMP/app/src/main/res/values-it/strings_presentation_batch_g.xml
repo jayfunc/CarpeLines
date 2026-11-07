@@ -279,4 +279,11 @@
 "Estrai artisti dal titolo" rileva schemi come (feat. Artista) nei titoli dei brani.
 
 La barra rovesciata (\) può essere usata per l\'escape dei delimitatori di carattere.</string>
+    <string name="presentation_batch_g_stats_section_listening_heatmap">Muro di ascolto</string>
+    <string name="presentation_batch_g_stats_heatmap_subtitle">Ogni giorno dell\'ultimo anno</string>
+    <string name="presentation_batch_g_stats_heatmap_active_days">%1$d giorni attivi</string>
+    <string name="presentation_batch_g_stats_heatmap_total">%1$s in totale</string>
+    <string name="presentation_batch_g_stats_heatmap_less">Meno</string>
+    <string name="presentation_batch_g_stats_heatmap_more">Più</string>
+    <string name="presentation_batch_g_stats_heatmap_day_description">%1$s · %2$s</string>
 </resources>

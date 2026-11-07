@@ -355,4 +355,26 @@
     <string name="playback_speed_custom_supporting">Fra %1$s× til %2$s×, opptil to desimaler</string>
     <string name="playback_speed_custom_error">Angi en hastighet fra %1$s× til %2$s×</string>
     <string name="playback_speed_multiplier_suffix">×</string>
+    <string name="settings_category_local_music_title">Lokal musikk</string>
+    <string name="settings_category_local_music_subtitle">Skann enheten så tagg- og .lrc-sangtekster blir funnet</string>
+    <string name="local_music_section_library">Bibliotek</string>
+    <string name="local_music_song_count">%1$d sanger skannet</string>
+    <string name="local_music_song_count_empty">Ingenting skannet ennå</string>
+    <string name="local_music_intro">CarpeLines spiller aldri av lyd, men leser musikken som allerede ligger på denne telefonen. Et spor kan bare bidra med tagg-sangtekst eller en .lrc-fil ved siden av når skanningen har lagt det til i biblioteket.</string>
+    <string name="local_music_section_actions">Skanning</string>
+    <string name="local_music_scan_title">Skann etter endringer</string>
+    <string name="local_music_scan_subtitle">Legger til nye spor og fjerner de som er borte</string>
+    <string name="local_music_rescan_title">Skann alt på nytt</string>
+    <string name="local_music_rescan_subtitle">Leser hver fil på nytt. Tregere; retter utdaterte titler og omslag</string>
+    <string name="local_music_rebuild_title">Bygg bibliotekdata på nytt</string>
+    <string name="local_music_rebuild_subtitle">Starter biblioteket fra bunnen. Importert sangtekst og metadataredigeringer går tapt</string>
+    <string name="local_music_auto_lrc_title">Legg ved .lrc-filer under skanning</string>
+    <string name="local_music_auto_lrc_subtitle">Lagrer en .lrc-fil ved siden av et spor som sporets sangtekst</string>
+    <string name="local_music_section_permission">Tillatelse</string>
+    <string name="local_music_permission_title">Lydtilgang er av</string>
+    <string name="local_music_permission_subtitle">Uten den finner skanningen ingenting, og tagg- eller .lrc-sangtekst kan ikke brukes</string>
+    <string name="local_music_permission_grant">Tillat tilgang</string>
+    <string name="local_music_syncing">%1$s · %2$d%%</string>
+    <string name="local_music_syncing_indeterminate">%1$s…</string>
+    <string name="updates_channel_beta_description">Forhåndsbygg som har passert alfa-fasen, publisert på GitHub</string>
 </resources>

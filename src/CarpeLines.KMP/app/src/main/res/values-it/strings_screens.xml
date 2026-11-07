@@ -281,4 +281,8 @@
     <string name="home_empty_placeholder_subtitle">Il tuo mix apparirà qui quando CarpeLines troverà dei brani o sincronizzerà una sorgente</string>
     <string name="crash_report_share_subject">Report crash di CarpeLines</string>
     <string name="about_support_title">Sostieni CarpeLines</string>
+    <string name="about_build_time_format">Data di compilazione: %1$s</string>
+    <string name="about_commit_format">Commit %1$s</string>
+    <string name="cd_about_open_commit">Apri il commit %1$s su GitHub</string>
+    <string name="about_support_cta">Sostieni tramite Afdian</string>
 </resources>

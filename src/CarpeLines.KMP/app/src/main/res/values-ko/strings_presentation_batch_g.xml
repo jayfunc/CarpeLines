@@ -279,4 +279,11 @@
 
 백슬래시(\)를 사용하면 문자 구분 기호를 이스케이프할 수 있습니다.</string>
     <string name="presentation_batch_g_selection_n_songs">곡 선택됨</string>
+    <string name="presentation_batch_g_stats_section_listening_heatmap">청취 벽</string>
+    <string name="presentation_batch_g_stats_heatmap_subtitle">지난 1년의 모든 날</string>
+    <string name="presentation_batch_g_stats_heatmap_active_days">활동한 날 %1$d일</string>
+    <string name="presentation_batch_g_stats_heatmap_total">총 %1$s</string>
+    <string name="presentation_batch_g_stats_heatmap_less">적음</string>
+    <string name="presentation_batch_g_stats_heatmap_more">많음</string>
+    <string name="presentation_batch_g_stats_heatmap_day_description">%1$s · %2$s</string>
 </resources>

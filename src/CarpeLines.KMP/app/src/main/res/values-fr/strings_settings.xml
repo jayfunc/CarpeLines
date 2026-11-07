@@ -355,4 +355,26 @@
     <string name="playback_speed_custom_supporting">De %1$s× à %2$s×, deux décimales maximum</string>
     <string name="playback_speed_custom_error">Saisissez une vitesse comprise entre %1$s× et %2$s×</string>
     <string name="playback_speed_multiplier_suffix">×</string>
+    <string name="settings_category_local_music_title">Musique locale</string>
+    <string name="settings_category_local_music_subtitle">Analyser l\'appareil pour trouver les paroles des tags et des fichiers .lrc</string>
+    <string name="local_music_section_library">Bibliothèque</string>
+    <string name="local_music_song_count">%1$d morceaux analysés</string>
+    <string name="local_music_song_count_empty">Rien d\'analysé pour l\'instant</string>
+    <string name="local_music_intro">CarpeLines ne lit jamais d\'audio, mais il lit la musique déjà présente sur ce téléphone. Un morceau ne peut fournir des paroles de tag ou un fichier .lrc voisin qu\'une fois ajouté à la bibliothèque par l\'analyse.</string>
+    <string name="local_music_section_actions">Analyse</string>
+    <string name="local_music_scan_title">Rechercher les changements</string>
+    <string name="local_music_scan_subtitle">Ajoute les nouveaux morceaux et retire ceux qui ont disparu</string>
+    <string name="local_music_rescan_title">Tout réanalyser</string>
+    <string name="local_music_rescan_subtitle">Relit chaque fichier. Plus lent ; corrige les titres et pochettes obsolètes</string>
+    <string name="local_music_rebuild_title">Reconstruire les données de la bibliothèque</string>
+    <string name="local_music_rebuild_subtitle">Repart de zéro. Les paroles importées et les modifications de métadonnées sont perdues</string>
+    <string name="local_music_auto_lrc_title">Joindre les fichiers .lrc pendant l\'analyse</string>
+    <string name="local_music_auto_lrc_subtitle">Enregistre un fichier .lrc à côté d\'un morceau comme paroles de ce morceau</string>
+    <string name="local_music_section_permission">Autorisation</string>
+    <string name="local_music_permission_title">L\'accès audio est désactivé</string>
+    <string name="local_music_permission_subtitle">Sans lui, l\'analyse ne trouve rien et les paroles des tags ou .lrc ne peuvent pas être utilisées</string>
+    <string name="local_music_permission_grant">Autoriser l\'accès</string>
+    <string name="local_music_syncing">%1$s · %2$d%%</string>
+    <string name="local_music_syncing_indeterminate">%1$s…</string>
+    <string name="updates_channel_beta_description">Versions d\'aperçu ayant passé le stade alpha, publiées sur GitHub</string>
 </resources>

@@ -39,4 +39,12 @@
         <item quantity="one">%1$d passende sang · %2$d min</item>
         <item quantity="other">%1$d passende sanger · %2$d min</item>
     </plurals>
+    <string name="mix_moment_morning">Frisk morgen</string>
+    <string name="mix_moment_study">Musikk for å studere</string>
+    <string name="mix_moment_workout">Trening</string>
+    <string name="mix_moment_feel_good">God stemning</string>
+    <string name="mix_moment_chill_evening">Rolig kveld</string>
+    <string name="mix_moment_late_night">Myk sen kveld</string>
+    <string name="mix_moment_party">Fest</string>
+    <string name="mix_suggest_decade_genre">%1$s %2$s</string>
 </resources>

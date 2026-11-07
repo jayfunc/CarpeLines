@@ -3,4 +3,13 @@
     <string name="tab_stats">Statistik</string>
     <string name="home_hero_subtitle">Lirik kata demi kata untuk apa pun yang diputar di ponsel Anda</string>
     <string name="home_now_playing_eyebrow">Sedang diputar</string>
+    <string name="home_idle_title">Putar sesuatu di pemutar apa pun</string>
+    <string name="home_idle_subtitle">Saat musik mulai, liriknya mengikuti — tanpa perlu berpindah aplikasi</string>
+    <string name="home_now_playing_in_app">%1$s · Sedang diputar</string>
+    <string name="home_paused_eyebrow">Dijeda</string>
+    <string name="home_paused_in_app">%1$s · Dijeda</string>
+    <string name="home_played_players_title">Pemutar yang Anda gunakan</string>
+    <string name="home_played_players_count">%1$d trek</string>
+    <string name="home_played_players_empty">Belum ada pemutaran. Putar sesuatu di pemutar apa pun dan ikonnya akan muncul di sini.</string>
+    <string name="lyrics_not_found_local_hint">Tidak ada lirik untuk trek ini di perangkat ini. Periksa tag audio atau file .lrc yang cocok, atau aktifkan lebih banyak sumber lirik di Pengaturan.</string>
 </resources>

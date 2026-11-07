@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_card_title">Карточка текста</string>
+    <string name="lyrics_card_share">Поделиться</string>
+    <string name="lyrics_card_save">Сохранить изображение</string>
+    <string name="lyrics_card_close">Закрыть</string>
+    <string name="lyrics_card_style">Стиль</string>
+    <string name="lyrics_card_font">Шрифт</string>
+    <string name="lyrics_card_select_lyrics">Выбрать текст</string>
+    <string name="lyrics_card_select_all">Выбрать всё</string>
+    <string name="lyrics_card_clear_selection">Снять выделение</string>
+    <string name="lyrics_card_selected_count">%1$d из %2$d строк</string>
+    <string name="lyrics_card_selection_empty">Выберите хотя бы одну строку текста</string>
+    <string name="lyrics_card_done">Готово</string>
+    <string name="lyrics_card_saved">Сохранено в галерее</string>
+    <string name="lyrics_card_save_failed">Не удалось сохранить изображение</string>
+    <string name="lyrics_card_share_failed">Не удалось поделиться изображением</string>
+    <string name="lyrics_card_share_chooser">Поделиться карточкой текста</string>
+    <string name="lyrics_line_actions_share_page">Выбрать текст для публикации</string>
+
+    <string name="lyrics_card_group_classic">Классический дизайн</string>
+    <string name="lyrics_card_group_physical">Физический</string>
+    <string name="lyrics_card_group_traces">Следы времени</string>
+    <string name="lyrics_card_group_retro">Цифровое ретро</string>
+    <string name="lyrics_card_group_modern">Современное видение</string>
+    <string name="lyrics_card_group_atmosphere">Атмосфера</string>
+    <string name="lyrics_card_group_chinese">Китайская элегантность</string>
+
+    <string name="lyrics_card_style_minimal">Минимализм</string>
+    <string name="lyrics_card_style_swiss">Швейцарский</string>
+    <string name="lyrics_card_style_magazine">Журнал</string>
+    <string name="lyrics_card_style_vinyl">Винил</string>
+    <string name="lyrics_card_style_cd">Коробка CD</string>
+    <string name="lyrics_card_style_polaroid">Полароид</string>
+    <string name="lyrics_card_style_ticket">Билет</string>
+    <string name="lyrics_card_style_receipt">Чек</string>
+    <string name="lyrics_card_style_journal">Дневник</string>
+    <string name="lyrics_card_style_sticky_note">Стикер</string>
+    <string name="lyrics_card_style_pod">iPod</string>
+    <string name="lyrics_card_style_windows_phone">Windows Phone</string>
+    <string name="lyrics_card_style_retro_qq">Retro QQ</string>
+    <string name="lyrics_card_style_retro_msn">Retro MSN</string>
+    <string name="lyrics_card_style_qq">QQ</string>
+    <string name="lyrics_card_style_wechat">WeChat</string>
+    <string name="lyrics_card_style_whatsapp">WhatsApp</string>
+    <string name="lyrics_card_style_telegram">Telegram</string>
+    <string name="lyrics_card_style_line">LINE</string>
+    <string name="lyrics_card_style_cinematic">Кинематографичный</string>
+    <string name="lyrics_card_style_cyberpunk">Киберпанк</string>
+    <string name="lyrics_card_style_ink_wash">Тушь</string>
+    <string name="lyrics_card_style_ancient_book">Старинная книга</string>
+    <string name="lyrics_card_style_bamboo_slips">Бамбуковые дощечки</string>
+    <string name="lyrics_card_style_dunhuang">Дуньхуан</string>
+
+    <string name="lyrics_card_font_sans">Sans</string>
+    <string name="lyrics_card_font_serif">Serif</string>
+    <string name="lyrics_card_font_mono">Моноширинный</string>
+    <string name="lyrics_card_font_hand">Рукописный</string>
+</resources>

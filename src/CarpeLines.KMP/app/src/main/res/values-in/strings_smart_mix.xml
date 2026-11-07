@@ -39,4 +39,12 @@
         <item quantity="one">%1$d lagu cocok · %2$d mnt</item>
         <item quantity="other">%1$d lagu cocok · %2$d mnt</item>
     </plurals>
+    <string name="mix_moment_morning">Pagi bersemangat</string>
+    <string name="mix_moment_study">Musik untuk belajar</string>
+    <string name="mix_moment_workout">Latihan</string>
+    <string name="mix_moment_feel_good">Suasana baik</string>
+    <string name="mix_moment_chill_evening">Malam santai</string>
+    <string name="mix_moment_late_night">Malam larut yang tenang</string>
+    <string name="mix_moment_party">Pesta</string>
+    <string name="mix_suggest_decade_genre">%1$s %2$s</string>
 </resources>

@@ -15,6 +15,7 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.service.notification.NotificationListenerService
 import android.util.Log
+import androidx.core.app.NotificationManagerCompat
 import io.github.jayfunc.carpelines.data.external.service.ExternalMediaListenerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,6 +40,16 @@ object ExternalMediaMonitor {
     private const val TAG = "ExternalMediaMonitor"
     private const val POSITION_TICK_MS = 250L
 
+    /**
+     * Rebind attempts after a process start, spaced out rather than fired once: MIUI/HyperOS
+     * gates the system's rebind behind its auto-start control and can refuse the first requests,
+     * so a single attempt at Application.onCreate is not enough to recover from a force-stop.
+     */
+    private val REBIND_RETRY_DELAYS_MS = longArrayOf(0L, 1_000L, 3_000L, 6_000L, 12_000L)
+
+    /** A bind/unbind loop must not turn into a rebind loop. */
+    private const val SYSTEM_UNBOUND_REBIND_INTERVAL_MS = 15_000L
+
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val mainHandler = Handler(Looper.getMainLooper())
 
@@ -49,6 +60,8 @@ object ExternalMediaMonitor {
     private var listenerComponent: ComponentName? = null
     private var sessionsListener: MediaSessionManager.OnActiveSessionsChangedListener? = null
     private var tickerJob: Job? = null
+    private var rebindJob: Job? = null
+    private var lastSystemUnboundRebindAt = 0L
     private var selectedMediaId: String? = null
 
     private val _state = MutableStateFlow<ExternalMediaState?>(null)
@@ -66,6 +79,7 @@ object ExternalMediaMonitor {
         Log.d(TAG, "attach($component)")
         if (listenerComponent == component && sessionsListener != null) {
             _connected.value = true
+            rebindJob?.cancel()
             refreshSessions()
             return
         }
@@ -96,6 +110,7 @@ object ExternalMediaMonitor {
         }
         sessionsListener = listener
         _connected.value = true
+        rebindJob?.cancel()
         refreshSessions()
         startTicker()
     }
@@ -104,18 +119,15 @@ object ExternalMediaMonitor {
         detachInternal(clearState = true)
     }
 
-    /** True when the user granted notification access to this app's listener service. */
-    fun hasNotificationAccess(context: Context): Boolean {
-        val enabled = Settings.Secure.getString(
-            context.contentResolver,
-            "enabled_notification_listeners",
-        ) ?: return false
-        val expected = ComponentName(context, ExternalMediaListenerService::class.java)
-        return enabled.split(':').any { entry ->
-            val component = ComponentName.unflattenFromString(entry) ?: return@any false
-            component.packageName == expected.packageName && component.className == expected.className
-        }
-    }
+    /**
+     * True when the user granted notification access to this app's listener service.
+     *
+     * Delegates the `enabled_notification_listeners` parsing to AndroidX and matches on the
+     * package level: parsing the stored string by hand misreads entries whose class name is
+     * written in short form, which some ROMs do.
+     */
+    fun hasNotificationAccess(context: Context): Boolean =
+        NotificationManagerCompat.getEnabledListenerPackages(context).contains(context.packageName)
 
     fun openNotificationAccessSettings(context: Context) {
         val component = ComponentName(context, ExternalMediaListenerService::class.java)
@@ -136,24 +148,56 @@ object ExternalMediaMonitor {
         }
     }
 
-    /** Asks the system to rebind the listener after the user grants access. */
+    /**
+     * Asks the system to rebind the listener after the user grants access or a process restart.
+     *
+     * A single request is not reliable: MIUI/HyperOS rejects the rebind through its auto-start
+     * control for a while after a force-stop, so the request is repeated with backoff until the
+     * listener attaches or access disappears.
+     */
     fun ensureConnected(context: Context) {
         if (!hasNotificationAccess(context)) return
         if (_connected.value) return
-        reconnect(context)
+        scheduleRebind(context.applicationContext)
+    }
+
+    /** Explicit reconnect requested from the lyrics page. */
+    fun reconnect(context: Context) {
+        if (!hasNotificationAccess(context)) return
+        requestRebindInternal(context)
     }
 
     /**
-     * Explicit reconnect requested from the lyrics page. Some ROMs (MIUI in particular) keep
-     * the listener disabled after an app update or force-stop even though notification access
-     * is still listed as granted; rebinding once usually restores media-session visibility.
+     * Called by the listener service when the system unbound it. Without this the listener stays
+     * unbound after a force-stop, because nothing else asks the system to bind it again.
      */
-    fun reconnect(context: Context) {
+    fun onSystemUnbound(context: Context) {
+        val now = SystemClock.elapsedRealtime()
+        if (now - lastSystemUnboundRebindAt < SYSTEM_UNBOUND_REBIND_INTERVAL_MS) return
+        lastSystemUnboundRebindAt = now
         if (!hasNotificationAccess(context)) return
+        scheduleRebind(context.applicationContext)
+    }
+
+    private fun scheduleRebind(context: Context) {
+        if (rebindJob?.isActive == true) return
+        rebindJob = scope.launch {
+            for (delayMs in REBIND_RETRY_DELAYS_MS) {
+                if (delayMs > 0L) delay(delayMs)
+                if (_connected.value) return@launch
+                if (!hasNotificationAccess(context)) return@launch
+                requestRebindInternal(context)
+            }
+        }
+    }
+
+    private fun requestRebindInternal(context: Context) {
         runCatching {
             NotificationListenerService.requestRebind(
                 ComponentName(context, ExternalMediaListenerService::class.java),
             )
+        }.onFailure {
+            Log.w(TAG, "Could not request a listener rebind", it)
         }
     }
 

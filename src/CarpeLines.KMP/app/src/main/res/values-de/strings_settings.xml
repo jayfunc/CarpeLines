@@ -355,4 +355,26 @@
     <string name="playback_speed_custom_supporting">Von %1$s× bis %2$s×, bis zu zwei Nachkommastellen</string>
     <string name="playback_speed_custom_error">Gib eine Geschwindigkeit von %1$s× bis %2$s× ein</string>
     <string name="playback_speed_multiplier_suffix">×</string>
+    <string name="settings_category_local_music_title">Lokale Musik</string>
+    <string name="settings_category_local_music_subtitle">Gerät scannen, damit Tag- und .lrc-Lyrics gefunden werden</string>
+    <string name="local_music_section_library">Bibliothek</string>
+    <string name="local_music_song_count">%1$d Titel gescannt</string>
+    <string name="local_music_song_count_empty">Noch nichts gescannt</string>
+    <string name="local_music_intro">CarpeLines spielt nie Audio ab, liest aber die Musik auf diesem Telefon. Ein Titel kann erst Tag-Lyrics oder eine danebenliegende .lrc-Datei beisteuern, wenn der Scan ihn zur Bibliothek hinzugefügt hat.</string>
+    <string name="local_music_section_actions">Scannen</string>
+    <string name="local_music_scan_title">Nach Änderungen scannen</string>
+    <string name="local_music_scan_subtitle">Fügt neue Titel hinzu und entfernt verschwundene</string>
+    <string name="local_music_rescan_title">Alles neu scannen</string>
+    <string name="local_music_rescan_subtitle">Liest jede Datei erneut. Langsamer; korrigiert veraltete Titel und Cover</string>
+    <string name="local_music_rebuild_title">Bibliotheksdaten neu aufbauen</string>
+    <string name="local_music_rebuild_subtitle">Startet die Bibliothek von Grund auf. Importierte Lyrics und Metadatenänderungen gehen verloren</string>
+    <string name="local_music_auto_lrc_title">.lrc-Dateien beim Scannen anhängen</string>
+    <string name="local_music_auto_lrc_subtitle">Speichert eine .lrc-Datei neben einem Titel als dessen Lyrics</string>
+    <string name="local_music_section_permission">Berechtigung</string>
+    <string name="local_music_permission_title">Audiozugriff ist aus</string>
+    <string name="local_music_permission_subtitle">Ohne ihn findet der Scan nichts, und Tag- oder .lrc-Lyrics können nicht verwendet werden</string>
+    <string name="local_music_permission_grant">Zugriff erlauben</string>
+    <string name="local_music_syncing">%1$s · %2$d%%</string>
+    <string name="local_music_syncing_indeterminate">%1$s…</string>
+    <string name="updates_channel_beta_description">Vorschauversionen nach der Alpha-Phase, veröffentlicht auf GitHub</string>
 </resources>

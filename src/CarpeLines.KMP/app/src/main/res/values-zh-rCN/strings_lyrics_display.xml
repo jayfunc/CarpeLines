@@ -158,6 +158,8 @@
     <string name="external_lyrics_no_media_check_again">重新检测</string>
     <string name="external_lyrics_connecting_media_title">系统媒体监听未连接</string>
     <string name="external_lyrics_connecting_media_body">通知使用权已开启，但系统媒体监听服务尚未绑定。请尝试重新连接；若仍无效，请关闭再重新开启通知使用权（应用更新或强行停止后尤其常见）。</string>
+    <string name="external_lyrics_autostart_blocked_body">通知使用权仍然有效，但系统拦截了媒体监听服务的绑定。在 MIUI/HyperOS 上，请允许 CarpeLines 自启动；若仍未恢复，请关闭再重新开启通知使用权。</string>
+    <string name="external_lyrics_open_autostart_settings">自启动设置</string>
     <string name="external_lyrics_reconnect">重新连接</string>
     <string name="external_lyrics_open_access_settings">通知使用权设置</string>
     <string name="external_lyrics_searching">正在查找歌词…</string>

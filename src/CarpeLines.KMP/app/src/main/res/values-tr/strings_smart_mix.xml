@@ -39,4 +39,12 @@
         <item quantity="one">%1$d eşleşen şarkı · %2$d dk</item>
         <item quantity="other">%1$d eşleşen şarkı · %2$d dk</item>
     </plurals>
+    <string name="mix_moment_morning">Enerjik sabah</string>
+    <string name="mix_moment_study">Ders çalışma müziği</string>
+    <string name="mix_moment_workout">Antrenman</string>
+    <string name="mix_moment_feel_good">Keyifli anlar</string>
+    <string name="mix_moment_chill_evening">Sakin akşam</string>
+    <string name="mix_moment_late_night">Yumuşak gece</string>
+    <string name="mix_moment_party">Parti</string>
+    <string name="mix_suggest_decade_genre">%1$s %2$s</string>
 </resources>

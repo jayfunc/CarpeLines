@@ -281,4 +281,8 @@
     <string name="home_empty_placeholder_subtitle">Mix Anda akan muncul di sini saat CarpeLines menemukan lagu atau menyinkronkan sumber</string>
     <string name="crash_report_share_subject">Laporan crash CarpeLines</string>
     <string name="about_support_title">Dukung CarpeLines</string>
+    <string name="about_build_time_format">Waktu build: %1$s</string>
+    <string name="about_commit_format">Commit %1$s</string>
+    <string name="cd_about_open_commit">Buka commit %1$s di GitHub</string>
+    <string name="about_support_cta">Dukung lewat Afdian</string>
 </resources>

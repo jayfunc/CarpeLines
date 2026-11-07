@@ -279,4 +279,11 @@
 "Extraer artistas del título" detecta patrones como (feat. Artista) en los títulos de las canciones.
 
 La barra invertida (\) se puede usar para escapar los delimitadores de caracteres.</string>
+    <string name="presentation_batch_g_stats_section_listening_heatmap">Muro de escucha</string>
+    <string name="presentation_batch_g_stats_heatmap_subtitle">Cada día del último año</string>
+    <string name="presentation_batch_g_stats_heatmap_active_days">%1$d días activos</string>
+    <string name="presentation_batch_g_stats_heatmap_total">%1$s en total</string>
+    <string name="presentation_batch_g_stats_heatmap_less">Menos</string>
+    <string name="presentation_batch_g_stats_heatmap_more">Más</string>
+    <string name="presentation_batch_g_stats_heatmap_day_description">%1$s · %2$s</string>
 </resources>

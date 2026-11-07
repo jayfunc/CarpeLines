@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_card_title">بطاقة الكلمات</string>
+    <string name="lyrics_card_share">مشاركة</string>
+    <string name="lyrics_card_save">حفظ الصورة</string>
+    <string name="lyrics_card_close">إغلاق</string>
+    <string name="lyrics_card_style">النمط</string>
+    <string name="lyrics_card_font">الخط</string>
+    <string name="lyrics_card_select_lyrics">اختيار الكلمات</string>
+    <string name="lyrics_card_select_all">اختيار الكل</string>
+    <string name="lyrics_card_clear_selection">مسح الاختيار</string>
+    <string name="lyrics_card_selected_count">%1$d من %2$d سطرًا</string>
+    <string name="lyrics_card_selection_empty">اختر سطر كلمات واحدًا على الأقل</string>
+    <string name="lyrics_card_done">تم</string>
+    <string name="lyrics_card_saved">تم الحفظ في المعرض</string>
+    <string name="lyrics_card_save_failed">تعذّر حفظ الصورة</string>
+    <string name="lyrics_card_share_failed">تعذّر مشاركة الصورة</string>
+    <string name="lyrics_card_share_chooser">مشاركة بطاقة الكلمات</string>
+    <string name="lyrics_line_actions_share_page">اختيار الكلمات للمشاركة</string>
+
+    <string name="lyrics_card_group_classic">تصميم كلاسيكي</string>
+    <string name="lyrics_card_group_physical">مادي</string>
+    <string name="lyrics_card_group_traces">آثار الزمن</string>
+    <string name="lyrics_card_group_retro">ريترو رقمي</string>
+    <string name="lyrics_card_group_modern">رؤية حديثة</string>
+    <string name="lyrics_card_group_atmosphere">الأجواء</string>
+    <string name="lyrics_card_group_chinese">أناقة صينية</string>
+
+    <string name="lyrics_card_style_minimal">بسيط</string>
+    <string name="lyrics_card_style_swiss">سويسري</string>
+    <string name="lyrics_card_style_magazine">مجلة</string>
+    <string name="lyrics_card_style_vinyl">فينيل</string>
+    <string name="lyrics_card_style_cd">علبة CD</string>
+    <string name="lyrics_card_style_polaroid">بولارويد</string>
+    <string name="lyrics_card_style_ticket">تذكرة</string>
+    <string name="lyrics_card_style_receipt">إيصال</string>
+    <string name="lyrics_card_style_journal">مفكرة</string>
+    <string name="lyrics_card_style_sticky_note">ورقة ملاحظات</string>
+    <string name="lyrics_card_style_pod">iPod</string>
+    <string name="lyrics_card_style_windows_phone">Windows Phone</string>
+    <string name="lyrics_card_style_retro_qq">QQ قديم</string>
+    <string name="lyrics_card_style_retro_msn">MSN قديم</string>
+    <string name="lyrics_card_style_qq">QQ</string>
+    <string name="lyrics_card_style_wechat">WeChat</string>
+    <string name="lyrics_card_style_whatsapp">WhatsApp</string>
+    <string name="lyrics_card_style_telegram">Telegram</string>
+    <string name="lyrics_card_style_line">LINE</string>
+    <string name="lyrics_card_style_cinematic">سينمائي</string>
+    <string name="lyrics_card_style_cyberpunk">سايبربانك</string>
+    <string name="lyrics_card_style_ink_wash">حبر مائي</string>
+    <string name="lyrics_card_style_ancient_book">كتاب قديم</string>
+    <string name="lyrics_card_style_bamboo_slips">شرائح الخيزران</string>
+    <string name="lyrics_card_style_dunhuang">دونهوانغ</string>
+
+    <string name="lyrics_card_font_sans">بلا حواف</string>
+    <string name="lyrics_card_font_serif">بحواف</string>
+    <string name="lyrics_card_font_mono">أحادي المسافة</string>
+    <string name="lyrics_card_font_hand">خط اليد</string>
+</resources>

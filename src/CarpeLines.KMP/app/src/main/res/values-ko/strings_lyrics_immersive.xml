@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_immersive_show_chrome">컨트롤 표시</string>
+    <string name="lyrics_immersive_close">가사 화면 나가기</string>
+    <string name="lyrics_immersive_previous">이전 트랙</string>
+    <string name="lyrics_immersive_next">다음 트랙</string>
+    <string name="lyrics_immersive_source">%1$s 경유</string>
+    <string name="lyrics_overview_lyrics_only">가사만 표시</string>
+    <string name="lyrics_line_actions_title">줄 작업</string>
+    <string name="lyrics_line_actions_instrumental">간주 구간</string>
+    <string name="lyrics_line_actions_offset_label">줄 오프셋</string>
+    <string name="lyrics_line_actions_group_lyrics">가사</string>
+    <string name="lyrics_line_actions_copy">이 줄 복사</string>
+    <string name="lyrics_line_actions_earlier">가사 앞당기기</string>
+    <string name="lyrics_line_actions_later">가사 늦추기</string>
+    <string name="lyrics_line_actions_reset_offset">이 트랙의 오프셋 초기화</string>
+    <string name="lyrics_line_actions_refresh">가사 다시 가져오기</string>
+    <string name="lyrics_line_actions_manual_search">가사 수동 검색</string>
+    <string name="lyrics_line_actions_settings">가사 모양</string>
+    <string name="lyrics_layout_mode_title">레이아웃</string>
+    <string name="lyrics_layout_mode_subtitle">화면에 표시할 가사 줄 수</string>
+    <string name="lyrics_layout_mode_scroll">스크롤 목록</string>
+    <string name="lyrics_layout_mode_scroll_desc">모든 줄이 보이고 재생 중인 줄이 가운데에 있습니다</string>
+    <string name="lyrics_layout_mode_single">한 줄</string>
+    <string name="lyrics_layout_mode_single_desc">재생 중인 줄이 화면을 채웁니다</string>
+    <string name="lyrics_layout_mode_dual">두 줄</string>
+    <string name="lyrics_layout_mode_dual_desc">재생 중인 줄과 다음 줄이 이어서 표시됩니다</string>
+    <string name="lyrics_playing_line_title">재생 중인 줄 위치</string>
+    <string name="lyrics_playing_line_subtitle">노래하는 줄이 화면에서 놓이는 위치</string>
+    <string name="lyrics_playing_line_value">위에서 %1$d%%</string>
+</resources>

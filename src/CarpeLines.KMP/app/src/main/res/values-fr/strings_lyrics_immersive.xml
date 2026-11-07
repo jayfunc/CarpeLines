@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_immersive_show_chrome">Afficher les commandes</string>
+    <string name="lyrics_immersive_close">Quitter l\'écran des paroles</string>
+    <string name="lyrics_immersive_previous">Piste précédente</string>
+    <string name="lyrics_immersive_next">Piste suivante</string>
+    <string name="lyrics_immersive_source">via %1$s</string>
+    <string name="lyrics_overview_lyrics_only">Afficher uniquement les paroles</string>
+    <string name="lyrics_line_actions_title">Actions sur la ligne</string>
+    <string name="lyrics_line_actions_instrumental">Passage instrumental</string>
+    <string name="lyrics_line_actions_offset_label">Décalage de la ligne</string>
+    <string name="lyrics_line_actions_group_lyrics">Paroles</string>
+    <string name="lyrics_line_actions_copy">Copier cette ligne</string>
+    <string name="lyrics_line_actions_earlier">Avancer les paroles</string>
+    <string name="lyrics_line_actions_later">Retarder les paroles</string>
+    <string name="lyrics_line_actions_reset_offset">Réinitialiser le décalage pour cette piste</string>
+    <string name="lyrics_line_actions_refresh">Récupérer à nouveau les paroles</string>
+    <string name="lyrics_line_actions_manual_search">Rechercher les paroles manuellement</string>
+    <string name="lyrics_line_actions_settings">Apparence des paroles</string>
+    <string name="lyrics_layout_mode_title">Disposition</string>
+    <string name="lyrics_layout_mode_subtitle">Combien de lignes de paroles partagent l\'écran</string>
+    <string name="lyrics_layout_mode_scroll">Liste défilante</string>
+    <string name="lyrics_layout_mode_scroll_desc">Chaque ligne est visible et la ligne en cours est au centre</string>
+    <string name="lyrics_layout_mode_single">Une ligne</string>
+    <string name="lyrics_layout_mode_single_desc">La ligne en cours remplit l\'écran</string>
+    <string name="lyrics_layout_mode_dual">Deux lignes</string>
+    <string name="lyrics_layout_mode_dual_desc">La ligne en cours et la suivante, prêtes à suivre</string>
+    <string name="lyrics_playing_line_title">Position de la ligne en cours</string>
+    <string name="lyrics_playing_line_subtitle">Où se place la ligne chantée à l\'écran</string>
+    <string name="lyrics_playing_line_value">%1$d%% depuis le haut</string>
+</resources>

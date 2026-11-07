@@ -279,4 +279,11 @@
 "Başlıktan Sanatçıları Çıkar" seçeneği, şarkı başlıklarındaki (feat. Artist) gibi kalıpları algılar.
 
 Karakter sınırlayıcıları etkisiz hale getirmek için ters eğik çizgi (\) kullanılabilir.</string>
+    <string name="presentation_batch_g_stats_section_listening_heatmap">Dinleme duvarı</string>
+    <string name="presentation_batch_g_stats_heatmap_subtitle">Geçen yılın her günü</string>
+    <string name="presentation_batch_g_stats_heatmap_active_days">%1$d etkin gün</string>
+    <string name="presentation_batch_g_stats_heatmap_total">Toplam %1$s</string>
+    <string name="presentation_batch_g_stats_heatmap_less">Az</string>
+    <string name="presentation_batch_g_stats_heatmap_more">Çok</string>
+    <string name="presentation_batch_g_stats_heatmap_day_description">%1$s · %2$s</string>
 </resources>

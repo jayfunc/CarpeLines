@@ -38,4 +38,12 @@
     <plurals name="mix_matching_songs">
         <item quantity="other">일치하는 곡 %1$d개 · %2$d분</item>
     </plurals>
+    <string name="mix_moment_morning">활기찬 아침</string>
+    <string name="mix_moment_study">공부할 때 듣는 음악</string>
+    <string name="mix_moment_workout">운동</string>
+    <string name="mix_moment_feel_good">기분 좋은 음악</string>
+    <string name="mix_moment_chill_evening">차분한 저녁</string>
+    <string name="mix_moment_late_night">포근한 늦은 밤</string>
+    <string name="mix_moment_party">파티</string>
+    <string name="mix_suggest_decade_genre">%1$s %2$s</string>
 </resources>

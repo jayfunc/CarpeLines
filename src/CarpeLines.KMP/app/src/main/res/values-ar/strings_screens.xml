@@ -293,4 +293,8 @@
     <string name="home_empty_placeholder_subtitle">سيظهر مزيجك الموسيقي هنا عندما يعثر CarpeLines على أغانٍ أو يزامن مصدراً</string>
     <string name="crash_report_share_subject">تقرير تعطل CarpeLines</string>
     <string name="about_support_title">ادعم CarpeLines</string>
+    <string name="about_build_time_format">وقت البناء: %1$s</string>
+    <string name="about_commit_format">الإيداع %1$s</string>
+    <string name="cd_about_open_commit">فتح الإيداع %1$s على GitHub</string>
+    <string name="about_support_cta">الدعم عبر Afdian</string>
 </resources>
