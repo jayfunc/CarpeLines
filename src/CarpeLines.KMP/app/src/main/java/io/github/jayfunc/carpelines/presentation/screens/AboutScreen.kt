@@ -408,7 +408,7 @@ private fun AboutHeroCard(
                     ) {
                         CarpeLinesWordmark()
                         Text(
-                            text = stringResource(R.string.about_slogan),
+                            text = stringResource(R.string.about_slogan_zh),
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Medium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -416,7 +416,7 @@ private fun AboutHeroCard(
                             overflow = TextOverflow.Ellipsis,
                         )
                         Text(
-                            text = stringResource(R.string.about_tagline),
+                            text = stringResource(R.string.about_slogan_en),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             maxLines = 2,

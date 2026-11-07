@@ -32,7 +32,6 @@
     <string name="about_support_chip_ci">CI и выпуски</string>
     <string name="about_support_chip_foss">Сопровождение FOSS</string>
     <string name="about_support_chip_streaming">Музыка на своём сервере</string>
-    <string name="about_tagline">Локальная музыка, стриминг со своего сервера и Material 3 в одном FOSS-плеере</string>
     <string name="about_version_format">Версия v%1$s</string>
     <string name="accounts_unable_open_screen">Сейчас невозможно открыть этот экран</string>
     <string name="action_copy">Копировать</string>

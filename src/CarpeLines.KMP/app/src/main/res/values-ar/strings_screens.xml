@@ -32,7 +32,6 @@
     <string name="about_support_chip_ci">التكامل المستمر والإصدارات</string>
     <string name="about_support_chip_foss">صيانة نسخة FOSS</string>
     <string name="about_support_chip_streaming">موسيقى مستضافة ذاتياً</string>
-    <string name="about_tagline">مشغل موسيقى مفتوح المصدر تم بناؤه مع مجتمعه</string>
     <string name="about_version_format">الإصدار v%1$s</string>
     <string name="accounts_unable_open_screen">تعذر فتح هذه الشاشة في الوقت الحالي</string>
     <string name="action_copy">نسخ</string>

@@ -21,8 +21,8 @@ table.
 | `carpe-icon-monochrome.svg` | Flat silhouette. Android 13+ themed icons, notification bar, single-colour print |
 | `carpe-mark.svg` | Bare mark, no container, ink on light |
 | `carpe-mark-mono.svg` | Bare mark, single colour (`currentColor`), inherits the text colour |
-| `carpe-lockup-horizontal.svg` | Horizontal lockup |
-| `carpe-lockup-vertical.svg` | Vertical lockup, splash screen / store art |
+| `carpe-lockup-horizontal.svg` | Horizontal lockup, transparent background (README header) |
+| `carpe-lockup-vertical.svg` | Vertical lockup, transparent background, splash screen / store art |
 | `android/res/` | Adaptive icon resources, ready to drop into the app |
 | `tools/generate.py` | Reproducible geometry and contrast script |
 | `tools/rasterize.py` | Redraws every PNG in the repository from the same geometry |
@@ -70,6 +70,11 @@ slides towards "caramel on old paper" — the easiest way for this mark to look
 dated. The container carries a single faint gradient of the same hue and no glow;
 orange and warm grey are pulled down to just clear the 3 : 1 floor for graphics,
 and deep ink is reserved for the cursor and the wordmark.
+
+Lockups carry **no background rectangle** — they sit directly on whatever surface
+embeds them. The wordmark is `#1C1917` ink on light and flips to the `#F7F2E9`
+paper tone through a `prefers-color-scheme: dark` rule inside the file; the mark
+itself keeps its light container in both modes, so the icon never inverts.
 
 Contrast is measured on **the background the strokes actually land on**
 (`ink_backgrounds()` in `tools/generate.py`), not at the two ends of the

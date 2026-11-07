@@ -32,7 +32,6 @@
     <string name="about_support_chip_ci">CI og utgivelser</string>
     <string name="about_support_chip_foss">FOSS-vedlikehold</string>
     <string name="about_support_chip_streaming">Selvhostet musikk</string>
-    <string name="about_tagline">Lokal musikk først, selvhostet strømming og Material 3-håndverk i én FOSS-spiller</string>
     <string name="about_version_format">Versjon v%1$s</string>
     <string name="accounts_unable_open_screen">Kan ikke åpne denne skjermen akkurat nå</string>
     <string name="action_copy">Kopier</string>

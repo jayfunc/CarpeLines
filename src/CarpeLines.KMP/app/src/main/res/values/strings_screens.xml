@@ -207,8 +207,9 @@
     <string name="no_genres_available">No genres available</string>
 
     <string name="about_app_name" translatable="false">CarpeLines</string>
-    <string name="about_slogan" tools:ignore="MissingTranslation">Seize the Line, Keep the Time</string>
-    <string name="about_tagline">Live, word-by-word lyrics for any Android media session</string>
+    <!-- Fixed bilingual slogan: identical in every locale, so never translated. -->
+    <string name="about_slogan_zh" translatable="false">撷句成章，拾韵成行</string>
+    <string name="about_slogan_en" translatable="false">Seize the Line, Keep the Time</string>
     <string name="about_version_format">Version v%1$s</string>
     <string name="about_build_time_format" tools:ignore="MissingTranslation">Build time: %1$s</string>
     <string name="about_commit_format" tools:ignore="MissingTranslation">Commit %1$s</string>

@@ -32,7 +32,6 @@
     <string name="about_support_chip_ci">CI e release</string>
     <string name="about_support_chip_foss">Manutenzione FOSS</string>
     <string name="about_support_chip_streaming">Musica self-hosted</string>
-    <string name="about_tagline">Musica local-first, streaming self-hosted e cura Material 3 in un unico player FOSS</string>
     <string name="about_version_format">Versione v%1$s</string>
     <string name="accounts_unable_open_screen">Impossibile aprire questa schermata al momento</string>
     <string name="action_copy">Copia</string>

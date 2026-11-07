@@ -32,7 +32,6 @@
     <string name="about_support_chip_ci">CI y versiones</string>
     <string name="about_support_chip_foss">Mantenimiento FOSS</string>
     <string name="about_support_chip_streaming">Música autoalojada</string>
-    <string name="about_tagline">Música local primero, streaming autoalojado y diseño Material 3 en un solo reproductor FOSS</string>
     <string name="about_version_format">Versión v%1$s</string>
     <string name="accounts_unable_open_screen">No se puede abrir esta pantalla ahora</string>
     <string name="action_copy">Copiar</string>

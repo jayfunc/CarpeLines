@@ -202,8 +202,6 @@
     <string name="browse_by_genre">按流派浏览</string>
     <string name="no_genres_available">暂无可用流派</string>
 
-    <string name="about_slogan">撷句成章，拾韵成行</string>
-    <string name="about_tagline">为任意 Android 媒体会话实时呈现逐字歌词</string>
     <string name="about_version_format">版本 v%1$s</string>
     <string name="about_build_time_format">构建时间：%1$s</string>
     <string name="about_commit_format">提交 %1$s</string>

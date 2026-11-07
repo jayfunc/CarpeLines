@@ -32,7 +32,6 @@
     <string name="about_support_chip_ci">CI ve sürümler</string>
     <string name="about_support_chip_foss">FOSS bakımı</string>
     <string name="about_support_chip_streaming">Kendi barındırdığınız müzik</string>
-    <string name="about_tagline">Yerel öncelikli müzik, kendi barındırdığınız akış ve Material 3 işçiliği tek bir FOSS oynatıcıda</string>
     <string name="about_version_format">Sürüm v%1$s</string>
     <string name="accounts_unable_open_screen">Bu ekran şu anda açılamıyor</string>
     <string name="action_copy">Kopyala</string>

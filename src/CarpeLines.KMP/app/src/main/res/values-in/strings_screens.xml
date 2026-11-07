@@ -32,7 +32,6 @@
     <string name="about_support_chip_ci">CI dan rilis</string>
     <string name="about_support_chip_foss">Pemeliharaan FOSS</string>
     <string name="about_support_chip_streaming">Musik mandiri</string>
-    <string name="about_tagline">Musik lokal lebih dulu, streaming mandiri, dan sentuhan Material 3 dalam satu pemutar FOSS</string>
     <string name="about_version_format">Versi v%1$s</string>
     <string name="accounts_unable_open_screen">Tidak dapat membuka layar ini sekarang</string>
     <string name="action_copy">Salin</string>
