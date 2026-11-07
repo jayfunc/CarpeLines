@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="collage_pattern_cosmic_swirl">コズミックスワール</string>
+    <string name="collage_pattern_honeycomb_groove">ハニカムグルーヴ</string>
+    <string name="collage_pattern_vinyl_stack">レコードスタック</string>
+    <string name="collage_pattern_pixel_mosaic">ピクセルモザイク</string>
+    <string name="collage_pattern_stardust_scatter">スターダストスキャッター</string>
+    <string name="collage_pattern_soft_orbit">ソフトオービット</string>
+    <string name="collage_pattern_arrow_fanfare">アローファンファーレ</string>
+    <string name="collage_pattern_sunny_bloom">サニーブルーム</string>
+    <string name="collage_pattern_pixel_cookie">ピクセルクッキー</string>
+    <string name="collage_pattern_heart_garden">ハートガーデン</string>
+
+    <plurals name="cloud_download_selected_started">
+        <item quantity="one">クラウドの曲 %1$d 件をオフライン再生用に準備しています</item>
+        <item quantity="other">クラウドの曲 %1$d 件をオフライン再生用に準備しています</item>
+    </plurals>
+</resources>

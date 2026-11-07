@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="collage_pattern_cosmic_swirl">宇宙漩渦</string>
+    <string name="collage_pattern_honeycomb_groove">蜂巢律動</string>
+    <string name="collage_pattern_vinyl_stack">黑膠疊層</string>
+    <string name="collage_pattern_pixel_mosaic">像素馬賽克</string>
+    <string name="collage_pattern_stardust_scatter">星塵散落</string>
+    <string name="collage_pattern_soft_orbit">柔和軌道</string>
+    <string name="collage_pattern_arrow_fanfare">箭頭禮贊</string>
+    <string name="collage_pattern_sunny_bloom">陽光綻放</string>
+    <string name="collage_pattern_pixel_cookie">像素餅乾</string>
+    <string name="collage_pattern_heart_garden">愛心花園</string>
+
+    <plurals name="cloud_download_selected_started">
+        <item quantity="other">正在準備 %1$d 首雲端歌曲以供離線播放</item>
+    </plurals>
+</resources>

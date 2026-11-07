@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="setup_gate_preparing">セットアップを準備中…</string>
+    <string name="song_info_label_provider">提供元</string>
+    <string name="song_info_label_path">パス</string>
+    <string name="cd_playlist_artwork">プレイリスト</string>
+    <string name="home_your_mix_subtitle">今日のあなたのミックス</string>
+    <string name="home_your_mix_queue_name">あなたのミックス</string>
+    <string name="queue_name_liked_songs">お気に入りの曲</string>
+    <string name="queue_name_all_songs_shuffled">すべての曲（シャッフル）</string>
+    <string name="queue_name_liked_songs_shuffled">お気に入りの曲（シャッフル）</string>
+    <string name="queue_name_selected_songs">選択した曲</string>
+
+    <!-- Player sheet, mini player and full player chrome -->
+    <string name="cd_player_sheet_collapsed">CarpeLines プレーヤーシート（折りたたみ）、%1$s</string>
+    <string name="cd_player_sheet_expanded">CarpeLines プレーヤーシート（展開）、%1$s</string>
+    <string name="cd_player_sheet_collapsed_no_track">CarpeLines プレーヤーシート（折りたたみ）</string>
+    <string name="cd_player_sheet_expanded_no_track">CarpeLines プレーヤーシート（展開）</string>
+    <string name="mini_player_connecting_device">デバイスに接続中…</string>
+    <string name="mini_player_preparing_playback">再生を準備中…</string>
+    <string name="mini_player_loading_audio">音声を読み込み中…</string>
+    <string name="cd_shuffle">シャッフル</string>
+    <string name="cd_playback_position">再生位置</string>
+    <string name="add_bookmark_title">ブックマークを保存</string>
+    <string name="add_bookmark_saved_point">保存した再生位置</string>
+    <string name="add_bookmark_use_lyric_line">歌詞の行を使う</string>
+    <string name="add_bookmark_default_name">ブックマーク @ %1$s</string>
+</resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Total durations, such as a playlist's length -->
+    <string name="duration_hours_minutes_long">%1$d 小時 %2$02d 分鐘</string>
+    <string name="duration_minutes_long">%1$d 分鐘</string>
+    <!-- Listening durations, such as the Stats overview total -->
+    <string name="duration_hours_minutes_medium">%1$d 小時 %2$02d 分鐘</string>
+    <string name="duration_hours_medium">%1$d 小時</string>
+    <string name="duration_minutes_medium">%1$d 分鐘</string>
+    <string name="duration_seconds_medium">%1$d 秒</string>
+    <!-- Compact listening durations for Stats chips and tiles -->
+    <string name="duration_hours_minutes_short">%1$d 小時 %2$02d 分鐘</string>
+    <string name="duration_hours_short">%1$d 小時</string>
+    <string name="duration_minutes_short">%1$d 分鐘</string>
+    <string name="duration_seconds_short">%1$d 秒</string>
+    <!-- Relative times, such as the last sync time -->
+    <string name="time_ago_never">從未</string>
+    <string name="time_ago_just_now">剛剛</string>
+</resources>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_card_title">歌詞卡片</string>
+    <string name="lyrics_card_share">分享</string>
+    <string name="lyrics_card_save">儲存圖片</string>
+    <string name="lyrics_card_close">關閉</string>
+    <string name="lyrics_card_style">風格</string>
+    <string name="lyrics_card_font">字體</string>
+    <string name="lyrics_card_select_lyrics">選擇歌詞</string>
+    <string name="lyrics_card_select_all">全選</string>
+    <string name="lyrics_card_clear_selection">取消全選</string>
+    <string name="lyrics_card_selected_count">已選擇 %1$d / %2$d 行</string>
+    <string name="lyrics_card_selection_empty">請至少選擇一行歌詞</string>
+    <string name="lyrics_card_done">完成</string>
+    <string name="lyrics_card_saved">已儲存到相簿</string>
+    <string name="lyrics_card_save_failed">圖片儲存失敗</string>
+    <string name="lyrics_card_share_failed">圖片分享失敗</string>
+    <string name="lyrics_card_share_chooser">分享歌詞卡片</string>
+    <string name="lyrics_line_actions_share_page">選擇歌詞分享</string>
+
+    <string name="lyrics_card_group_classic">經典設計</string>
+    <string name="lyrics_card_group_physical">實體質感</string>
+    <string name="lyrics_card_group_traces">時光印記</string>
+    <string name="lyrics_card_group_retro">數碼懷舊</string>
+    <string name="lyrics_card_group_modern">現代視窗</string>
+    <string name="lyrics_card_group_atmosphere">氛圍創意</string>
+    <string name="lyrics_card_group_chinese">國風雅韻</string>
+
+    <string name="lyrics_card_style_minimal">極簡</string>
+    <string name="lyrics_card_style_swiss">瑞士風</string>
+    <string name="lyrics_card_style_magazine">雜誌</string>
+    <string name="lyrics_card_style_vinyl">黑膠</string>
+    <string name="lyrics_card_style_cd">CD 盒</string>
+    <string name="lyrics_card_style_polaroid">拍立得</string>
+    <string name="lyrics_card_style_ticket">票根</string>
+    <string name="lyrics_card_style_receipt">購物小票</string>
+    <string name="lyrics_card_style_journal">日記</string>
+    <string name="lyrics_card_style_sticky_note">便簽</string>
+    <string name="lyrics_card_style_pod">iPod</string>
+    <string name="lyrics_card_style_windows_phone">Windows Phone</string>
+    <string name="lyrics_card_style_retro_qq">復古 QQ</string>
+    <string name="lyrics_card_style_retro_msn">復古 MSN</string>
+    <string name="lyrics_card_style_qq">QQ</string>
+    <string name="lyrics_card_style_wechat">微信</string>
+    <string name="lyrics_card_style_whatsapp">WhatsApp</string>
+    <string name="lyrics_card_style_telegram">Telegram</string>
+    <string name="lyrics_card_style_line">LINE</string>
+    <string name="lyrics_card_style_cinematic">電影感</string>
+    <string name="lyrics_card_style_cyberpunk">賽博朋克</string>
+    <string name="lyrics_card_style_ink_wash">水墨</string>
+    <string name="lyrics_card_style_ancient_book">古籍</string>
+    <string name="lyrics_card_style_bamboo_slips">竹簡</string>
+    <string name="lyrics_card_style_dunhuang">敦煌</string>
+
+    <string name="lyrics_card_font_sans">無襯線</string>
+    <string name="lyrics_card_font_serif">襯線</string>
+    <string name="lyrics_card_font_mono">等寬</string>
+    <string name="lyrics_card_font_hand">手寫</string>
+</resources>

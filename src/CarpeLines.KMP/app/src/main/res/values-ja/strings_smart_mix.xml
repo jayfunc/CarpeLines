@@ -1,0 +1,62 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="mix_title">スマートミックス</string>
+    <string name="mix_tune_today">今日のミックスを調整</string>
+    <string name="mix_daily_subtitle">今日に反映する前に変更をプレビューできます</string>
+    <string name="mix_library_subtitle">音楽ライブラリからミックスを作成</string>
+    <string name="mix_close">ミックスを閉じる</string>
+    <string name="mix_request_label">どんな音楽を聴きたいですか？</string>
+    <string name="mix_request_placeholder">アーティスト、ジャンル、気分、シーン</string>
+    <!-- Fed to the offline Smart Mix engine as request text; it parses English and Spanish only. Do not translate for other locales. -->
+    <!-- Moment suggestions: each names a mood the offline engine knows (see MixSuggestionEngineTest). -->
+    <string name="mix_moment_morning" tools:ignore="MissingTranslation">Upbeat morning</string>
+    <string name="mix_moment_study" tools:ignore="MissingTranslation">Music to study</string>
+    <string name="mix_moment_workout" tools:ignore="MissingTranslation">Workout</string>
+    <string name="mix_moment_feel_good" tools:ignore="MissingTranslation">Feel good</string>
+    <string name="mix_moment_chill_evening" tools:ignore="MissingTranslation">Chill evening</string>
+    <string name="mix_moment_late_night" tools:ignore="MissingTranslation">Mellow late night</string>
+    <string name="mix_moment_party" tools:ignore="MissingTranslation">Party</string>
+    <!-- %1$s decade from mix_decades, %2$s genre, e.g. "90s Rock" -->
+    <string name="mix_suggest_decade_genre" tools:ignore="MissingTranslation">%1$s %2$s</string>
+    <string-array name="mix_decades" tools:ignore="MissingTranslation">
+        <item>50s</item>
+        <item>60s</item>
+        <item>70s</item>
+        <item>80s</item>
+        <item>90s</item>
+        <item>2000s</item>
+        <item>2010s</item>
+        <item>2020s</item>
+    </string-array>
+    <string name="mix_suggest_recent">最近のリクエスト：%1$s</string>
+    <string name="mix_suggest_rediscover">%1$s を再発見</string>
+    <string name="mix_back">リクエストに戻る</string>
+    <string name="mix_done">完了</string>
+    <string name="mix_thinking">考え中…</string>
+    <string name="mix_refine">ミックスを調整</string>
+    <string name="mix_length">プレイリストの長さ</string>
+    <string name="mix_auto">自動</string>
+    <string name="mix_up_to">最大 %1$d 曲</string>
+    <string name="mix_energy">エネルギー</string>
+    <string name="mix_energy_calm">穏やか</string>
+    <string name="mix_energy_steady">ほどよい</string>
+    <string name="mix_energy_energetic">エネルギッシュ</string>
+    <string name="mix_refine_hint">自動はリクエストに沿います。エネルギーを選ぶと条件が加わり、一致する曲が減ることがあります。</string>
+    <string name="mix_selection_summary">長さ：%1$s · エネルギー：%2$s</string>
+    <string name="mix_edit_request">リクエストを編集</string>
+    <string name="mix_playlist_name">プレイリスト名</string>
+    <string name="mix_short_result">ライブラリ内の一致する曲がリクエストより少なかったため、条件を保ったまま作成しました。</string>
+    <string name="mix_preview_action">ミックスをプレビュー</string>
+    <string name="mix_play">再生</string>
+    <string name="mix_use_today">今日のミックスに使う</string>
+    <string name="mix_save">プレイリストを保存</string>
+    <string name="mix_saved_action">保存済み</string>
+    <string name="mix_saved">%1$s として保存しました</string>
+    <string name="mix_save_failed">このプレイリストを保存できませんでした。プレビューは残っています。もう一度保存してください。</string>
+    <string name="mix_no_matches">一致する曲が見つかりません。リクエストを編集するか、エネルギーを自動にしてください。</string>
+    <string name="mix_daily_updated">デイリーミックスを更新しました</string>
+    <string name="mix_undo">元に戻す</string>
+    <plurals name="mix_matching_songs">
+        <item quantity="one">%1$d 曲が一致 · %2$d 分</item>
+        <item quantity="other">%1$d 曲が一致 · %2$d 分</item>
+    </plurals>
+</resources>

@@ -25,6 +25,14 @@
 
 </div>
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner/carpe-banner-1280x640.png" />
+    <img src="docs/assets/banner/carpe-banner-1280x640-light.png" width="100%"
+         alt="CarpeLines — Seize the Line, Keep the Time. Live, word-by-word lyrics for any Android media session" />
+  </picture>
+</p>
+
 ---
 
 ## Table of Contents

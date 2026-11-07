@@ -25,6 +25,14 @@
 
 </div>
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner/carpe-banner-1280x640.png" />
+    <img src="docs/assets/banner/carpe-banner-1280x640-light.png" width="100%"
+         alt="CarpeLines——撷句成章，拾韵成行：为任意 Android 媒体会话实时呈现逐字歌词" />
+  </picture>
+</p>
+
 ---
 
 ## 目录

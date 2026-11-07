@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="recap_card_title">你的 %1$d 年度回顧</string>
+    <string name="recap_card_title_so_far">你的 %1$d，未完待續</string>
+    <string name="recap_card_subtitle">重溫你的音樂一年</string>
+    <string name="recap_card_subtitle_so_far">看看你今年的音樂之旅進展如何</string>
+    <string name="recap_home_card_title">你的 %1$d 年度回顧來了</string>
+    <string name="recap_home_card_subtitle">重溫定義你這一年的歌曲、藝人和時刻</string>
+    <string name="recap_home_card_open">打開回顧</string>
+    <string name="recap_home_card_dismiss">隱藏</string>
+    <string name="recap_cd_close">關閉回顧</string>
+    <string name="recap_cd_pause">暫停</string>
+    <string name="recap_cd_resume">繼續</string>
+    <string name="recap_cd_slide_progress">第 %1$d 頁，共 %2$d 頁</string>
+    <string name="recap_action_next_slide">下一頁</string>
+    <string name="recap_action_previous_slide">上一頁</string>
+    <string name="recap_close">關閉</string>
+    <string name="recap_not_enough_title">收聽記錄還不夠</string>
+    <string name="recap_not_enough_subtitle">繼續聽歌，你的 %1$d 年度回顧就會逐漸豐富起來</string>
+    <string name="recap_intro_kicker">CarpeLines 年度回顧</string>
+    <string name="recap_intro_title">你的音樂一年</string>
+    <string name="recap_intro_title_so_far">你的一年，未完待續</string>
+    <string name="recap_intro_subtitle">回顧陪伴你這一年的歌曲、藝人和時刻</string>
+    <string name="recap_tap_hint">輕觸繼續</string>
+    <string name="recap_minutes_kicker">%1$d 年你一共聽了</string>
+    <plurals name="recap_minutes_unit" tools:ignore="ImpliedQuantity">
+        <item quantity="other">分鐘</item>
+    </plurals>
+    <plurals name="recap_minutes_days_equivalent">
+        <item quantity="other">相當於不間斷地聽了約 %d 天音樂</item>
+    </plurals>
+    <plurals name="recap_minutes_hours_equivalent">
+        <item quantity="other">相當於不間斷地聽了約 %d 小時音樂</item>
+    </plurals>
+    <string name="recap_minutes_daily_average">日均收聽</string>
+    <string name="recap_minutes_active_days">有音樂的日子</string>
+    <string name="recap_months_kicker">你收聽最多的月份</string>
+    <string name="recap_months_detail">收聽 %1$s</string>
+    <string name="recap_clock_kicker">你的收聽時鐘</string>
+    <string name="recap_personality_early_bird">早起鳥</string>
+    <string name="recap_personality_early_bird_desc">你用音樂開啟每一天，清晨是你的黃金時段</string>
+    <string name="recap_personality_daytime">白天型聽眾</string>
+    <string name="recap_personality_daytime_desc">從上午到下午，音樂陪你度過了一整天</string>
+    <string name="recap_personality_evening">傍晚型聽眾</string>
+    <string name="recap_personality_evening_desc">一天漸漸安靜下來，音樂聲卻越來越大</string>
+    <string name="recap_personality_night_owl">夜貓子</string>
+    <string name="recap_personality_night_owl_desc">夜越深，你聽得越多</string>
+    <string name="recap_clock_favorite_day">最愛的一天：%1$s</string>
+    <string name="recap_cd_chart_entry">%1$s：%2$s</string>
+    <string name="recap_cd_months_chart">每月收聽時長：%1$s</string>
+    <string name="recap_cd_clock_chart">每小時收聽時長：%1$s</string>
+    <string name="recap_dedication_kicker">你最長的連續收聽</string>
+    <plurals name="recap_streak_unit" tools:ignore="ImpliedQuantity">
+        <item quantity="other">天連續收聽</item>
+    </plurals>
+    <string name="recap_dedication_longest_session">最長單次收聽</string>
+    <string name="recap_dedication_biggest_day">收聽最多的一天</string>
+    <string name="recap_dedication_first_song">年度第一首歌</string>
+    <string name="recap_genres_kicker">你最愛的流派</string>
+    <string name="recap_genres_share">佔你收聽的 %1$s</string>
+    <string name="recap_decade_kicker">你的年代</string>
+    <string name="recap_decade_value">%1$d年代</string>
+    <string name="recap_decade_detail">你收聽的音樂中有 %1$s 發行於這個年代</string>
+    <string name="recap_albums_kicker">你最愛的專輯</string>
+    <plurals name="recap_unique_albums">
+        <item quantity="other">你常聽的專輯有 %d 張</item>
+    </plurals>
+    <string name="recap_artists_kicker">你最愛的藝人</string>
+    <plurals name="recap_unique_artists">
+        <item quantity="other">你聽了 %d 位不同的藝人</item>
+    </plurals>
+    <string name="recap_songs_kicker">你最愛的歌曲</string>
+    <plurals name="recap_unique_songs">
+        <item quantity="other">你播放了 %d 首不同的歌曲</item>
+    </plurals>
+    <string name="recap_summary_kicker">一眼看盡你的一年</string>
+    <string name="recap_summary_title">我的 %1$d 音樂回顧</string>
+    <string name="recap_summary_title_so_far">我的 %1$d，未完待續</string>
+    <string name="recap_summary_minutes">收聽分鐘數</string>
+    <string name="recap_summary_top_artist">最愛藝人</string>
+    <string name="recap_summary_top_song">最愛歌曲</string>
+    <string name="recap_summary_top_genre">最愛流派</string>
+    <string name="recap_summary_top_album">最愛專輯</string>
+    <string name="recap_summary_listening_style">收聽風格</string>
+    <string name="recap_share">分享</string>
+    <string name="recap_share_chooser_title">分享你的回顧</string>
+    <string name="recap_share_text">我的 %1$d 音樂回顧，由 CarpeLines 產生</string>
+    <string name="recap_share_failed">無法產生回顧圖片</string>
+    <string name="recap_play_top_songs">播放熱門歌曲</string>
+    <string name="recap_top_songs_queue_name">%1$d 熱門歌曲</string>
+    <string name="recap_replay">再看一遍</string>
+</resources>

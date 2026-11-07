@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Entry points. %1$d is a calendar year, e.g. 2025. -->
+    <string name="recap_card_title" tools:ignore="PluralsCandidate">%1$d 年のリキャップ</string>
+    <string name="recap_card_title_so_far">%1$d 年のここまで</string>
+    <string name="recap_card_subtitle">音楽で振り返る 1 年</string>
+    <string name="recap_card_subtitle_so_far">今年の音楽がどう積み上がったか見てみましょう</string>
+    <string name="recap_home_card_title" tools:ignore="PluralsCandidate">%1$d 年のリキャップができました</string>
+    <string name="recap_home_card_subtitle">1 年を彩った曲、アーティスト、瞬間を振り返りましょう</string>
+    <string name="recap_home_card_open">リキャップを開く</string>
+    <string name="recap_home_card_dismiss">閉じる</string>
+
+    <!-- Story controls -->
+    <string name="recap_cd_close">リキャップを閉じる</string>
+    <string name="recap_cd_pause">一時停止</string>
+    <string name="recap_cd_resume">再開</string>
+    <string name="recap_cd_slide_progress">スライド %1$d / %2$d</string>
+    <string name="recap_action_next_slide">次のスライド</string>
+    <string name="recap_action_previous_slide">前のスライド</string>
+    <string name="recap_close">閉じる</string>
+    <string name="recap_not_enough_title">まだ再生時間が足りません</string>
+    <string name="recap_not_enough_subtitle" tools:ignore="PluralsCandidate">音楽を聴き続けると %1$d 年のリキャップが埋まっていきます</string>
+
+    <!-- Intro -->
+    <string name="recap_intro_kicker">CarpeLines リキャップ</string>
+    <string name="recap_intro_title">あなたの音楽の 1 年</string>
+    <string name="recap_intro_title_so_far">今年のここまで</string>
+    <string name="recap_intro_subtitle">1 年を彩った曲、アーティスト、瞬間を振り返ります</string>
+    <string name="recap_tap_hint">タップして続ける</string>
+
+    <!-- Listening time -->
+    <string name="recap_minutes_kicker" tools:ignore="PluralsCandidate">%1$d 年に聴いた時間</string>
+    <!-- Unit shown under the big number of minutes; the number itself is not part of the text. -->
+    <plurals name="recap_minutes_unit" tools:ignore="ImpliedQuantity">
+        <item quantity="one">分</item>
+        <item quantity="other">分</item>
+    </plurals>
+    <plurals name="recap_minutes_days_equivalent">
+        <item quantity="one">絶え間なく再生して約 %d 日分です</item>
+        <item quantity="other">絶え間なく再生して約 %d 日分です</item>
+    </plurals>
+    <plurals name="recap_minutes_hours_equivalent">
+        <item quantity="one">絶え間なく再生して約 %d 時間分です</item>
+        <item quantity="other">絶え間なく再生して約 %d 時間分です</item>
+    </plurals>
+    <string name="recap_minutes_daily_average">1 日平均</string>
+    <string name="recap_minutes_active_days">音楽を聴いた日</string>
+
+    <!-- Months. %1$s is a compact duration, e.g. "32h 10m". -->
+    <string name="recap_months_kicker">最も聴いた月</string>
+    <string name="recap_months_detail">%1$s の再生</string>
+
+    <!-- Listening clock -->
+    <string name="recap_clock_kicker">リスニングクロック</string>
+    <string name="recap_personality_early_bird">早起きタイプ</string>
+    <string name="recap_personality_early_bird_desc">音楽とともに 1 日を始めるタイプ。朝があなたのゴールデンタイムでした。</string>
+    <string name="recap_personality_daytime">昼間リスナー</string>
+    <string name="recap_personality_daytime_desc">午前遅くから午後まで、音楽が 1 日を通して寄り添っていました</string>
+    <string name="recap_personality_evening">夜のリラックスタイプ</string>
+    <string name="recap_personality_evening_desc">1 日が終わりに近づくと、音楽が盛り上がりました</string>
+    <string name="recap_personality_night_owl">夜型タイプ</string>
+    <string name="recap_personality_night_owl_desc">遅い時間になるほど、よく聴いていました</string>
+    <!-- %1$s is a weekday name, e.g. "Saturday". -->
+    <string name="recap_clock_favorite_day">よく聴いた曜日：%1$s</string>
+    <!-- Screen reader text for the month and hour charts. %1$s in the chart strings is a list of
+         entries, each built from recap_cd_chart_entry: %1$s is a month or hour, %2$s a duration. -->
+    <string name="recap_cd_chart_entry">%1$s：%2$s</string>
+    <string name="recap_cd_months_chart">月別の再生時間：%1$s</string>
+    <string name="recap_cd_clock_chart">時間帯別の再生時間：%1$s</string>
+
+    <!-- Dedication -->
+    <string name="recap_dedication_kicker">最長の連続記録</string>
+    <!-- Unit shown under the big number of days; the number itself is not part of the text. -->
+    <plurals name="recap_streak_unit" tools:ignore="ImpliedQuantity">
+        <item quantity="one">日連続</item>
+        <item quantity="other">日連続</item>
+    </plurals>
+    <string name="recap_dedication_longest_session">最長のセッション</string>
+    <string name="recap_dedication_biggest_day">最も聴いた日</string>
+    <string name="recap_dedication_first_song">今年最初に聴いた曲</string>
+
+    <!-- Genres and decade. %1$s is a percentage, e.g. "38%". -->
+    <string name="recap_genres_kicker">よく聴いたジャンル</string>
+    <string name="recap_genres_share">再生時間の %1$s</string>
+    <string name="recap_decade_kicker">あなたの時代</string>
+    <!-- %1$d is the first year of a decade, e.g. 1990 for "1990s". -->
+    <string name="recap_decade_value">%1$d 年代</string>
+    <string name="recap_decade_detail">再生時間の %1$s が、この年代にリリースされた音楽でした</string>
+
+    <!-- Top albums, artists and songs -->
+    <string name="recap_albums_kicker">よく聴いたアルバム</string>
+    <plurals name="recap_unique_albums">
+        <item quantity="one">%d 枚のアルバムを再生</item>
+        <item quantity="other">%d 枚のアルバムを再生</item>
+    </plurals>
+    <string name="recap_artists_kicker">よく聴いたアーティスト</string>
+    <plurals name="recap_unique_artists">
+        <item quantity="one">%d 組のアーティストを聴きました</item>
+        <item quantity="other">%d 組のアーティストを聴きました</item>
+    </plurals>
+    <string name="recap_songs_kicker">よく聴いた曲</string>
+    <plurals name="recap_unique_songs">
+        <item quantity="one">%d 曲を再生しました</item>
+        <item quantity="other">%d 曲を再生しました</item>
+    </plurals>
+
+    <!-- Summary -->
+    <string name="recap_summary_kicker">1 年のまとめ</string>
+    <string name="recap_summary_title">私の %1$d 年の音楽</string>
+    <string name="recap_summary_title_so_far">私の %1$d 年ここまで</string>
+    <string name="recap_summary_minutes">再生した時間（分）</string>
+    <string name="recap_summary_top_artist">トップアーティスト</string>
+    <string name="recap_summary_top_song">トップソング</string>
+    <string name="recap_summary_top_genre">トップジャンル</string>
+    <string name="recap_summary_top_album">トップアルバム</string>
+    <string name="recap_summary_listening_style">リスニングスタイル</string>
+    <string name="recap_share">共有</string>
+    <string name="recap_share_chooser_title">リキャップを共有</string>
+    <string name="recap_share_text">私の %1$d 年の音楽（CarpeLines で作成）</string>
+    <string name="recap_share_failed">リキャップ画像を作成できませんでした</string>
+    <string name="recap_play_top_songs">トップソングを再生</string>
+    <string name="recap_top_songs_queue_name">%1$d 年のトップソング</string>
+    <string name="recap_replay">もう一度見る</string>
+</resources>

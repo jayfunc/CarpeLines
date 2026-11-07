@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_card_title">歌詞カード</string>
+    <string name="lyrics_card_share">共有</string>
+    <string name="lyrics_card_save">画像を保存</string>
+    <string name="lyrics_card_close">閉じる</string>
+    <string name="lyrics_card_style">スタイル</string>
+    <string name="lyrics_card_font">フォント</string>
+    <string name="lyrics_card_select_lyrics">歌詞を選択</string>
+    <string name="lyrics_card_select_all">すべて選択</string>
+    <string name="lyrics_card_clear_selection">選択を解除</string>
+    <string name="lyrics_card_selected_count">%1$d / %2$d 行</string>
+    <string name="lyrics_card_selection_empty">歌詞を 1 行以上選択してください</string>
+    <string name="lyrics_card_done">完了</string>
+    <string name="lyrics_card_saved">ギャラリーに保存しました</string>
+    <string name="lyrics_card_save_failed">画像を保存できませんでした</string>
+    <string name="lyrics_card_share_failed">画像を共有できませんでした</string>
+    <string name="lyrics_card_share_chooser">歌詞カードを共有</string>
+    <string name="lyrics_line_actions_share_page">共有する歌詞を選択</string>
+
+    <string name="lyrics_card_group_classic">クラシック</string>
+    <string name="lyrics_card_group_physical">フィジカル</string>
+    <string name="lyrics_card_group_traces">時の痕跡</string>
+    <string name="lyrics_card_group_retro">デジタルレトロ</string>
+    <string name="lyrics_card_group_modern">モダンビジョン</string>
+    <string name="lyrics_card_group_atmosphere">アトモスフィア</string>
+    <string name="lyrics_card_group_chinese">中華の趣</string>
+
+    <string name="lyrics_card_style_minimal">ミニマル</string>
+    <string name="lyrics_card_style_swiss">スイス</string>
+    <string name="lyrics_card_style_magazine">マガジン</string>
+    <string name="lyrics_card_style_vinyl">レコード</string>
+    <string name="lyrics_card_style_cd">CD ケース</string>
+    <string name="lyrics_card_style_polaroid">ポラロイド</string>
+    <string name="lyrics_card_style_ticket">チケット</string>
+    <string name="lyrics_card_style_receipt">レシート</string>
+    <string name="lyrics_card_style_journal">ジャーナル</string>
+    <string name="lyrics_card_style_sticky_note">付箋</string>
+    <string name="lyrics_card_style_pod">iPod</string>
+    <string name="lyrics_card_style_windows_phone">Windows Phone</string>
+    <string name="lyrics_card_style_retro_qq">レトロ QQ</string>
+    <string name="lyrics_card_style_retro_msn">レトロ MSN</string>
+    <string name="lyrics_card_style_qq">QQ</string>
+    <string name="lyrics_card_style_wechat">WeChat</string>
+    <string name="lyrics_card_style_whatsapp">WhatsApp</string>
+    <string name="lyrics_card_style_telegram">Telegram</string>
+    <string name="lyrics_card_style_line">LINE</string>
+    <string name="lyrics_card_style_cinematic">シネマティック</string>
+    <string name="lyrics_card_style_cyberpunk">サイバーパンク</string>
+    <string name="lyrics_card_style_ink_wash">水墨</string>
+    <string name="lyrics_card_style_ancient_book">古書</string>
+    <string name="lyrics_card_style_bamboo_slips">竹簡</string>
+    <string name="lyrics_card_style_dunhuang">敦煌</string>
+
+    <string name="lyrics_card_font_sans">ゴシック体</string>
+    <string name="lyrics_card_font_serif">明朝体</string>
+    <string name="lyrics_card_font_mono">等幅</string>
+    <string name="lyrics_card_font_hand">手書き</string>
+</resources>

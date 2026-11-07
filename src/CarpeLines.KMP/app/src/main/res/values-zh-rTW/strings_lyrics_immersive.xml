@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_immersive_show_chrome">顯示控件</string>
+    <string name="lyrics_immersive_close">收起歌詞頁</string>
+    <string name="lyrics_immersive_previous">上一首</string>
+    <string name="lyrics_immersive_next">下一首</string>
+    <string name="lyrics_immersive_source">來自 %1$s</string>
+    <string name="lyrics_overview_lyrics_only">只看歌詞</string>
+    <string name="lyrics_line_actions_title">歌詞操作</string>
+    <string name="lyrics_line_actions_instrumental">間奏</string>
+    <string name="lyrics_line_actions_offset_label">歌詞偏移</string>
+    <string name="lyrics_line_actions_group_lyrics">歌詞</string>
+    <string name="lyrics_line_actions_copy">複製這一行</string>
+    <string name="lyrics_line_actions_earlier">歌詞提前</string>
+    <string name="lyrics_line_actions_later">歌詞延後</string>
+    <string name="lyrics_line_actions_reset_offset">重設本首偏移</string>
+    <string name="lyrics_line_actions_refresh">重新取得歌詞</string>
+    <string name="lyrics_line_actions_manual_search">手動搜詞</string>
+    <string name="lyrics_line_actions_settings">歌詞外觀</string>
+    <string name="lyrics_layout_mode_title">歌詞佈局</string>
+    <string name="lyrics_layout_mode_subtitle">螢幕上同時顯示幾行歌詞</string>
+    <string name="lyrics_layout_mode_scroll">滾動清單</string>
+    <string name="lyrics_layout_mode_scroll_desc">顯示全部歌詞，正在唱的一行居中</string>
+    <string name="lyrics_layout_mode_single">單行</string>
+    <string name="lyrics_layout_mode_single_desc">正在唱的一行鋪滿螢幕</string>
+    <string name="lyrics_layout_mode_dual">雙行</string>
+    <string name="lyrics_layout_mode_dual_desc">正在唱的一行和下一行同時顯示</string>
+    <string name="lyrics_playing_line_title">歌詞位置</string>
+    <string name="lyrics_playing_line_subtitle">正在唱的那一行在螢幕上的位置</string>
+    <string name="lyrics_playing_line_value">距頂端 %1$d%%</string>
+</resources>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>CarpeLines — 1280×640 banner, light (M3 Expressive)</title>
+<style>
+  /* M3 light scheme generated from the vermilion brand seed.
+     Roles follow docs/M3E-DESIGN-SYSTEM.md §2.1. */
+  :root {
+    --surface: #FFF8F6;
+    --surface-lowest: #FFFFFF;
+    --surface-low: #FFF1EC;
+    --surface-container: #FCEAE4;
+    --surface-high: #F6E4DE;
+    --surface-highest: #F0DED8;
+
+    --on-surface: #221A17;
+    --on-surface-variant: #5A463E;
+
+    --outline: #877369;
+    --outline-variant: #DCC7BE;
+
+    --primary: #A63B12;             /* tone 40 */
+    --on-primary: #FFFFFF;
+    --primary-container: #FFDBCE;    /* tone 90 */
+    --primary-fixed-dim: #FFB59B;    /* tone 80 */
+
+    --secondary-container: #F5DED5;
+    --tertiary: #3F665C;
+    --tertiary-container: #C1ECE0;
+    --tertiary-fixed-dim: #93CFC0;   /* tone 80 */
+
+    /* shape ladder — §2.3 */
+    --shape-sm: 8px;
+    --shape-lg: 16px;
+    --shape-xl: 28px;
+    --shape-xxl: 48px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 1280px;
+    height: 640px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  body {
+    font-family: 'Segoe UI Variable Display', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: var(--on-surface);
+  }
+
+  .frame {
+    position: relative;
+    width: 1280px;
+    height: 640px;
+    overflow: hidden;
+    background:
+      radial-gradient(58% 74% at 100% 0%, rgba(255, 181, 155, 0.30) 0%, rgba(255, 181, 155, 0) 62%),
+      radial-gradient(50% 66% at 0% 100%, rgba(193, 236, 224, 0.35) 0%, rgba(193, 236, 224, 0) 64%),
+      var(--surface);
+  }
+
+  /* ---------- expressive colour fields ---------- */
+
+  .blob { position: absolute; }
+  .blob-a {
+    left: 690px;
+    top: -46px;
+    width: 480px;
+    height: 480px;
+    border-radius: 50%;
+    background: var(--primary-fixed-dim);
+  }
+  .blob-b {
+    left: 505px;
+    top: 130px;
+    width: 240px;
+    height: 200px;
+    border-radius: var(--shape-xxl);
+    corner-shape: squircle;
+    background: var(--tertiary-fixed-dim);
+    transform: rotate(-22deg);
+  }
+  .blob-c {
+    left: 560px;
+    top: 442px;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: var(--primary);
+  }
+
+  /* ---------- media plates ---------- */
+
+  .shot {
+    position: absolute;
+    padding: 8px;
+    background: var(--surface-lowest);
+    border-radius: var(--shape-xl);
+    corner-shape: squircle;
+  }
+  .shot img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+    corner-shape: squircle;
+  }
+
+  .shot-wide {
+    left: 580px;
+    top: 139px;
+    width: 500px;
+    height: 322px;
+    transform: rotate(-6deg);
+    box-shadow:
+      0 40px 70px rgba(96, 48, 28, 0.22),
+      0 6px 16px rgba(96, 48, 28, 0.10),
+      0 0 0 1px rgba(34, 26, 23, 0.05);
+  }
+  .shot-tall {
+    left: 995px;
+    top: 156px;
+    width: 170px;
+    height: 348px;
+    transform: rotate(7deg);
+    box-shadow:
+      0 34px 58px rgba(96, 48, 28, 0.26),
+      0 4px 12px rgba(96, 48, 28, 0.12),
+      0 0 0 1px rgba(34, 26, 23, 0.05);
+  }
+
+  /* ---------- brand lockup ---------- */
+
+  .lockup {
+    position: absolute;
+    left: 72px;
+    top: 72px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .lockup img {
+    width: 72px;
+    height: 72px;
+    display: block;
+    border-radius: 20px;
+    box-shadow: 0 10px 24px rgba(150, 78, 28, 0.20), 0 0 0 1px rgba(34, 26, 23, 0.05);
+  }
+  .wordmark {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.6px;
+    line-height: 1;
+    color: var(--on-surface);
+  }
+
+  /* ---------- display type ---------- */
+
+  h1 {
+    position: absolute;
+    left: 70px;
+    top: 190px;
+    font-size: 57px;
+    font-weight: 700;
+    line-height: 64px;
+    letter-spacing: -0.6px;
+    color: var(--on-surface);
+    white-space: nowrap;
+  }
+  h1 .emphasized { color: var(--primary); }
+
+  /* the zh-CN README carries the same tagline — keep them together */
+  .slogan-zh {
+    position: absolute;
+    left: 74px;
+    top: 328px;
+    font-family: 'Microsoft YaHei', 'Noto Sans SC', 'PingFang SC', sans-serif;
+    font-size: 44px;
+    line-height: 56px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--on-surface);
+    white-space: nowrap;
+  }
+
+  /* the mark's time cursor, rebuilt as an M3 linear progress indicator */
+  .progress {
+    position: absolute;
+    left: 74px;
+    top: 406px;
+    width: 260px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--outline-variant);
+  }
+  .progress .indicator {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 59%;
+    border-radius: 2px;
+    background: var(--primary);
+  }
+  .progress .cursor {
+    position: absolute;
+    left: 59%;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0 -7px;
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 0 3px var(--surface);
+  }
+
+  .sub {
+    position: absolute;
+    left: 74px;
+    top: 428px;
+    width: 470px;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    color: var(--on-surface-variant);
+  }
+  .sub .zh {
+    font-family: 'Segoe UI Variable Display', 'Microsoft YaHei', 'Noto Sans SC', 'PingFang SC', sans-serif;
+    letter-spacing: 1px;
+    color: var(--on-surface-variant);
+  }
+
+  /* ---------- footer ---------- */
+
+  .divider {
+    position: absolute;
+    left: 72px;
+    top: 560px;
+    width: 1136px;
+    height: 1px;
+    background: var(--outline-variant);
+  }
+  .meta {
+    position: absolute;
+    left: 72px;
+    top: 578px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: var(--on-surface-variant);
+  }
+  .meta .sep { color: var(--outline); }
+  .repo {
+    position: absolute;
+    right: 72px;
+    top: 578px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--primary);
+  }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <div class="blob blob-a"></div>
+    <div class="blob blob-b"></div>
+    <div class="blob blob-c"></div>
+
+    <div class="shot shot-wide">
+      <img src="../screenshots/lyrics-page-landscape.jpg"
+           alt="CarpeLines lyrics page on a tablet" />
+    </div>
+    <div class="shot shot-tall">
+      <img src="../screenshots/lyrics-page-portrait.jpg"
+           alt="CarpeLines lyrics page on a phone" />
+    </div>
+
+    <div class="lockup">
+      <img src="../../../logo/carpe-icon.svg" alt="" />
+      <div class="wordmark">CarpeLines</div>
+    </div>
+
+    <h1>Seize the Line,<br /><span class="emphasized">Keep the Time</span></h1>
+    <p class="slogan-zh" lang="zh-CN">撷句成章，拾韵成行</p>
+
+    <div class="progress">
+      <div class="indicator"></div>
+      <div class="cursor"></div>
+    </div>
+
+    <p class="sub">
+      Live, word-by-word lyrics for any Android media session<br />
+      <span class="zh" lang="zh-CN">为任意 Android 媒体会话实时呈现逐字歌词</span>
+    </p>
+
+    <div class="divider"></div>
+    <div class="meta">
+      <span>Android 11+ (API 30)</span><span class="sep">·</span>
+      <span>Kotlin Multiplatform</span><span class="sep">·</span>
+      <span>GPL-3.0-or-later</span>
+    </div>
+    <div class="repo">github.com/jayfunc/CarpeLines</div>
+  </div>
+</body>
+</html>

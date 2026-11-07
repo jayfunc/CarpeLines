@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_immersive_show_chrome">コントロールを表示</string>
+    <string name="lyrics_immersive_close">歌詞画面を閉じる</string>
+    <string name="lyrics_immersive_previous">前の曲</string>
+    <string name="lyrics_immersive_next">次の曲</string>
+    <string name="lyrics_immersive_source">%1$s から</string>
+    <string name="lyrics_overview_lyrics_only">歌詞だけを表示</string>
+    <string name="lyrics_line_actions_title">行の操作</string>
+    <string name="lyrics_line_actions_instrumental">間奏</string>
+    <string name="lyrics_line_actions_offset_label">行のオフセット</string>
+    <string name="lyrics_line_actions_group_lyrics">歌詞</string>
+    <string name="lyrics_line_actions_copy">この行をコピー</string>
+    <string name="lyrics_line_actions_earlier">歌詞を前倒し</string>
+    <string name="lyrics_line_actions_later">歌詞を後ろ倒し</string>
+    <string name="lyrics_line_actions_reset_offset">この曲のオフセットをリセット</string>
+    <string name="lyrics_line_actions_refresh">歌詞を再取得</string>
+    <string name="lyrics_line_actions_manual_search">歌詞を手動で検索</string>
+    <string name="lyrics_line_actions_settings">歌詞の表示設定</string>
+    <string name="lyrics_layout_mode_title">レイアウト</string>
+    <string name="lyrics_layout_mode_subtitle">画面に表示する歌詞の行数</string>
+    <string name="lyrics_layout_mode_scroll">スクロールリスト</string>
+    <string name="lyrics_layout_mode_scroll_desc">すべての行を表示し、再生中の行を中央に配置します</string>
+    <string name="lyrics_layout_mode_single">1 行</string>
+    <string name="lyrics_layout_mode_single_desc">再生中の行を画面いっぱいに表示します</string>
+    <string name="lyrics_layout_mode_dual">2 行</string>
+    <string name="lyrics_layout_mode_dual_desc">再生中の行と次の行を表示し、続きを追いやすくします</string>
+    <string name="lyrics_playing_line_title">再生中の行の位置</string>
+    <string name="lyrics_playing_line_subtitle">歌われている行を画面のどこに表示するか</string>
+    <string name="lyrics_playing_line_value">上から %1$d%%</string>
+</resources>

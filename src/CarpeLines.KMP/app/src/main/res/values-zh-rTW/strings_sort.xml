@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Library sort method labels -->
+    <string name="sort_method_default_order">預設順序</string>
+    <string name="sort_method_title">標題</string>
+    <string name="sort_method_artist">藝人</string>
+    <string name="sort_method_album">專輯</string>
+    <string name="sort_method_date_added">新增時間</string>
+    <string name="sort_method_duration">時長</string>
+    <string name="sort_method_release_year">發行年份</string>
+    <string name="sort_method_song_count">歌曲數量</string>
+    <string name="sort_method_name">名稱</string>
+    <string name="sort_method_num_songs">歌曲數量</string>
+    <string name="sort_method_date_created">建立時間</string>
+    <string name="sort_method_date_liked">收藏時間</string>
+    <string name="sort_method_subfolder_count">子資料夾數量</string>
+</resources>
