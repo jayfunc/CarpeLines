@@ -5,7 +5,7 @@
 <h3 align="center">Seize the Line, Keep the Time</h3>
 
 <p align="center">
-  A word-by-word, per-character lyrics canvas for any Android media session.
+  Live, word-by-word lyrics for any Android media session
 </p>
 
 <p align="center">

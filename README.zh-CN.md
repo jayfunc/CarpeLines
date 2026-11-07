@@ -5,7 +5,7 @@
 <h3 align="center">撷句成章，拾韵成行</h3>
 
 <p align="center">
-  一款为 Android 上正在播放的音乐提供逐字歌词可视化的应用
+  为任意 Android 媒体会话实时呈现逐字歌词
 </p>
 
 <p align="center">
