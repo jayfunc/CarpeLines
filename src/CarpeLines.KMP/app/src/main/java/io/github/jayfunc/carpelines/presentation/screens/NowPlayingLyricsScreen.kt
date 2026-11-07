@@ -170,6 +170,14 @@ private val LyricsReadingWidth = 680.dp
 /** The album face's control bar stops widening with the window, so its controls stay together. */
 private val LyricsControlBarWidth = 720.dp
 
+/**
+ * The split's words share the window with the player card, so their column keeps a wider margin
+ * than the phone page: at [LyricsPageInset] the lines crowd the card beside them and the window
+ * edge behind it. The karaoke view still adds [LyricLineInset] on its own, so the band carries
+ * only the difference.
+ */
+private val LyricsSplitPageInset = 48.dp
+
 /** The split gives each side half the window; the card's own content stops growing before that. */
 private val LyricsPlayerCardWidth = 640.dp
 
@@ -1408,7 +1416,9 @@ private fun LyricsWidePanel(
                         .widthIn(max = LyricsReadingWidth)
                         .fillMaxWidth()
                         .fillMaxHeight()
-                        .padding(horizontal = (LyricsPageInset - LyricLineInset))
+                        // Backed out of the split's own inset for the same reason as the compact
+                        // page: the karaoke view adds the line inset itself.
+                        .padding(horizontal = (LyricsSplitPageInset - LyricLineInset))
                         .graphicsLayer { alpha = 1f - focusProgress.value },
                 ) {
                     lyricsContent(Modifier.fillMaxSize())
@@ -1602,16 +1612,18 @@ private fun LyricsPlayerPane(
                 },
         ) {
             val coverSide = minOf(
-                maxWidth - LyricsPageInset * 2,
+                maxWidth - LyricsSplitPageInset * 2,
                 maxHeight * 0.46f,
                 420.dp,
             ).coerceAtLeast(0.dp)
             // Centred while it fits and scrollable when it does not — a very large text scale on
             // a short window must not clip the transport off the bottom of the card.
+            // The card takes the split's page margin rather than the phone page's, so the cover
+            // clears the window edge by the same distance as the words in the pane beside it.
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = LyricsPageInset),
+                    .padding(horizontal = LyricsSplitPageInset),
                 contentAlignment = Alignment.Center,
             ) {
                 Column(
