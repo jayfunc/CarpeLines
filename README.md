@@ -30,6 +30,7 @@
 ## Table of Contents
 
 - [Highlighted Features](#-highlighted-features)
+- [Screenshots](#-screenshots)
 - [Download & Install](#-download--install)
 - [Lyrics Engine](#-lyrics-engine)
 - [Documentation](#-documentation)
@@ -79,6 +80,16 @@
 - **Customization** — theme, lyrics typography, layout, blur, source order and per-track offset.
 
 </details>
+
+---
+
+## <img src="docs/assets/icons/screenshots.svg" width="28" height="28" align="absmiddle" alt="" /> Screenshots
+
+<p align="center">
+  <a href="docs/assets/screenshots/lyrics-page-landscape.jpg"><img src="docs/assets/screenshots/lyrics-page-landscape.jpg" width="640" height="400" alt="Lyrics page on a tablet with an artwork-derived palette, fluid backdrop and per-character sweep" /></a>&nbsp;&nbsp;<a href="docs/assets/screenshots/lyrics-page-portrait.jpg"><img src="docs/assets/screenshots/lyrics-page-portrait.jpg" width="184" height="400" alt="Lyrics page on a phone with the playing line centred and the transport pill below" /></a>
+</p>
+
+<p align="center"><sub>Artwork-derived colour and fluid backdrops, with the transport pill floating over the lyrics.</sub></p>
 
 ---
 

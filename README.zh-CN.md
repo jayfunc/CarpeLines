@@ -30,6 +30,7 @@
 ## 目录
 
 - [功能亮点](#-功能亮点)
+- [应用截图](#-应用截图)
 - [下载与安装](#-下载与安装)
 - [歌词引擎](#-歌词引擎)
 - [文档](#-文档)
@@ -79,6 +80,16 @@
 - **自定义** — 主题、歌词排版、布局、模糊、来源顺序与单曲偏移。
 
 </details>
+
+---
+
+## <img src="docs/assets/icons/screenshots.svg" width="28" height="28" align="absmiddle" alt="" /> 应用截图
+
+<p align="center">
+  <a href="docs/assets/screenshots/lyrics-page-landscape.jpg"><img src="docs/assets/screenshots/lyrics-page-landscape.jpg" width="640" height="400" alt="平板上的歌词页：封面取色、流体背景与逐字扫光" /></a>&nbsp;&nbsp;<a href="docs/assets/screenshots/lyrics-page-portrait.jpg"><img src="docs/assets/screenshots/lyrics-page-portrait.jpg" width="184" height="400" alt="手机上的歌词页：当前行居中，下方是自动隐藏的播放胶囊" /></a>
+</p>
+
+<p align="center"><sub>封面取色与流体背景，播放胶囊浮在歌词之上。</sub></p>
 
 ---
 
