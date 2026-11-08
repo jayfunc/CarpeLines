@@ -20,7 +20,10 @@ half4 main(float2 fragCoord) {
         for (int i = 1; i < 12; i++) {
             float layer = float(k);
             float depth = float(i);
-            float cellSize = 2.0 + depth * 3.0;
+            // Half the WinUI cell size: the shader normalises `uv` by the effect width, so on a
+            // phone the stock cells read as a dense field of sub-pixel specks. Larger cells
+            // double the flake size and cut the count to a quarter.
+            float cellSize = (2.0 + depth * 3.0) * 0.5;
             float downSpeed = 0.3 + (sin(uTime * 0.4 + float(k + i * 20)) + 1.0) * 0.00008 * uSpeed;
 
             // `uv` is normalised by the width for both axes, as in the original.

@@ -45,7 +45,9 @@ private val RAINDROP_UNIFORMS = mapOf(
 )
 
 private val SNOW_UNIFORMS = mapOf(
-    "uDensity" to 0.1f, // SnowFlakeOverlayAmount = 10 %
+    // BetterLyrics' 10 % is tuned for a desktop window; on a phone it reads as a snowstorm, so
+    // the port thins the field out (see the cell-size note in the shader).
+    "uDensity" to 0.06f,
     "uSpeed" to 1f, // SnowFlakeOverlaySpeed = 1
 )
 
