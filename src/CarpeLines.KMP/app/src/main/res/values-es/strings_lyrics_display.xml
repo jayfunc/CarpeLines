@@ -201,4 +201,21 @@
     <string name="lyrics_text_color_light">Siempre claro</string>
     <string name="lyrics_text_color_dark">Siempre oscuro</string>
     <string name="external_lyrics_grant_access">Abrir acceso a notificaciones</string>
+    <string name="floating_lyrics_section">Letras en escritorio y pantalla de bloqueo</string>
+    <string name="floating_lyrics_desktop_title">Letras en escritorio</string>
+    <string name="floating_lyrics_desktop_subtitle">Muestra la línea de letra actual en una ventana flotante sobre otras apps</string>
+    <string name="floating_lyrics_lock_screen_title">Letras en pantalla de bloqueo</string>
+    <string name="floating_lyrics_lock_screen_subtitle">Muestra las letras y los controles en una notificación en la pantalla de bloqueo</string>
+    <string name="floating_lyrics_notification_permission_hint">Permite las notificaciones para mostrar letras y controles en la pantalla de bloqueo</string>
+    <string name="floating_lyrics_permission_hint">Las letras de escritorio y de bloqueo necesitan el permiso «Mostrar sobre otras apps»</string>
+    <string name="floating_lyrics_notification_channel">Letras flotantes</string>
+    <string name="floating_lyrics_lock_notification_title">Ajustes de notificación en el bloqueo</string>
+    <string name="floating_lyrics_lock_notification_subtitle">En la notificación «Letras flotantes», elige «Mostrar notificaciones y contenido» en «Pantalla de bloqueo»</string>
+    <string name="floating_lyrics_notification_title">Letras flotantes</string>
+    <string name="floating_lyrics_notification_text">%1$s · %2$s</string>
+    <string name="floating_lyrics_status_showing">Mostrando las letras actuales sobre otras apps</string>
+    <string name="floating_lyrics_searching">Buscando letras…</string>
+    <string name="floating_lyrics_not_found">No hay letras para esta pista</string>
+    <string name="floating_lyrics_open_app">Abrir CarpeLines</string>
+    <string name="floating_lyrics_close">Desactivar letras flotantes</string>
 </resources>

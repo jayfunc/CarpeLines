@@ -201,4 +201,21 @@
     <string name="lyrics_text_color_light">Всегда светлый</string>
     <string name="lyrics_text_color_dark">Всегда тёмный</string>
     <string name="external_lyrics_grant_access">Открыть доступ к уведомлениям</string>
+    <string name="floating_lyrics_section">Текст на рабочем столе и экране блокировки</string>
+    <string name="floating_lyrics_desktop_title">Текст на рабочем столе</string>
+    <string name="floating_lyrics_desktop_subtitle">Показывает текущую строку текста в плавающем окне поверх других приложений</string>
+    <string name="floating_lyrics_lock_screen_title">Текст на экране блокировки</string>
+    <string name="floating_lyrics_lock_screen_subtitle">Показывает текст и управление в уведомлении на экране блокировки</string>
+    <string name="floating_lyrics_notification_permission_hint">Разрешите уведомления, чтобы показывать текст и управление на экране блокировки</string>
+    <string name="floating_lyrics_permission_hint">Для текста на рабочем столе и экране блокировки нужно разрешение «Поверх других приложений»</string>
+    <string name="floating_lyrics_notification_channel">Плавающий текст</string>
+    <string name="floating_lyrics_lock_notification_title">Настройки уведомлений на экране блокировки</string>
+    <string name="floating_lyrics_lock_notification_subtitle">В уведомлении «Плавающий текст» выберите «Экран блокировки» → «Показывать уведомления и содержимое»</string>
+    <string name="floating_lyrics_notification_title">Плавающий текст</string>
+    <string name="floating_lyrics_notification_text">%1$s · %2$s</string>
+    <string name="floating_lyrics_status_showing">Показ текущего текста поверх других приложений</string>
+    <string name="floating_lyrics_searching">Поиск текста…</string>
+    <string name="floating_lyrics_not_found">Для этого трека нет текста</string>
+    <string name="floating_lyrics_open_app">Открыть CarpeLines</string>
+    <string name="floating_lyrics_close">Выключить плавающий текст</string>
 </resources>

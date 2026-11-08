@@ -201,4 +201,21 @@
     <string name="lyrics_text_color_neutral">中性</string>
     <string name="lyrics_text_color_light">始终浅色</string>
     <string name="lyrics_text_color_dark">始终深色</string>
+    <string name="floating_lyrics_section">桌面与锁屏歌词</string>
+    <string name="floating_lyrics_desktop_title">桌面歌词</string>
+    <string name="floating_lyrics_desktop_subtitle">在其他应用上层悬浮显示当前歌词</string>
+    <string name="floating_lyrics_lock_screen_title">锁屏歌词</string>
+    <string name="floating_lyrics_lock_screen_subtitle">锁屏时通过通知显示歌词与播放控制</string>
+    <string name="floating_lyrics_notification_permission_hint">需要通知权限才能在锁屏上显示歌词与控制</string>
+    <string name="floating_lyrics_permission_hint">桌面与锁屏歌词需要「显示在其他应用上层」权限</string>
+    <string name="floating_lyrics_notification_channel">悬浮歌词</string>
+    <string name="floating_lyrics_lock_notification_title">锁屏通知设置</string>
+    <string name="floating_lyrics_lock_notification_subtitle">在「悬浮歌词」通知中将「在锁定屏幕上」设为「显示通知及其内容」</string>
+    <string name="floating_lyrics_notification_title">悬浮歌词</string>
+    <string name="floating_lyrics_notification_text">%1$s · %2$s</string>
+    <string name="floating_lyrics_status_showing">正在其他应用上方显示当前歌词</string>
+    <string name="floating_lyrics_searching">正在查找歌词…</string>
+    <string name="floating_lyrics_not_found">未找到这首歌的歌词</string>
+    <string name="floating_lyrics_open_app">打开 CarpeLines</string>
+    <string name="floating_lyrics_close">关闭悬浮歌词</string>
 </resources>

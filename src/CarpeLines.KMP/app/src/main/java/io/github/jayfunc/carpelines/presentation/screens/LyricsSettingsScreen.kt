@@ -1,6 +1,14 @@
 package io.github.jayfunc.carpelines.presentation.screens
 
 import androidx.compose.animation.AnimatedVisibility
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -36,8 +44,11 @@ import androidx.compose.material.icons.rounded.FontDownload
 import androidx.compose.material.icons.rounded.Gradient
 import androidx.compose.material.icons.automirrored.rounded.FormatAlignLeft
 import androidx.compose.material.icons.rounded.Groups
+import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Mic
+import androidx.compose.material.icons.rounded.NotificationsActive
 import androidx.compose.material.icons.rounded.Opacity
+import androidx.compose.material.icons.rounded.PictureInPictureAlt
 import androidx.compose.material.icons.rounded.RestartAlt
 import androidx.compose.material.icons.rounded.SwapVert
 import androidx.compose.material3.Slider
@@ -51,6 +62,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -70,6 +82,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -77,6 +92,9 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import io.github.jayfunc.carpelines.R
 import io.github.jayfunc.carpelines.data.preferences.dataStore
+import io.github.jayfunc.carpelines.data.preferences.FLOATING_LYRICS_ENABLED_KEY
+import io.github.jayfunc.carpelines.data.preferences.LOCK_SCREEN_LYRICS_ENABLED_KEY
+import io.github.jayfunc.carpelines.presentation.floatinglyrics.FloatingLyricsService
 import io.github.jayfunc.carpelines.presentation.components.betterlyrics.BetterLyricsAmbientStyle
 import io.github.jayfunc.carpelines.presentation.components.betterlyrics.isAmbientShaderSupported
 import io.github.jayfunc.carpelines.presentation.components.lyrics.AMBIENT_ENABLED_KEY
@@ -164,6 +182,12 @@ private enum class LyricsSection(val itemKeys: Set<String>) {
             "item_lyrics_scroll_resume_delay"
         )
     ),
+    FLOATING_OVERLAY(
+        setOf(
+            "item_lyrics_floating_enabled",
+            "item_lyrics_lock_screen_enabled"
+        )
+    ),
     RESET(setOf("item_lyrics_reset_defaults"));
 
     companion object {
@@ -233,6 +257,122 @@ fun LyricsSettingsScreen(
     val ambientStyle by ambientStyleFlow.collectAsStateWithLifecycle(
         initialValue = BetterLyricsAmbientStyle.FLUID
     )
+
+    val floatingLyricsEnabledFlow = remember(context) {
+        context.dataStore.data.map { it[FLOATING_LYRICS_ENABLED_KEY] ?: false }
+    }
+    val floatingLyricsEnabled by floatingLyricsEnabledFlow.collectAsStateWithLifecycle(
+        initialValue = false
+    )
+    val lockScreenLyricsEnabledFlow = remember(context) {
+        context.dataStore.data.map { it[LOCK_SCREEN_LYRICS_ENABLED_KEY] ?: false }
+    }
+    val lockScreenLyricsEnabled by lockScreenLyricsEnabledFlow.collectAsStateWithLifecycle(
+        initialValue = false
+    )
+
+    var pendingDesktopEnable by remember { mutableStateOf(false) }
+    var pendingLockScreenEnable by remember { mutableStateOf(false) }
+    var overlayPermissionDenied by remember { mutableStateOf(false) }
+    var notificationPermissionDenied by remember { mutableStateOf(false) }
+    var permissionRequestTick by remember { mutableIntStateOf(0) }
+
+    fun hasNotificationPermission(): Boolean =
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+
+    // Both switches share one DataStore edit. Starting the service only after the edit commits
+    // avoids the service reading the previous (both-off) values and stopping itself immediately.
+    fun persistFloatingLyrics(desktop: Boolean, lockScreen: Boolean) {
+        coroutineScope.launch {
+            context.dataStore.edit { preferences ->
+                preferences[FLOATING_LYRICS_ENABLED_KEY] = desktop
+                preferences[LOCK_SCREEN_LYRICS_ENABLED_KEY] = lockScreen
+            }
+            if (desktop || lockScreen) {
+                FloatingLyricsService.start(context)
+            } else {
+                FloatingLyricsService.stop(context)
+            }
+        }
+    }
+
+    fun applyPendingEnable() {
+        val enableDesktop = pendingDesktopEnable
+        val enableLockScreen = pendingLockScreenEnable
+        if (!enableDesktop && !enableLockScreen) return
+        pendingDesktopEnable = false
+        pendingLockScreenEnable = false
+        persistFloatingLyrics(
+            desktop = floatingLyricsEnabled || enableDesktop,
+            lockScreen = lockScreenLyricsEnabled || enableLockScreen,
+        )
+    }
+
+    val overlayPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        overlayPermissionDenied = !Settings.canDrawOverlays(context)
+        if (!overlayPermissionDenied) {
+            permissionRequestTick++
+        } else {
+            pendingDesktopEnable = false
+            pendingLockScreenEnable = false
+        }
+    }
+
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        notificationPermissionDenied = !granted
+        if (granted) {
+            permissionRequestTick++
+        } else {
+            pendingDesktopEnable = false
+            pendingLockScreenEnable = false
+        }
+    }
+
+    // Resolves the permission chain one step at a time: overlay (desktop only) → notifications →
+    // commit the switch. Running it from a version tick lets each launcher request the next step
+    // after it returns without forward references between local functions.
+    LaunchedEffect(permissionRequestTick) {
+        if (permissionRequestTick == 0) return@LaunchedEffect
+        if (!pendingDesktopEnable && !pendingLockScreenEnable) return@LaunchedEffect
+
+        if (pendingDesktopEnable && !Settings.canDrawOverlays(context)) {
+            val packageUri = Uri.parse("package:${context.packageName}")
+            val launched = runCatching {
+                overlayPermissionLauncher.launch(
+                    Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, packageUri)
+                )
+            }.isSuccess
+            if (!launched) {
+                runCatching {
+                    overlayPermissionLauncher.launch(
+                        Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+                    )
+                }
+            }
+            return@LaunchedEffect
+        }
+
+        if (!hasNotificationPermission()) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            return@LaunchedEffect
+        }
+
+        applyPendingEnable()
+    }
+
+    // Some ROMs return from the permission pages without an activity result, so re-check when the
+    // app is in front again; the effect above only acts while a switch is waiting.
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        permissionRequestTick++
+    }
 
     val statusBarHeight = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
     val minTopBarHeight = 64.dp + statusBarHeight
@@ -675,6 +815,100 @@ fun LyricsSettingsScreen(
                         },
                         modifier = Modifier.settingHighlight("item_lyrics_scroll_resume_delay", highlightKey)
                     )
+                }
+            }
+
+            item(key = LyricsSection.FLOATING_OVERLAY.name) {
+                LyricsSettingsSubsection(title = stringResource(R.string.floating_lyrics_section)) {
+                    SwitchSettingItem(
+                        title = stringResource(R.string.floating_lyrics_desktop_title),
+                        subtitle = stringResource(R.string.floating_lyrics_desktop_subtitle),
+                        checked = floatingLyricsEnabled,
+                        onCheckedChange = { enabled ->
+                            if (enabled) {
+                                pendingDesktopEnable = true
+                                permissionRequestTick++
+                            } else {
+                                overlayPermissionDenied = false
+                                persistFloatingLyrics(false, lockScreenLyricsEnabled)
+                            }
+                        },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Rounded.PictureInPictureAlt,
+                                null,
+                                tint = MaterialTheme.colorScheme.secondary
+                            )
+                        },
+                        modifier = Modifier.settingHighlight("item_lyrics_floating_enabled", highlightKey)
+                    )
+
+                    SwitchSettingItem(
+                        title = stringResource(R.string.floating_lyrics_lock_screen_title),
+                        subtitle = stringResource(R.string.floating_lyrics_lock_screen_subtitle),
+                        checked = lockScreenLyricsEnabled,
+                        onCheckedChange = { enabled ->
+                            if (enabled) {
+                                pendingLockScreenEnable = true
+                                permissionRequestTick++
+                            } else {
+                                notificationPermissionDenied = false
+                                persistFloatingLyrics(floatingLyricsEnabled, false)
+                            }
+                        },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Rounded.Lock,
+                                null,
+                                tint = MaterialTheme.colorScheme.secondary
+                            )
+                        },
+                        modifier = Modifier.settingHighlight("item_lyrics_lock_screen_enabled", highlightKey)
+                    )
+
+                    if (lockScreenLyricsEnabled) {
+                        SettingsItem(
+                            title = stringResource(R.string.floating_lyrics_lock_notification_title),
+                            subtitle = stringResource(R.string.floating_lyrics_lock_notification_subtitle),
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Rounded.NotificationsActive,
+                                    null,
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
+                            },
+                            onClick = {
+                                runCatching {
+                                    context.startActivity(
+                                        Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+                                            .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                                            .putExtra(
+                                                Settings.EXTRA_CHANNEL_ID,
+                                                FloatingLyricsService.NOTIFICATION_CHANNEL_ID
+                                            )
+                                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    )
+                                }
+                            }
+                        )
+                    }
+
+                    if (overlayPermissionDenied) {
+                        Text(
+                            text = stringResource(R.string.floating_lyrics_permission_hint),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+                        )
+                    }
+                    if (notificationPermissionDenied) {
+                        Text(
+                            text = stringResource(R.string.floating_lyrics_notification_permission_hint),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+                        )
+                    }
                 }
             }
 

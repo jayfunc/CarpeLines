@@ -201,4 +201,21 @@
     <string name="lyrics_text_color_light">Sempre chiaro</string>
     <string name="lyrics_text_color_dark">Sempre scuro</string>
     <string name="external_lyrics_grant_access">Apri accesso alle notifiche</string>
+    <string name="floating_lyrics_section">Testi su desktop e schermo di blocco</string>
+    <string name="floating_lyrics_desktop_title">Testi su desktop</string>
+    <string name="floating_lyrics_desktop_subtitle">Mostra la riga di testo corrente in una finestra flottante sopra le altre app</string>
+    <string name="floating_lyrics_lock_screen_title">Testi sulla schermata di blocco</string>
+    <string name="floating_lyrics_lock_screen_subtitle">Mostra testi e controlli in una notifica sulla schermata di blocco</string>
+    <string name="floating_lyrics_notification_permission_hint">Consenti le notifiche per mostrare testi e controlli sulla schermata di blocco</string>
+    <string name="floating_lyrics_permission_hint">I testi su desktop e schermata di blocco richiedono l’autorizzazione «Visualizza sopra altre app»</string>
+    <string name="floating_lyrics_notification_channel">Testi flottanti</string>
+    <string name="floating_lyrics_lock_notification_title">Impostazioni notifica schermata di blocco</string>
+    <string name="floating_lyrics_lock_notification_subtitle">Nella notifica «Testi flottanti», imposta «Schermata di blocco» su «Mostra notifiche e contenuti»</string>
+    <string name="floating_lyrics_notification_title">Testi flottanti</string>
+    <string name="floating_lyrics_notification_text">%1$s · %2$s</string>
+    <string name="floating_lyrics_status_showing">Visualizzazione dei testi correnti sopra le altre app</string>
+    <string name="floating_lyrics_searching">Ricerca dei testi…</string>
+    <string name="floating_lyrics_not_found">Nessun testo per questo brano</string>
+    <string name="floating_lyrics_open_app">Apri CarpeLines</string>
+    <string name="floating_lyrics_close">Disattiva testi flottanti</string>
 </resources>

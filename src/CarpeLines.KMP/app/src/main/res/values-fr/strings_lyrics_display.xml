@@ -201,4 +201,21 @@
     <string name="lyrics_text_color_light">Toujours clair</string>
     <string name="lyrics_text_color_dark">Toujours sombre</string>
     <string name="external_lyrics_grant_access">Ouvrir l\'accès aux notifications</string>
+    <string name="floating_lyrics_section">Paroles sur le bureau et l’écran de verrouillage</string>
+    <string name="floating_lyrics_desktop_title">Paroles sur le bureau</string>
+    <string name="floating_lyrics_desktop_subtitle">Affiche la ligne de paroles actuelle dans une fenêtre flottante par-dessus les autres applications</string>
+    <string name="floating_lyrics_lock_screen_title">Paroles sur l’écran de verrouillage</string>
+    <string name="floating_lyrics_lock_screen_subtitle">Affiche les paroles et les commandes dans une notification sur l’écran de verrouillage</string>
+    <string name="floating_lyrics_notification_permission_hint">Autorisez les notifications pour afficher les paroles et les commandes sur l’écran de verrouillage</string>
+    <string name="floating_lyrics_permission_hint">Les paroles sur le bureau et l’écran de verrouillage nécessitent l’autorisation « Afficher par-dessus les autres applications »</string>
+    <string name="floating_lyrics_notification_channel">Paroles flottantes</string>
+    <string name="floating_lyrics_lock_notification_title">Réglages de notification sur l’écran de verrouillage</string>
+    <string name="floating_lyrics_lock_notification_subtitle">Dans la notification « Paroles flottantes », choisissez « Afficher les notifications et le contenu » pour « Écran de verrouillage »</string>
+    <string name="floating_lyrics_notification_title">Paroles flottantes</string>
+    <string name="floating_lyrics_notification_text">%1$s · %2$s</string>
+    <string name="floating_lyrics_status_showing">Affichage des paroles actuelles par-dessus les autres applications</string>
+    <string name="floating_lyrics_searching">Recherche des paroles…</string>
+    <string name="floating_lyrics_not_found">Aucune parole pour ce titre</string>
+    <string name="floating_lyrics_open_app">Ouvrir CarpeLines</string>
+    <string name="floating_lyrics_close">Désactiver les paroles flottantes</string>
 </resources>

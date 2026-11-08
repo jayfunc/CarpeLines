@@ -114,6 +114,20 @@ class CarpeLinesApplication : Application(), ImageLoaderFactory, Configuration.P
             io.github.jayfunc.carpelines.data.external.ExternalMediaMonitor.ensureConnected(
                 this@CarpeLinesApplication
             )
+            // A cold start from a background bind cannot start the overlay service (Android 12+
+            // refuses background FGS starts), and granting the overlay permission later does not
+            // change the preference. Both cases recover here, while the app is in front.
+            startupScope.launch {
+                val desktop = userPreferencesRepository.get().floatingLyricsEnabledFlow.first()
+                val lockScreen = userPreferencesRepository.get().lockScreenLyricsEnabledFlow.first()
+                if ((desktop || lockScreen) &&
+                    android.provider.Settings.canDrawOverlays(this@CarpeLinesApplication)
+                ) {
+                    io.github.jayfunc.carpelines.presentation.floatinglyrics.FloatingLyricsService.start(
+                        this@CarpeLinesApplication
+                    )
+                }
+            }
         }
 
         override fun onStop(owner: LifecycleOwner) {
@@ -173,6 +187,28 @@ class CarpeLinesApplication : Application(), ImageLoaderFactory, Configuration.P
                         media,
                         position,
                     )
+                }
+        }
+
+        // The floating desktop/lock-screen lyrics follow the same two switches. Starting from a
+        // cold background process can be refused by Android 12+, so onResume re-asserts it as
+        // well; the service itself is idempotent.
+        startupScope.launch {
+            kotlinx.coroutines.flow.combine(
+                userPreferencesRepository.get().floatingLyricsEnabledFlow,
+                userPreferencesRepository.get().lockScreenLyricsEnabledFlow,
+            ) { desktop, lockScreen -> desktop to lockScreen }
+                .distinctUntilChanged()
+                .collect { (desktop, lockScreen) ->
+                    if (desktop || lockScreen) {
+                        io.github.jayfunc.carpelines.presentation.floatinglyrics.FloatingLyricsService.start(
+                            this@CarpeLinesApplication
+                        )
+                    } else {
+                        io.github.jayfunc.carpelines.presentation.floatinglyrics.FloatingLyricsService.stop(
+                            this@CarpeLinesApplication
+                        )
+                    }
                 }
         }
 

@@ -32,6 +32,8 @@ data class WidgetMediaState(
     val positionMs: Long = 0,
     val durationMs: Long = 0,
     val artworkUri: String? = null,
+    /** Cover seed colour for the M3E tonal palette; 0 means "no artwork, use the system theme". */
+    val artworkSeedArgb: Int = 0,
     val lyricLine: String = "",
     val lyricTranslation: String = "",
 )

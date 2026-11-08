@@ -201,4 +201,21 @@
     <string name="lyrics_text_color_light">فاتح دائمًا</string>
     <string name="lyrics_text_color_dark">داكن دائمًا</string>
     <string name="external_lyrics_grant_access">فتح الوصول إلى الإشعارات</string>
+    <string name="floating_lyrics_section">كلمات الأغاني على سطح المكتب وشاشة القفل</string>
+    <string name="floating_lyrics_desktop_title">كلمات على سطح المكتب</string>
+    <string name="floating_lyrics_desktop_subtitle">يعرض سطر الكلمات الحالي في نافذة عائمة فوق التطبيقات الأخرى</string>
+    <string name="floating_lyrics_lock_screen_title">كلمات على شاشة القفل</string>
+    <string name="floating_lyrics_lock_screen_subtitle">يعرض الكلمات وعناصر التحكم في إشعار على شاشة القفل</string>
+    <string name="floating_lyrics_notification_permission_hint">اسمح بالإشعارات لعرض الكلمات وعناصر التحكم على شاشة القفل</string>
+    <string name="floating_lyrics_permission_hint">تتطلب كلمات سطح المكتب وشاشة القفل إذن «العرض فوق التطبيقات الأخرى»</string>
+    <string name="floating_lyrics_notification_channel">كلمات عائمة</string>
+    <string name="floating_lyrics_lock_notification_title">إعدادات إشعارات شاشة القفل</string>
+    <string name="floating_lyrics_lock_notification_subtitle">في إشعار «كلمات عائمة»، اضبط «شاشة القفل» على «عرض الإشعارات ومحتواها»</string>
+    <string name="floating_lyrics_notification_title">كلمات عائمة</string>
+    <string name="floating_lyrics_notification_text">%1$s · %2$s</string>
+    <string name="floating_lyrics_status_showing">يتم عرض الكلمات الحالية فوق التطبيقات الأخرى</string>
+    <string name="floating_lyrics_searching">جارٍ البحث عن الكلمات…</string>
+    <string name="floating_lyrics_not_found">لا توجد كلمات لهذا المقطع</string>
+    <string name="floating_lyrics_open_app">فتح CarpeLines</string>
+    <string name="floating_lyrics_close">إيقاف الكلمات العائمة</string>
 </resources>

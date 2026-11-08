@@ -2,6 +2,7 @@ package io.github.jayfunc.carpelines.ui.glancewidget
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
@@ -28,6 +29,7 @@ import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import androidx.glance.unit.ColorProvider
 import io.github.jayfunc.carpelines.R
 
 class BarWidget4x1 : GlanceAppWidget() {
@@ -49,7 +51,7 @@ class BarWidget4x1 : GlanceAppWidget() {
         state: WidgetMediaState,
         context: Context,
     ) {
-        val colors = GlanceTheme.colors
+        val colors = rememberWidgetColors(state.artworkSeedArgb)
         val title = state.title.ifBlank { context.getString(R.string.app_name) }
         val subtitle = state.lyricLine.ifBlank {
             state.artist.ifBlank { context.getString(R.string.widget_tap_to_open) }
@@ -57,9 +59,9 @@ class BarWidget4x1 : GlanceAppWidget() {
 
         Box(
             modifier = GlanceModifier
-                .background(colors.surface)
+                .background(colors.container)
                 .cornerRadius(28.dp)
-                .padding(horizontal = 14.dp, vertical = 12.dp)
+                .padding(horizontal = 14.dp, vertical = 8.dp)
                 .clickable(openLyricsAction()),
         ) {
             Row(
@@ -68,12 +70,14 @@ class BarWidget4x1 : GlanceAppWidget() {
             ) {
                 WidgetArtwork(
                     artworkUri = state.artworkUri,
-                    size = 48.dp,
+                    size = 40.dp,
                     cornerRadius = 14.dp,
-                    modifier = GlanceModifier.size(48.dp),
+                    modifier = GlanceModifier.size(40.dp),
+                    fallbackBackground = colors.accentContainer,
+                    fallbackIconColor = colors.onAccentContainer,
                 )
 
-                Spacer(GlanceModifier.width(10.dp))
+                Spacer(GlanceModifier.width(12.dp))
 
                 Column(
                     modifier = GlanceModifier
@@ -84,9 +88,9 @@ class BarWidget4x1 : GlanceAppWidget() {
                     Text(
                         text = title,
                         style = TextStyle(
-                            fontSize = 14.sp,
+                            fontSize = 13.sp,
                             fontWeight = FontWeight.Bold,
-                            color = colors.onSurface,
+                            color = colors.onContainer,
                         ),
                         maxLines = 1,
                     )
@@ -94,8 +98,8 @@ class BarWidget4x1 : GlanceAppWidget() {
                     Text(
                         text = subtitle,
                         style = TextStyle(
-                            fontSize = 12.sp,
-                            color = if (state.lyricLine.isNotBlank()) colors.primary else colors.onSurfaceVariant,
+                            fontSize = 11.sp,
+                            color = if (state.lyricLine.isNotBlank()) colors.accent else colors.muted,
                         ),
                         maxLines = 1,
                     )
@@ -105,31 +109,31 @@ class BarWidget4x1 : GlanceAppWidget() {
 
                 if (state.hasSession) {
                     PreviousButton(
-                        modifier = GlanceModifier.size(36.dp),
-                        backgroundColor = colors.secondaryContainer,
-                        iconColor = colors.onSecondaryContainer,
-                        cornerRadius = 14.dp,
-                        iconSize = 18.dp,
+                        modifier = GlanceModifier.size(30.dp),
+                        backgroundColor = ColorProvider(Color.Transparent),
+                        iconColor = colors.muted,
+                        cornerRadius = 15.dp,
+                        iconSize = 16.dp,
                     )
-                    Spacer(GlanceModifier.width(4.dp))
+                    Spacer(GlanceModifier.width(2.dp))
                     PlayPauseButton(
-                        modifier = GlanceModifier.size(40.dp),
+                        modifier = GlanceModifier.size(38.dp),
                         isPlaying = state.isPlaying,
-                        backgroundColor = colors.primaryContainer,
-                        iconColor = colors.onPrimaryContainer,
-                        cornerRadius = 20.dp,
-                        iconSize = 20.dp,
-                    )
-                    Spacer(GlanceModifier.width(4.dp))
-                    NextButton(
-                        modifier = GlanceModifier.size(36.dp),
-                        backgroundColor = colors.secondaryContainer,
-                        iconColor = colors.onSecondaryContainer,
-                        cornerRadius = 14.dp,
+                        backgroundColor = colors.accent,
+                        iconColor = colors.onAccent,
+                        cornerRadius = 19.dp,
                         iconSize = 18.dp,
+                    )
+                    Spacer(GlanceModifier.width(2.dp))
+                    NextButton(
+                        modifier = GlanceModifier.size(30.dp),
+                        backgroundColor = ColorProvider(Color.Transparent),
+                        iconColor = colors.muted,
+                        cornerRadius = 15.dp,
+                        iconSize = 16.dp,
                     )
                 } else {
-                    WidgetOpenChevron(colors.onSurfaceVariant)
+                    WidgetOpenChevron(colors.muted)
                 }
             }
         }

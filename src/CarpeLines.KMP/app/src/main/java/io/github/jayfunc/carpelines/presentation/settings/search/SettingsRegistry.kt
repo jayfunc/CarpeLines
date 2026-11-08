@@ -127,6 +127,34 @@ object SettingsRegistry {
                 )
             ),
             SettingSpec(
+                id = "lyrics_floating_desktop",
+                itemKey = "item_lyrics_floating_enabled",
+                titleRes = R.string.floating_lyrics_desktop_title,
+                subtitleRes = R.string.floating_lyrics_desktop_subtitle,
+                category = SettingsCategory.LYRICS,
+                subscreenRoute = Screen.LyricsSettings.createRoute(),
+                type = SettingType.NAVIGABLE_CARD,
+                keywordsStatic = listOf(
+                    "floating lyrics", "desktop lyrics", "overlay", "overlay lyrics", "float",
+                    "display over other apps", "while using other apps",
+                    "桌面歌词", "悬浮歌词", "悬浮窗", "在其他应用上显示", "浮窗",
+                )
+            ),
+            SettingSpec(
+                id = "lyrics_floating_lock_screen",
+                itemKey = "item_lyrics_lock_screen_enabled",
+                titleRes = R.string.floating_lyrics_lock_screen_title,
+                subtitleRes = R.string.floating_lyrics_lock_screen_subtitle,
+                category = SettingsCategory.LYRICS,
+                subscreenRoute = Screen.LyricsSettings.createRoute(),
+                type = SettingType.NAVIGABLE_CARD,
+                keywordsStatic = listOf(
+                    "lock screen lyrics", "lockscreen lyrics", "keyguard", "lock screen",
+                    "always on display", "floating lyrics",
+                    "锁屏歌词", "锁屏", "悬浮歌词",
+                )
+            ),
+            SettingSpec(
                 id = "lyrics_reset_defaults",
                 itemKey = "item_lyrics_reset_defaults",
                 titleRes = R.string.lyrics_reset_defaults_title,

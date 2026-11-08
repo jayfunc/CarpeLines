@@ -201,4 +201,21 @@
     <string name="lyrics_text_color_light">Her zaman açık</string>
     <string name="lyrics_text_color_dark">Her zaman koyu</string>
     <string name="external_lyrics_grant_access">Bildirim erişimini aç</string>
+    <string name="floating_lyrics_section">Masaüstü ve kilit ekranı şarkı sözleri</string>
+    <string name="floating_lyrics_desktop_title">Masaüstü şarkı sözleri</string>
+    <string name="floating_lyrics_desktop_subtitle">Geçerli şarkı sözü satırını diğer uygulamaların üzerinde yüzen bir pencerede gösterir</string>
+    <string name="floating_lyrics_lock_screen_title">Kilit ekranı şarkı sözleri</string>
+    <string name="floating_lyrics_lock_screen_subtitle">Kilit ekranında şarkı sözlerini ve kontrolleri bildirimde gösterir</string>
+    <string name="floating_lyrics_notification_permission_hint">Kilit ekranında şarkı sözlerini ve kontrolleri göstermek için bildirimlere izin verin</string>
+    <string name="floating_lyrics_permission_hint">Masaüstü ve kilit ekranı şarkı sözleri için «Diğer uygulamaların üzerinde göster» izni gerekir</string>
+    <string name="floating_lyrics_notification_channel">Yüzen şarkı sözleri</string>
+    <string name="floating_lyrics_lock_notification_title">Kilit ekranı bildirim ayarları</string>
+    <string name="floating_lyrics_lock_notification_subtitle">«Yüzen şarkı sözleri» bildiriminde «Kilit ekranı» seçeneğini «Bildirimleri ve içeriği göster» yapın</string>
+    <string name="floating_lyrics_notification_title">Yüzen şarkı sözleri</string>
+    <string name="floating_lyrics_notification_text">%1$s · %2$s</string>
+    <string name="floating_lyrics_status_showing">Geçerli şarkı sözleri diğer uygulamaların üzerinde gösteriliyor</string>
+    <string name="floating_lyrics_searching">Şarkı sözleri aranıyor…</string>
+    <string name="floating_lyrics_not_found">Bu parça için şarkı sözü yok</string>
+    <string name="floating_lyrics_open_app">CarpeLines\'ı aç</string>
+    <string name="floating_lyrics_close">Yüzen şarkı sözlerini kapat</string>
 </resources>

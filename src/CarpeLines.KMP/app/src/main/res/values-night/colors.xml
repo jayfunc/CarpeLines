@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Floating desktop/lock-screen lyrics: dark tonal container, mirrors the app's dark palette. -->
+    <color name="floating_lyrics_background">#F2261C38</color>
+    <color name="floating_lyrics_text_primary">#FFFFFFFF</color>
+    <color name="floating_lyrics_text_secondary">#B3E1BEE7</color>
+    <color name="floating_lyrics_accent">#FFCE93D8</color>
+</resources>

@@ -6,15 +6,16 @@ import android.net.Uri
 import android.os.SystemClock
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
+import androidx.compose.ui.graphics.toArgb
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
-import io.github.jayfunc.carpelines.data.betterlyrics.BetterLyricsRepository
-import io.github.jayfunc.carpelines.data.carpelines.ManualLyricsStore
+import io.github.jayfunc.carpelines.data.carpelines.ExternalLyricsResolver
 import io.github.jayfunc.carpelines.data.external.ExternalMediaMonitor
 import io.github.jayfunc.carpelines.data.external.ExternalMediaState
-import io.github.jayfunc.carpelines.data.model.Lyrics
+import io.github.jayfunc.carpelines.data.model.lineAt
+import io.github.jayfunc.carpelines.ui.theme.extractSeedColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -37,22 +38,23 @@ object WidgetMediaUpdater {
     private const val MIN_PROGRESS_UPDATE_MS = 2_000L
     private const val LYRICS_TIMEOUT_MS = 8_000L
     private const val ARTWORK_MAX_BYTES = 256 * 1024
+    private const val ARTWORK_SEED_PX = 96
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val writeMutex = Mutex()
-    private val lyricsCache = ConcurrentHashMap<String, CachedLyrics>()
     private val lyricsInFlight = ConcurrentHashMap.newKeySet<String>()
+    private val artworkSeedCache = ConcurrentHashMap<String, Int>()
+
+    @Volatile
+    private var lyricsResolver: ExternalLyricsResolver? = null
 
     private var lastState: WidgetMediaState? = null
     private var lastWriteAtMs = 0L
 
-    private data class CachedLyrics(val lyrics: Lyrics?)
-
     @EntryPoint
     @InstallIn(SingletonComponent::class)
     interface LyricsEntryPoint {
-        fun betterLyricsRepository(): BetterLyricsRepository
-        fun manualLyricsStore(): ManualLyricsStore
+        fun externalLyricsResolver(): ExternalLyricsResolver
     }
 
     fun onPlaybackChanged(
@@ -102,8 +104,10 @@ object WidgetMediaUpdater {
             previous.title != state.title ||
             previous.artist != state.artist ||
             previous.isPlaying != state.isPlaying ||
+            previous.artworkUri != state.artworkUri ||
             previous.lyricLine != state.lyricLine ||
-            previous.lyricTranslation != state.lyricTranslation
+            previous.lyricTranslation != state.lyricTranslation ||
+            previous.artworkSeedArgb != state.artworkSeedArgb
         ) {
             return true
         }
@@ -142,8 +146,10 @@ object WidgetMediaUpdater {
 
         val duration = media.durationMs?.coerceAtLeast(0L) ?: 0L
         val position = positionMs.coerceIn(0L, duration.takeIf { it > 0L } ?: Long.MAX_VALUE)
-        val lyrics = lyricsCache[media.identity]?.lyrics
-        val line = lyrics?.let { currentLine(it, position) }
+        val line = lyricsResolver(context)
+            ?.peek(media)
+            ?.lineAt(position)
+        val secondary = line?.translation ?: line?.romanization ?: line?.nextText
 
         return WidgetMediaState(
             hasSession = true,
@@ -157,59 +163,69 @@ object WidgetMediaUpdater {
             artworkUri = media.artworkUri ?: media.artworkBitmap?.let {
                 persistArtwork(context, it, media.identity)
             },
-            lyricLine = line?.first.orEmpty(),
-            lyricTranslation = line?.second.orEmpty(),
+            artworkSeedArgb = resolveArtworkSeed(context, media),
+            lyricLine = line?.text.orEmpty(),
+            lyricTranslation = secondary.orEmpty(),
         )
     }
 
+    /**
+     * The M3E widgets tone themselves with the cover palette. The seed is extracted once per
+     * track; without artwork the state keeps 0 and the layouts fall back to the system theme.
+     */
+    private fun resolveArtworkSeed(context: Context, media: ExternalMediaState): Int {
+        // Keyed by the artwork source as well: players often publish the new track's title before
+        // its cover, and an identity-only key would pin the widget to "no artwork" for the track.
+        val cacheKey = buildString {
+            append(media.identity)
+            append('|')
+            append(media.artworkUri?.hashCode() ?: 0)
+            append('|')
+            append(media.artworkBitmap?.hashCode() ?: 0)
+        }
+        artworkSeedCache[cacheKey]?.let { return it }
+        val bitmap = media.artworkBitmap
+            ?: media.artworkUri?.let { uri ->
+                decodeWidgetAlbumArtBitmap(
+                    context = context,
+                    rawUri = uri,
+                    targetWidthPx = ARTWORK_SEED_PX,
+                    targetHeightPx = ARTWORK_SEED_PX,
+                )
+            }
+        val seed = bitmap?.let { artwork ->
+            runCatching { extractSeedColor(artwork).toArgb() }.getOrDefault(0)
+        } ?: 0
+        artworkSeedCache[cacheKey] = seed
+        if (artworkSeedCache.size > 32) artworkSeedCache.clear()
+        return seed
+    }
+
+    private fun lyricsResolver(context: Context): ExternalLyricsResolver? =
+        lyricsResolver ?: runCatching {
+            EntryPointAccessors.fromApplication(
+                context.applicationContext,
+                LyricsEntryPoint::class.java,
+            ).externalLyricsResolver()
+        }.getOrNull()?.also { lyricsResolver = it }
+
     private fun ensureLyrics(context: Context, media: ExternalMediaState) {
-        val key = media.identity
-        if (lyricsCache.containsKey(key) || !lyricsInFlight.add(key)) return
+        val resolver = lyricsResolver(context) ?: return
+        if (resolver.isResolved(media) || !lyricsInFlight.add(media.identity)) return
 
         scope.launch {
-            val lyrics = runCatching {
-                val entryPoint = EntryPointAccessors.fromApplication(
-                    context.applicationContext,
-                    LyricsEntryPoint::class.java,
-                )
-                val manual = entryPoint.manualLyricsStore()
-                    .load(media.title, media.artist, media.album)
-                    ?.takeIf { !it.document.isEmpty }
-                if (manual != null) {
-                    entryPoint.betterLyricsRepository().toPlayerLyrics(manual.document)
-                } else {
-                    withTimeoutOrNull(LYRICS_TIMEOUT_MS) {
-                        entryPoint.betterLyricsRepository()
-                            .load(media.toLyricsQuery())
-                            ?.takeIf { !it.isEmpty }
-                            ?.let { entryPoint.betterLyricsRepository().toPlayerLyrics(it) }
-                    }
+            runCatching {
+                withTimeoutOrNull(LYRICS_TIMEOUT_MS) {
+                    resolver.resolve(media)
                 }
             }.onFailure {
                 Timber.tag("WidgetMediaUpdater").d(it, "Widget lyrics lookup failed")
-            }.getOrNull()
+            }
 
-            lyricsCache[key] = CachedLyrics(lyrics)
-            if (lyricsCache.size > 32) lyricsCache.clear()
-            lyricsInFlight.remove(key)
+            lyricsInFlight.remove(media.identity)
             lastState = null
             refresh(context)
         }
-    }
-
-    private fun currentLine(lyrics: Lyrics, positionMs: Long): Pair<String, String>? {
-        val synced = lyrics.synced
-            ?.filter { it.line.isNotBlank() }
-            .orEmpty()
-        if (synced.isEmpty()) {
-            val plain = lyrics.plain
-                ?.firstOrNull { it.isNotBlank() }
-                ?: return null
-            return plain to ""
-        }
-        val index = synced.indexOfLast { it.time <= positionMs }.coerceAtLeast(0)
-        val line = synced.getOrNull(index) ?: return null
-        return line.line to line.translation.orEmpty()
     }
 
     private fun persistArtwork(context: Context, bitmap: Bitmap, identity: String): String? {

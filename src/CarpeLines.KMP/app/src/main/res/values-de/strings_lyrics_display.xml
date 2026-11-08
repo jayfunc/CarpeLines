@@ -201,4 +201,21 @@
     <string name="lyrics_text_color_light">Immer hell</string>
     <string name="lyrics_text_color_dark">Immer dunkel</string>
     <string name="external_lyrics_grant_access">Benachrichtigungszugriff öffnen</string>
+    <string name="floating_lyrics_section">Desktop- und Sperrbildschirm-Lyrics</string>
+    <string name="floating_lyrics_desktop_title">Desktop-Lyrics</string>
+    <string name="floating_lyrics_desktop_subtitle">Zeigt die aktuelle Liedzeile in einem schwebenden Fenster über anderen Apps</string>
+    <string name="floating_lyrics_lock_screen_title">Sperrbildschirm-Lyrics</string>
+    <string name="floating_lyrics_lock_screen_subtitle">Zeigt Lyrics und Steuerung in einer Benachrichtigung auf dem Sperrbildschirm</string>
+    <string name="floating_lyrics_notification_permission_hint">Erlaube Benachrichtigungen, um Lyrics und Steuerung auf dem Sperrbildschirm zu zeigen</string>
+    <string name="floating_lyrics_permission_hint">Desktop- und Sperrbildschirm-Lyrics benötigen die Berechtigung „Über anderen Apps anzeigen“</string>
+    <string name="floating_lyrics_notification_channel">Schwebende Lyrics</string>
+    <string name="floating_lyrics_lock_notification_title">Sperrbildschirm-Benachrichtigungen</string>
+    <string name="floating_lyrics_lock_notification_subtitle">In der Benachrichtigung „Schwebende Lyrics“ „Sperrbildschirm“ auf „Benachrichtigungen und Inhalt anzeigen“ setzen</string>
+    <string name="floating_lyrics_notification_title">Schwebende Lyrics</string>
+    <string name="floating_lyrics_notification_text">%1$s · %2$s</string>
+    <string name="floating_lyrics_status_showing">Zeigt die aktuellen Lyrics über anderen Apps</string>
+    <string name="floating_lyrics_searching">Lyrics werden gesucht…</string>
+    <string name="floating_lyrics_not_found">Keine Lyrics für diesen Titel</string>
+    <string name="floating_lyrics_open_app">CarpeLines öffnen</string>
+    <string name="floating_lyrics_close">Schwebende Lyrics ausschalten</string>
 </resources>

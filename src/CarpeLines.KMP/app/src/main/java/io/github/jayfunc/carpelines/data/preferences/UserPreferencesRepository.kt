@@ -773,6 +773,32 @@ constructor(
         }
     }
 
+    val floatingLyricsEnabledFlow: Flow<Boolean> =
+        dataStore.data
+            .map { preferences ->
+                preferences[FLOATING_LYRICS_ENABLED_KEY] ?: DEFAULT_FLOATING_LYRICS_ENABLED
+            }
+            .distinctUntilChanged()
+
+    val lockScreenLyricsEnabledFlow: Flow<Boolean> =
+        dataStore.data
+            .map { preferences ->
+                preferences[LOCK_SCREEN_LYRICS_ENABLED_KEY] ?: DEFAULT_LOCK_SCREEN_LYRICS_ENABLED
+            }
+            .distinctUntilChanged()
+
+    suspend fun setFloatingLyricsEnabled(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[FLOATING_LYRICS_ENABLED_KEY] = enabled
+        }
+    }
+
+    suspend fun setLockScreenLyricsEnabled(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[LOCK_SCREEN_LYRICS_ENABLED_KEY] = enabled
+        }
+    }
+
     val immersiveLyricsEnabledFlow: Flow<Boolean> =
             dataStore.data.map { preferences ->
                 preferences[PreferencesKeys.IMMERSIVE_LYRICS_ENABLED] ?: false

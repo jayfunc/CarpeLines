@@ -201,4 +201,21 @@
     <string name="lyrics_text_color_neutral">ニュートラル</string>
     <string name="lyrics_text_color_light">常に明るく</string>
     <string name="lyrics_text_color_dark">常に暗く</string>
+    <string name="floating_lyrics_section">デスクトップ歌詞とロック画面歌詞</string>
+    <string name="floating_lyrics_desktop_title">デスクトップ歌詞</string>
+    <string name="floating_lyrics_desktop_subtitle">現在の歌詞行を他のアプリの上にフローティング表示します</string>
+    <string name="floating_lyrics_lock_screen_title">ロック画面歌詞</string>
+    <string name="floating_lyrics_lock_screen_subtitle">ロック画面に通知で歌詞と操作ボタンを表示します</string>
+    <string name="floating_lyrics_notification_permission_hint">ロック画面に歌詞と操作を表示するには通知権限が必要です</string>
+    <string name="floating_lyrics_permission_hint">デスクトップ歌詞とロック画面歌詞には「他のアプリの上に表示」権限が必要です</string>
+    <string name="floating_lyrics_notification_channel">フローティング歌詞</string>
+    <string name="floating_lyrics_lock_notification_title">ロック画面の通知設定</string>
+    <string name="floating_lyrics_lock_notification_subtitle">「フローティング歌詞」通知で「ロック画面」を「通知とコンテンツを表示」に設定します</string>
+    <string name="floating_lyrics_notification_title">フローティング歌詞</string>
+    <string name="floating_lyrics_notification_text">%1$s · %2$s</string>
+    <string name="floating_lyrics_status_showing">他のアプリの上に現在の歌詞を表示中</string>
+    <string name="floating_lyrics_searching">歌詞を検索中…</string>
+    <string name="floating_lyrics_not_found">この曲の歌詞が見つかりません</string>
+    <string name="floating_lyrics_open_app">CarpeLines を開く</string>
+    <string name="floating_lyrics_close">フローティング歌詞をオフにする</string>
 </resources>

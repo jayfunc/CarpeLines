@@ -201,4 +201,21 @@
     <string name="lyrics_text_color_neutral">Neutral</string>
     <string name="lyrics_text_color_light">Always light</string>
     <string name="lyrics_text_color_dark">Always dark</string>
+    <string name="floating_lyrics_section">Desktop &amp; lock-screen lyrics</string>
+    <string name="floating_lyrics_desktop_title">Desktop lyrics</string>
+    <string name="floating_lyrics_desktop_subtitle">Show the current lyric line in a floating window above other apps</string>
+    <string name="floating_lyrics_lock_screen_title">Lock-screen lyrics</string>
+    <string name="floating_lyrics_lock_screen_subtitle">Show the current lyrics and transport controls in a notification while the lock screen is up</string>
+    <string name="floating_lyrics_notification_permission_hint">Allow notifications to show lyrics and controls on the lock screen</string>
+    <string name="floating_lyrics_permission_hint">Desktop and lock-screen lyrics need the “Display over other apps” permission</string>
+    <string name="floating_lyrics_notification_channel">Floating lyrics</string>
+    <string name="floating_lyrics_lock_notification_title">Lock-screen notification settings</string>
+    <string name="floating_lyrics_lock_notification_subtitle">In the floating-lyrics notification, set “Lock screen” to “Show notifications and content”</string>
+    <string name="floating_lyrics_notification_title">Floating lyrics</string>
+    <string name="floating_lyrics_notification_text">%1$s · %2$s</string>
+    <string name="floating_lyrics_status_showing">Showing the current lyrics above other apps</string>
+    <string name="floating_lyrics_searching">Looking up lyrics…</string>
+    <string name="floating_lyrics_not_found">No lyrics for this track</string>
+    <string name="floating_lyrics_open_app">Open CarpeLines</string>
+    <string name="floating_lyrics_close">Turn off floating lyrics</string>
 </resources>

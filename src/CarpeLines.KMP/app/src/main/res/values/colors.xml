@@ -3,6 +3,12 @@
 
     <color name="carpelines_widget_background_color">#FF2C1D4D</color>
 
+    <!-- Floating desktop/lock-screen lyrics: a tonal M3E container, light scheme. -->
+    <color name="floating_lyrics_background">#F2FBF8FF</color>
+    <color name="floating_lyrics_text_primary">#FF1E1237</color>
+    <color name="floating_lyrics_text_secondary">#B34D4165</color>
+    <color name="floating_lyrics_accent">#FF6C4FF5</color>
+
     <color name="pixel_play_purple_dark">#19191B</color>
     <color name="light_background">#EDEDED</color>
 </resources>

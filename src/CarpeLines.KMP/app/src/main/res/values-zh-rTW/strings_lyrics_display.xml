@@ -201,4 +201,21 @@
     <string name="lyrics_text_color_neutral">中性</string>
     <string name="lyrics_text_color_light">始終淺色</string>
     <string name="lyrics_text_color_dark">始終深色</string>
+    <string name="floating_lyrics_section">桌面與鎖屏歌詞</string>
+    <string name="floating_lyrics_desktop_title">桌面歌詞</string>
+    <string name="floating_lyrics_desktop_subtitle">在其他應用程式上層懸浮顯示目前歌詞</string>
+    <string name="floating_lyrics_lock_screen_title">鎖屏歌詞</string>
+    <string name="floating_lyrics_lock_screen_subtitle">鎖屏時透過通知顯示歌詞與播放控制</string>
+    <string name="floating_lyrics_notification_permission_hint">需要通知權限才能在鎖屏上顯示歌詞與控制</string>
+    <string name="floating_lyrics_permission_hint">桌面與鎖屏歌詞需要「顯示在其他應用程式上層」權限</string>
+    <string name="floating_lyrics_notification_channel">懸浮歌詞</string>
+    <string name="floating_lyrics_lock_notification_title">鎖屏通知設定</string>
+    <string name="floating_lyrics_lock_notification_subtitle">在「懸浮歌詞」通知中將「在鎖定畫面上」設為「顯示通知與內容」</string>
+    <string name="floating_lyrics_notification_title">懸浮歌詞</string>
+    <string name="floating_lyrics_notification_text">%1$s · %2$s</string>
+    <string name="floating_lyrics_status_showing">目前歌詞正在其他應用程式上方顯示</string>
+    <string name="floating_lyrics_searching">正在尋找歌詞…</string>
+    <string name="floating_lyrics_not_found">找不到這首歌的歌詞</string>
+    <string name="floating_lyrics_open_app">開啟 CarpeLines</string>
+    <string name="floating_lyrics_close">關閉懸浮歌詞</string>
 </resources>

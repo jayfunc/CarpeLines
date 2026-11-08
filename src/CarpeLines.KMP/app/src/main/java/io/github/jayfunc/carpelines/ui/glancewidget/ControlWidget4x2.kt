@@ -30,7 +30,6 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import io.github.jayfunc.carpelines.R
-import kotlin.math.roundToLong
 
 class ControlWidget4x2 : GlanceAppWidget() {
 
@@ -51,7 +50,7 @@ class ControlWidget4x2 : GlanceAppWidget() {
         state: WidgetMediaState,
         context: Context,
     ) {
-        val colors = GlanceTheme.colors
+        val colors = rememberWidgetColors(state.artworkSeedArgb)
         val title = state.title.ifBlank { context.getString(R.string.app_name) }
         val artist = state.artist.ifBlank {
             state.appLabel.ifBlank { context.getString(R.string.widget_tap_to_open) }
@@ -64,9 +63,9 @@ class ControlWidget4x2 : GlanceAppWidget() {
 
         Box(
             modifier = GlanceModifier
-                .background(colors.surface)
-                .cornerRadius(28.dp)
-                .padding(16.dp)
+                .background(colors.container)
+                .cornerRadius(32.dp)
+                .padding(horizontal = 16.dp, vertical = 10.dp)
                 .clickable(openLyricsAction()),
         ) {
             Column(modifier = GlanceModifier.fillMaxSize()) {
@@ -76,9 +75,11 @@ class ControlWidget4x2 : GlanceAppWidget() {
                 ) {
                     WidgetArtwork(
                         artworkUri = state.artworkUri,
-                        size = 64.dp,
+                        size = 50.dp,
                         cornerRadius = 16.dp,
-                        modifier = GlanceModifier.size(64.dp),
+                        modifier = GlanceModifier.size(50.dp),
+                        fallbackBackground = colors.accentContainer,
+                        fallbackIconColor = colors.onAccentContainer,
                     )
 
                     Spacer(GlanceModifier.width(12.dp))
@@ -87,28 +88,38 @@ class ControlWidget4x2 : GlanceAppWidget() {
                         Text(
                             text = title,
                             style = TextStyle(
-                                fontSize = 16.sp,
+                                fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = colors.onSurface,
+                                color = colors.onContainer,
                             ),
                             maxLines = 1,
                         )
-                        Spacer(GlanceModifier.height(2.dp))
+                        Spacer(GlanceModifier.height(1.dp))
                         Text(
                             text = artist,
                             style = TextStyle(
-                                fontSize = 13.sp,
-                                color = colors.onSurfaceVariant,
+                                fontSize = 11.sp,
+                                color = colors.muted,
                             ),
                             maxLines = 1,
                         )
-                        if (state.appLabel.isNotBlank() && state.artist.isNotBlank()) {
-                            Spacer(GlanceModifier.height(2.dp))
+                        Spacer(GlanceModifier.height(3.dp))
+                        Text(
+                            text = lyricLine,
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = if (state.lyricLine.isNotBlank()) colors.accent else colors.muted,
+                            ),
+                            maxLines = 1,
+                        )
+                        if (state.lyricTranslation.isNotBlank()) {
+                            Spacer(GlanceModifier.height(1.dp))
                             Text(
-                                text = state.appLabel,
+                                text = state.lyricTranslation,
                                 style = TextStyle(
-                                    fontSize = 11.sp,
-                                    color = colors.primary,
+                                    fontSize = 9.sp,
+                                    color = colors.muted,
                                 ),
                                 maxLines = 1,
                             )
@@ -116,54 +127,20 @@ class ControlWidget4x2 : GlanceAppWidget() {
                     }
                 }
 
-                Spacer(GlanceModifier.height(10.dp))
-
-                Text(
-                    text = lyricLine,
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = if (state.lyricLine.isNotBlank()) colors.onSurface else colors.onSurfaceVariant,
-                    ),
-                    maxLines = 2,
-                )
-
-                if (state.lyricTranslation.isNotBlank()) {
-                    Spacer(GlanceModifier.height(2.dp))
-                    Text(
-                        text = state.lyricTranslation,
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            color = colors.onSurfaceVariant,
-                        ),
-                        maxLines = 1,
-                    )
-                }
-
                 Spacer(GlanceModifier.defaultWeight())
 
                 if (state.durationMs > 0L) {
                     LinearProgressIndicator(
                         progress = progress,
-                        modifier = GlanceModifier.fillMaxWidth().height(3.dp),
-                        color = colors.primary,
+                        modifier = GlanceModifier
+                            .fillMaxWidth()
+                            .height(3.dp)
+                            .cornerRadius(2.dp),
+                        color = colors.accent,
                         backgroundColor = colors.secondaryContainer,
                     )
-                    Spacer(GlanceModifier.height(4.dp))
-                    Row(modifier = GlanceModifier.fillMaxWidth()) {
-                        Text(
-                            text = formatDuration(state.positionMs),
-                            style = TextStyle(fontSize = 10.sp, color = colors.onSurfaceVariant),
-                        )
-                        Spacer(GlanceModifier.defaultWeight())
-                        Text(
-                            text = formatDuration(state.durationMs),
-                            style = TextStyle(fontSize = 10.sp, color = colors.onSurfaceVariant),
-                        )
-                    }
+                    Spacer(GlanceModifier.height(6.dp))
                 }
-
-                Spacer(GlanceModifier.height(8.dp))
 
                 if (state.hasSession) {
                     Row(
@@ -172,25 +149,28 @@ class ControlWidget4x2 : GlanceAppWidget() {
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         PreviousButton(
-                            modifier = GlanceModifier.size(40.dp),
+                            modifier = GlanceModifier.size(34.dp),
                             backgroundColor = colors.secondaryContainer,
                             iconColor = colors.onSecondaryContainer,
-                            cornerRadius = 16.dp,
+                            cornerRadius = 17.dp,
+                            iconSize = 16.dp,
                         )
-                        Spacer(GlanceModifier.width(8.dp))
+                        Spacer(GlanceModifier.width(10.dp))
                         PlayPauseButton(
-                            modifier = GlanceModifier.size(48.dp),
+                            modifier = GlanceModifier.size(42.dp),
                             isPlaying = state.isPlaying,
-                            backgroundColor = colors.primaryContainer,
-                            iconColor = colors.onPrimaryContainer,
-                            cornerRadius = 24.dp,
+                            backgroundColor = colors.accent,
+                            iconColor = colors.onAccent,
+                            cornerRadius = 21.dp,
+                            iconSize = 20.dp,
                         )
-                        Spacer(GlanceModifier.width(8.dp))
+                        Spacer(GlanceModifier.width(10.dp))
                         NextButton(
-                            modifier = GlanceModifier.size(40.dp),
+                            modifier = GlanceModifier.size(34.dp),
                             backgroundColor = colors.secondaryContainer,
                             iconColor = colors.onSecondaryContainer,
-                            cornerRadius = 16.dp,
+                            cornerRadius = 17.dp,
+                            iconSize = 16.dp,
                         )
                     }
                 } else {
@@ -198,18 +178,10 @@ class ControlWidget4x2 : GlanceAppWidget() {
                         modifier = GlanceModifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.Horizontal.End,
                     ) {
-                        WidgetOpenChevron(colors.onSurfaceVariant)
+                        WidgetOpenChevron(colors.muted)
                     }
                 }
             }
         }
-    }
-
-    private fun formatDuration(ms: Long): String {
-        if (ms <= 0L) return "0:00"
-        val totalSeconds = (ms / 1_000.0).roundToLong()
-        val minutes = totalSeconds / 60
-        val seconds = totalSeconds % 60
-        return "%d:%02d".format(minutes, seconds)
     }
 }

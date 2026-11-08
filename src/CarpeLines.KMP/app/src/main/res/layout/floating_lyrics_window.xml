@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/floating_lyrics_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="false"
+    android:focusable="false"
+    app:cardBackgroundColor="@color/floating_lyrics_background"
+    app:cardCornerRadius="28dp"
+    app:cardElevation="8dp"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="18dp"
+        android:paddingTop="14dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="8dp">
+
+        <LinearLayout
+            android:id="@+id/floating_lyrics_text_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingEnd="8dp">
+
+            <TextView
+                android:id="@+id/floating_lyrics_current_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="2"
+                android:textColor="@color/floating_lyrics_text_primary"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/floating_lyrics_secondary_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/floating_lyrics_text_secondary"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="end|center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/floating_lyrics_previous"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/previous_track"
+                android:padding="9dp"
+                android:src="@drawable/rounded_skip_previous_filled_24"
+                android:tint="@color/floating_lyrics_text_secondary" />
+
+            <ImageButton
+                android:id="@+id/floating_lyrics_play_pause"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginStart="2dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/cd_play"
+                android:padding="9dp"
+                android:src="@drawable/rounded_play_arrow_filled_24"
+                android:tint="@color/floating_lyrics_accent" />
+
+            <ImageButton
+                android:id="@+id/floating_lyrics_next"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_marginStart="2dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/next_track"
+                android:padding="9dp"
+                android:src="@drawable/rounded_skip_next_filled_24"
+                android:tint="@color/floating_lyrics_text_secondary" />
+
+            <ImageButton
+                android:id="@+id/floating_lyrics_close"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_marginStart="6dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/floating_lyrics_close"
+                android:padding="10dp"
+                android:src="@drawable/rounded_close_24"
+                android:tint="@color/floating_lyrics_text_secondary" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

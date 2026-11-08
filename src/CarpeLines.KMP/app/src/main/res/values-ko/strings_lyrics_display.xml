@@ -201,4 +201,21 @@
     <string name="lyrics_text_color_light">항상 밝게</string>
     <string name="lyrics_text_color_dark">항상 어둡게</string>
     <string name="external_lyrics_grant_access">알림 접근 권한 열기</string>
+    <string name="floating_lyrics_section">바탕 화면 및 잠금 화면 가사</string>
+    <string name="floating_lyrics_desktop_title">바탕 화면 가사</string>
+    <string name="floating_lyrics_desktop_subtitle">현재 가사 한 줄을 다른 앱 위에 떠 있는 창으로 표시합니다</string>
+    <string name="floating_lyrics_lock_screen_title">잠금 화면 가사</string>
+    <string name="floating_lyrics_lock_screen_subtitle">잠금 화면에 알림으로 가사와 조작 버튼을 표시합니다</string>
+    <string name="floating_lyrics_notification_permission_hint">잠금 화면에 가사와 조작을 표시하려면 알림 권한이 필요합니다</string>
+    <string name="floating_lyrics_permission_hint">바탕 화면 및 잠금 화면 가사에는 "다른 앱 위에 표시" 권한이 필요합니다</string>
+    <string name="floating_lyrics_notification_channel">떠 있는 가사</string>
+    <string name="floating_lyrics_lock_notification_title">잠금 화면 알림 설정</string>
+    <string name="floating_lyrics_lock_notification_subtitle">「떠 있는 가사」알림에서 「잠금 화면」을 「알림 및 콘텐츠 표시」로 설정하세요</string>
+    <string name="floating_lyrics_notification_title">떠 있는 가사</string>
+    <string name="floating_lyrics_notification_text">%1$s · %2$s</string>
+    <string name="floating_lyrics_status_showing">다른 앱 위에 현재 가사를 표시하는 중</string>
+    <string name="floating_lyrics_searching">가사를 찾는 중…</string>
+    <string name="floating_lyrics_not_found">이 곡의 가사가 없습니다</string>
+    <string name="floating_lyrics_open_app">CarpeLines 열기</string>
+    <string name="floating_lyrics_close">떠 있는 가사 끄기</string>
 </resources>

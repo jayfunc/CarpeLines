@@ -201,4 +201,21 @@
     <string name="lyrics_text_color_light">Selalu terang</string>
     <string name="lyrics_text_color_dark">Selalu gelap</string>
     <string name="external_lyrics_grant_access">Buka akses notifikasi</string>
+    <string name="floating_lyrics_section">Lirik desktop &amp; layar kunci</string>
+    <string name="floating_lyrics_desktop_title">Lirik desktop</string>
+    <string name="floating_lyrics_desktop_subtitle">Menampilkan baris lirik saat ini di jendela mengambang di atas aplikasi lain</string>
+    <string name="floating_lyrics_lock_screen_title">Lirik layar kunci</string>
+    <string name="floating_lyrics_lock_screen_subtitle">Menampilkan lirik dan kontrol pemutaran di notifikasi saat layar terkunci</string>
+    <string name="floating_lyrics_notification_permission_hint">Izinkan notifikasi untuk menampilkan lirik dan kontrol di layar kunci</string>
+    <string name="floating_lyrics_permission_hint">Lirik desktop dan layar kunci memerlukan izin “Tampil di atas aplikasi lain”</string>
+    <string name="floating_lyrics_notification_channel">Lirik mengambang</string>
+    <string name="floating_lyrics_lock_notification_title">Setelan notifikasi layar kunci</string>
+    <string name="floating_lyrics_lock_notification_subtitle">Di notifikasi “Lirik mengambang”, setel “Layar kunci” ke “Tampilkan notifikasi dan konten”</string>
+    <string name="floating_lyrics_notification_title">Lirik mengambang</string>
+    <string name="floating_lyrics_notification_text">%1$s · %2$s</string>
+    <string name="floating_lyrics_status_showing">Menampilkan lirik saat ini di atas aplikasi lain</string>
+    <string name="floating_lyrics_searching">Mencari lirik…</string>
+    <string name="floating_lyrics_not_found">Tidak ada lirik untuk lagu ini</string>
+    <string name="floating_lyrics_open_app">Buka CarpeLines</string>
+    <string name="floating_lyrics_close">Matikan lirik mengambang</string>
 </resources>

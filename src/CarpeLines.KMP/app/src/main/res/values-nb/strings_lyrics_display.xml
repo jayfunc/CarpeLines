@@ -201,4 +201,21 @@
     <string name="lyrics_text_color_light">Alltid lys</string>
     <string name="lyrics_text_color_dark">Alltid mørk</string>
     <string name="external_lyrics_grant_access">Åpne varseltilgang</string>
+    <string name="floating_lyrics_section">Skrivebords- og låseskjermtekst</string>
+    <string name="floating_lyrics_desktop_title">Skrivebordslyrikk</string>
+    <string name="floating_lyrics_desktop_subtitle">Viser gjeldende tekstlinje i et flytende vindu over andre apper</string>
+    <string name="floating_lyrics_lock_screen_title">Låseskjermlyrikk</string>
+    <string name="floating_lyrics_lock_screen_subtitle">Viser lyrikk og kontroller i et varsel på låseskjermen</string>
+    <string name="floating_lyrics_notification_permission_hint">Tillat varsler for å vise lyrikk og kontroller på låseskjermen</string>
+    <string name="floating_lyrics_permission_hint">Skrivebords- og låseskjermlyrikk krever tillatelsen «Vises over andre apper»</string>
+    <string name="floating_lyrics_notification_channel">Flytende lyrikk</string>
+    <string name="floating_lyrics_lock_notification_title">Varselinnstillinger for låseskjerm</string>
+    <string name="floating_lyrics_lock_notification_subtitle">I varselet «Flytende lyrikk» setter du «Låseskjerm» til «Vis varsler og innhold»</string>
+    <string name="floating_lyrics_notification_title">Flytende lyrikk</string>
+    <string name="floating_lyrics_notification_text">%1$s · %2$s</string>
+    <string name="floating_lyrics_status_showing">Viser gjeldende lyrikk over andre apper</string>
+    <string name="floating_lyrics_searching">Søker etter lyrikk…</string>
+    <string name="floating_lyrics_not_found">Ingen lyrikk for dette sporet</string>
+    <string name="floating_lyrics_open_app">Åpne CarpeLines</string>
+    <string name="floating_lyrics_close">Slå av flytende lyrikk</string>
 </resources>

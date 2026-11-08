@@ -43,6 +43,8 @@ fun WidgetArtwork(
     size: Dp,
     cornerRadius: Dp,
     modifier: GlanceModifier = GlanceModifier,
+    fallbackBackground: ColorProvider? = null,
+    fallbackIconColor: ColorProvider? = null,
 ) {
     val context = LocalContext.current
     val imageProvider = artworkUri?.let { uri ->
@@ -73,7 +75,7 @@ fun WidgetArtwork(
                 modifier = GlanceModifier
                     .fillMaxSize()
                     .cornerRadius(cornerRadius)
-                    .background(GlanceTheme.colors.surfaceVariant),
+                    .background(fallbackBackground ?: GlanceTheme.colors.surfaceVariant),
                 contentAlignment = Alignment.Center,
             ) {
                 Image(
@@ -81,7 +83,9 @@ fun WidgetArtwork(
                     contentDescription = context.getString(R.string.widget_album_art_placeholder),
                     modifier = GlanceModifier.size(size * 0.55f),
                     contentScale = ContentScale.Fit,
-                    colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
+                    colorFilter = ColorFilter.tint(
+                        fallbackIconColor ?: GlanceTheme.colors.onSurfaceVariant
+                    ),
                 )
             }
         }
