@@ -32,12 +32,20 @@ internal class FloatingLyricsOverlay(
 ) {
 
     private val windowManager: WindowManager? = context.getSystemService()
+    private val themedContext =
+        androidx.appcompat.view.ContextThemeWrapper(context, R.style.Theme_CarpeLines)
 
     private var root: View? = null
     private var layoutParams: WindowManager.LayoutParams? = null
     private var currentLineView: TextView? = null
     private var secondaryLineView: TextView? = null
     private var playPauseButton: ImageButton? = null
+    private var controlsView: View? = null
+    private var lockBadge: View? = null
+
+    /** Locked windows ignore touches so they cannot be moved or closed by accident. */
+    var isLocked: Boolean = false
+        private set
 
     val isAttached: Boolean get() = root != null
 
@@ -50,6 +58,7 @@ internal class FloatingLyricsOverlay(
     }
 
     fun hide() {
+        hideLockBadge()
         val view = root ?: return
         runCatching { windowManager?.removeView(view) }
             .onFailure { Timber.w(it, "Could not remove the floating lyrics window") }
@@ -58,6 +67,18 @@ internal class FloatingLyricsOverlay(
         currentLineView = null
         secondaryLineView = null
         playPauseButton = null
+        controlsView = null
+    }
+
+    /**
+     * Toggles the locked state. While locked the lyric window becomes touch-transparent and
+     * swaps its controls for a small lock badge, which is the only tappable surface and unlocks
+     * the window again.
+     */
+    fun setLocked(locked: Boolean) {
+        if (isLocked == locked) return
+        isLocked = locked
+        applyLockState()
     }
 
     fun update(currentLine: String, secondaryLine: String, isPlaying: Boolean) {
@@ -77,7 +98,6 @@ internal class FloatingLyricsOverlay(
 
     private fun attachWindow() {
         val manager = windowManager ?: return
-        val themedContext = androidx.appcompat.view.ContextThemeWrapper(context, R.style.Theme_CarpeLines)
         val view = LayoutInflater.from(themedContext).inflate(R.layout.floating_lyrics_window, null)
         // MIUI sometimes removes the overlay when the keyguard takes over during an unlock
         // animation. Forget the stale root so the next sync can attach a fresh window.
@@ -87,21 +107,25 @@ internal class FloatingLyricsOverlay(
             override fun onViewDetachedFromWindow(v: View) {
                 Timber.d("FloatingLyricsOverlay: detached")
                 if (root === v) {
+                    hideLockBadge()
                     root = null
                     layoutParams = null
                     currentLineView = null
                     secondaryLineView = null
                     playPauseButton = null
+                    controlsView = null
                 }
             }
         })
         currentLineView = view.findViewById(R.id.floating_lyrics_current_line)
         secondaryLineView = view.findViewById(R.id.floating_lyrics_secondary_line)
         playPauseButton = view.findViewById(R.id.floating_lyrics_play_pause)
+        controlsView = view.findViewById(R.id.floating_lyrics_controls)
 
         view.findViewById<ImageButton>(R.id.floating_lyrics_previous).setOnClickListener { onPrevious() }
         view.findViewById<ImageButton>(R.id.floating_lyrics_play_pause).setOnClickListener { onPlayPause() }
         view.findViewById<ImageButton>(R.id.floating_lyrics_next).setOnClickListener { onNext() }
+        view.findViewById<ImageButton>(R.id.floating_lyrics_lock).setOnClickListener { setLocked(true) }
         view.findViewById<ImageButton>(R.id.floating_lyrics_close).setOnClickListener { onClose() }
         attachDragAndTap(view.findViewById(R.id.floating_lyrics_text_area))
 
@@ -111,7 +135,7 @@ internal class FloatingLyricsOverlay(
             widthPx,
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            BASE_FLAGS,
+            windowFlags(),
             PixelFormat.TRANSLUCENT,
         ).apply {
             gravity = Gravity.TOP or Gravity.START
@@ -129,8 +153,74 @@ internal class FloatingLyricsOverlay(
         if (added) {
             root = view
             layoutParams = params
+            controlsView?.visibility = if (isLocked) View.GONE else View.VISIBLE
+            if (isLocked) showLockBadge()
             Timber.d("FloatingLyricsOverlay: attached")
         }
+    }
+
+    private fun windowFlags(): Int =
+        if (isLocked) {
+            BASE_FLAGS or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        } else {
+            BASE_FLAGS
+        }
+
+    private fun applyLockState() {
+        controlsView?.visibility = if (isLocked) View.GONE else View.VISIBLE
+        val view = root
+        val params = layoutParams
+        val updated = if (view != null && params != null) {
+            params.flags = windowFlags()
+            runCatching { windowManager?.updateViewLayout(view, params) }
+                .onFailure { Timber.w(it, "Could not update the floating lyrics lock state") }
+                .isSuccess
+        } else {
+            true
+        }
+        // Keep the badge around if the flag update failed; otherwise the window would stay
+        // touch-transparent with no way to unlock it.
+        if (isLocked) showLockBadge() else if (updated) hideLockBadge()
+    }
+
+    /**
+     * The lock badge is a separate overlay window so it stays tappable after the lyric window
+     * itself turns touch-transparent. It sits just above the top-right corner of the lyric card.
+     */
+    private fun showLockBadge() {
+        if (lockBadge != null) return
+        val manager = windowManager ?: return
+        val params = layoutParams ?: return
+        val badge = LayoutInflater.from(themedContext)
+            .inflate(R.layout.floating_lyrics_lock_badge, null)
+        badge.findViewById<ImageButton>(R.id.floating_lyrics_lock_badge)
+            .setOnClickListener { setLocked(false) }
+        val size = context.dp(BADGE_SIZE_DP)
+        val badgeParams = WindowManager.LayoutParams(
+            size,
+            size,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            BASE_FLAGS,
+            PixelFormat.TRANSLUCENT,
+        ).apply {
+            gravity = Gravity.TOP or Gravity.START
+            x = params.x + params.width - size
+            y = (params.y - size - context.dp(BADGE_GAP_DP)).coerceAtLeast(0)
+        }
+        val added = runCatching { manager.addView(badge, badgeParams) }
+            .onFailure { Timber.w(it, "Could not show the floating lyrics lock badge") }
+            .isSuccess
+        if (added) {
+            lockBadge = badge
+            Timber.d("FloatingLyricsOverlay: lock badge attached")
+        }
+    }
+
+    private fun hideLockBadge() {
+        val badge = lockBadge ?: return
+        runCatching { windowManager?.removeView(badge) }
+            .onFailure { Timber.w(it, "Could not remove the floating lyrics lock badge") }
+        lockBadge = null
     }
 
     /**
@@ -191,9 +281,14 @@ internal class FloatingLyricsOverlay(
         }
     }
 
+    private fun Context.dp(value: Int): Int =
+        (value * resources.displayMetrics.density).toInt()
+
     private companion object {
         const val BASE_FLAGS =
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+        const val BADGE_SIZE_DP = 36
+        const val BADGE_GAP_DP = 6
     }
 }

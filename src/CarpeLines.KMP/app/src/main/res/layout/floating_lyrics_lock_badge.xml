@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/floating_lyrics_lock_badge_card"
+    android:layout_width="36dp"
+    android:layout_height="36dp"
+    app:cardBackgroundColor="@color/floating_lyrics_background"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="4dp"
+    app:strokeWidth="0dp">
+
+    <ImageButton
+        android:id="@+id/floating_lyrics_lock_badge"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/floating_lyrics_unlock"
+        android:padding="9dp"
+        android:src="@drawable/rounded_lock_24"
+        android:tint="@color/floating_lyrics_text_secondary" />
+</com.google.android.material.card.MaterialCardView>

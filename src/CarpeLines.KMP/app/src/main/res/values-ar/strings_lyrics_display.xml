@@ -218,4 +218,6 @@
     <string name="floating_lyrics_not_found">لا توجد كلمات لهذا المقطع</string>
     <string name="floating_lyrics_open_app">فتح CarpeLines</string>
     <string name="floating_lyrics_close">إيقاف الكلمات العائمة</string>
+    <string name="floating_lyrics_lock">قفل كلمات سطح المكتب</string>
+    <string name="floating_lyrics_unlock">إلغاء قفل كلمات سطح المكتب</string>
 </resources>

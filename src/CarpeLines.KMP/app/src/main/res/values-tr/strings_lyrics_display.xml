@@ -218,4 +218,6 @@
     <string name="floating_lyrics_not_found">Bu parça için şarkı sözü yok</string>
     <string name="floating_lyrics_open_app">CarpeLines\'ı aç</string>
     <string name="floating_lyrics_close">Yüzen şarkı sözlerini kapat</string>
+    <string name="floating_lyrics_lock">Masaüstü şarkı sözlerini kilitle</string>
+    <string name="floating_lyrics_unlock">Masaüstü şarkı sözlerinin kilidini aç</string>
 </resources>

@@ -218,4 +218,6 @@
     <string name="floating_lyrics_not_found">Для этого трека нет текста</string>
     <string name="floating_lyrics_open_app">Открыть CarpeLines</string>
     <string name="floating_lyrics_close">Выключить плавающий текст</string>
+    <string name="floating_lyrics_lock">Заблокировать текст на рабочем столе</string>
+    <string name="floating_lyrics_unlock">Разблокировать текст на рабочем столе</string>
 </resources>

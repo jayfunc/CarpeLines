@@ -49,6 +49,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/floating_lyrics_controls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
@@ -57,18 +58,18 @@
 
             <ImageButton
                 android:id="@+id/floating_lyrics_previous"
-                android:layout_width="38dp"
-                android:layout_height="38dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/previous_track"
-                android:padding="9dp"
+                android:padding="8dp"
                 android:src="@drawable/rounded_skip_previous_filled_24"
                 android:tint="@color/floating_lyrics_text_secondary" />
 
             <ImageButton
                 android:id="@+id/floating_lyrics_play_pause"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginStart="2dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/cd_play"
@@ -78,23 +79,34 @@
 
             <ImageButton
                 android:id="@+id/floating_lyrics_next"
-                android:layout_width="38dp"
-                android:layout_height="38dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:layout_marginStart="2dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/next_track"
-                android:padding="9dp"
+                android:padding="8dp"
                 android:src="@drawable/rounded_skip_next_filled_24"
                 android:tint="@color/floating_lyrics_text_secondary" />
 
             <ImageButton
+                android:id="@+id/floating_lyrics_lock"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="2dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/floating_lyrics_lock"
+                android:padding="8dp"
+                android:src="@drawable/rounded_lock_24"
+                android:tint="@color/floating_lyrics_text_secondary" />
+
+            <ImageButton
                 android:id="@+id/floating_lyrics_close"
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:layout_marginStart="6dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="2dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/floating_lyrics_close"
-                android:padding="10dp"
+                android:padding="8dp"
                 android:src="@drawable/rounded_close_24"
                 android:tint="@color/floating_lyrics_text_secondary" />
         </LinearLayout>

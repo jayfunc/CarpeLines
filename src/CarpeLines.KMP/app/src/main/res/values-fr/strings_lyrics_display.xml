@@ -218,4 +218,6 @@
     <string name="floating_lyrics_not_found">Aucune parole pour ce titre</string>
     <string name="floating_lyrics_open_app">Ouvrir CarpeLines</string>
     <string name="floating_lyrics_close">Désactiver les paroles flottantes</string>
+    <string name="floating_lyrics_lock">Verrouiller les paroles sur le bureau</string>
+    <string name="floating_lyrics_unlock">Déverrouiller les paroles sur le bureau</string>
 </resources>

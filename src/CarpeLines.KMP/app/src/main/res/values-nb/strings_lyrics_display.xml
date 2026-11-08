@@ -218,4 +218,6 @@
     <string name="floating_lyrics_not_found">Ingen lyrikk for dette sporet</string>
     <string name="floating_lyrics_open_app">Åpne CarpeLines</string>
     <string name="floating_lyrics_close">Slå av flytende lyrikk</string>
+    <string name="floating_lyrics_lock">Lås skrivebordslyrikk</string>
+    <string name="floating_lyrics_unlock">Lås opp skrivebordslyrikk</string>
 </resources>

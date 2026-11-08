@@ -218,4 +218,6 @@
     <string name="floating_lyrics_not_found">この曲の歌詞が見つかりません</string>
     <string name="floating_lyrics_open_app">CarpeLines を開く</string>
     <string name="floating_lyrics_close">フローティング歌詞をオフにする</string>
+    <string name="floating_lyrics_lock">デスクトップ歌詞をロック</string>
+    <string name="floating_lyrics_unlock">デスクトップ歌詞のロックを解除</string>
 </resources>

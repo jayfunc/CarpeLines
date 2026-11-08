@@ -218,4 +218,6 @@
     <string name="floating_lyrics_not_found">Keine Lyrics für diesen Titel</string>
     <string name="floating_lyrics_open_app">CarpeLines öffnen</string>
     <string name="floating_lyrics_close">Schwebende Lyrics ausschalten</string>
+    <string name="floating_lyrics_lock">Desktop-Lyrics sperren</string>
+    <string name="floating_lyrics_unlock">Desktop-Lyrics entsperren</string>
 </resources>

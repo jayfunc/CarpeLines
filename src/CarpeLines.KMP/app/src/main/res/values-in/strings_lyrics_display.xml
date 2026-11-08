@@ -218,4 +218,6 @@
     <string name="floating_lyrics_not_found">Tidak ada lirik untuk lagu ini</string>
     <string name="floating_lyrics_open_app">Buka CarpeLines</string>
     <string name="floating_lyrics_close">Matikan lirik mengambang</string>
+    <string name="floating_lyrics_lock">Kunci lirik desktop</string>
+    <string name="floating_lyrics_unlock">Buka kunci lirik desktop</string>
 </resources>

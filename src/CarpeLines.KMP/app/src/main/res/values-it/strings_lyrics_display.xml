@@ -218,4 +218,6 @@
     <string name="floating_lyrics_not_found">Nessun testo per questo brano</string>
     <string name="floating_lyrics_open_app">Apri CarpeLines</string>
     <string name="floating_lyrics_close">Disattiva testi flottanti</string>
+    <string name="floating_lyrics_lock">Blocca testi su desktop</string>
+    <string name="floating_lyrics_unlock">Sblocca testi su desktop</string>
 </resources>

@@ -218,4 +218,6 @@
     <string name="floating_lyrics_not_found">No lyrics for this track</string>
     <string name="floating_lyrics_open_app">Open CarpeLines</string>
     <string name="floating_lyrics_close">Turn off floating lyrics</string>
+    <string name="floating_lyrics_lock">Lock desktop lyrics</string>
+    <string name="floating_lyrics_unlock">Unlock desktop lyrics</string>
 </resources>

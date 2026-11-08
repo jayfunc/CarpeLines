@@ -218,4 +218,6 @@
     <string name="floating_lyrics_not_found">이 곡의 가사가 없습니다</string>
     <string name="floating_lyrics_open_app">CarpeLines 열기</string>
     <string name="floating_lyrics_close">떠 있는 가사 끄기</string>
+    <string name="floating_lyrics_lock">바탕 화면 가사 잠금</string>
+    <string name="floating_lyrics_unlock">바탕 화면 가사 잠금 해제</string>
 </resources>

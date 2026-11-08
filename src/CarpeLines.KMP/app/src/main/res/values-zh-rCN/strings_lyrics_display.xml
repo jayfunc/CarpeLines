@@ -218,4 +218,6 @@
     <string name="floating_lyrics_not_found">未找到这首歌的歌词</string>
     <string name="floating_lyrics_open_app">打开 CarpeLines</string>
     <string name="floating_lyrics_close">关闭悬浮歌词</string>
+    <string name="floating_lyrics_lock">锁定桌面歌词</string>
+    <string name="floating_lyrics_unlock">解锁桌面歌词</string>
 </resources>

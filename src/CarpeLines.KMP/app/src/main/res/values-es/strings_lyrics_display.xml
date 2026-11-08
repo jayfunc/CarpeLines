@@ -218,4 +218,6 @@
     <string name="floating_lyrics_not_found">No hay letras para esta pista</string>
     <string name="floating_lyrics_open_app">Abrir CarpeLines</string>
     <string name="floating_lyrics_close">Desactivar letras flotantes</string>
+    <string name="floating_lyrics_lock">Bloquear letras de escritorio</string>
+    <string name="floating_lyrics_unlock">Desbloquear letras de escritorio</string>
 </resources>
