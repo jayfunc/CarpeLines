@@ -99,6 +99,18 @@
 
 <p align="center"><sub>封面取色与流体背景，播放胶囊浮在歌词之上。</sub></p>
 
+<p align="center">
+  <a href="docs/assets/screenshots/lyrics-page-fluid-triptych.jpg"><img src="docs/assets/screenshots/lyrics-page-fluid-triptych.jpg" width="960" height="684" alt="流体背景下的三张手机截图：英文、韩文与马来文歌词，均带逐字扫光与翻译行" /></a>
+</p>
+
+<p align="center"><sub><b>流体</b> — 背景随封面配色缓缓流动，翻译行堆叠在原文之下，正在唱的逐字点亮。</sub></p>
+
+<p align="center">
+  <a href="docs/assets/screenshots/lyrics-page-raindrop-triptych.jpg"><img src="docs/assets/screenshots/lyrics-page-raindrop-triptych.jpg" width="960" height="684" alt="雨滴背景下的三张手机截图：英文与中文歌词，氛围背景上覆盖雨滴" /></a>
+</p>
+
+<p align="center"><sub><b>雨滴</b> — 雨滴落在氛围背景之上，播放胶囊与封面取色跟随当前曲目。</sub></p>
+
 ---
 
 ## <img src="docs/assets/icons/download.svg" width="28" height="28" align="absmiddle" alt="" /> 下载与安装

@@ -99,6 +99,18 @@
 
 <p align="center"><sub>Artwork-derived colour and fluid backdrops, with the transport pill floating over the lyrics.</sub></p>
 
+<p align="center">
+  <a href="docs/assets/screenshots/lyrics-page-fluid-triptych.jpg"><img src="docs/assets/screenshots/lyrics-page-fluid-triptych.jpg" width="960" height="684" alt="Three phones on the fluid backdrop: English, Korean and Malay lyrics, each with a word-by-word sweep and a translation line" /></a>
+</p>
+
+<p align="center"><sub><b>Fluid</b> — the backdrop drifts with the cover palette while translations stack under the original and the playing word lights up as it is sung.</sub></p>
+
+<p align="center">
+  <a href="docs/assets/screenshots/lyrics-page-raindrop-triptych.jpg"><img src="docs/assets/screenshots/lyrics-page-raindrop-triptych.jpg" width="960" height="684" alt="Three phones on the raindrop overlay: English and Chinese lyrics with droplets over the ambient backdrop" /></a>
+</p>
+
+<p align="center"><sub><b>Raindrop</b> — droplets settle over the ambient backdrop, with the transport pill and artwork tint following the current track.</sub></p>
+
 ---
 
 ## <img src="docs/assets/icons/download.svg" width="28" height="28" align="absmiddle" alt="" /> Download & Install
