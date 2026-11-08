@@ -3,6 +3,7 @@ package io.github.jayfunc.carpelines.presentation.viewmodel
 import com.google.common.truth.Truth.assertThat
 import io.github.jayfunc.carpelines.MainCoroutineExtension
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
+import io.github.jayfunc.carpelines.data.stats.PlaybackPlayerFilterProvider
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository
 import io.github.jayfunc.carpelines.data.stats.RecapYearTotal
 import io.github.jayfunc.carpelines.di.DispatcherProvider
@@ -49,8 +50,10 @@ class RecapEntryViewModelTest {
 
     private val playbackStatsRepository = mockk<PlaybackStatsRepository> {
         every { refreshFlow } returns refreshVersion
-        coEvery { loadRecapYearTotals() } coAnswers { totals }
+        coEvery { loadRecapYearTotals(any()) } coAnswers { totals }
     }
+
+    private val playerFilterProvider = mockk<PlaybackPlayerFilterProvider>(relaxed = true)
 
     private val dismissedYear = MutableStateFlow(0)
 
@@ -71,7 +74,7 @@ class RecapEntryViewModelTest {
         val viewModel = createViewModel(today = LocalDate.of(2026, 10, 23))
 
         assertThat(currentValue(viewModel.homeCard)).isNull()
-        coVerify(exactly = 0) { playbackStatsRepository.loadRecapYearTotals() }
+        coVerify(exactly = 0) { playbackStatsRepository.loadRecapYearTotals(any()) }
     }
 
     @Test
@@ -198,6 +201,7 @@ class RecapEntryViewModelTest {
     private fun createViewModel(clock: Clock) = RecapEntryViewModel(
         playbackStatsRepository = playbackStatsRepository,
         userPreferencesRepository = userPreferencesRepository,
+        playerFilterProvider = playerFilterProvider,
         dispatchers = dispatchers
     ).apply {
         this.clock = clock

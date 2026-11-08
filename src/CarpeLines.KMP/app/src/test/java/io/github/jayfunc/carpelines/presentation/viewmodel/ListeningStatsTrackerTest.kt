@@ -5,6 +5,7 @@ import com.google.common.truth.Truth.assertThat
 import io.github.jayfunc.carpelines.data.DailyMixManager
 import io.github.jayfunc.carpelines.data.listenbrainz.ScrobbleManager
 import io.github.jayfunc.carpelines.data.model.Song
+import io.github.jayfunc.carpelines.data.stats.PlaybackPlayerFilterProvider
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository
 import io.mockk.coVerify
 import io.mockk.every
@@ -21,6 +22,7 @@ class ListeningStatsTrackerTest {
     private val dailyMixManager: DailyMixManager = mockk(relaxed = true)
     private val playbackStatsRepository: PlaybackStatsRepository = mockk(relaxed = true)
     private val scrobbleManager: ScrobbleManager = mockk(relaxed = true)
+    private val playerFilterProvider: PlaybackPlayerFilterProvider = mockk(relaxed = true)
 
     @BeforeEach
     fun setUp() {
@@ -37,7 +39,8 @@ class ListeningStatsTrackerTest {
         val tracker = ListeningStatsTracker(
             dailyMixManager = dailyMixManager,
             playbackStatsRepository = playbackStatsRepository,
-            scrobbleManager = scrobbleManager
+            scrobbleManager = scrobbleManager,
+            playerFilterProvider = playerFilterProvider
         )
         val song = song(
             songId = "looped-song",
@@ -71,7 +74,8 @@ class ListeningStatsTrackerTest {
         val tracker = ListeningStatsTracker(
             dailyMixManager = dailyMixManager,
             playbackStatsRepository = playbackStatsRepository,
-            scrobbleManager = scrobbleManager
+            scrobbleManager = scrobbleManager,
+            playerFilterProvider = playerFilterProvider
         )
         val song = song(songId = "song-1")
         val firstChunkMs = 7_000L

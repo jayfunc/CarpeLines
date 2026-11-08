@@ -64,6 +64,17 @@ object ExternalMediaMonitor {
     private var lastSystemUnboundRebindAt = 0L
     private var selectedMediaId: String? = null
 
+    /**
+     * The player filter: when enabled, sessions from packages outside [allowedPlayerPackages] are
+     * never registered, published or recorded. Kept in volatile fields because the preference
+     * collector runs on an IO thread while session callbacks arrive on the main thread.
+     */
+    @Volatile
+    private var playerFilterEnabled = false
+
+    @Volatile
+    private var allowedPlayerPackages: Set<String> = emptySet()
+
     private val _state = MutableStateFlow<ExternalMediaState?>(null)
     val state: StateFlow<ExternalMediaState?> = _state.asStateFlow()
 
@@ -72,6 +83,27 @@ object ExternalMediaMonitor {
 
     private val _connected = MutableStateFlow(false)
     val connected: StateFlow<Boolean> = _connected.asStateFlow()
+
+    /** Every player currently publishing a session, including ones the filter ignores. */
+    private val _playerCandidates = MutableStateFlow<List<ExternalPlayerCandidate>>(emptyList())
+    val playerCandidates: StateFlow<List<ExternalPlayerCandidate>> =
+        _playerCandidates.asStateFlow()
+
+    /**
+     * Applies the saved player filter. A disabled filter accepts every player, which is the
+     * behaviour an install had before the filter existed.
+     */
+    fun setPlayerFilter(enabled: Boolean, allowedPackages: Set<String>) {
+        val normalized = allowedPackages.toSet()
+        if (playerFilterEnabled == enabled && allowedPlayerPackages == normalized) return
+        playerFilterEnabled = enabled
+        allowedPlayerPackages = normalized
+        scope.launch {
+            // Rebuild the followed set immediately, so turning a player off stops the lyrics
+            // screen and the recorder without waiting for the next session change.
+            if (listenerComponent != null) refreshSessions()
+        }
+    }
 
     fun attach(context: Context, component: ComponentName) {
         val application = context.applicationContext
@@ -238,14 +270,17 @@ object ExternalMediaMonitor {
         Log.d(TAG, "onSessionsChanged: ${sessions.size} session(s)")
         unregisterCallbacks()
 
-        controllers.clear()
-        // Keep every foreign session, even when its metadata is still empty. Several players
-        // publish the session first and fill in title/artist on a later metadata callback; filtering
-        // those sessions out here meant that callback was never registered and the lyrics page
-        // stayed on "No media playing".
-        controllers += sessions.filter { controller ->
+        val foreignSessions = sessions.filter { controller ->
             controller.packageName != application.packageName
         }
+        publishPlayerCandidates(application, foreignSessions)
+
+        controllers.clear()
+        // Keep every allowed foreign session, even when its metadata is still empty. Several
+        // players publish the session first and fill in title/artist on a later metadata callback;
+        // filtering those sessions out here meant that callback was never registered and the lyrics
+        // page stayed on "No media playing".
+        controllers += foreignSessions.filter { isPlayerAllowed(it.packageName) }
 
         controllers.forEach { controller ->
             val callback = controllerCallback(controller)
@@ -254,6 +289,28 @@ object ExternalMediaMonitor {
         }
 
         selectActiveController()
+    }
+
+    private fun isPlayerAllowed(packageName: String): Boolean =
+        !playerFilterEnabled || packageName in allowedPlayerPackages
+
+    /**
+     * Lists the players the settings screen can offer, including the ones the filter currently
+     * ignores. Listing only followed sessions would make an excluded player unreachable: it never
+     * plays into the store, so it could never be switched back on.
+     */
+    private fun publishPlayerCandidates(context: Context, sessions: List<MediaController>) {
+        _playerCandidates.value = sessions
+            .map { controller ->
+                ExternalPlayerCandidate(
+                    packageName = controller.packageName,
+                    appLabel = resolveAppLabel(context, controller.packageName),
+                    isPlaying = controller.playbackState?.state == PlaybackState.STATE_PLAYING,
+                )
+            }
+            .distinctBy { it.packageName }
+            .sortedWith(compareBy<ExternalPlayerCandidate> { !it.isPlaying }
+                .thenBy { it.appLabel.lowercase() })
     }
 
     private fun controllerCallback(controller: MediaController): MediaController.Callback {
@@ -449,6 +506,7 @@ object ExternalMediaMonitor {
         activeController = null
         listenerComponent = null
         _connected.value = false
+        _playerCandidates.value = emptyList()
 
         if (clearState) {
             _state.value = null

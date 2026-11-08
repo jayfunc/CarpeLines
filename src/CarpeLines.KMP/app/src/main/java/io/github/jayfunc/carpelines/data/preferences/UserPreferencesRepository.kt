@@ -232,6 +232,9 @@ constructor(
         val EXTERNAL_LYRICS_ENABLED = booleanPreferencesKey("external_lyrics_enabled")
         val EXTERNAL_ARTIST_IMAGES_ENABLED = booleanPreferencesKey("external_artist_images_enabled")
         val COVER_ART_SOURCE_ORDER = stringPreferencesKey("cover_art_source_order")
+        val EXTERNAL_PLAYER_FILTER_ENABLED = booleanPreferencesKey("external_player_filter_enabled")
+        val EXTERNAL_PLAYER_ALLOWED_PACKAGES =
+            stringSetPreferencesKey("external_player_allowed_packages")
 
         val ALBUM_ART_QUALITY = stringPreferencesKey("album_art_quality")
         val ALBUM_ART_CACHE_LIMIT_MB = intPreferencesKey("album_art_cache_limit_mb")
@@ -740,6 +743,33 @@ constructor(
         if (order.isEmpty()) return
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.COVER_ART_SOURCE_ORDER] = CoverArtSource.encode(order)
+        }
+    }
+
+    /**
+     * Whether only the players listed in [externalPlayerAllowedPackagesFlow] may publish a media
+     * session. Off by default, so an install that never opens the filter follows every player.
+     */
+    val externalPlayerFilterEnabledFlow: Flow<Boolean> =
+        dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.EXTERNAL_PLAYER_FILTER_ENABLED] ?: false
+        }.distinctUntilChanged()
+
+    suspend fun setExternalPlayerFilterEnabled(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.EXTERNAL_PLAYER_FILTER_ENABLED] = enabled
+        }
+    }
+
+    /** Package names allowed to publish a media session while the filter is on. */
+    val externalPlayerAllowedPackagesFlow: Flow<Set<String>> =
+        dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.EXTERNAL_PLAYER_ALLOWED_PACKAGES].orEmpty()
+        }.distinctUntilChanged()
+
+    suspend fun setExternalPlayerAllowedPackages(packages: Set<String>) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.EXTERNAL_PLAYER_ALLOWED_PACKAGES] = packages
         }
     }
 

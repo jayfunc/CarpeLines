@@ -9,6 +9,7 @@ import io.github.jayfunc.carpelines.data.external.ExternalPlaybackStore
 import io.github.jayfunc.carpelines.data.model.Song
 import io.github.jayfunc.carpelines.data.repository.ArtistImageRepository
 import io.github.jayfunc.carpelines.data.repository.MusicRepository
+import io.github.jayfunc.carpelines.data.stats.PlaybackPlayerFilterProvider
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository.ListeningHeatmap
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository.PlaybackEvent
@@ -93,7 +94,7 @@ class StatsViewModelTest {
     private val playbackStatsRepository = mockk<PlaybackStatsRepository> {
         every { refreshFlow } returns refreshVersion
         every { requestRefresh() } answers { refreshVersion.update { it + 1 } }
-        coEvery { loadSummary(any(), any(), any()) } coAnswers {
+        coEvery { loadSummary(any(), any(), any(), any()) } coAnswers {
             loadGate?.await()
             if (loadDelayMs > 0L) delay(loadDelayMs)
             loadFailure?.let { throw it }
@@ -104,7 +105,7 @@ class StatsViewModelTest {
                 allEvents = events
             )
         }
-        coEvery { loadListeningHeatmap() } returns emptyHeatmap
+        coEvery { loadListeningHeatmap(any()) } returns emptyHeatmap
     }
 
     private val musicRepository = mockk<MusicRepository>(relaxed = true) {
@@ -116,6 +117,10 @@ class StatsViewModelTest {
     /** These tests are about library songs; external playback contributes nothing here. */
     private val externalPlaybackStore = mockk<ExternalPlaybackStore>(relaxed = true) {
         coEvery { songs() } returns emptyList()
+    }
+
+    private val playerFilterProvider = mockk<PlaybackPlayerFilterProvider>(relaxed = true) {
+        coEvery { current() } returns null
     }
 
     @Test
@@ -296,6 +301,7 @@ class StatsViewModelTest {
         musicRepository = musicRepository,
         artistImageRepository = artistImageRepository,
         externalPlaybackStore = externalPlaybackStore,
+        playerFilterProvider = playerFilterProvider,
         dispatchers = dispatchers
     )
 

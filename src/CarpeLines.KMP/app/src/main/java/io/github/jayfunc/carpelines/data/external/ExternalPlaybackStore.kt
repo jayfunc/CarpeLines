@@ -271,6 +271,18 @@ class ExternalPlaybackStore @Inject constructor(
         _snapshot.value.players.sortedByDescending { it.lastPlayedAt }
     }
 
+    /**
+     * Maps every remembered track to the player that last reported it.
+     *
+     * Playback history written before events carried their own package has to be attributed
+     * somehow, and this snapshot is the only per-track source the app kept. It is an
+     * approximation: a song played by two players maps to the most recent one.
+     */
+    suspend fun sourcePackagesBySongId(): Map<String, String> = withContext(Dispatchers.IO) {
+        ensureLoaded()
+        _snapshot.value.tracks.associate { it.songId to it.packageName }
+    }
+
     companion object {
         private const val MAX_TRACKS = 400
         private const val MAX_PLAYERS = 24

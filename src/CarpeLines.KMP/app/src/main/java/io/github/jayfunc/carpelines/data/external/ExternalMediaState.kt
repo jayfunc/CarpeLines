@@ -39,3 +39,14 @@ data class ExternalMediaState(
         songId = mediaId,
     )
 }
+
+/**
+ * A player seen publishing a media session on the device, whether or not the player filter lets
+ * CarpeLines follow it. The player filter screen lists these so an ignored player can be selected.
+ */
+data class ExternalPlayerCandidate(
+    val packageName: String,
+    val appLabel: String,
+    val isPlaying: Boolean,
+)
+

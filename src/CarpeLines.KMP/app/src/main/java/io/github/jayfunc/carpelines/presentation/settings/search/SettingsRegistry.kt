@@ -252,6 +252,22 @@ object SettingsRegistry {
                 onToggle = { viewModel, checked -> viewModel.setExternalArtistImagesEnabled(checked) }
             ),
 
+            // --- PLAYER FILTER CATEGORY ---
+            SettingSpec(
+                id = "player_filter",
+                itemKey = "item_player_filter",
+                titleRes = R.string.settings_category_player_filter_title,
+                subtitleRes = R.string.settings_category_player_filter_subtitle,
+                category = SettingsCategory.PLAYER_FILTER,
+                subscreenRoute = Screen.SettingsCategory.createRoute(SettingsCategory.PLAYER_FILTER.id),
+                type = SettingType.NAVIGABLE_CARD,
+                keywordsStatic = listOf(
+                    "player", "player filter", "media session", "listening stats", "statistics",
+                    "ignore player", "follow player", "spotify", "youtube music", "apple music",
+                    "播放器", "播放器筛选", "媒体会话", "收听统计", "排除播放器",
+                )
+            ),
+
             // --- BACKUP & RESTORE CATEGORY ---
             SettingSpec(
                 id = "backup_export",

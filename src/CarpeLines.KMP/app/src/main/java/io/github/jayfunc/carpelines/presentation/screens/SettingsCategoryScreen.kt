@@ -176,6 +176,7 @@ import io.github.jayfunc.carpelines.presentation.navigation.Screen
 import io.github.jayfunc.carpelines.presentation.settings.search.settingHighlight
 import io.github.jayfunc.carpelines.presentation.viewmodel.LyricsRefreshProgress
 import io.github.jayfunc.carpelines.presentation.viewmodel.M3uSyncViewModel
+import io.github.jayfunc.carpelines.presentation.viewmodel.PlayerFilterViewModel
 import io.github.jayfunc.carpelines.presentation.viewmodel.PlayerViewModel
 import io.github.jayfunc.carpelines.presentation.viewmodel.SettingsViewModel
 import io.github.jayfunc.carpelines.presentation.viewmodel.SmartMixViewModel
@@ -203,6 +204,7 @@ fun SettingsCategoryScreen(
     navController: NavController,
     playerViewModel: PlayerViewModel,
     settingsViewModel: SettingsViewModel = hiltViewModel(),
+    playerFilterViewModel: PlayerFilterViewModel = hiltViewModel(),
     m3uSyncViewModel: M3uSyncViewModel = hiltViewModel(),
     statsViewModel: io.github.jayfunc.carpelines.presentation.viewmodel.StatsViewModel = hiltViewModel(),
     smartMixViewModel: SmartMixViewModel = hiltViewModel(),
@@ -590,6 +592,12 @@ fun SettingsCategoryScreen(
                         SettingsCategory.LYRICS -> Unit
                         SettingsCategory.LYRICS_MANAGEMENT -> Unit
                         SettingsCategory.COVER_SOURCES -> Unit
+                        SettingsCategory.PLAYER_FILTER -> {
+                            PlayerFilterSettingsSection(
+                                viewModel = playerFilterViewModel,
+                                highlightKey = highlightKey,
+                            )
+                        }
                         SettingsCategory.LOCAL_MUSIC -> {
                             LocalMusicSettingsSection(
                                 settingsViewModel = settingsViewModel,

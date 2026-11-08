@@ -32,6 +32,7 @@ class SettingsMainListTest {
             MainSettingsEntry.Destination.LYRICS,
             MainSettingsEntry.Category(SettingsCategory.LYRICS_MANAGEMENT),
             MainSettingsEntry.Category(SettingsCategory.COVER_SOURCES),
+            MainSettingsEntry.Category(SettingsCategory.PLAYER_FILTER),
             MainSettingsEntry.Category(SettingsCategory.LOCAL_MUSIC),
             MainSettingsEntry.Category(SettingsCategory.BACKUP_RESTORE),
             MainSettingsEntry.Destination.UPDATES,
@@ -87,6 +88,10 @@ class SettingsMainListTest {
         assertEquals(
             Screen.CoverSources.route,
             MainSettingsEntry.Category(SettingsCategory.COVER_SOURCES).route
+        )
+        assertEquals(
+            Screen.SettingsCategory.createRoute("player_filter"),
+            MainSettingsEntry.Category(SettingsCategory.PLAYER_FILTER).route
         )
         assertEquals(Screen.About.route, MainSettingsEntry.Category(SettingsCategory.ABOUT).route)
         assertEquals(Screen.LyricsSettings.createRoute(), MainSettingsEntry.Destination.LYRICS.route)

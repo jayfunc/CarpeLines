@@ -4,6 +4,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
+import io.github.jayfunc.carpelines.data.stats.PlaybackPlayerFilterProvider
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository
 import io.github.jayfunc.carpelines.di.DispatcherProvider
 import io.github.jayfunc.carpelines.presentation.recap.RecapEntry
@@ -42,6 +43,7 @@ import timber.log.Timber
 class RecapEntryViewModel @Inject constructor(
     private val playbackStatsRepository: PlaybackStatsRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
+    private val playerFilterProvider: PlaybackPlayerFilterProvider,
     dispatchers: DispatcherProvider
 ) : ViewModel() {
 
@@ -69,7 +71,9 @@ class RecapEntryViewModel @Inject constructor(
         today
     ) { _, today -> today }
         .mapLatest { today ->
-            val totals = playbackStatsRepository.loadRecapYearTotals()
+            val totals = playbackStatsRepository.loadRecapYearTotals(
+                playerFilter = playerFilterProvider.current()
+            )
             RecapSchedule.statsEntries(today, totals).toImmutableList()
         }
         .distinctUntilChanged()
@@ -92,7 +96,9 @@ class RecapEntryViewModel @Inject constructor(
         .mapLatest { (dismissedYear, today) ->
             val year = RecapSchedule.homeCardYear(today)
             if (year == null || year == dismissedYear) return@mapLatest null
-            val totals = playbackStatsRepository.loadRecapYearTotals()
+            val totals = playbackStatsRepository.loadRecapYearTotals(
+                playerFilter = playerFilterProvider.current()
+            )
             if (!RecapSchedule.hasEnoughListening(year, totals)) return@mapLatest null
             RecapEntry(year = year, isSoFar = RecapSchedule.isSoFar(year, today))
         }

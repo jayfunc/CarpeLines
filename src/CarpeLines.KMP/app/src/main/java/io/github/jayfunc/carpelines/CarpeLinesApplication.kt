@@ -29,6 +29,8 @@ import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.launch
@@ -137,6 +139,22 @@ class CarpeLinesApplication : Application(), ImageLoaderFactory, Configuration.P
             Timber.plant(Timber.DebugTree())
         } else {
             Timber.plant(ReleaseTree())
+        }
+
+        // Apply the saved player filter before/as the listener attaches. The filter can also
+        // change while the app runs, and the monitor rebuilds its followed sessions on each change.
+        startupScope.launch {
+            combine(
+                userPreferencesRepository.get().externalPlayerFilterEnabledFlow,
+                userPreferencesRepository.get().externalPlayerAllowedPackagesFlow,
+            ) { enabled, packages -> enabled to packages }
+                .distinctUntilChanged()
+                .collect { (enabled, packages) ->
+                    io.github.jayfunc.carpelines.data.external.ExternalMediaMonitor.setPlayerFilter(
+                        enabled = enabled,
+                        allowedPackages = packages,
+                    )
+                }
         }
 
         // Rebind the external media listener after a process restart when access was granted.

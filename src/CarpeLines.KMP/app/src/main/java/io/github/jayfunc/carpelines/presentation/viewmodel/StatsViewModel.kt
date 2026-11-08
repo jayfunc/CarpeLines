@@ -6,6 +6,7 @@ import io.github.jayfunc.carpelines.data.external.ExternalPlaybackStore
 import io.github.jayfunc.carpelines.data.model.Song
 import io.github.jayfunc.carpelines.data.repository.ArtistImageRepository
 import io.github.jayfunc.carpelines.data.repository.MusicRepository
+import io.github.jayfunc.carpelines.data.stats.PlaybackPlayerFilterProvider
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository.ListeningHeatmap
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository.PlaybackStatsSummary
@@ -34,6 +35,7 @@ class StatsViewModel @Inject constructor(
     private val musicRepository: MusicRepository,
     private val artistImageRepository: ArtistImageRepository,
     private val externalPlaybackStore: ExternalPlaybackStore,
+    private val playerFilterProvider: PlaybackPlayerFilterProvider,
     private val dispatchers: DispatcherProvider
 ) : ViewModel() {
 
@@ -91,7 +93,11 @@ class StatsViewModel @Inject constructor(
             runCatching {
                 withContext(dispatchers.io) {
                     val songs = loadSongs()
-                    playbackStatsRepository.loadSummary(StatsTimeRange.WEEK, songs)
+                    playbackStatsRepository.loadSummary(
+                        range = StatsTimeRange.WEEK,
+                        songs = songs,
+                        playerFilter = playerFilterProvider.current()
+                    )
                 }
             }.onSuccess { summary ->
                 _weeklyOverview.value = summary
@@ -108,8 +114,9 @@ class StatsViewModel @Inject constructor(
             val summary = try {
                 withContext(dispatchers.io) {
                     val songs = loadSongs()
+                    val playerFilter = playerFilterProvider.current()
                     firstSummaryWithActivity(HomeOverviewRanges) { range ->
-                        playbackStatsRepository.loadSummary(range, songs)
+                        playbackStatsRepository.loadSummary(range, songs, playerFilter = playerFilter)
                     }
                 }
             } catch (cancellation: CancellationException) {
@@ -144,10 +151,16 @@ class StatsViewModel @Inject constructor(
             val loaded = runCatching {
                 withContext(dispatchers.io) {
                     val songs = loadSongs()
-                    val summary = playbackStatsRepository.loadSummary(range, songs)
+                    val playerFilter = playerFilterProvider.current()
+                    val summary = playbackStatsRepository.loadSummary(
+                        range = range,
+                        songs = songs,
+                        playerFilter = playerFilter
+                    )
                     val cached = cachedHeatmap
                     val heatmap = if (refreshHeatmap || cached == null) {
-                        playbackStatsRepository.loadListeningHeatmap().also { cachedHeatmap = it }
+                        playbackStatsRepository.loadListeningHeatmap(playerFilter)
+                            .also { cachedHeatmap = it }
                     } else {
                         cached
                     }

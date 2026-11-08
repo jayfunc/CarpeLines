@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ManageSearch
 import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material.icons.rounded.FilterAlt
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.LibraryMusic
 import androidx.compose.material.icons.rounded.Lyrics
@@ -64,6 +65,16 @@ enum class SettingsCategory(
         titleRes = R.string.settings_category_cover_sources_title,
         subtitleRes = R.string.settings_category_cover_sources_subtitle,
         icon = Icons.Outlined.Image
+    ),
+    /**
+     * Which players may publish a media session. Ignored players are not followed at all, so their
+     * tracks never reach the lyrics screen or the listening statistics.
+     */
+    PLAYER_FILTER(
+        id = "player_filter",
+        titleRes = R.string.settings_category_player_filter_title,
+        subtitleRes = R.string.settings_category_player_filter_subtitle,
+        icon = Icons.Rounded.FilterAlt
     ),
     BACKUP_RESTORE(
         id = "backup_restore",

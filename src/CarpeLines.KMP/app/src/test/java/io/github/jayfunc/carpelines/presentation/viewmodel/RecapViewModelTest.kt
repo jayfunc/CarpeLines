@@ -9,6 +9,7 @@ import io.github.jayfunc.carpelines.R
 import io.github.jayfunc.carpelines.data.model.Song
 import io.github.jayfunc.carpelines.data.repository.ArtistImageRepository
 import io.github.jayfunc.carpelines.data.repository.MusicRepository
+import io.github.jayfunc.carpelines.data.stats.PlaybackPlayerFilterProvider
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository.PlaybackEvent
 import io.github.jayfunc.carpelines.di.DispatcherProvider
@@ -55,7 +56,7 @@ class RecapViewModelTest {
     private var events: List<PlaybackEvent> = emptyList()
 
     private val playbackStatsRepository = mockk<PlaybackStatsRepository> {
-        coEvery { loadRecap(any(), any(), any()) } coAnswers {
+        coEvery { loadRecap(any(), any(), any(), any()) } coAnswers {
             recapBuilder.buildRecapFromEvents(
                 year = firstArg(),
                 songs = secondArg(),
@@ -65,6 +66,8 @@ class RecapViewModelTest {
             )
         }
     }
+
+    private val playerFilterProvider = mockk<PlaybackPlayerFilterProvider>(relaxed = true)
 
     private val librarySongs = listOf(
         song("a", artist = "Aurora Fields", art = "content://art/a"),
@@ -210,6 +213,7 @@ class RecapViewModelTest {
         playbackStatsRepository = playbackStatsRepository,
         musicRepository = musicRepository,
         artistImageRepository = artistImageRepository,
+        playerFilterProvider = playerFilterProvider,
         dispatchers = dispatchers
     )
 

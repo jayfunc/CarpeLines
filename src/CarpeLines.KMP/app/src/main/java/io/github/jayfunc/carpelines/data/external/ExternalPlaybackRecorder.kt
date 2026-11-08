@@ -37,6 +37,7 @@ class ExternalPlaybackRecorder @Inject constructor(
     private class Session(
         val identity: String,
         val songId: String,
+        val packageName: String,
         var accumulatedMs: Long,
         var lastTickRealtimeMs: Long,
         var wasPlaying: Boolean
@@ -97,6 +98,7 @@ class ExternalPlaybackRecorder @Inject constructor(
         session = Session(
             identity = media.identity,
             songId = store.songIdFor(media),
+            packageName = media.packageName,
             accumulatedMs = 0L,
             lastTickRealtimeMs = SystemClock.elapsedRealtime(),
             wasPlaying = media.isPlaying
@@ -130,7 +132,8 @@ class ExternalPlaybackRecorder @Inject constructor(
             statsRepository.recordPlayback(
                 songId = current.songId,
                 durationMs = duration,
-                timestamp = timestamp
+                timestamp = timestamp,
+                packageName = current.packageName
             )
             listeningStatsTracker.reloadHistory()
         }.onFailure { Timber.w(it, "Unable to record external listening time") }

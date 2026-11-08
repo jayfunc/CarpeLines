@@ -100,7 +100,8 @@ data class PlaybackHistoryBackupEntry(
     val timestamp: Long,
     val durationMs: Long,
     val startTimestamp: Long? = null,
-    val endTimestamp: Long? = null
+    val endTimestamp: Long? = null,
+    val packageName: String? = null
 )
 
 data class AppDataBackupPayload(
@@ -206,7 +207,8 @@ class AppDataBackupManager @Inject constructor(
                                 timestamp = event.timestamp,
                                 durationMs = event.durationMs,
                                 startTimestamp = event.startTimestamp,
-                                endTimestamp = event.endTimestamp
+                                endTimestamp = event.endTimestamp,
+                                packageName = event.packageName
                             )
                         }
                     }
@@ -371,7 +373,8 @@ class AppDataBackupManager @Inject constructor(
                                         timestamp = entry.timestamp,
                                         durationMs = entry.durationMs,
                                         startTimestamp = entry.startTimestamp,
-                                        endTimestamp = entry.endTimestamp
+                                        endTimestamp = entry.endTimestamp,
+                                        packageName = entry.packageName
                                     )
                                 },
                                 clearExisting = true

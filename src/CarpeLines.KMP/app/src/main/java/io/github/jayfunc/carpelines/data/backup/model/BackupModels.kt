@@ -22,7 +22,9 @@ data class PlaybackHistoryBackupEntry(
     val timestamp: Long,
     val durationMs: Long,
     val startTimestamp: Long? = null,
-    val endTimestamp: Long? = null
+    val endTimestamp: Long? = null,
+    /** Absent in older backups; those entries are attributed from the external playback snapshot. */
+    val packageName: String? = null
 )
 
 data class ArtistImageBackupEntry(

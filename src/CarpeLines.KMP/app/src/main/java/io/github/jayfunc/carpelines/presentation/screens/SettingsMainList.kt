@@ -58,6 +58,7 @@ internal val mainSettingsEntries: List<MainSettingsEntry> = buildList {
     add(MainSettingsEntry.Destination.LYRICS)
     add(MainSettingsEntry.Category(SettingsCategory.LYRICS_MANAGEMENT))
     add(MainSettingsEntry.Category(SettingsCategory.COVER_SOURCES))
+    add(MainSettingsEntry.Category(SettingsCategory.PLAYER_FILTER))
     add(MainSettingsEntry.Category(SettingsCategory.LOCAL_MUSIC))
     add(MainSettingsEntry.Category(SettingsCategory.BACKUP_RESTORE))
     add(MainSettingsEntry.Destination.UPDATES)

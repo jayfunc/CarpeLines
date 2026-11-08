@@ -457,6 +457,79 @@ class PlaybackStatsRepositoryTest {
         }
     }
 
+    @Test
+    fun `player filter drops events from excluded players`() {
+        val repository = createRepository()
+        val spotify = PlaybackStatsRepository.PlaybackEvent(
+            songId = "song-1",
+            timestamp = 2_000L,
+            durationMs = 1_000L,
+            packageName = "com.spotify.music"
+        )
+        val bilibili = PlaybackStatsRepository.PlaybackEvent(
+            songId = "song-2",
+            timestamp = 2_000L,
+            durationMs = 1_000L,
+            packageName = "tv.danmaku.bili"
+        )
+
+        val filtered = repository.filterEventsByPlayer(
+            events = listOf(spotify, bilibili),
+            playerFilter = PlaybackStatsRepository.PlaybackPlayerFilter(
+                allowedPackages = setOf("com.spotify.music")
+            )
+        )
+
+        assertThat(filtered).containsExactly(spotify)
+    }
+
+    @Test
+    fun `legacy events without a package follow the last known source`() {
+        val repository = createRepository()
+        val legacyBilibili = PlaybackStatsRepository.PlaybackEvent(
+            songId = "external:bili-song",
+            timestamp = 2_000L,
+            durationMs = 1_000L
+        )
+        val legacySpotify = PlaybackStatsRepository.PlaybackEvent(
+            songId = "external:spotify-song",
+            timestamp = 2_000L,
+            durationMs = 1_000L
+        )
+        val unattributed = PlaybackStatsRepository.PlaybackEvent(
+            songId = "external:unknown-song",
+            timestamp = 2_000L,
+            durationMs = 1_000L
+        )
+
+        val filtered = repository.filterEventsByPlayer(
+            events = listOf(legacyBilibili, legacySpotify, unattributed),
+            playerFilter = PlaybackStatsRepository.PlaybackPlayerFilter(
+                allowedPackages = setOf("com.spotify.music"),
+                sourcePackageBySongId = mapOf(
+                    "external:bili-song" to "tv.danmaku.bili",
+                    "external:spotify-song" to "com.spotify.music"
+                )
+            )
+        )
+
+        // The unattributed event is kept: dropping it could hide a selected player's listening.
+        assertThat(filtered).containsExactly(legacySpotify, unattributed).inOrder()
+    }
+
+    @Test
+    fun `no player filter keeps every event`() {
+        val repository = createRepository()
+        val events = listOf(
+            PlaybackStatsRepository.PlaybackEvent("song-1", 2_000L, 1_000L, packageName = "com.spotify.music"),
+            PlaybackStatsRepository.PlaybackEvent("song-2", 2_000L, 1_000L, packageName = "tv.danmaku.bili")
+        )
+
+        assertThat(repository.filterEventsByPlayer(events, playerFilter = null))
+            .containsExactlyElementsIn(events)
+            .inOrder()
+    }
+
     private fun withDefaultLocale(locale: Locale, block: () -> Unit) {
         val previous = Locale.getDefault()
         Locale.setDefault(locale)

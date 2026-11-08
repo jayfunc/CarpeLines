@@ -7,6 +7,7 @@ import io.github.jayfunc.carpelines.data.model.Song
 import io.github.jayfunc.carpelines.data.repository.ArtistImageRepository
 import io.github.jayfunc.carpelines.data.repository.MusicRepository
 import io.github.jayfunc.carpelines.data.stats.ListeningRecap
+import io.github.jayfunc.carpelines.data.stats.PlaybackPlayerFilterProvider
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository
 import io.github.jayfunc.carpelines.di.DispatcherProvider
 import io.github.jayfunc.carpelines.presentation.recap.RecapSchedule
@@ -38,6 +39,7 @@ class RecapViewModel @Inject constructor(
     private val playbackStatsRepository: PlaybackStatsRepository,
     private val musicRepository: MusicRepository,
     private val artistImageRepository: ArtistImageRepository,
+    private val playerFilterProvider: PlaybackPlayerFilterProvider,
     private val dispatchers: DispatcherProvider
 ) : ViewModel() {
 
@@ -70,7 +72,11 @@ class RecapViewModel @Inject constructor(
      */
     private suspend fun load() {
         val songs = withContext(dispatchers.io) { musicRepository.getAllSongsOnce() }
-        val recap = playbackStatsRepository.loadRecap(year, songs)
+        val recap = playbackStatsRepository.loadRecap(
+            year = year,
+            songs = songs,
+            playerFilter = playerFilterProvider.current()
+        )
         if (recap == null || recap.summary.totalDurationMs < RecapSchedule.MIN_RECAP_LISTENING_MS) {
             _uiState.value = RecapUiState.NotEnoughData(year)
             return

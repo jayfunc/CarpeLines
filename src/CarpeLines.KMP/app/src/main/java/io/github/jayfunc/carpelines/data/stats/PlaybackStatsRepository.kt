@@ -58,7 +58,23 @@ class PlaybackStatsRepository @Inject constructor(
         val timestamp: Long,
         val durationMs: Long,
         val startTimestamp: Long? = null,
-        val endTimestamp: Long? = null
+        val endTimestamp: Long? = null,
+        /**
+         * Which player reported this play. Null on events written before the field existed and on
+         * the app's own player; legacy external events resolve their source from
+         * [io.github.jayfunc.carpelines.data.external.ExternalPlaybackStore] when they are read.
+         */
+        val packageName: String? = null
+    )
+
+    /**
+     * Restricts playback history to the players allowed by the player filter. [sourcePackageBySongId]
+     * supplies the last known player for events that predate [PlaybackEvent.packageName]; a missing
+     * entry leaves the event visible because it cannot be attributed.
+     */
+    data class PlaybackPlayerFilter(
+        val allowedPackages: Set<String>,
+        val sourcePackageBySongId: Map<String, String> = emptyMap()
     )
 
     data class PlaybackHistoryEntry(
@@ -191,7 +207,8 @@ class PlaybackStatsRepository @Inject constructor(
     suspend fun recordPlayback(
         songId: String,
         durationMs: Long,
-        timestamp: Long = System.currentTimeMillis()
+        timestamp: Long = System.currentTimeMillis(),
+        packageName: String? = null
     ) = withContext(Dispatchers.IO) {
         if (songId.isBlank()) return@withContext
         val coercedTimestamp = timestamp.coerceAtLeast(0L)
@@ -202,7 +219,8 @@ class PlaybackStatsRepository @Inject constructor(
             timestamp = coercedTimestamp,
             durationMs = coercedDuration,
             startTimestamp = start,
-            endTimestamp = coercedTimestamp
+            endTimestamp = coercedTimestamp,
+            packageName = packageName?.takeIf { it.isNotBlank() }
         )
         val writeSucceeded = updateEventsAtomically { events ->
             val cutoff = sanitizedEvent.endMillis() - MAX_HISTORY_AGE_MS
@@ -220,10 +238,11 @@ class PlaybackStatsRepository @Inject constructor(
     suspend fun loadSummary(
         range: StatsTimeRange,
         songs: List<Song>,
-        nowMillis: Long = System.currentTimeMillis()
+        nowMillis: Long = System.currentTimeMillis(),
+        playerFilter: PlaybackPlayerFilter? = null
     ): PlaybackStatsSummary = withContext(Dispatchers.IO) {
         val zoneId = ZoneId.systemDefault()
-        val allEvents = readEvents()
+        val allEvents = filterEventsByPlayer(readEvents(), playerFilter)
         buildSummaryFromEvents(
             range = range,
             songs = songs,
@@ -234,11 +253,13 @@ class PlaybackStatsRepository @Inject constructor(
     }
 
     /** Daily listening for the trailing [HEATMAP_WEEKS] weeks, independent of the stats range. */
-    suspend fun loadListeningHeatmap(): ListeningHeatmap = withContext(Dispatchers.IO) {
+    suspend fun loadListeningHeatmap(
+        playerFilter: PlaybackPlayerFilter? = null
+    ): ListeningHeatmap = withContext(Dispatchers.IO) {
         val zoneId = ZoneId.systemDefault()
         val today = Instant.now().atZone(zoneId).toLocalDate()
         buildListeningHeatmap(
-            allEvents = readEvents(),
+            allEvents = filterEventsByPlayer(readEvents(), playerFilter),
             today = today,
             zoneId = zoneId
         )
@@ -537,9 +558,12 @@ class PlaybackStatsRepository @Inject constructor(
     suspend fun loadRecap(
         year: Int,
         songs: List<Song>,
-        nowMillis: Long = System.currentTimeMillis()
+        nowMillis: Long = System.currentTimeMillis(),
+        playerFilter: PlaybackPlayerFilter? = null
     ): ListeningRecap? {
-        val allEvents = withContext(Dispatchers.IO) { readEvents() }
+        val allEvents = withContext(Dispatchers.IO) {
+            filterEventsByPlayer(readEvents(), playerFilter)
+        }
         return withContext(Dispatchers.Default) {
             buildRecapFromEvents(
                 year = year,
@@ -552,8 +576,12 @@ class PlaybackStatsRepository @Inject constructor(
     }
 
     /** Listened time per local calendar year across the whole history, oldest year first. */
-    suspend fun loadRecapYearTotals(): List<RecapYearTotal> {
-        val allEvents = withContext(Dispatchers.IO) { readEvents() }
+    suspend fun loadRecapYearTotals(
+        playerFilter: PlaybackPlayerFilter? = null
+    ): List<RecapYearTotal> {
+        val allEvents = withContext(Dispatchers.IO) {
+            filterEventsByPlayer(readEvents(), playerFilter)
+        }
         return withContext(Dispatchers.Default) {
             recapYearTotals(allEvents, ZoneId.systemDefault())
         }
@@ -682,10 +710,13 @@ class PlaybackStatsRepository @Inject constructor(
         readEvents().map { event -> sanitizeEvent(event) }
     }
 
-    suspend fun loadPlaybackHistory(limit: Int = DEFAULT_PLAYBACK_HISTORY_LIMIT): List<PlaybackHistoryEntry> = withContext(Dispatchers.IO) {
+    suspend fun loadPlaybackHistory(
+        limit: Int = DEFAULT_PLAYBACK_HISTORY_LIMIT,
+        playerFilter: PlaybackPlayerFilter? = null
+    ): List<PlaybackHistoryEntry> = withContext(Dispatchers.IO) {
         if (limit <= 0) return@withContext emptyList()
         val safeLimit = limit.coerceAtMost(MAX_PLAYBACK_HISTORY_LIMIT)
-        readEvents()
+        filterEventsByPlayer(readEvents(), playerFilter)
             .asSequence()
             .sortedByDescending { event -> event.timestamp }
             .take(safeLimit)
@@ -724,6 +755,23 @@ class PlaybackStatsRepository @Inject constructor(
 
     fun requestRefresh() {
         notifyStatsChanged()
+    }
+
+    /**
+     * Drops events from players the filter excludes. [PlaybackPlayerFilter.sourcePackageBySongId]
+     * covers history written before events carried their own package; an event no source can be
+     * found for stays visible rather than silently dropping a selected player's listening.
+     */
+    internal fun filterEventsByPlayer(
+        events: List<PlaybackEvent>,
+        playerFilter: PlaybackPlayerFilter?
+    ): List<PlaybackEvent> {
+        if (playerFilter == null) return events
+        val allowed = playerFilter.allowedPackages
+        return events.filter { event ->
+            val source = event.packageName ?: playerFilter.sourcePackageBySongId[event.songId]
+            source == null || source in allowed
+        }
     }
 
     private fun readEvents(): List<PlaybackEvent> {

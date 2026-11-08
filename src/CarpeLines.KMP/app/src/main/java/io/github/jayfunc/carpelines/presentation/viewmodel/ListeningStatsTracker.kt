@@ -5,6 +5,7 @@ import androidx.media3.common.C
 import io.github.jayfunc.carpelines.data.DailyMixManager
 import io.github.jayfunc.carpelines.data.listenbrainz.ScrobbleManager
 import io.github.jayfunc.carpelines.data.model.Song
+import io.github.jayfunc.carpelines.data.stats.PlaybackPlayerFilterProvider
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,8 @@ import timber.log.Timber
 class ListeningStatsTracker @Inject constructor(
     private val dailyMixManager: DailyMixManager,
     private val playbackStatsRepository: PlaybackStatsRepository,
-    private val scrobbleManager: ScrobbleManager
+    private val scrobbleManager: ScrobbleManager,
+    private val playerFilterProvider: PlaybackPlayerFilterProvider
 ) {
     private var currentSession: ActiveSession? = null
     private var pendingVoluntarySongId: String? = null
@@ -62,7 +64,8 @@ class ListeningStatsTracker @Inject constructor(
         persistenceScope.launch {
             runCatching {
                 _playbackHistory.value = playbackStatsRepository.loadPlaybackHistory(
-                    limit = MAX_INTERNAL_PLAYBACK_HISTORY_ITEMS
+                    limit = MAX_INTERNAL_PLAYBACK_HISTORY_ITEMS,
+                    playerFilter = playerFilterProvider.current()
                 )
             }.onFailure { Timber.w(it, "Unable to reload playback history") }
         }
