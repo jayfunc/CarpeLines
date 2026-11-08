@@ -17,6 +17,7 @@
     <string name="lyrics_line_actions_refresh">Lyrics erneut abrufen</string>
     <string name="lyrics_line_actions_manual_search">Lyrics manuell suchen</string>
     <string name="lyrics_line_actions_settings">Lyrik-Darstellung</string>
+    <string name="lyrics_line_actions_management">Lyrik verwalten</string>
     <string name="lyrics_layout_mode_title">Layout</string>
     <string name="lyrics_layout_mode_subtitle">Wie viele Lyrikzeilen den Bildschirm teilen</string>
     <string name="lyrics_layout_mode_scroll">Scrollende Liste</string>

@@ -129,7 +129,7 @@
     <string name="betterlyrics_word_timed">逐字</string>
     <string name="betterlyrics_match_score">匹配 %1$d%%</string>
     <string name="betterlyrics_settings_title">歌詞源設定</string>
-    <string name="betterlyrics_settings_subtitle">Apple Music 權杖、LibreTranslate 伺服器與翻譯/音譯軌道開關</string>
+    <string name="betterlyrics_settings_subtitle">Apple Music 權杖與 LibreTranslate 伺服器</string>
     <string name="betterlyrics_apple_token_label">Apple Music media-user-token</string>
     <string name="betterlyrics_apple_token_hint">在已登入的 music.apple.com 會話中複製 media-user-token Cookie；逐字歌詞需要此權杖</string>
     <string name="betterlyrics_libre_server_label">LibreTranslate 伺服器</string>
@@ -141,7 +141,6 @@
     <string name="betterlyrics_apple_section">Apple Music</string>
     <string name="betterlyrics_libre_section">LibreTranslate</string>
     <string name="betterlyrics_tracks_section">翻譯與音譯</string>
-    <string name="betterlyrics_autosave_hint">變更會自動儲存</string>
     <string name="betterlyrics_save_settings">儲存設定</string>
     <string name="betterlyrics_settings_saved">設定已儲存</string>
     <string name="betterlyrics_back">返回</string>
@@ -178,6 +177,7 @@
     <string name="lyrics_local_empty">這首歌曲還沒有歌詞</string>
     <string name="lyrics_open_player">打開播放器</string>
     <string name="lyrics_loading">正在載入歌詞…</string>
+    <string name="lyrics_reset_section">恢復預設</string>
     <string name="lyrics_reset_defaults_title">還原預設設定</string>
     <string name="lyrics_reset_defaults_subtitle">把本頁的字號、字體、顏色與動效還原為預設</string>
     <string name="dialog_reset_lyrics_settings_title">還原歌詞預設設定？</string>

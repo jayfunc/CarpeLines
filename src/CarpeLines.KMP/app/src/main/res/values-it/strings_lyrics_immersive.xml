@@ -17,6 +17,7 @@
     <string name="lyrics_line_actions_refresh">Recupera di nuovo i testi</string>
     <string name="lyrics_line_actions_manual_search">Cerca i testi manualmente</string>
     <string name="lyrics_line_actions_settings">Aspetto dei testi</string>
+    <string name="lyrics_line_actions_management">Gestisci i testi</string>
     <string name="lyrics_layout_mode_title">Disposizione</string>
     <string name="lyrics_layout_mode_subtitle">Quante righe di testo condividono lo schermo</string>
     <string name="lyrics_layout_mode_scroll">Elenco scorrevole</string>

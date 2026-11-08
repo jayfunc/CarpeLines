@@ -133,7 +133,7 @@
     <string name="betterlyrics_word_timed">Kelime zamanlamalı</string>
     <string name="betterlyrics_match_score">%1$d%% eşleşme</string>
     <string name="betterlyrics_settings_title">Sağlayıcı ayarları</string>
-    <string name="betterlyrics_settings_subtitle">Apple Music belirteci, LibreTranslate sunucusu ve çeviri/transliterasyon parçaları</string>
+    <string name="betterlyrics_settings_subtitle">Apple Music belirteci ve LibreTranslate sunucusu</string>
     <string name="betterlyrics_apple_token_label">Apple Music media-user-token</string>
     <string name="betterlyrics_apple_token_hint">Oturum açılmış bir music.apple.com oturumundan media-user-token çerezini kopyalayın. Hece şarkı sözleri için gerekir.</string>
     <string name="betterlyrics_libre_server_label">LibreTranslate sunucusu</string>
@@ -145,7 +145,6 @@
     <string name="betterlyrics_apple_section">Apple Music</string>
     <string name="betterlyrics_libre_section">LibreTranslate</string>
     <string name="betterlyrics_tracks_section">Çeviri ve transliterasyon</string>
-    <string name="betterlyrics_autosave_hint">Değişiklikler otomatik olarak kaydedilir</string>
     <string name="betterlyrics_save_settings">Ayarları kaydet</string>
     <string name="betterlyrics_settings_saved">Ayarlar kaydedildi</string>
     <string name="betterlyrics_back">Geri</string>
@@ -177,6 +176,7 @@
     <string name="lyrics_local_empty">Bu şarkı için henüz şarkı sözü yok</string>
     <string name="lyrics_open_player">Oynatıcıyı aç</string>
     <string name="lyrics_loading">Şarkı sözleri yükleniyor…</string>
+    <string name="lyrics_reset_section">Varsayılanlara dön</string>
     <string name="lyrics_reset_defaults_title">Görünümü sıfırla</string>
     <string name="lyrics_reset_defaults_subtitle">Bu sayfadaki yazı tipini, rengi ve efektleri varsayılanlarına döndür</string>
     <string name="dialog_reset_lyrics_settings_title">Şarkı sözü görünümü sıfırlansın mı?</string>

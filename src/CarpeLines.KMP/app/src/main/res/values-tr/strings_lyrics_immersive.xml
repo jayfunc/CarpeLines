@@ -17,6 +17,7 @@
     <string name="lyrics_line_actions_refresh">Sözleri yeniden getir</string>
     <string name="lyrics_line_actions_manual_search">Sözleri elle ara</string>
     <string name="lyrics_line_actions_settings">Şarkı sözü görünümü</string>
+    <string name="lyrics_line_actions_management">Şarkı sözlerini yönet</string>
     <string name="lyrics_layout_mode_title">Düzen</string>
     <string name="lyrics_layout_mode_subtitle">Ekranı kaç şarkı sözü satırı paylaşır</string>
     <string name="lyrics_layout_mode_scroll">Kaydırmalı liste</string>

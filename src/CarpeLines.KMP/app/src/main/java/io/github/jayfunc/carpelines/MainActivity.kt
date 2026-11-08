@@ -585,8 +585,8 @@ class MainActivity : ComponentActivity() {
                 Screen.Licenses.route,
                 Screen.Recap.route,
                 Screen.LyricsSettings.route,
-                Screen.LyricsProviderSettings.route,
-                Screen.LyricsSourceOrder.route,
+                Screen.LyricsManagement.route,
+                Screen.CoverSources.route,
                 Screen.BetterLyricsSearch.route,
                 Screen.SettingsCategory.route,
                 Screen.Updates.route

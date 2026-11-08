@@ -133,7 +133,7 @@
     <string name="betterlyrics_word_timed">Wortgetaktet</string>
     <string name="betterlyrics_match_score">%1$d%% Übereinstimmung</string>
     <string name="betterlyrics_settings_title">Anbietereinstellungen</string>
-    <string name="betterlyrics_settings_subtitle">Apple-Music-Token, LibreTranslate-Server und Übersetzungs-/Transliterationsspuren</string>
+    <string name="betterlyrics_settings_subtitle">Apple-Music-Token und LibreTranslate-Server</string>
     <string name="betterlyrics_apple_token_label">Apple Music media-user-token</string>
     <string name="betterlyrics_apple_token_hint">Kopiere das media-user-token-Cookie aus einer angemeldeten music.apple.com-Sitzung. Wird für Silben-Lyrics benötigt.</string>
     <string name="betterlyrics_libre_server_label">LibreTranslate-Server</string>
@@ -145,7 +145,6 @@
     <string name="betterlyrics_apple_section">Apple Music</string>
     <string name="betterlyrics_libre_section">LibreTranslate</string>
     <string name="betterlyrics_tracks_section">Übersetzung &amp; Transliteration</string>
-    <string name="betterlyrics_autosave_hint">Änderungen werden automatisch gespeichert</string>
     <string name="betterlyrics_save_settings">Einstellungen speichern</string>
     <string name="betterlyrics_settings_saved">Einstellungen gespeichert</string>
     <string name="betterlyrics_back">Zurück</string>
@@ -177,6 +176,7 @@
     <string name="lyrics_local_empty">Noch keine Lyrics für diesen Titel</string>
     <string name="lyrics_open_player">Player öffnen</string>
     <string name="lyrics_loading">Lyrics werden geladen…</string>
+    <string name="lyrics_reset_section">Standards wiederherstellen</string>
     <string name="lyrics_reset_defaults_title">Darstellung zurücksetzen</string>
     <string name="lyrics_reset_defaults_subtitle">Schriftart, Farbe und Effekte auf dieser Seite auf die Standardwerte zurücksetzen</string>
     <string name="dialog_reset_lyrics_settings_title">Lyrik-Darstellung zurücksetzen?</string>

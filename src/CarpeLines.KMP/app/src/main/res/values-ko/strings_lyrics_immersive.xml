@@ -17,6 +17,7 @@
     <string name="lyrics_line_actions_refresh">가사 다시 가져오기</string>
     <string name="lyrics_line_actions_manual_search">가사 수동 검색</string>
     <string name="lyrics_line_actions_settings">가사 모양</string>
+    <string name="lyrics_line_actions_management">가사 관리</string>
     <string name="lyrics_layout_mode_title">레이아웃</string>
     <string name="lyrics_layout_mode_subtitle">화면에 표시할 가사 줄 수</string>
     <string name="lyrics_layout_mode_scroll">스크롤 목록</string>

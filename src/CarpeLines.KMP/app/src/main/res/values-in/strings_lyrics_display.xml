@@ -133,7 +133,7 @@
     <string name="betterlyrics_word_timed">Bertiming kata</string>
     <string name="betterlyrics_match_score">%1$d%% cocok</string>
     <string name="betterlyrics_settings_title">Pengaturan penyedia</string>
-    <string name="betterlyrics_settings_subtitle">Token Apple Music, server LibreTranslate, dan trek terjemahan/transliterasi</string>
+    <string name="betterlyrics_settings_subtitle">Token Apple Music dan server LibreTranslate</string>
     <string name="betterlyrics_apple_token_label">Apple Music media-user-token</string>
     <string name="betterlyrics_apple_token_hint">Salin cookie media-user-token dari sesi music.apple.com yang sudah masuk. Diperlukan untuk lirik suku kata.</string>
     <string name="betterlyrics_libre_server_label">Server LibreTranslate</string>
@@ -145,7 +145,6 @@
     <string name="betterlyrics_apple_section">Apple Music</string>
     <string name="betterlyrics_libre_section">LibreTranslate</string>
     <string name="betterlyrics_tracks_section">Terjemahan &amp; transliterasi</string>
-    <string name="betterlyrics_autosave_hint">Perubahan disimpan otomatis</string>
     <string name="betterlyrics_save_settings">Simpan pengaturan</string>
     <string name="betterlyrics_settings_saved">Pengaturan disimpan</string>
     <string name="betterlyrics_back">Kembali</string>
@@ -177,6 +176,7 @@
     <string name="lyrics_local_empty">Belum ada lirik untuk lagu ini</string>
     <string name="lyrics_open_player">Buka pemutar</string>
     <string name="lyrics_loading">Memuat lirik…</string>
+    <string name="lyrics_reset_section">Kembalikan default</string>
     <string name="lyrics_reset_defaults_title">Atur ulang tampilan</string>
     <string name="lyrics_reset_defaults_subtitle">Pulihkan font, warna, dan efek di halaman ini ke default</string>
     <string name="dialog_reset_lyrics_settings_title">Atur ulang tampilan lirik?</string>

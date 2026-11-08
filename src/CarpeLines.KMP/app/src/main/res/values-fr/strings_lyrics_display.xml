@@ -133,7 +133,7 @@
     <string name="betterlyrics_word_timed">Minuté par mot</string>
     <string name="betterlyrics_match_score">%1$d%% de correspondance</string>
     <string name="betterlyrics_settings_title">Paramètres des fournisseurs</string>
-    <string name="betterlyrics_settings_subtitle">Jeton Apple Music, serveur LibreTranslate et pistes de traduction/translittération</string>
+    <string name="betterlyrics_settings_subtitle">Jeton Apple Music et serveur LibreTranslate</string>
     <string name="betterlyrics_apple_token_label">media-user-token Apple Music</string>
     <string name="betterlyrics_apple_token_hint">Copiez le cookie media-user-token d\'une session music.apple.com connectée. Nécessaire pour les paroles syllabiques.</string>
     <string name="betterlyrics_libre_server_label">Serveur LibreTranslate</string>
@@ -145,7 +145,6 @@
     <string name="betterlyrics_apple_section">Apple Music</string>
     <string name="betterlyrics_libre_section">LibreTranslate</string>
     <string name="betterlyrics_tracks_section">Traduction et translittération</string>
-    <string name="betterlyrics_autosave_hint">Les modifications sont enregistrées automatiquement</string>
     <string name="betterlyrics_save_settings">Enregistrer les paramètres</string>
     <string name="betterlyrics_settings_saved">Paramètres enregistrés</string>
     <string name="betterlyrics_back">Retour</string>
@@ -177,6 +176,7 @@
     <string name="lyrics_local_empty">Pas encore de paroles pour ce titre</string>
     <string name="lyrics_open_player">Ouvrir le lecteur</string>
     <string name="lyrics_loading">Chargement des paroles…</string>
+    <string name="lyrics_reset_section">Restaurer les valeurs par défaut</string>
     <string name="lyrics_reset_defaults_title">Réinitialiser l\'apparence</string>
     <string name="lyrics_reset_defaults_subtitle">Rétablir la police, la couleur et les effets de cette page par défaut</string>
     <string name="dialog_reset_lyrics_settings_title">Réinitialiser l\'apparence des paroles ?</string>

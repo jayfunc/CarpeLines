@@ -26,8 +26,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ClearAll
-import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material.icons.rounded.Animation
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.BlurOn
@@ -37,13 +35,11 @@ import androidx.compose.material.icons.rounded.FormatSize
 import androidx.compose.material.icons.rounded.FontDownload
 import androidx.compose.material.icons.rounded.Gradient
 import androidx.compose.material.icons.automirrored.rounded.FormatAlignLeft
-import androidx.compose.material.icons.automirrored.rounded.ManageSearch
 import androidx.compose.material.icons.rounded.Groups
 import androidx.compose.material.icons.rounded.Mic
 import androidx.compose.material.icons.rounded.Opacity
 import androidx.compose.material.icons.rounded.RestartAlt
 import androidx.compose.material.icons.rounded.SwapVert
-import androidx.compose.material.icons.rounded.VpnKey
 import androidx.compose.material3.Slider
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -110,11 +106,9 @@ import io.github.jayfunc.carpelines.data.preferences.MAX_LYRICS_FONT_SIZE_SP
 import io.github.jayfunc.carpelines.data.preferences.MIN_LYRICS_FONT_SIZE_SP
 import io.github.jayfunc.carpelines.presentation.components.CollapsibleCommonTopBar
 import io.github.jayfunc.carpelines.presentation.components.MiniPlayerHeight
-import io.github.jayfunc.carpelines.presentation.navigation.Screen
 import io.github.jayfunc.carpelines.presentation.components.rememberSyncedSliderState
 import io.github.jayfunc.carpelines.presentation.settings.search.LocalSettingsHighlightTarget
 import io.github.jayfunc.carpelines.presentation.settings.search.settingHighlight
-import io.github.jayfunc.carpelines.presentation.viewmodel.PlayerViewModel
 import io.github.jayfunc.carpelines.presentation.viewmodel.SettingsViewModel
 import io.github.jayfunc.carpelines.ui.theme.m3eContentWidth
 import kotlin.math.roundToInt
@@ -170,14 +164,7 @@ private enum class LyricsSection(val itemKeys: Set<String>) {
             "item_lyrics_scroll_resume_delay"
         )
     ),
-    MANAGEMENT(
-        setOf(
-            "item_lyrics_provider_settings",
-            "item_lyrics_source_order",
-            "item_lyrics_reset_defaults",
-            "item_lyrics_reset_imported"
-        )
-    );
+    RESET(setOf("item_lyrics_reset_defaults"));
 
     companion object {
         /** Index of the LazyColumn item holding [itemKey]; 0 when the key is not mapped. */
@@ -189,13 +176,11 @@ private enum class LyricsSection(val itemKeys: Set<String>) {
 @Composable
 fun LyricsSettingsScreen(
     navController: NavController,
-    playerViewModel: PlayerViewModel,
     settingsViewModel: SettingsViewModel = hiltViewModel(),
     highlightKey: String? = null
 ) {
     val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
     var fontSizeDraft by remember(uiState.lyricsFontSizeSp) { mutableFloatStateOf(uiState.lyricsFontSizeSp) }
-    var showClearLyricsDialog by remember { mutableStateOf(false) }
     var showResetDefaultsDialog by remember { mutableStateOf(false) }
 
     val density = LocalDensity.current
@@ -693,31 +678,11 @@ fun LyricsSettingsScreen(
                 }
             }
 
-            item(key = LyricsSection.MANAGEMENT.name) {
+            item(key = LyricsSection.RESET.name) {
                 LyricsSettingsSubsection(
-                    title = stringResource(R.string.setcat_lyrics_management),
+                    title = stringResource(R.string.lyrics_reset_section),
                     addBottomSpace = false
                 ) {
-                    SettingsItem(
-                        title = stringResource(R.string.betterlyrics_settings_title),
-                        subtitle = stringResource(R.string.betterlyrics_settings_subtitle),
-                        leadingIcon = {
-                            Icon(Icons.Rounded.VpnKey, null, tint = MaterialTheme.colorScheme.secondary)
-                        },
-                        modifier = Modifier.settingHighlight("item_lyrics_provider_settings", highlightKey),
-                        onClick = {
-                            navController.navigate(Screen.LyricsProviderSettings.createRoute())
-                        }
-                    )
-                    SettingsItem(
-                        title = stringResource(R.string.lyrics_source_order_title),
-                        subtitle = stringResource(R.string.lyrics_source_order_subtitle),
-                        leadingIcon = {
-                            Icon(Icons.Rounded.SwapVert, null, tint = MaterialTheme.colorScheme.secondary)
-                        },
-                        modifier = Modifier.settingHighlight("item_lyrics_source_order", highlightKey),
-                        onClick = { navController.navigate(Screen.LyricsSourceOrder.route) }
-                    )
                     SettingsItem(
                         title = stringResource(R.string.lyrics_reset_defaults_title),
                         subtitle = stringResource(R.string.lyrics_reset_defaults_subtitle),
@@ -726,15 +691,6 @@ fun LyricsSettingsScreen(
                         },
                         modifier = Modifier.settingHighlight("item_lyrics_reset_defaults", highlightKey),
                         onClick = { showResetDefaultsDialog = true }
-                    )
-                    SettingsItem(
-                        title = stringResource(R.string.setcat_reset_imported_lyrics_title),
-                        subtitle = stringResource(R.string.setcat_reset_imported_lyrics_subtitle),
-                        leadingIcon = {
-                            Icon(Icons.Outlined.ClearAll, null, tint = MaterialTheme.colorScheme.secondary)
-                        },
-                        modifier = Modifier.settingHighlight("item_lyrics_reset_imported", highlightKey),
-                        onClick = { showClearLyricsDialog = true }
                     )
                 }
             }
@@ -766,30 +722,6 @@ fun LyricsSettingsScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showResetDefaultsDialog = false }) {
-                    Text(stringResource(R.string.cancel), maxLines = 1, overflow = TextOverflow.Ellipsis)
-                }
-            }
-        )
-    }
-
-    if (showClearLyricsDialog) {
-        AlertDialog(
-            icon = { Icon(Icons.Outlined.Warning, null) },
-            title = { Text(stringResource(R.string.dialog_reset_lyrics_title)) },
-            text = { Text(stringResource(R.string.dialog_cannot_undo)) },
-            onDismissRequest = { showClearLyricsDialog = false },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showClearLyricsDialog = false
-                        playerViewModel.resetAllLyrics()
-                    }
-                ) {
-                    Text(stringResource(R.string.confirm), maxLines = 1, overflow = TextOverflow.Ellipsis)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showClearLyricsDialog = false }) {
                     Text(stringResource(R.string.cancel), maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }

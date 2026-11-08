@@ -1,6 +1,7 @@
 package io.github.jayfunc.carpelines.data.database
 
 import androidx.paging.PagingSource
+import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -62,7 +63,9 @@ private const val SONG_DETAIL_PROJECTION = """
     songs.genre_user_edited AS genre_user_edited,
     songs.mb_recording_id AS mb_recording_id,
     songs.mb_release_id AS mb_release_id,
-    songs.mb_artist_id AS mb_artist_id
+    songs.mb_artist_id AS mb_artist_id,
+    songs.has_embedded_lyrics AS has_embedded_lyrics,
+    songs.has_embedded_album_art AS has_embedded_album_art
 """
 
 private const val SONG_LIST_PROJECTION = """
@@ -72,7 +75,8 @@ private const val SONG_LIST_PROJECTION = """
     year, date_added, mime_type, bitrate, sample_rate, artists_json, source_type,
     media_store_date_added, media_store_date_modified, title_user_edited,
     artist_user_edited, album_user_edited, genre_user_edited,
-    mb_recording_id, mb_release_id, mb_artist_id
+    mb_recording_id, mb_release_id, mb_artist_id,
+    has_embedded_lyrics, has_embedded_album_art
 """
 
 data class DeviceCapabilitySongRow(
@@ -83,6 +87,14 @@ data class DeviceCapabilitySongRow(
     val bitrate: Int?,
     val sampleRate: Int?,
     val sourceType: Int
+)
+
+/** Lightweight per-song flags aggregated into the folder rows on the local music page. */
+data class LocalFolderStatsRow(
+    @ColumnInfo(name = "id") val id: Long,
+    @ColumnInfo(name = "file_path") val filePath: String,
+    @ColumnInfo(name = "has_embedded_lyrics") val hasEmbeddedLyrics: Boolean,
+    @ColumnInfo(name = "has_embedded_album_art") val hasEmbeddedAlbumArt: Boolean
 )
 
 /**
@@ -1768,6 +1780,13 @@ interface MusicDao {
 
     @Query("SELECT " + SONG_LIST_PROJECTION + " FROM songs")
     suspend fun getAllSongsList(): List<SongEntity>
+
+    /** Per-file flags for the folder statistics on the local music settings page. */
+    @Query(
+        "SELECT id, file_path, has_embedded_lyrics, has_embedded_album_art " +
+            "FROM songs WHERE source_type = 0"
+    )
+    fun observeLocalFolderStatsRows(): Flow<List<LocalFolderStatsRow>>
 
     @Query("SELECT id, title, artist_name, album_name, duration FROM songs WHERE source_type = 0")
     suspend fun getAllLocalSongSummaries(): List<SongSummary>

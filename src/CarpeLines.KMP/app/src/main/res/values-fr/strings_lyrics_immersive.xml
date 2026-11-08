@@ -17,6 +17,7 @@
     <string name="lyrics_line_actions_refresh">Récupérer à nouveau les paroles</string>
     <string name="lyrics_line_actions_manual_search">Rechercher les paroles manuellement</string>
     <string name="lyrics_line_actions_settings">Apparence des paroles</string>
+    <string name="lyrics_line_actions_management">Gérer les paroles</string>
     <string name="lyrics_layout_mode_title">Disposition</string>
     <string name="lyrics_layout_mode_subtitle">Combien de lignes de paroles partagent l\'écran</string>
     <string name="lyrics_layout_mode_scroll">Liste défilante</string>

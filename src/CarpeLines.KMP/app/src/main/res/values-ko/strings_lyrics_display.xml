@@ -133,7 +133,7 @@
     <string name="betterlyrics_word_timed">단어 타이밍</string>
     <string name="betterlyrics_match_score">%1$d%% 일치</string>
     <string name="betterlyrics_settings_title">공급자 설정</string>
-    <string name="betterlyrics_settings_subtitle">Apple Music 토큰, LibreTranslate 서버 및 번역/음역 트랙</string>
+    <string name="betterlyrics_settings_subtitle">Apple Music 토큰 및 LibreTranslate 서버</string>
     <string name="betterlyrics_apple_token_label">Apple Music media-user-token</string>
     <string name="betterlyrics_apple_token_hint">로그인한 music.apple.com 세션에서 media-user-token 쿠키를 복사하세요. 음절 가사에 필요합니다.</string>
     <string name="betterlyrics_libre_server_label">LibreTranslate 서버</string>
@@ -145,7 +145,6 @@
     <string name="betterlyrics_apple_section">Apple Music</string>
     <string name="betterlyrics_libre_section">LibreTranslate</string>
     <string name="betterlyrics_tracks_section">번역 및 음역</string>
-    <string name="betterlyrics_autosave_hint">변경 사항은 자동으로 저장됩니다</string>
     <string name="betterlyrics_save_settings">설정 저장</string>
     <string name="betterlyrics_settings_saved">설정을 저장했습니다</string>
     <string name="betterlyrics_back">뒤로</string>
@@ -177,6 +176,7 @@
     <string name="lyrics_local_empty">이 곡의 가사가 아직 없습니다</string>
     <string name="lyrics_open_player">플레이어 열기</string>
     <string name="lyrics_loading">가사 불러오는 중…</string>
+    <string name="lyrics_reset_section">기본값 복원</string>
     <string name="lyrics_reset_defaults_title">모양 초기화</string>
     <string name="lyrics_reset_defaults_subtitle">이 페이지의 글꼴, 색상, 효과를 기본값으로 복원</string>
     <string name="dialog_reset_lyrics_settings_title">가사 모양을 초기화할까요?</string>

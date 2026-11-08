@@ -28,15 +28,15 @@ import androidx.navigation.navDeepLink
 import io.github.jayfunc.carpelines.data.preferences.LaunchTab
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
 import io.github.jayfunc.carpelines.presentation.screens.BetterLyricsSearchScreen
+import io.github.jayfunc.carpelines.presentation.screens.CoverSourceSettingsScreen
 import io.github.jayfunc.carpelines.presentation.screens.NowPlayingLyricsScreen
-import io.github.jayfunc.carpelines.presentation.screens.LyricsSourceOrderScreen
 import io.github.jayfunc.carpelines.presentation.screens.UpdatesScreen
 import io.github.jayfunc.carpelines.presentation.model.SettingsCategory
 import io.github.jayfunc.carpelines.presentation.screens.EditTransitionScreen
 import io.github.jayfunc.carpelines.presentation.screens.PlaylistDetailScreen
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import io.github.jayfunc.carpelines.presentation.screens.LyricsCardRoute
-import io.github.jayfunc.carpelines.presentation.screens.LyricsProviderSettingsScreen
+import io.github.jayfunc.carpelines.presentation.screens.LyricsManagementSettingsScreen
 import io.github.jayfunc.carpelines.presentation.screens.LyricsSettingsScreen
 import io.github.jayfunc.carpelines.presentation.screens.HomeScreen
 
@@ -193,14 +193,13 @@ fun AppNavigation(
                     ProvideSettingsHighlight(highlightKey) {
                         LyricsSettingsScreen(
                             navController = navController,
-                            playerViewModel = playerViewModel,
                             highlightKey = highlightKey
                         )
                     }
                 }
             }
             composable(
-                route = Screen.LyricsProviderSettings.route,
+                route = Screen.LyricsManagement.route,
                 arguments = listOf(navArgument("highlightKey") { type = NavType.StringType; nullable = true; defaultValue = null }),
                 enterTransition = { enterTransition() },
                 exitTransition = { exitTransition() },
@@ -210,7 +209,25 @@ fun AppNavigation(
                 val highlightKey = backStackEntry.arguments?.getString("highlightKey")
                 ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
                     ProvideSettingsHighlight(highlightKey) {
-                        LyricsProviderSettingsScreen(
+                        LyricsManagementSettingsScreen(
+                            navController = navController,
+                            highlightKey = highlightKey
+                        )
+                    }
+                }
+            }
+            composable(
+                route = Screen.CoverSources.route,
+                arguments = listOf(navArgument("highlightKey") { type = NavType.StringType; nullable = true; defaultValue = null }),
+                enterTransition = { enterTransition() },
+                exitTransition = { exitTransition() },
+                popEnterTransition = { popEnterTransition() },
+                popExitTransition = { popExitTransition() },
+            ) { backStackEntry ->
+                val highlightKey = backStackEntry.arguments?.getString("highlightKey")
+                ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
+                    ProvideSettingsHighlight(highlightKey) {
+                        CoverSourceSettingsScreen(
                             navController = navController,
                             highlightKey = highlightKey
                         )
@@ -273,6 +290,9 @@ fun AppNavigation(
                         onOpenLyricsSettings = {
                             navController.navigate(Screen.LyricsSettings.createRoute())
                         },
+                        onOpenLyricsManagement = {
+                            navController.navigateSafely(Screen.LyricsManagement.route)
+                        },
                         onOpenManualLyricsSearch = {
                             navController.navigate(Screen.BetterLyricsSearch.route)
                         },
@@ -308,17 +328,6 @@ fun AppNavigation(
                             lyricsViewModel = hiltViewModel(lyricsEntry),
                         )
                     }
-                }
-            }
-            composable(
-                route = Screen.LyricsSourceOrder.route,
-                enterTransition = { enterTransition() },
-                exitTransition = { exitTransition() },
-                popEnterTransition = { popEnterTransition() },
-                popExitTransition = { popExitTransition() },
-            ) {
-                ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
-                    LyricsSourceOrderScreen(navController = navController)
                 }
             }
             composable(

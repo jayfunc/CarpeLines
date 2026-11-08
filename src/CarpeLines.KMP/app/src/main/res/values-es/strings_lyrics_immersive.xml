@@ -17,6 +17,7 @@
     <string name="lyrics_line_actions_refresh">Obtener la letra de nuevo</string>
     <string name="lyrics_line_actions_manual_search">Buscar letras manualmente</string>
     <string name="lyrics_line_actions_settings">Apariencia de la letra</string>
+    <string name="lyrics_line_actions_management">Gestionar letras</string>
     <string name="lyrics_layout_mode_title">Disposición</string>
     <string name="lyrics_layout_mode_subtitle">Cuántas líneas de letra comparten la pantalla</string>
     <string name="lyrics_layout_mode_scroll">Lista con desplazamiento</string>

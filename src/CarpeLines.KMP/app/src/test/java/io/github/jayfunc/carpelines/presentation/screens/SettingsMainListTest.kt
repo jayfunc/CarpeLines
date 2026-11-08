@@ -25,11 +25,13 @@ class SettingsMainListTest {
     @Test
     fun `main list shows every listed category and destination exactly once`() {
         // LYRICS is a search-only grouping with no page of its own, so the main list links to the
-        // lyrics screen directly instead of adding a category row for it.
+        // lyrics screen directly instead of adding a category row for it. LYRICS_MANAGEMENT is a
+        // real page, listed right after the appearance row it complements.
         val expected = listOf(
             MainSettingsEntry.Category(SettingsCategory.APPEARANCE),
             MainSettingsEntry.Destination.LYRICS,
-            MainSettingsEntry.Category(SettingsCategory.ONLINE_SERVICES),
+            MainSettingsEntry.Category(SettingsCategory.LYRICS_MANAGEMENT),
+            MainSettingsEntry.Category(SettingsCategory.COVER_SOURCES),
             MainSettingsEntry.Category(SettingsCategory.LOCAL_MUSIC),
             MainSettingsEntry.Category(SettingsCategory.BACKUP_RESTORE),
             MainSettingsEntry.Destination.UPDATES,
@@ -81,6 +83,10 @@ class SettingsMainListTest {
         assertEquals(
             Screen.SettingsCategory.createRoute("backup_restore"),
             MainSettingsEntry.Category(SettingsCategory.BACKUP_RESTORE).route
+        )
+        assertEquals(
+            Screen.CoverSources.route,
+            MainSettingsEntry.Category(SettingsCategory.COVER_SOURCES).route
         )
         assertEquals(Screen.About.route, MainSettingsEntry.Category(SettingsCategory.ABOUT).route)
         assertEquals(Screen.LyricsSettings.createRoute(), MainSettingsEntry.Destination.LYRICS.route)

@@ -17,6 +17,7 @@
     <string name="lyrics_line_actions_refresh">重新获取歌词</string>
     <string name="lyrics_line_actions_manual_search">手动搜词</string>
     <string name="lyrics_line_actions_settings">歌词外观</string>
+    <string name="lyrics_line_actions_management">歌词管理</string>
     <string name="lyrics_layout_mode_title">歌词布局</string>
     <string name="lyrics_layout_mode_subtitle">屏幕上同时显示几行歌词</string>
     <string name="lyrics_layout_mode_scroll">滚动列表</string>

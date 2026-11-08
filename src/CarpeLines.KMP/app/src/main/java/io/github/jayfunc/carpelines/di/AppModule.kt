@@ -29,6 +29,7 @@ import io.github.jayfunc.carpelines.data.database.MIGRATION_2_3
 import io.github.jayfunc.carpelines.data.database.MIGRATION_3_4
 import io.github.jayfunc.carpelines.data.database.MIGRATION_4_5
 import io.github.jayfunc.carpelines.data.database.MIGRATION_5_6
+import io.github.jayfunc.carpelines.data.database.MIGRATION_6_7
 import io.github.jayfunc.carpelines.data.database.MusicDao
 import io.github.jayfunc.carpelines.data.database.OfflineTrackDao
 import io.github.jayfunc.carpelines.data.database.CarpeLinesDatabase
@@ -129,6 +130,7 @@ object AppModule {
                 MIGRATION_3_4,
                 MIGRATION_4_5,
                 MIGRATION_5_6,
+                MIGRATION_6_7,
             )
             .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
 

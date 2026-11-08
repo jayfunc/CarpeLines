@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LyricsDao {
@@ -28,6 +29,10 @@ interface LyricsDao {
 
     @Query("SELECT songId FROM lyrics WHERE songId IN (:songIds) AND content != ''")
     suspend fun getSongIdsWithLyrics(songIds: List<Long>): List<Long>
+
+    /** Songs whose text was side-loaded from a sibling .lrc file, for the folder statistics. */
+    @Query("SELECT songId FROM lyrics WHERE source = 'local_file'")
+    fun observeSongIdsWithLocalFileLyrics(): Flow<List<Long>>
 
     @Transaction
     suspend fun replaceAll(lyrics: List<LyricsEntity>) {

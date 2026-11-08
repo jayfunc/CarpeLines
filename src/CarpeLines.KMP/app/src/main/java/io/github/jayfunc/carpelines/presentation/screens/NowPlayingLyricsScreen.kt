@@ -113,6 +113,7 @@ import androidx.window.core.layout.WindowSizeClass
 import io.github.jayfunc.carpelines.R
 import io.github.jayfunc.carpelines.data.external.ExternalMediaMonitor
 import io.github.jayfunc.carpelines.data.external.ExternalMediaState
+import io.github.jayfunc.carpelines.data.model.CoverArtSource
 import io.github.jayfunc.carpelines.data.model.Lyrics
 import io.github.jayfunc.carpelines.data.model.SyncedLine
 import io.github.jayfunc.carpelines.presentation.components.AutoScrollingText
@@ -244,6 +245,7 @@ fun NowPlayingLyricsScreen(
     paddingValues: PaddingValues = PaddingValues(),
     lyricsViewModel: NowPlayingLyricsViewModel = hiltViewModel(),
     onOpenLyricsSettings: () -> Unit = {},
+    onOpenLyricsManagement: () -> Unit = {},
     onOpenManualLyricsSearch: () -> Unit = {},
     onOpenShareCard: (Int) -> Unit = {},
 ) {
@@ -265,7 +267,7 @@ fun NowPlayingLyricsScreen(
     val splitLayout =
         windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
 
-    val header = resolveHeader(externalMedia, lyricsUi.localArtworkModel)
+    val header = resolveHeader(externalMedia, lyricsUi)
     val lyrics: Lyrics? = lyricsUi.lyrics
     val isLoading = lyricsUi.loading
     val isPlaying = externalMedia?.isPlaying == true
@@ -759,6 +761,10 @@ fun NowPlayingLyricsScreen(
             onOpenLyricsSettings = {
                 actionLine = null
                 onOpenLyricsSettings()
+            },
+            onOpenLyricsManagement = {
+                actionLine = null
+                onOpenLyricsManagement()
             },
             providerLabel = lyricsUi.providerLabel
                 ?.takeIf { it.isNotBlank() },
@@ -1939,17 +1945,38 @@ private fun LyricsScrim(colors: LyricsTextColors, modifier: Modifier = Modifier)
 
 internal fun resolveHeader(
     externalMedia: ExternalMediaState?,
-    localArtworkModel: Any?,
+    lyricsUi: NowPlayingLyricsViewModel.UiState,
 ): LyricsHeader? {
     if (externalMedia == null || !externalMedia.hasMetadata) return null
+
+    val mediaArtwork = externalMedia.artworkBitmap ?: externalMedia.artworkUri
+    val models = mapOf(
+        CoverArtSource.MEDIA_SESSION to mediaArtwork,
+        CoverArtSource.LOCAL_EMBEDDED to lyricsUi.localArtworkModel,
+        CoverArtSource.DEEZER to lyricsUi.deezerArtworkModel,
+    )
+    val chosenSource = lyricsUi.coverArtSourceOrder.firstOrNull { models[it] != null }
+    val artworkModel = chosenSource?.let { models[it] }
+    val artworkUri = when (chosenSource) {
+        CoverArtSource.MEDIA_SESSION -> externalMedia.artworkUri
+        CoverArtSource.LOCAL_EMBEDDED -> lyricsUi.localArtworkModel as? String
+        CoverArtSource.DEEZER -> lyricsUi.deezerArtworkModel as? String
+        null -> null
+    }
+    val artworkBitmap = if (chosenSource == CoverArtSource.MEDIA_SESSION) {
+        externalMedia.artworkBitmap
+    } else {
+        null
+    }
+
     return LyricsHeader(
         key = externalMedia.identity,
         title = externalMedia.title,
         artist = externalMedia.artist,
         album = externalMedia.album,
-        artworkModel = externalMedia.artworkBitmap ?: externalMedia.artworkUri ?: localArtworkModel,
-        artworkBitmap = externalMedia.artworkBitmap,
-        artworkUri = externalMedia.artworkUri,
+        artworkModel = artworkModel,
+        artworkBitmap = artworkBitmap,
+        artworkUri = artworkUri,
     )
 }
 

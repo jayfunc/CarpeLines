@@ -2,7 +2,8 @@ package io.github.jayfunc.carpelines.presentation.model
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Cloud
+import androidx.compose.material.icons.automirrored.rounded.ManageSearch
+import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.LibraryMusic
 import androidx.compose.material.icons.rounded.Lyrics
@@ -34,6 +35,17 @@ enum class SettingsCategory(
         icon = Icons.Rounded.Lyrics
     ),
     /**
+     * Where lyrics come from: provider credentials and the source order. It has its own page
+     * ([Screen.LyricsManagement]) rather than a section at the bottom of [LYRICS], so the
+     * long-press sheet can send a wrong lyric straight here.
+     */
+    LYRICS_MANAGEMENT(
+        id = "lyrics_management",
+        titleRes = R.string.setcat_lyrics_management,
+        subtitleRes = R.string.settings_category_lyrics_management_subtitle,
+        icon = Icons.AutoMirrored.Rounded.ManageSearch
+    ),
+    /**
      * The device library that feeds the local lyrics sources. CarpeLines does not play audio, but
      * tag and .lrc lyrics can only be found for tracks the library has actually scanned.
      */
@@ -44,14 +56,14 @@ enum class SettingsCategory(
         icon = Icons.Rounded.LibraryMusic
     ),
     /**
-     * Optional network lookups that are not tied to the local scan: the Deezer artist artwork.
-     * Online lyrics sources are configured on the lyrics screen instead.
+     * Which picture represents the playing track and in what order the app looks for it: the
+     * session's own artwork, the matching library cover, or a Deezer album cover.
      */
-    ONLINE_SERVICES(
-        id = "online_services",
-        titleRes = R.string.settings_category_online_services_title,
-        subtitleRes = R.string.settings_category_online_services_subtitle,
-        icon = Icons.Rounded.Cloud
+    COVER_SOURCES(
+        id = "cover_sources",
+        titleRes = R.string.settings_category_cover_sources_title,
+        subtitleRes = R.string.settings_category_cover_sources_subtitle,
+        icon = Icons.Outlined.Image
     ),
     BACKUP_RESTORE(
         id = "backup_restore",

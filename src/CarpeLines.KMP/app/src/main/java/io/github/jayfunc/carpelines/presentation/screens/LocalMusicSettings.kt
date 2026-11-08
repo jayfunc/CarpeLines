@@ -18,13 +18,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Sync
+import androidx.compose.material.icons.rounded.CreateNewFolder
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Folder
 import androidx.compose.material.icons.rounded.LibraryMusic
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,19 +40,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.jayfunc.carpelines.R
 import io.github.jayfunc.carpelines.data.worker.SyncProgress
+import io.github.jayfunc.carpelines.presentation.components.rememberAppMessage
 import io.github.jayfunc.carpelines.presentation.settings.search.settingHighlight
+import io.github.jayfunc.carpelines.presentation.viewmodel.LocalMusicFolderUi
+import io.github.jayfunc.carpelines.presentation.viewmodel.LocalMusicFoldersViewModel
 import io.github.jayfunc.carpelines.presentation.viewmodel.SettingsViewModel
 import io.github.jayfunc.carpelines.ui.m3e.M3ESurface
 import io.github.jayfunc.carpelines.ui.m3e.M3ESurfaceLevel
 import io.github.jayfunc.carpelines.ui.theme.M3EShape
 import io.github.jayfunc.carpelines.ui.theme.M3ESpacing
+import io.github.jayfunc.carpelines.utils.resolveTreeUriPath
 
 /**
  * The device library that the local lyrics sources read from.
@@ -61,12 +73,15 @@ internal fun LocalMusicSettingsSection(
     settingsViewModel: SettingsViewModel,
     highlightKey: String?,
     onRebuildRequested: () -> Unit,
+    foldersViewModel: LocalMusicFoldersViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
+    val showMessage = rememberAppMessage()
     val isSyncing by settingsViewModel.isSyncing.collectAsStateWithLifecycle()
     val syncProgress by settingsViewModel.syncProgress.collectAsStateWithLifecycle()
     val songCount by settingsViewModel.librarySongCount.collectAsStateWithLifecycle()
+    val folders by foldersViewModel.folders.collectAsStateWithLifecycle()
+    var folderPendingRemoval by remember { mutableStateOf<LocalMusicFolderUi?>(null) }
 
     val audioPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         Manifest.permission.READ_MEDIA_AUDIO
@@ -84,6 +99,17 @@ internal fun LocalMusicSettingsSection(
     ) { granted ->
         hasAudioAccess = granted
         if (granted) settingsViewModel.refreshLibrary()
+    }
+
+    val folderImportRequest = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocumentTree()
+    ) { uri ->
+        val path = uri?.let { context.resolveTreeUriPath(it) }
+        if (path == null) {
+            showMessage(context.getString(R.string.local_music_folder_path_unavailable))
+        } else {
+            foldersViewModel.importFolder(path)
+        }
     }
 
     SettingsSubsection(title = stringResource(R.string.local_music_section_library)) {
@@ -140,6 +166,55 @@ internal fun LocalMusicSettingsSection(
         }
     }
 
+    SettingsSubsection(title = stringResource(R.string.local_music_folders_section)) {
+        if (folders.isEmpty()) {
+            M3ESurface(
+                modifier = Modifier.fillMaxWidth(),
+                level = M3ESurfaceLevel.Container,
+                shape = M3EShape.medium,
+            ) {
+                Text(
+                    text = stringResource(R.string.local_music_folders_empty),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(M3ESpacing.large),
+                )
+            }
+        }
+        folders.forEachIndexed { index, folder ->
+            SettingsItem(
+                title = folder.displayName,
+                subtitle = folderSubtitle(folder),
+                leadingIcon = { Icon(Icons.Rounded.Folder, null) },
+                trailingIcon = {
+                    IconButton(onClick = { folderPendingRemoval = folder }) {
+                        Icon(
+                            imageVector = Icons.Rounded.Delete,
+                            contentDescription = stringResource(R.string.cd_remove_folder),
+                        )
+                    }
+                },
+                supportingTextMaxLines = Int.MAX_VALUE,
+                shape = M3EShape.groupedCards(index, folders.size + 1),
+                onClick = {},
+            )
+        }
+        SettingsItem(
+            title = stringResource(R.string.local_music_import_folder),
+            subtitle = stringResource(R.string.local_music_import_folder_subtitle),
+            leadingIcon = { Icon(Icons.Rounded.CreateNewFolder, null) },
+            supportingTextMaxLines = Int.MAX_VALUE,
+            shape = M3EShape.groupedCards(folders.size, folders.size + 1),
+            onClick = {
+                if (hasAudioAccess) {
+                    folderImportRequest.launch(null)
+                } else {
+                    permissionRequest.launch(audioPermission)
+                }
+            },
+        )
+    }
+
     SettingsSubsection(title = stringResource(R.string.local_music_section_actions)) {
         SettingsItem(
             title = stringResource(R.string.local_music_scan_title),
@@ -161,13 +236,6 @@ internal fun LocalMusicSettingsSection(
             leadingIcon = { Icon(Icons.Outlined.DeleteForever, null) },
             supportingTextMaxLines = Int.MAX_VALUE,
             onClick = onRebuildRequested,
-        )
-        SwitchSettingItem(
-            title = stringResource(R.string.local_music_auto_lrc_title),
-            subtitle = stringResource(R.string.local_music_auto_lrc_subtitle),
-            checked = uiState.autoScanLrcFiles,
-            onCheckedChange = { settingsViewModel.setAutoScanLrcFiles(it) },
-            modifier = Modifier.settingHighlight("item_local_music_auto_lrc", highlightKey),
         )
     }
 
@@ -202,6 +270,41 @@ internal fun LocalMusicSettingsSection(
             }
         }
     }
+    folderPendingRemoval?.let { folder ->
+        AlertDialog(
+            icon = { Icon(Icons.Rounded.Delete, null) },
+            title = { Text(stringResource(R.string.local_music_folder_remove_title)) },
+            text = { Text(stringResource(R.string.local_music_folder_remove_body)) },
+            onDismissRequest = { folderPendingRemoval = null },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        foldersViewModel.removeFolder(folder.path)
+                        folderPendingRemoval = null
+                    }
+                ) {
+                    Text(stringResource(R.string.confirm), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { folderPendingRemoval = null }) {
+                    Text(stringResource(R.string.cancel), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+            },
+        )
+    }
+}
+
+@Composable
+private fun folderSubtitle(folder: LocalMusicFolderUi): String {
+    val stats = stringResource(
+        R.string.local_music_folder_stats,
+        folder.trackCount,
+        folder.embeddedLyricsCount,
+        folder.embeddedArtworkCount,
+        folder.lrcLyricsCount,
+    )
+    return folder.path + "\n" + stats
 }
 
 private fun Context.hasPermission(permission: String): Boolean =

@@ -17,6 +17,7 @@
     <string name="lyrics_line_actions_refresh">جلب الكلمات مجددًا</string>
     <string name="lyrics_line_actions_manual_search">البحث عن الكلمات يدويًا</string>
     <string name="lyrics_line_actions_settings">مظهر الكلمات</string>
+    <string name="lyrics_line_actions_management">إدارة كلمات الأغاني</string>
     <string name="lyrics_layout_mode_title">التخطيط</string>
     <string name="lyrics_layout_mode_subtitle">عدد أسطر الكلمات التي تشترك في الشاشة</string>
     <string name="lyrics_layout_mode_scroll">قائمة قابلة للتمرير</string>

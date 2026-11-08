@@ -17,6 +17,7 @@
     <string name="lyrics_line_actions_refresh">Fetch lyrics again</string>
     <string name="lyrics_line_actions_manual_search">Search lyrics manually</string>
     <string name="lyrics_line_actions_settings">Lyrics appearance</string>
+    <string name="lyrics_line_actions_management">Manage lyrics</string>
     <string name="lyrics_layout_mode_title">Layout</string>
     <string name="lyrics_layout_mode_subtitle">How many lyric lines share the screen</string>
     <string name="lyrics_layout_mode_scroll">Scrolling list</string>

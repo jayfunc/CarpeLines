@@ -129,7 +129,7 @@
     <string name="betterlyrics_word_timed">Word timed</string>
     <string name="betterlyrics_match_score">%1$d%% match</string>
     <string name="betterlyrics_settings_title">Provider settings</string>
-    <string name="betterlyrics_settings_subtitle">Apple Music token, LibreTranslate server and translation/transliteration tracks</string>
+    <string name="betterlyrics_settings_subtitle">Apple Music token and LibreTranslate server</string>
     <string name="betterlyrics_apple_token_label">Apple Music media-user-token</string>
     <string name="betterlyrics_apple_token_hint">Copy the media-user-token cookie from a signed-in music.apple.com session. Needed for syllable lyrics.</string>
     <string name="betterlyrics_libre_server_label">LibreTranslate server</string>
@@ -141,7 +141,6 @@
     <string name="betterlyrics_apple_section">Apple Music</string>
     <string name="betterlyrics_libre_section">LibreTranslate</string>
     <string name="betterlyrics_tracks_section">Translation &amp; transliteration</string>
-    <string name="betterlyrics_autosave_hint">Changes are saved automatically</string>
     <string name="betterlyrics_save_settings">Save settings</string>
     <string name="betterlyrics_settings_saved">Settings saved</string>
     <string name="betterlyrics_back">Back</string>
@@ -178,6 +177,7 @@
     <string name="lyrics_local_empty">No lyrics for this song yet</string>
     <string name="lyrics_open_player">Open player</string>
     <string name="lyrics_loading">Loading lyrics…</string>
+    <string name="lyrics_reset_section">Restore defaults</string>
     <string name="lyrics_reset_defaults_title">Reset appearance</string>
     <string name="lyrics_reset_defaults_subtitle">Restore the font, colour and effects on this page to their defaults</string>
     <string name="dialog_reset_lyrics_settings_title">Reset lyric appearance?</string>

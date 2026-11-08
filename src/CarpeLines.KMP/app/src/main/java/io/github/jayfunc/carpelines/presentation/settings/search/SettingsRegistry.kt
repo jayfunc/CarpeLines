@@ -84,8 +84,8 @@ object SettingsRegistry {
                 itemKey = "item_lyrics_provider_settings",
                 titleRes = R.string.betterlyrics_settings_title,
                 subtitleRes = R.string.betterlyrics_settings_subtitle,
-                category = SettingsCategory.LYRICS,
-                subscreenRoute = Screen.LyricsProviderSettings.createRoute(),
+                category = SettingsCategory.LYRICS_MANAGEMENT,
+                subscreenRoute = Screen.LyricsManagement.createRoute(),
                 type = SettingType.NAVIGABLE_CARD,
                 keywordsStatic = listOf(
                     "apple music", "token", "media-user-token", "libretranslate", "translate server",
@@ -98,11 +98,13 @@ object SettingsRegistry {
                 itemKey = "item_lyrics_source_order",
                 titleRes = R.string.lyrics_source_order_title,
                 subtitleRes = R.string.lyrics_source_order_subtitle,
-                category = SettingsCategory.LYRICS,
-                subscreenRoute = Screen.LyricsSourceOrder.route,
+                category = SettingsCategory.LYRICS_MANAGEMENT,
+                subscreenRoute = Screen.LyricsManagement.createRoute(),
                 type = SettingType.ACTION,
                 onAction = {
-                    it.navigateSafely(Screen.LyricsSourceOrder.route)
+                    it.navigateSafely(
+                        Screen.LyricsManagement.createRoute("item_lyrics_source_order")
+                    )
                 },
                 keywordsStatic = listOf(
                     "lyrics source", "source order", "priority", "embedded", "lrc", "local",
@@ -136,16 +138,6 @@ object SettingsRegistry {
                     "reset lyrics settings", "reset appearance", "restore defaults", "default settings",
                     "恢复默认", "重置设置", "默认外观",
                 )
-            ),
-            SettingSpec(
-                id = "lyrics_reset_imported",
-                itemKey = "item_lyrics_reset_imported",
-                titleRes = R.string.setcat_reset_imported_lyrics_title,
-                subtitleRes = R.string.setcat_reset_imported_lyrics_subtitle,
-                category = SettingsCategory.LYRICS,
-                subscreenRoute = Screen.LyricsSettings.createRoute(),
-                type = SettingType.NAVIGABLE_CARD,
-                keywordsStatic = listOf("reset lyrics", "imported lyrics", "clear", "remove", "delete lyrics")
             ),
 
             // --- APPEARANCE CATEGORY ---
@@ -229,29 +221,32 @@ object SettingsRegistry {
                     "tag lyrics", "lrc file", "device music"
                 )
             ),
+            // --- COVER SOURCES CATEGORY ---
             SettingSpec(
-                id = "local_music_auto_lrc",
-                itemKey = "item_local_music_auto_lrc",
-                titleRes = R.string.local_music_auto_lrc_title,
-                subtitleRes = R.string.local_music_auto_lrc_subtitle,
-                category = SettingsCategory.LOCAL_MUSIC,
-                subscreenRoute = Screen.SettingsCategory.createRoute("local_music"),
-                type = SettingType.SWITCH,
-                keywordsStatic = listOf("lrc", "sidecar", "scan lyrics", "attach lyrics"),
-                getValue = { it.autoScanLrcFiles },
-                onToggle = { viewModel, checked -> viewModel.setAutoScanLrcFiles(checked) }
+                id = "cover_source_order",
+                itemKey = "item_cover_source_order",
+                titleRes = R.string.settings_category_cover_sources_title,
+                subtitleRes = R.string.settings_category_cover_sources_subtitle,
+                category = SettingsCategory.COVER_SOURCES,
+                subscreenRoute = Screen.CoverSources.createRoute(),
+                type = SettingType.NAVIGABLE_CARD,
+                keywordsStatic = listOf(
+                    "cover", "cover art", "artwork", "album art", "cover source", "cover sources",
+                    "media session", "deezer", "embedded artwork", "local artwork",
+                    "封面", "封面源", "专辑封面", "内嵌封面", "封面来源"
+                )
             ),
             SettingSpec(
-                id = "online_services_artist_images",
-                itemKey = "item_online_services_artist_images",
+                id = "cover_sources_deezer_artist_images",
+                itemKey = "item_cover_sources_deezer_artist_images",
                 titleRes = R.string.setcat_external_artist_images_title,
                 subtitleRes = R.string.setcat_external_artist_images_subtitle,
-                category = SettingsCategory.ONLINE_SERVICES,
-                subscreenRoute = Screen.SettingsCategory.createRoute("online_services"),
+                category = SettingsCategory.COVER_SOURCES,
+                subscreenRoute = Screen.CoverSources.createRoute(),
                 type = SettingType.SWITCH,
                 keywordsStatic = listOf(
-                    "deezer", "online services", "artist images", "artist artwork", "portraits",
-                    "在线服务", "歌手封面", "艺术家图片"
+                    "deezer", "artist images", "artist artwork", "portraits",
+                    "歌手封面", "艺术家图片"
                 ),
                 getValue = { it.externalArtistImagesEnabled },
                 onToggle = { viewModel, checked -> viewModel.setExternalArtistImagesEnabled(checked) }

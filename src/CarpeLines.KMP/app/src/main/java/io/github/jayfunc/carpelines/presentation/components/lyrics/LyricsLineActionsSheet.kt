@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ManageSearch
 import androidx.compose.material.icons.rounded.Checklist
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.Refresh
@@ -73,8 +74,9 @@ import kotlin.math.roundToInt
  * looks the same whether it is reached from this sheet or from settings, and the sheet does not
  * invent a second row style for the same content.
  *
- * Source priority is intentionally not offered here: it belongs to Settings > Lyrics > Lyrics
- * source order, so this sheet never presents a second, competing way to reorder the same sources.
+ * Source priority is intentionally not offered here: it belongs to Settings > Lyrics management >
+ * Lyrics source order, so this sheet never presents a second, competing way to reorder the same
+ * sources. The management row below only links to that page.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -89,6 +91,7 @@ fun LyricsLineActionsSheet(
     onRefreshLyrics: () -> Unit,
     onManualSearch: () -> Unit,
     onOpenLyricsSettings: () -> Unit,
+    onOpenLyricsManagement: () -> Unit,
     providerLabel: String? = null,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -164,6 +167,11 @@ fun LyricsLineActionsSheet(
                             icon = Icons.Rounded.Tune,
                             title = stringResource(R.string.lyrics_line_actions_settings),
                             onClick = onOpenLyricsSettings,
+                        )
+                        ActionRow(
+                            icon = Icons.AutoMirrored.Rounded.ManageSearch,
+                            title = stringResource(R.string.lyrics_line_actions_management),
+                            onClick = onOpenLyricsManagement,
                         )
                     }
                 }

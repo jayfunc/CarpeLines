@@ -17,6 +17,7 @@
     <string name="lyrics_line_actions_refresh">歌詞を再取得</string>
     <string name="lyrics_line_actions_manual_search">歌詞を手動で検索</string>
     <string name="lyrics_line_actions_settings">歌詞の表示設定</string>
+    <string name="lyrics_line_actions_management">歌詞を管理</string>
     <string name="lyrics_layout_mode_title">レイアウト</string>
     <string name="lyrics_layout_mode_subtitle">画面に表示する歌詞の行数</string>
     <string name="lyrics_layout_mode_scroll">スクロールリスト</string>

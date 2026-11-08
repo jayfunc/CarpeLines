@@ -18,6 +18,7 @@ import io.github.jayfunc.carpelines.data.model.Playlist
 import io.github.jayfunc.carpelines.data.model.SortOption
 import io.github.jayfunc.carpelines.data.model.FolderSource
 import io.github.jayfunc.carpelines.data.model.LyricsSourcePreference
+import io.github.jayfunc.carpelines.data.model.CoverArtSource
 import io.github.jayfunc.carpelines.data.model.AudioOutputMode
 import io.github.jayfunc.carpelines.data.model.TransitionSettings
 import io.github.jayfunc.carpelines.data.equalizer.EqualizerPreset
@@ -112,6 +113,8 @@ constructor(
         val RECAP_HOME_CARD_DISMISSED_YEAR = intPreferencesKey("recap_home_card_dismissed_year")
         val ALLOWED_DIRECTORIES = stringSetPreferencesKey("allowed_directories")
         val BLOCKED_DIRECTORIES = stringSetPreferencesKey("blocked_directories")
+        /** User-imported folders for the deep lyric/artwork/.lrc search. */
+        val LOCAL_LIBRARY_FOLDERS = stringSetPreferencesKey("local_library_folders")
         val INITIAL_SETUP_DONE = booleanPreferencesKey("initial_setup_done")
         val PLAYER_THEME_PREFERENCE = stringPreferencesKey("player_theme_preference_v2")
         val APP_THEME_MODE = stringPreferencesKey("app_theme_mode")
@@ -226,9 +229,9 @@ constructor(
         val LYRICS_SYNC_OFFSETS = stringPreferencesKey("lyrics_sync_offsets_json")
 
         val LYRICS_SOURCE_PREFERENCE = stringPreferencesKey("lyrics_source_preference")
-        val AUTO_SCAN_LRC_FILES = booleanPreferencesKey("auto_scan_lrc_files")
         val EXTERNAL_LYRICS_ENABLED = booleanPreferencesKey("external_lyrics_enabled")
         val EXTERNAL_ARTIST_IMAGES_ENABLED = booleanPreferencesKey("external_artist_images_enabled")
+        val COVER_ART_SOURCE_ORDER = stringPreferencesKey("cover_art_source_order")
 
         val ALBUM_ART_QUALITY = stringPreferencesKey("album_art_quality")
         val ALBUM_ART_CACHE_LIMIT_MB = intPreferencesKey("album_art_cache_limit_mb")
@@ -724,14 +727,19 @@ constructor(
         }
     }
 
-    val autoScanLrcFilesFlow: Flow<Boolean> =
+    /**
+     * The enabled cover sources, highest priority first. The list doubles as the enabled set:
+     * a source the user switched off is simply absent.
+     */
+    val coverArtSourceOrderFlow: Flow<List<CoverArtSource>> =
             dataStore.data.map { preferences ->
-                preferences[PreferencesKeys.AUTO_SCAN_LRC_FILES] ?: false
-            }
+                CoverArtSource.decode(preferences[PreferencesKeys.COVER_ART_SOURCE_ORDER])
+            }.distinctUntilChanged()
 
-    suspend fun setAutoScanLrcFiles(enabled: Boolean) {
+    suspend fun setCoverArtSourceOrder(order: List<CoverArtSource>) {
+        if (order.isEmpty()) return
         dataStore.edit { preferences ->
-            preferences[PreferencesKeys.AUTO_SCAN_LRC_FILES] = enabled
+            preferences[PreferencesKeys.COVER_ART_SOURCE_ORDER] = CoverArtSource.encode(order)
         }
     }
 
@@ -934,6 +942,22 @@ constructor(
             dataStore.data.map { preferences ->
                 preferences[PreferencesKeys.BLOCKED_DIRECTORIES] ?: emptySet()
             }.distinctUntilChanged()
+
+    /**
+     * Directories the local music page imported. They scope the deep local search for embedded
+     * lyrics, embedded album art and sibling .lrc files; they do not limit the song library,
+     * which still comes from the whole-device MediaStore scan.
+     */
+    val localLibraryFoldersFlow: Flow<Set<String>> =
+            dataStore.data.map { preferences ->
+                preferences[PreferencesKeys.LOCAL_LIBRARY_FOLDERS] ?: emptySet()
+            }.distinctUntilChanged()
+
+    suspend fun setLocalLibraryFolders(folders: Set<String>) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.LOCAL_LIBRARY_FOLDERS] = folders
+        }
+    }
 
     val initialSetupDoneFlow: Flow<Boolean> =
             dataStore.data.map { preferences ->

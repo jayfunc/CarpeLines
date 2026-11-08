@@ -36,6 +36,7 @@ import io.github.jayfunc.carpelines.utils.AlbumArtUtils
 import io.github.jayfunc.carpelines.utils.AudioMetaUtils.getAudioMetadata
 import io.github.jayfunc.carpelines.utils.DirectoryRuleResolver
 import io.github.jayfunc.carpelines.utils.LocalArtworkUri
+import io.github.jayfunc.carpelines.utils.LocalLibraryFolderFilter
 import io.github.jayfunc.carpelines.utils.buildLocalAudioSelection
 import io.github.jayfunc.carpelines.utils.normalizeMetadataTextOrEmpty
 import io.github.jayfunc.carpelines.utils.splitArtistsByDelimiters
@@ -196,6 +197,7 @@ constructor(
                     val allowedDirs = userPreferencesRepository.allowedDirectoriesFlow.first()
                     val blockedDirs = userPreferencesRepository.blockedDirectoriesFlow.first()
                     val directoryResolver = DirectoryRuleResolver(allowedDirs, blockedDirs)
+                    val libraryFolders = userPreferencesRepository.localLibraryFoldersFlow.first()
                     
                     val lastSyncTimestamp = userPreferencesRepository.getLastSyncTimestamp()
                     // Libraries synced before the accent fix stored titles whose é/ç/à had
@@ -285,6 +287,7 @@ constructor(
                         fetchTimestamp,
                         syncPlan.forceMetadata,
                         directoryResolver,
+                        libraryFolders,
                         syncPlan.forceProcessAll,
                         syncPlan.resetExistingLocalData,
                         metadataCharsetRepairPending,
@@ -438,63 +441,66 @@ constructor(
                         )
                     }
 
-                    val autoScanLrc = userPreferencesRepository.autoScanLrcFilesFlow.first()
-                    if (autoScanLrc) {
-                        Timber.tag(TAG)
-                            .i("Auto-scan LRC files enabled. Starting scan phase in chunks...")
+                    // Sibling .lrc files are always part of the local lyrics sources, so the scan
+                    // phase always runs; there is no longer a setting that can leave it out.
+                    Timber.tag(TAG).i("Starting LRC scan phase in chunks...")
 
-                        val mediaStoreSongIds = musicDao.getAllMediaStoreSongIds()
-                        val totalToScan = mediaStoreSongIds.size
-                        var totalScannedCount = 0
+                    val mediaStoreSongIds = musicDao.getAllMediaStoreSongIds()
+                    val totalToScan = mediaStoreSongIds.size
+                    var totalScannedCount = 0
 
-                        mediaStoreSongIds.chunked(1000).forEach { idBatch ->
-                            val batchEntities = musicDao.getSongsByIdsListSimple(idBatch)
-                            val batchSongs =
-                                    batchEntities.map { entity ->
-                                        Song(
-                                                id = entity.id.toString(),
-                                                title = entity.title,
-                                                artist = entity.artistName,
-                                                artistId = entity.artistId,
-                                                album = entity.albumName,
-                                                albumId = entity.albumId,
-                                                path = entity.filePath,
-                                                contentUriString = entity.contentUriString,
-                                                albumArtUriString = entity.albumArtUriString,
-                                                duration = entity.duration,
-                                                lyrics = entity.lyrics,
-                                                dateAdded = entity.dateAdded,
-                                                trackNumber = entity.trackNumber,
-                                                year = entity.year,
-                                                mimeType = entity.mimeType,
-                                                bitrate = entity.bitrate,
-                                                sampleRate = entity.sampleRate
-                                        )
-                                    }
+                    mediaStoreSongIds.chunked(1000).forEach { idBatch ->
+                        val batchEntities = musicDao.getSongsByIdsListSimple(idBatch)
+                        val batchSongs =
+                                batchEntities.map { entity ->
+                                    Song(
+                                            id = entity.id.toString(),
+                                            title = entity.title,
+                                            artist = entity.artistName,
+                                            artistId = entity.artistId,
+                                            album = entity.albumName,
+                                            albumId = entity.albumId,
+                                            path = entity.filePath,
+                                            contentUriString = entity.contentUriString,
+                                            albumArtUriString = entity.albumArtUriString,
+                                            duration = entity.duration,
+                                            lyrics = entity.lyrics,
+                                            dateAdded = entity.dateAdded,
+                                            trackNumber = entity.trackNumber,
+                                            year = entity.year,
+                                            mimeType = entity.mimeType,
+                                            bitrate = entity.bitrate,
+                                            sampleRate = entity.sampleRate
+                                    )
+                                }.filter { song ->
+                                    // Imported folders narrow the search; with none imported the
+                                    // historical whole-library scan still applies.
+                                    libraryFolders.isEmpty() ||
+                                        LocalLibraryFolderFilter.isInside(song.path, libraryFolders)
+                                }
 
-                            val batchScannedCount =
-                                    lyricsRepository.scanAndAssignLocalLrcFiles(batchSongs) {
-                                            current,
-                                            total ->
-                                        val overallCurrent = totalScannedCount + current
-                                        setProgress(
-                                                workDataOf(
-                                                        PROGRESS_CURRENT to overallCurrent,
-                                                        PROGRESS_TOTAL to totalToScan,
-                                                        PROGRESS_PHASE to
-                                                                SyncProgress.SyncPhase.SCANNING_LRC
-                                                                        .ordinal
-                                                )
-                                        )
-                                    }
-                            totalScannedCount += idBatch.size
-                            Timber.tag(TAG).d(
-                                    "LRC Scan: Processed batch of ${idBatch.size}, total assigned so far: $batchScannedCount"
-                            )
-                        }
-
-                        Timber.tag(TAG).i("LRC Scan finished for $totalToScan songs.")
+                        val batchScannedCount =
+                                lyricsRepository.scanAndAssignLocalLrcFiles(batchSongs) {
+                                        current,
+                                        total ->
+                                    val overallCurrent = totalScannedCount + current
+                                    setProgress(
+                                            workDataOf(
+                                                    PROGRESS_CURRENT to overallCurrent,
+                                                    PROGRESS_TOTAL to totalToScan,
+                                                    PROGRESS_PHASE to
+                                                            SyncProgress.SyncPhase.SCANNING_LRC
+                                                                    .ordinal
+                                            )
+                                    )
+                                }
+                        totalScannedCount += idBatch.size
+                        Timber.tag(TAG).d(
+                                "LRC Scan: Processed batch of ${idBatch.size}, total assigned so far: $batchScannedCount"
+                        )
                     }
+
+                    Timber.tag(TAG).i("LRC Scan finished for $totalToScan songs.")
 
                     setProgress(
                         workDataOf(
@@ -873,6 +879,7 @@ constructor(
             sinceTimestamp: Long,
             forceMetadata: Boolean,
             directoryResolver: DirectoryRuleResolver,
+            libraryFolders: Set<String>,
             forceProcessAll: Boolean,
             resetExistingLocalData: Boolean,
             metadataCharsetRepairPending: Boolean,
@@ -1056,7 +1063,12 @@ constructor(
                                     raw = raw,
                                     genreMap = genreMap,
                                     deepScan = deepScan,
-                                    forceAlbumArtRefresh = deepScan || localSong != null
+                                    forceAlbumArtRefresh = deepScan || localSong != null,
+                                    readEmbeddedStats = libraryFolders.isNotEmpty() &&
+                                        LocalLibraryFolderFilter.isInside(
+                                            raw.filePath,
+                                            libraryFolders,
+                                        )
                                 )
 
                             val song = if (localSong != null) {
@@ -1115,7 +1127,8 @@ constructor(
             raw: RawSongData,
             genreMap: Map<Long, String>,
             deepScan: Boolean,
-            forceAlbumArtRefresh: Boolean
+            forceAlbumArtRefresh: Boolean,
+            readEmbeddedStats: Boolean
     ): ScannedSong {
         val parentDir = java.io.File(raw.filePath).parent ?: ""
         val contentUriString =
@@ -1146,8 +1159,12 @@ constructor(
         var discNumber = raw.discNumber
         var year = raw.year
         var genre: String? = genreMap[raw.id] ?: raw.genre
+        var hasEmbeddedLyrics = false
+        var hasEmbeddedAlbumArt = false
 
-        val shouldAugmentMetadata = shouldReadEmbeddedMetadata(
+        // Stats are only collected for user-imported folders, where the page can show them.
+        // Reading artwork bytes for the whole device would make every scan multi-megabytes heavier.
+        val shouldAugmentMetadata = readEmbeddedStats || shouldReadEmbeddedMetadata(
             filePath = raw.filePath,
             deepScan = deepScan,
             rawArtist = raw.artist,
@@ -1158,7 +1175,9 @@ constructor(
             val file = java.io.File(raw.filePath)
             if (file.exists()) {
                 try {
-                    AudioMetadataReader.read(file, readArtwork = false)?.let { meta ->
+                    AudioMetadataReader.read(file, readArtwork = readEmbeddedStats)?.let { meta ->
+                        hasEmbeddedLyrics = !meta.lyrics.isNullOrBlank()
+                        hasEmbeddedAlbumArt = meta.artwork != null
                         if (!meta.title.isNullOrBlank()) title = meta.title
                         if (meta.artists.isNotEmpty()) {
                             artist = meta.artists.first()
@@ -1213,6 +1232,8 @@ constructor(
                 sampleRate = audioMetadata?.sampleRate,
                 bitrate = audioMetadata?.bitrate,
                 sourceType = SourceType.LOCAL,
+                hasEmbeddedLyrics = hasEmbeddedLyrics,
+                hasEmbeddedAlbumArt = hasEmbeddedAlbumArt,
                 mediaStoreDateAdded = raw.dateAdded,
                 mediaStoreDateModified = raw.dateModified
             ),

@@ -95,7 +95,11 @@ data class SongEntity(
     @ColumnInfo(name = "genre_user_edited", defaultValue = "0") val genreUserEdited: Boolean = false,
     @ColumnInfo(name = "mb_recording_id") val mbRecordingId: String? = null,
     @ColumnInfo(name = "mb_release_id") val mbReleaseId: String? = null,
-    @ColumnInfo(name = "mb_artist_id") val mbArtistId: String? = null
+    @ColumnInfo(name = "mb_artist_id") val mbArtistId: String? = null,
+    /** Tag lyrics found inside the audio file during the library scan. */
+    @ColumnInfo(name = "has_embedded_lyrics", defaultValue = "0") val hasEmbeddedLyrics: Boolean = false,
+    /** Embedded album art found inside the audio file during the library scan. */
+    @ColumnInfo(name = "has_embedded_album_art", defaultValue = "0") val hasEmbeddedAlbumArt: Boolean = false
 )
 
 private fun SongEntity.toSongInternal(artists: List<ArtistRef>): Song {

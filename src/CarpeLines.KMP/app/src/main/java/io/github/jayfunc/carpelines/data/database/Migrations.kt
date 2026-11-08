@@ -155,13 +155,21 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
 }
 
 /**
- * v5 -> v6: playlist positions are unique, while song ids may repeat.
- *
- * M3U playlists can intentionally contain the same track more than once. The previous
- * `(playlist_id, song_id)` primary key silently collapsed those entries during persistence.
- * Existing rows are copied in their current order and assigned dense positions so even legacy
- * databases with duplicate sort values migrate without dropping a song.
+ * v6 -> v7: the local music page reports which tracks carry embedded lyrics or embedded album
+ * art. Both are read during the library scan, so the scan needs a place to record what it saw.
+ * Existing rows start false; one rescan fills them in.
  */
+val MIGRATION_6_7 = object : Migration(6, 7) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "ALTER TABLE `songs` ADD COLUMN `has_embedded_lyrics` INTEGER NOT NULL DEFAULT 0"
+        )
+        db.execSQL(
+            "ALTER TABLE `songs` ADD COLUMN `has_embedded_album_art` INTEGER NOT NULL DEFAULT 0"
+        )
+    }
+}
+
 val MIGRATION_5_6 = object : Migration(5, 6) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL("DROP TABLE IF EXISTS `playlist_songs_v6`")

@@ -20,4 +20,14 @@ interface DeezerApiService {
         @Query("q") query: String,
         @Query("limit") limit: Int = 1
     ): DeezerSearchResponse
+
+    /**
+     * Search for a track by title and artist. Used by the cover-source chain to find the album
+     * cover Deezer has for this recording.
+     */
+    @GET("search/track")
+    suspend fun searchTrack(
+        @Query("q") query: String,
+        @Query("limit") limit: Int = 5
+    ): DeezerTrackSearchResponse
 }

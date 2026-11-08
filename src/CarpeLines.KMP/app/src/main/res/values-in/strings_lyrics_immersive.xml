@@ -17,6 +17,7 @@
     <string name="lyrics_line_actions_refresh">Ambil lirik lagi</string>
     <string name="lyrics_line_actions_manual_search">Cari lirik secara manual</string>
     <string name="lyrics_line_actions_settings">Tampilan lirik</string>
+    <string name="lyrics_line_actions_management">Kelola lirik</string>
     <string name="lyrics_layout_mode_title">Tata letak</string>
     <string name="lyrics_layout_mode_subtitle">Berapa banyak baris lirik berbagi layar</string>
     <string name="lyrics_layout_mode_scroll">Daftar bergulir</string>

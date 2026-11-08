@@ -15,18 +15,17 @@ sealed class Screen(val route: String) {
     object LyricsCard : Screen("lyrics_card/{initialIndex}") {
         fun createRoute(initialIndex: Int) = "lyrics_card/$initialIndex"
     }
-    object LyricsSourceOrder : Screen("lyrics_source_order")
+    object LyricsManagement : Screen("lyrics_management?highlightKey={highlightKey}") {
+        fun createRoute(highlightKey: String? = null) =
+            if (highlightKey != null) "lyrics_management?highlightKey=$highlightKey" else "lyrics_management"
+    }
+    object CoverSources : Screen("cover_sources?highlightKey={highlightKey}") {
+        fun createRoute(highlightKey: String? = null) =
+            if (highlightKey != null) "cover_sources?highlightKey=$highlightKey" else "cover_sources"
+    }
     object LyricsSettings : Screen("lyrics_settings?highlightKey={highlightKey}") {
         fun createRoute(highlightKey: String? = null) =
             if (highlightKey != null) "lyrics_settings?highlightKey=$highlightKey" else "lyrics_settings"
-    }
-    object LyricsProviderSettings : Screen("lyrics_provider_settings?highlightKey={highlightKey}") {
-        fun createRoute(highlightKey: String? = null) =
-            if (highlightKey != null) {
-                "lyrics_provider_settings?highlightKey=$highlightKey"
-            } else {
-                "lyrics_provider_settings"
-            }
     }
     object PlaylistDetail : Screen("playlist_detail/{playlistId}") {
         fun createRoute(playlistId: String) = "playlist_detail/$playlistId"

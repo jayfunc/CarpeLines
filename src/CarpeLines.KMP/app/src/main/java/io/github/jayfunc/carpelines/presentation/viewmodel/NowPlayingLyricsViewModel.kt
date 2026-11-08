@@ -11,8 +11,11 @@ import io.github.jayfunc.carpelines.data.carpelines.LocalLyricsResolver
 import io.github.jayfunc.carpelines.data.carpelines.ManualLyricsChange
 import io.github.jayfunc.carpelines.data.carpelines.ManualLyricsStore
 import io.github.jayfunc.carpelines.data.external.ExternalMediaState
+import io.github.jayfunc.carpelines.data.model.CoverArtSource
 import io.github.jayfunc.carpelines.data.model.Lyrics
 import io.github.jayfunc.carpelines.data.model.Song
+import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
+import io.github.jayfunc.carpelines.data.repository.DeezerCoverRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
@@ -35,6 +38,8 @@ class NowPlayingLyricsViewModel @Inject constructor(
     private val repository: BetterLyricsRepository,
     private val manualLyricsStore: ManualLyricsStore,
     private val localLyricsResolver: LocalLyricsResolver,
+    private val userPreferencesRepository: UserPreferencesRepository,
+    private val deezerCoverRepository: DeezerCoverRepository,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
@@ -46,19 +51,33 @@ class NowPlayingLyricsViewModel @Inject constructor(
         val error: String? = null,
         /** Album art from the matching library song, used when the player exposes none. */
         val localArtworkModel: Any? = null,
+        /** Cover fetched from Deezer for this track, when that source is enabled. */
+        val deezerArtworkModel: Any? = null,
+        /** The user's enabled cover sources, highest priority first. */
+        val coverArtSourceOrder: List<CoverArtSource> = CoverArtSource.DefaultOrder,
     )
 
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
 
     private var loadJob: Job? = null
+    private var coverJob: Job? = null
     private var lastKey: String? = null
     private var lastTrackKey: String? = null
     private var lastExternal: ExternalMediaState? = null
     private var lastInternal: Song? = null
+    private var lastLocalSong: Song? = null
     private var lastLocalLoading: Boolean = false
 
     init {
+        // The order is edited on another destination. Mirror it here and re-pick the cover for the
+        // current track so a reorder takes effect without waiting for the next song.
+        viewModelScope.launch {
+            userPreferencesRepository.coverArtSourceOrderFlow.collect { order ->
+                _state.update { it.copy(coverArtSourceOrder = order) }
+                lastExternal?.let { updateCoverArtwork(it, lastLocalSong) }
+            }
+        }
         // The manual search screen lives on another destination, so the page learns about its
         // save/clear through the store rather than through a shared ViewModel instance.
         viewModelScope.launch {
@@ -223,10 +242,9 @@ class NowPlayingLyricsViewModel @Inject constructor(
         loadJob = viewModelScope.launch {
             val order = repository.sourceOrder
             val localSong = localLyricsResolver.findMatchingSong(media)
+            lastLocalSong = localSong
             val localDuration = media.durationMs ?: localSong?.duration
-            if (localSong != null) {
-                _state.update { it.copy(localArtworkModel = localSong.albumArtUriString) }
-            }
+            updateCoverArtwork(media, localSong)
 
             // A version the user picked by hand is the strongest signal there is: it wins over
             // local files and automatic provider matching until they restore automatic matching.
@@ -374,6 +392,39 @@ class NowPlayingLyricsViewModel @Inject constructor(
     }
 
     /**
+     * Picks the cover from the user's source order and, only when Deezer outranks every source
+     * that can already answer, asks the network for it. The page renders the best available
+     * source immediately; a late Deezer cover is faded in by the artwork handover.
+     */
+    private fun updateCoverArtwork(media: ExternalMediaState, localSong: Song?) {
+        _state.update {
+            it.copy(
+                localArtworkModel = localSong?.albumArtUriString,
+                deezerArtworkModel = null,
+            )
+        }
+        coverJob?.cancel()
+
+        val order = _state.value.coverArtSourceOrder
+        val deezerIndex = order.indexOf(CoverArtSource.DEEZER)
+        if (deezerIndex < 0) return
+
+        val higherPriorityAvailable = order.take(deezerIndex).any { source ->
+            when (source) {
+                CoverArtSource.MEDIA_SESSION -> media.artworkBitmap != null || media.artworkUri != null
+                CoverArtSource.LOCAL_EMBEDDED -> localSong?.albumArtUriString != null
+                CoverArtSource.DEEZER -> false
+            }
+        }
+        if (higherPriorityAvailable) return
+
+        coverJob = viewModelScope.launch {
+            val model = deezerCoverRepository.findCoverArtwork(media.title, media.artist) ?: return@launch
+            _state.update { it.copy(deezerArtworkModel = model) }
+        }
+    }
+
+    /**
      * Publishes a local payload, or reports `false` when it parses to nothing usable.
      *
      * A `.lrc` that only carries `[ti:]`/`[ar:]` tags, a byte-order-marked file the parser
@@ -399,9 +450,14 @@ class NowPlayingLyricsViewModel @Inject constructor(
 
     private fun clear() {
         loadJob?.cancel()
+        coverJob?.cancel()
         lastKey = null
         lastTrackKey = null
-        _state.value = UiState(localArtworkModel = _state.value.localArtworkModel)
+        lastLocalSong = null
+        _state.value = UiState(
+            localArtworkModel = _state.value.localArtworkModel,
+            coverArtSourceOrder = _state.value.coverArtSourceOrder,
+        )
     }
 
     private companion object {

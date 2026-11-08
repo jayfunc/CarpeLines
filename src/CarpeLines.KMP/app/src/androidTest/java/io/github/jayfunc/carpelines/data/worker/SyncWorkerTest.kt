@@ -500,8 +500,8 @@ private fun createTestPreferencesRepository(): UserPreferencesRepository {
     every { repository.artistSettingsRescanRequiredFlow } returns flowOf(false)
     every { repository.allowedDirectoriesFlow } returns flowOf(emptySet())
     every { repository.blockedDirectoriesFlow } returns flowOf(emptySet())
+    every { repository.localLibraryFoldersFlow } returns flowOf(emptySet())
     every { repository.minTracksPerAlbumFlow } returns flowOf(1)
-    every { repository.autoScanLrcFilesFlow } returns flowOf(false)
     coEvery { repository.getDirectoryRulesVersion() } returns 0
     coEvery { repository.getLastAppliedDirectoryRulesVersion() } returns 0
     coEvery { repository.getLastSyncTimestamp() } returns 0L

@@ -17,6 +17,7 @@
     <string name="lyrics_line_actions_refresh">Загрузить текст заново</string>
     <string name="lyrics_line_actions_manual_search">Искать текст вручную</string>
     <string name="lyrics_line_actions_settings">Оформление текста</string>
+    <string name="lyrics_line_actions_management">Управление текстами</string>
     <string name="lyrics_layout_mode_title">Макет</string>
     <string name="lyrics_layout_mode_subtitle">Сколько строк текста помещается на экране</string>
     <string name="lyrics_layout_mode_scroll">Прокручиваемый список</string>

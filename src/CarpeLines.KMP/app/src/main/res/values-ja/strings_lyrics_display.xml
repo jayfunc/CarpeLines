@@ -129,7 +129,7 @@
     <string name="betterlyrics_word_timed">単語同期</string>
     <string name="betterlyrics_match_score">一致度 %1$d%%</string>
     <string name="betterlyrics_settings_title">プロバイダーの設定</string>
-    <string name="betterlyrics_settings_subtitle">Apple Music のトークン、LibreTranslate サーバー、翻訳・翻字トラック</string>
+    <string name="betterlyrics_settings_subtitle">Apple Music のトークンと LibreTranslate サーバー</string>
     <string name="betterlyrics_apple_token_label">Apple Music media-user-token</string>
     <string name="betterlyrics_apple_token_hint">ログイン済みの music.apple.com セッションから media-user-token Cookie をコピーしてください。音節単位の歌詞に必要です。</string>
     <string name="betterlyrics_libre_server_label">LibreTranslate サーバー</string>
@@ -141,7 +141,6 @@
     <string name="betterlyrics_apple_section">Apple Music</string>
     <string name="betterlyrics_libre_section">LibreTranslate</string>
     <string name="betterlyrics_tracks_section">翻訳と翻字</string>
-    <string name="betterlyrics_autosave_hint">変更は自動的に保存されます</string>
     <string name="betterlyrics_save_settings">設定を保存</string>
     <string name="betterlyrics_settings_saved">設定を保存しました</string>
     <string name="betterlyrics_back">戻る</string>
@@ -178,6 +177,7 @@
     <string name="lyrics_local_empty">この曲の歌詞はまだありません</string>
     <string name="lyrics_open_player">プレーヤーを開く</string>
     <string name="lyrics_loading">歌詞を読み込み中…</string>
+    <string name="lyrics_reset_section">デフォルトに戻す</string>
     <string name="lyrics_reset_defaults_title">外観をリセット</string>
     <string name="lyrics_reset_defaults_subtitle">このページのフォント、色、効果を既定に戻します</string>
     <string name="dialog_reset_lyrics_settings_title">歌詞の外観をリセットしますか？</string>

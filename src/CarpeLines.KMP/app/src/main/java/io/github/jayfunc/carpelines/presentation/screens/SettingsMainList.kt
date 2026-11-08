@@ -21,6 +21,8 @@ internal sealed interface MainSettingsEntry {
         override val route: String
             get() = when (category) {
                 SettingsCategory.ABOUT -> Screen.About.route
+                SettingsCategory.LYRICS_MANAGEMENT -> Screen.LyricsManagement.route
+                SettingsCategory.COVER_SOURCES -> Screen.CoverSources.route
                 else -> Screen.SettingsCategory.createRoute(category.id)
             }
     }
@@ -54,7 +56,8 @@ internal sealed interface MainSettingsEntry {
 internal val mainSettingsEntries: List<MainSettingsEntry> = buildList {
     add(MainSettingsEntry.Category(SettingsCategory.APPEARANCE))
     add(MainSettingsEntry.Destination.LYRICS)
-    add(MainSettingsEntry.Category(SettingsCategory.ONLINE_SERVICES))
+    add(MainSettingsEntry.Category(SettingsCategory.LYRICS_MANAGEMENT))
+    add(MainSettingsEntry.Category(SettingsCategory.COVER_SOURCES))
     add(MainSettingsEntry.Category(SettingsCategory.LOCAL_MUSIC))
     add(MainSettingsEntry.Category(SettingsCategory.BACKUP_RESTORE))
     add(MainSettingsEntry.Destination.UPDATES)

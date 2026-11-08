@@ -21,11 +21,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Cloud
+import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material.icons.outlined.PlayCircle
 import androidx.compose.material.icons.rounded.ChevronRight
-import androidx.compose.material.icons.rounded.Cloud
 import androidx.compose.material.icons.rounded.DragIndicator
-import androidx.compose.material.icons.rounded.Folder
-import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.RestartAlt
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -53,15 +53,14 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import io.github.jayfunc.carpelines.R
-import io.github.jayfunc.carpelines.data.betterlyrics.LyricsSourceId
+import io.github.jayfunc.carpelines.data.model.CoverArtSource
 import io.github.jayfunc.carpelines.presentation.components.CollapsibleCommonTopBar
 import io.github.jayfunc.carpelines.presentation.components.MiniPlayerHeight
-import io.github.jayfunc.carpelines.presentation.model.SettingsCategory
-import io.github.jayfunc.carpelines.presentation.navigation.Screen
-import io.github.jayfunc.carpelines.presentation.navigation.navigateSafely
+import io.github.jayfunc.carpelines.presentation.settings.search.settingHighlight
 import io.github.jayfunc.carpelines.presentation.utils.LocalAppHapticsConfig
 import io.github.jayfunc.carpelines.presentation.utils.performAppCompatHapticFeedback
-import io.github.jayfunc.carpelines.presentation.viewmodel.LyricsSourceOrderViewModel
+import io.github.jayfunc.carpelines.presentation.viewmodel.CoverArtSourceOrderViewModel
+import io.github.jayfunc.carpelines.presentation.viewmodel.SettingsViewModel
 import io.github.jayfunc.carpelines.ui.theme.M3EShape
 import io.github.jayfunc.carpelines.ui.theme.m3eContentWidth
 import kotlin.math.roundToInt
@@ -69,15 +68,27 @@ import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
+/**
+ * Which cover the app shows for the playing track, and in what order. Modelled on the lyrics
+ * source page: the stored list is both the priority order and the enabled set, and dragging a row
+ * is the only way to change the priority.
+ *
+ * The Deezer artist portrait switch used to live under "Online services". It is not a track
+ * cover, but it is the other Deezer-backed image in the app, so it moved here when that
+ * category went away.
+ */
 @Composable
-fun LyricsSourceOrderScreen(
+fun CoverSourceSettingsScreen(
     navController: NavController,
-    viewModel: LyricsSourceOrderViewModel = hiltViewModel(),
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
+    orderViewModel: CoverArtSourceOrderViewModel = hiltViewModel(),
+    highlightKey: String? = null,
 ) {
-    val order by viewModel.order.collectAsStateWithLifecycle()
-    val disabled = LyricsSourceId.entries.filterNot { order.contains(it) }
+    val order by orderViewModel.order.collectAsStateWithLifecycle()
+    val disabled = CoverArtSource.entries.filterNot { order.contains(it) }
+    val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
 
-    val title = stringResource(R.string.lyrics_source_order_title)
+    val title = stringResource(R.string.settings_category_cover_sources_title)
     val isLongTitle = title.length > 13
 
     val density = LocalDensity.current
@@ -156,7 +167,7 @@ fun LyricsSourceOrderScreen(
             if (targetIndex < 0 || order.indexOf(fromSource) == targetIndex) {
                 return@rememberReorderableLazyListState
             }
-            viewModel.moveTo(fromSource, targetIndex)
+            orderViewModel.moveTo(fromSource, targetIndex)
             performAppCompatHapticFeedback(
                 view,
                 appHapticsConfig,
@@ -187,33 +198,15 @@ fun LyricsSourceOrderScreen(
         ) {
             item(key = "intro") {
                 Text(
-                    text = stringResource(R.string.lyrics_source_order_intro),
+                    text = stringResource(R.string.cover_sources_intro),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(start = 12.dp, top = 4.dp, bottom = 8.dp),
+                    modifier = Modifier
+                        .padding(start = 12.dp, top = 4.dp, bottom = 8.dp)
+                        .settingHighlight("item_cover_source_order", highlightKey),
                 )
             }
 
-            // A local source can only answer for a track the library scanned, and the scan lives
-            // on its own page: without this shortcut the list looks broken.
-            item(key = "local_music_action") {
-                SettingsItem(
-                    title = stringResource(R.string.settings_category_local_music_title),
-                    subtitle = stringResource(R.string.lyrics_source_order_local_music_hint),
-                    leadingIcon = {
-                        Icon(Icons.Rounded.Folder, null, tint = MaterialTheme.colorScheme.secondary)
-                    },
-                    trailingIcon = {
-                        Icon(Icons.Rounded.ChevronRight, null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                    },
-                    shape = M3EShape.groupedCards(index = 0, count = 2),
-                    onClick = {
-                        navController.navigateSafely(
-                            Screen.SettingsCategory.createRoute(SettingsCategory.LOCAL_MUSIC.id)
-                        )
-                    },
-                )
-            }
             item(key = "reset_action") {
                 SettingsItem(
                     title = stringResource(R.string.lyrics_source_order_reset),
@@ -224,8 +217,7 @@ fun LyricsSourceOrderScreen(
                     trailingIcon = {
                         Icon(Icons.Rounded.ChevronRight, null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     },
-                    shape = M3EShape.groupedCards(index = 1, count = 2),
-                    onClick = viewModel::reset,
+                    onClick = orderViewModel::reset,
                 )
             }
 
@@ -240,9 +232,9 @@ fun LyricsSourceOrderScreen(
                 ReorderableItem(reorderableState, key = source.name) { _ ->
                     SwitchSettingItem(
                         title = sourceTitle(source),
-                        subtitle = sourceOriginLabel(source),
+                        subtitle = sourceSubtitle(source),
                         checked = true,
-                        onCheckedChange = { viewModel.setEnabled(source, it) },
+                        onCheckedChange = { orderViewModel.setEnabled(source, it) },
                         leadingIcon = { SourceLeadingIcon(source) },
                         actionContent = {
                             FilledIconButton(
@@ -291,13 +283,36 @@ fun LyricsSourceOrderScreen(
                 itemsIndexed(disabled, key = { _, source -> source.name }) { index, source ->
                     SwitchSettingItem(
                         title = sourceTitle(source),
-                        subtitle = sourceOriginLabel(source),
+                        subtitle = sourceSubtitle(source),
                         checked = false,
-                        onCheckedChange = { viewModel.setEnabled(source, it) },
+                        onCheckedChange = { orderViewModel.setEnabled(source, it) },
                         leadingIcon = { SourceLeadingIcon(source) },
                         shape = M3EShape.groupedCards(index = index, count = disabled.size),
                     )
                 }
+            }
+
+            item(key = "artist_images_header") {
+                Column {
+                    Spacer(Modifier.height(10.dp))
+                    SettingsSubsectionHeader(stringResource(R.string.cover_sources_artist_section))
+                }
+            }
+
+            item(key = "artist_images_toggle") {
+                SwitchSettingItem(
+                    title = stringResource(R.string.setcat_external_artist_images_title),
+                    subtitle = stringResource(R.string.setcat_external_artist_images_subtitle),
+                    checked = uiState.externalArtistImagesEnabled,
+                    onCheckedChange = settingsViewModel::setExternalArtistImagesEnabled,
+                    leadingIcon = {
+                        Icon(Icons.Outlined.Cloud, null, tint = MaterialTheme.colorScheme.secondary)
+                    },
+                    modifier = Modifier.settingHighlight(
+                        "item_cover_sources_deezer_artist_images",
+                        highlightKey
+                    ),
+                )
             }
         }
 
@@ -311,33 +326,37 @@ fun LyricsSourceOrderScreen(
     }
 }
 
-/** Resolves a reorderable item key back to the source it represents, ignoring non-source rows. */
-private fun List<LyricsSourceId>.sourceForKey(key: Any?): LyricsSourceId? =
+/** Resolves a reorderable item key back to the cover source it represents, ignoring other rows. */
+private fun List<CoverArtSource>.sourceForKey(key: Any?): CoverArtSource? =
     (key as? String)?.let { name -> firstOrNull { it.name == name } }
 
 @Composable
-private fun SourceLeadingIcon(source: LyricsSourceId) {
+private fun SourceLeadingIcon(source: CoverArtSource) {
     Icon(
-        imageVector = if (source.isLocal) Icons.Rounded.MusicNote else Icons.Rounded.Cloud,
+        imageVector = when (source) {
+            CoverArtSource.MEDIA_SESSION -> Icons.Outlined.PlayCircle
+            CoverArtSource.LOCAL_EMBEDDED -> Icons.Outlined.Image
+            CoverArtSource.DEEZER -> Icons.Outlined.Cloud
+        },
         contentDescription = null,
         tint = MaterialTheme.colorScheme.secondary,
     )
 }
 
 @Composable
-private fun sourceOriginLabel(source: LyricsSourceId): String = stringResource(
-    if (source.isLocal) R.string.lyrics_source_order_local else R.string.lyrics_source_order_online
+private fun sourceTitle(source: CoverArtSource): String = stringResource(
+    when (source) {
+        CoverArtSource.MEDIA_SESSION -> R.string.cover_source_media_session_title
+        CoverArtSource.LOCAL_EMBEDDED -> R.string.cover_source_local_title
+        CoverArtSource.DEEZER -> R.string.cover_source_deezer_title
+    }
 )
 
 @Composable
-private fun sourceTitle(source: LyricsSourceId): String = stringResource(
+private fun sourceSubtitle(source: CoverArtSource): String = stringResource(
     when (source) {
-        LyricsSourceId.EMBEDDED -> R.string.lyrics_source_embedded
-        LyricsSourceId.LOCAL_LRC -> R.string.lyrics_source_local_lrc
-        LyricsSourceId.QQ_MUSIC -> R.string.lyrics_source_qq
-        LyricsSourceId.NETEASE -> R.string.lyrics_source_netease
-        LyricsSourceId.KUGOU -> R.string.lyrics_source_kugou
-        LyricsSourceId.LRCLIB -> R.string.lyrics_source_lrclib
-        LyricsSourceId.APPLE_MUSIC -> R.string.lyrics_source_apple
+        CoverArtSource.MEDIA_SESSION -> R.string.cover_source_media_session_subtitle
+        CoverArtSource.LOCAL_EMBEDDED -> R.string.cover_source_local_subtitle
+        CoverArtSource.DEEZER -> R.string.cover_source_deezer_subtitle
     }
 )

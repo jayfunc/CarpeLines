@@ -17,6 +17,7 @@
     <string name="lyrics_line_actions_refresh">Hent sangteksten på nytt</string>
     <string name="lyrics_line_actions_manual_search">Søk etter sangtekst manuelt</string>
     <string name="lyrics_line_actions_settings">Sangtekstutseende</string>
+    <string name="lyrics_line_actions_management">Administrer sangtekster</string>
     <string name="lyrics_layout_mode_title">Oppsett</string>
     <string name="lyrics_layout_mode_subtitle">Hvor mange sangtekstlinjer som deler skjermen</string>
     <string name="lyrics_layout_mode_scroll">Rullende liste</string>

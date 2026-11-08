@@ -26,7 +26,7 @@ fun LyricsCardRoute(
     val lyricsUi by lyricsViewModel.state.collectAsStateWithLifecycle()
     val externalMedia by ExternalMediaMonitor.state.collectAsStateWithLifecycle()
     val settings = rememberLyricsDisplaySettings()
-    val header = resolveHeader(externalMedia, lyricsUi.localArtworkModel)
+    val header = resolveHeader(externalMedia, lyricsUi)
     val artwork = rememberArtworkBitmap(header?.artworkBitmap, header?.artworkUri)
 
     LyricsCardScreen(
