@@ -51,39 +51,39 @@
 
 ## <img src="docs/assets/icons/auto_awesome.svg" width="28" height="28" align="absmiddle" alt="" /> Highlighted Features
 
-### Lyrics that keep up with the line
+### Lyrics timed to the music
 
-- **Word-by-word sweep** — timing comes from the lyric file itself, so each word lights up as it is sung instead of the whole line snapping at once.
-- **Per-character emphasis, CJK included** — Chinese, Japanese and Korean lyrics can sweep character by character, with the same spring-driven motion as Latin words.
-- **Duets and backing vocals** — two-column voice layout, background-vocal lines and per-line styling keep overlapping parts readable.
-- **Translations and romanization** — translated and transliterated lines stack under the original without breaking the timing.
+- **Word-level timing** — Word timestamps in the lyric file highlight each word in turn, rather than advancing the line as a whole.
+- **Character-level highlighting for CJK lyrics** — Chinese, Japanese and Korean lyrics are highlighted character by character with a spring-based animation.
+- **Duet and backing-vocal support** — A two-column layout, separate backing-vocal lines and per-line styling keep overlapping parts legible.
+- **Translations and romanization** — Translated and romanized lines appear beneath the original and retain their timing.
 
-### An expressive canvas
+### A customizable lyrics display
 
-- **Artwork-derived colour** — the edge-to-edge lyrics page samples the current cover art and builds its palette from it.
-- **Fluid and album-blur backgrounds** — two ambient backdrops, the fluid one ported from BetterLyrics' `FluidBackgroundEffect` shader, plus animated blur and trailing long-note glows.
-- **Scrolling lyric list** — the playing line stays in the middle while the rest of the song moves past it.
-- **An auto-hiding transport pill** — previous / play-pause / next and progress float over the lyrics, fade out after a few seconds, return on a tap and stay while paused. The tonal button at the top start is the way out.
-- **Per-track offset and lyric cards** — nudge timing for a stubborn file, then export the current lines as a shareable card.
+- **Artwork-based colour palette** — The full-screen lyrics page samples the current album artwork to set its colours.
+- **Animated backgrounds** — Fluid and album-blur backgrounds are available, alongside animated blur and trailing glows for sustained notes. The fluid effect is adapted from BetterLyrics' `FluidBackgroundEffect` shader.
+- **Synchronized scrolling** — The current line remains near the centre of the screen as the rest of the lyrics scroll.
+- **On-screen playback controls** — Previous, play/pause, next and progress controls appear over the lyrics, fade after a few seconds, return when tapped and remain visible while playback is paused. A tonal button at the top exits the lyrics view.
+- **Track-specific timing and lyric cards** — Adjust the timing for an individual track and export its lyrics as a shareable card.
 
-### Every player, one surface
+### Integration with media players
 
-- **System-wide media sessions** — `NotificationListenerService` plus `MediaSessionManager` track the active app, its artwork, position and playback state, with extrapolation between callbacks.
-- **Three lyrics-first widgets** — a now-playing bar, a control card with the current lyric line, and a square tile. Each follows the active system session, drives its transport and opens the lyrics page.
-- **Remote transport, no local playback** — CarpeLines deliberately has no audio engine or library browser. Its buttons drive the player that is already running.
-- **Seven lyric sources** — embedded tags, sibling `.lrc` files, QQ Music (QRC), NetEase Cloud Music (EAPI), Kugou (KRC), LRCLIB and Apple Music (TTML).
-- **Reorderable source order** — one list shared by internal and external playback under Settings → Lyrics → Lyrics source order.
+- **System media sessions** — `NotificationListenerService` and `MediaSessionManager` track the active player's artwork, playback position and playback state. CarpeLines estimates progress between system updates.
+- **Three lyrics widgets** — The now-playing bar, lyric control card and square tile each follow the active media session, control playback and open the lyrics page.
+- **Playback without a local audio library** — CarpeLines has no audio engine or music library; its controls operate the active player.
+- **Seven lyric sources** — Read embedded tags or sibling `.lrc` files, or retrieve lyrics from QQ Music (QRC), NetEase Cloud Music (EAPI), Kugou (KRC), LRCLIB or Apple Music (TTML).
+- **Configurable source order** — Reorder lyric sources in Settings → Lyrics → Lyrics source order. The same order applies to in-app and external playback.
 
 <details>
 <summary><b>Everything it handles</b></summary>
 <br>
 
-- **Formats** — LRC, QRC, KRC and TTML, detected automatically and normalized into one timed lyrics document.
-- **Providers** — embedded tags, sibling `.lrc`, QQ Music, NetEase Cloud Music, Kugou, LRCLIB and Apple Music.
-- **Matching** — title / artist / album normalization, scoring, and merge of translated or romanized versions onto the base lyrics.
-- **Rendering** — word sweep, per-character sweep, duet columns, background vocals, translations, romanization, animated blur, long-note glow, and edge fades split at the playing line.
-- **Backgrounds** — fluid (ported from BetterLyrics' `FluidBackgroundEffect` shader) and album-blur ambient modes.
-- **Screens** — a read-only Home preview of the active session, the lyrics page, listening stats and a compact settings tree.
+- **Formats** — LRC, QRC, KRC and TTML, detected automatically and converted to a common timed lyrics format.
+- **Providers** — embedded tags, sibling `.lrc` files, QQ Music, NetEase Cloud Music, Kugou, LRCLIB and Apple Music.
+- **Matching** — Title, artist and album normalization; candidate scoring; and merging translations or romanization with the original lyrics.
+- **Display** — Word- and character-level highlighting, duet columns, backing vocals, translations, romanization, animated blur, sustained-note glows and fades around the current line.
+- **Backgrounds** — Fluid (adapted from BetterLyrics' `FluidBackgroundEffect` shader) and album-blur modes.
+- **Screens** — A read-only Home preview of the active media session, the lyrics page, listening statistics and a compact settings screen.
 - **Deep links** — `carpelines://lyrics` and `carpelines://external_lyrics`; `betterlyrics://…` is kept for compatibility.
 - **Customization** — theme, lyrics typography, layout, blur, source order and per-track offset.
 
@@ -115,7 +115,7 @@
 
 ## <img src="docs/assets/icons/download.svg" width="28" height="28" align="absmiddle" alt="" /> Download & Install
 
-CarpeLines needs **Android 11 (API 30) or newer**. It does not play audio itself: grant **Notification access** so it can read the active media session, then start playback in any player and open the Lyrics tab.
+CarpeLines needs **Android 11 (API 30) or newer**.
 
 <div align="center">
 
