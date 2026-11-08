@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
+import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
@@ -79,6 +81,16 @@ fun ExpressiveTopBarContent(
     val subtitleMaxLines = if (clampedFraction < 0.5f) expandedSubtitleMaxLines else collapsedSubtitleMaxLines
     val titleFontSize = (titleFontSizeRange?.let { lerp(it.first, it.second, clampedFraction) } ?: titleStyle.fontSize) * titleScale
     val density = LocalDensity.current
+    // The subtitle keeps its own line of space while the bar is expanded. Folding that space
+    // away with the same fraction is what keeps the title vertically centred once collapsed:
+    // an invisible-but-still-measured subtitle would push the title above the bar's centre.
+    val subtitleStyle = MaterialTheme.typography.labelLarge
+    val subtitleLineHeight = if (subtitleStyle.lineHeight.isSpecified) {
+        subtitleStyle.lineHeight
+    } else {
+        subtitleStyle.fontSize
+    }
+    val subtitleHeight = with(density) { subtitleLineHeight.toDp() } * (1f - clampedFraction)
     val textMeasurer = rememberTextMeasurer()
     val sanitizedMinWidthAxis = titleMinWidthAxis.coerceIn(1f, DefaultTopBarTitleWidthAxis)
     val expandedMinWidthAxis = if (enableExpandedTitleWidthCompression) sanitizedMinWidthAxis else DefaultTopBarTitleWidthAxis
@@ -155,11 +167,14 @@ fun ExpressiveTopBarContent(
                 if (!subtitle.isNullOrEmpty()) {
                     Text(
                         text = subtitle,
-                        style = MaterialTheme.typography.labelLarge,
+                        style = subtitleStyle,
                         color = subtitleColor,
                         maxLines = subtitleMaxLines,
                         overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                        modifier = Modifier.alpha(subtitleAlpha)
+                        modifier = Modifier
+                            .height(subtitleHeight)
+                            .clipToBounds()
+                            .alpha(subtitleAlpha)
                     )
                 }
                 if (supportingContent != null) {

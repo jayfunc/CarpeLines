@@ -233,7 +233,7 @@ class BetterLyricsSearchViewModel @Inject constructor(
         }
     }
 
-    private fun localCandidate(
+    private suspend fun localCandidate(
         media: ExternalMediaState,
         local: LocalLyricsCandidate,
     ): BetterLyricsCandidate? {
@@ -259,6 +259,7 @@ class BetterLyricsSearchViewModel @Inject constructor(
                 matchPercentage = 100,
             ),
             wordTimed = LyricsFormatDetector.detect(local.raw).isWordTimed,
+            previewLines = repository.previewLines(local.raw),
         )
     }
 

@@ -10,6 +10,9 @@ import io.github.jayfunc.carpelines.lyrics.model.LyricsParseOptions
 import io.github.jayfunc.carpelines.lyrics.model.LyricsProvider
 import io.github.jayfunc.carpelines.lyrics.model.LyricsQuery
 import io.github.jayfunc.carpelines.lyrics.model.LyricsSearchResult
+import io.github.jayfunc.carpelines.lyrics.parse.CoreLyricsMapper
+import io.github.jayfunc.carpelines.lyrics.parse.CoreLyricsParser
+import io.github.jayfunc.carpelines.lyrics.parse.LyricsFormatDetector
 import io.github.jayfunc.carpelines.data.model.Lyrics
 import io.github.jayfunc.carpelines.data.model.Song
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -24,6 +27,8 @@ data class BetterLyricsCandidate(
     val providerLabel: String,
     val result: LyricsSearchResult,
     val wordTimed: Boolean,
+    /** First sung lines of the payload, parsed locally so list previews never show raw tags. */
+    val previewLines: List<String> = emptyList(),
 ) {
     val score: Int get() = result.matchPercentage
 }
@@ -173,16 +178,48 @@ class BetterLyricsRepository @Inject constructor(
         )
             .filter { it.isFound }
             .map { result ->
+                val raw = result.raw.orEmpty()
+                val format = LyricsFormatDetector.detect(raw)
                 BetterLyricsCandidate(
                     provider = result.provider,
                     providerLabel = BetterLyricsMapper.providerLabel(result.provider),
                     result = result,
                     // Format detection is cheap and lets the UI show a "word timed" badge.
-                    wordTimed = result.raw.orEmpty().let { raw ->
-                        io.github.jayfunc.carpelines.lyrics.parse.LyricsFormatDetector.detect(raw).isWordTimed
-                    },
+                    wordTimed = format.isWordTimed,
+                    previewLines = previewLinesOf(raw),
                 )
             }
+    }
+
+    /**
+     * The first few sung lines of a raw payload, used by search-result previews.
+     *
+     * Parsing goes through the same core parser the lyrics page uses, so the list never shows
+     * LRC/QRC timestamps or word-timing tags as if they were lyrics text.
+     */
+    suspend fun previewLines(raw: String, limit: Int = PREVIEW_LINE_COUNT): List<String> =
+        withContext(Dispatchers.Default) { previewLinesOf(raw, limit) }
+
+    private fun previewLinesOf(raw: String, limit: Int = PREVIEW_LINE_COUNT): List<String> {
+        if (raw.isBlank()) return emptyList()
+        val parsed = CoreLyricsMapper.toLines(
+            CoreLyricsParser.parse(raw),
+            insertMissingLatinSpaces = KUGOU_WORD_TAG.containsMatchIn(raw),
+        )
+            .asSequence()
+            .map { it.text.trim() }
+            .filter { it.isNotEmpty() }
+            .take(limit)
+            .toList()
+        if (parsed.isNotEmpty()) return parsed
+
+        // Unsynchronised payloads carry no tags for the parser to anchor on; they are already
+        // plain text.
+        return raw.lineSequence()
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+            .take(limit)
+            .toList()
     }
 
     suspend fun parse(candidate: BetterLyricsCandidate, song: Song): LyricsDocument =
@@ -330,5 +367,11 @@ class BetterLyricsRepository @Inject constructor(
 
         /** Duration is matching input, not identity; this keeps small wobbles on one cache entry. */
         const val DURATION_BUCKET_MS = 5_000L
+
+        /** Three lines fit a search-result card without turning it into a lyrics page. */
+        const val PREVIEW_LINE_COUNT = 3
+
+        /** Kugou word tags omit the spaces between Latin tokens; the parser can restore them. */
+        val KUGOU_WORD_TAG = Regex("""<\d+,\d+,\d+>[^<]""")
     }
 }
