@@ -9,11 +9,14 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.content.res.Configuration
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.os.PowerManager
 import android.provider.Settings
+import androidx.compose.material3.ColorScheme
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
@@ -27,11 +30,16 @@ import io.github.jayfunc.carpelines.R
 import io.github.jayfunc.carpelines.data.carpelines.ExternalLyricsResolver
 import io.github.jayfunc.carpelines.data.external.ExternalMediaMonitor
 import io.github.jayfunc.carpelines.data.external.ExternalMediaState
+import io.github.jayfunc.carpelines.data.external.decodeArtworkBitmap
 import io.github.jayfunc.carpelines.data.model.Lyrics
 import io.github.jayfunc.carpelines.data.model.hasTimelineContent
 import io.github.jayfunc.carpelines.data.model.lineAt
+import io.github.jayfunc.carpelines.data.preferences.AppThemeMode
+import io.github.jayfunc.carpelines.data.preferences.ThemePreferencesRepository
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsOffsetStore
+import io.github.jayfunc.carpelines.ui.theme.extractSeedColor
+import io.github.jayfunc.carpelines.ui.theme.generateColorSchemeFromSeed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -39,7 +47,9 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import timber.log.Timber
 
@@ -58,6 +68,7 @@ class FloatingLyricsService : Service() {
     @InstallIn(SingletonComponent::class)
     interface FloatingLyricsEntryPoint {
         fun userPreferencesRepository(): UserPreferencesRepository
+        fun themePreferencesRepository(): ThemePreferencesRepository
         fun externalLyricsResolver(): ExternalLyricsResolver
     }
 
@@ -65,6 +76,7 @@ class FloatingLyricsService : Service() {
     private val mainHandler = Handler(Looper.getMainLooper())
 
     private lateinit var preferences: UserPreferencesRepository
+    private lateinit var themePreferences: ThemePreferencesRepository
     private lateinit var lyricsResolver: ExternalLyricsResolver
 
     private var overlay: FloatingLyricsOverlay? = null
@@ -81,6 +93,15 @@ class FloatingLyricsService : Service() {
     private var lyricsJob: Job? = null
     private var offsetJob: Job? = null
     private var syncOffsetMs = 0
+
+    /** Theme state the floating palette is derived from: app mode plus per-track artwork. */
+    private var appThemeMode = AppThemeMode.FOLLOW_SYSTEM
+    private var paletteMediaIdentity: String? = null
+    private var paletteArtworkKey = ""
+    private var paletteDark = false
+    private var paletteJob: Job? = null
+    private var artworkPalette: FloatingLyricsColors? = null
+    private var artworkPaletteDark = false
 
     private var latestPositionMs = 0L
     private var lastRenderedKey: String? = null
@@ -121,6 +142,7 @@ class FloatingLyricsService : Service() {
             FloatingLyricsEntryPoint::class.java,
         )
         preferences = entryPoint.userPreferencesRepository()
+        themePreferences = entryPoint.themePreferencesRepository()
         lyricsResolver = entryPoint.externalLyricsResolver()
 
         overlay = FloatingLyricsOverlay(
@@ -209,6 +231,18 @@ class FloatingLyricsService : Service() {
                     onMediaTick(media)
                 }
         }
+
+        // The window is tinted from the playing cover, so it must know whether the app theme is
+        // currently dark and repaint when the user switches modes.
+        scope.launch {
+            themePreferences.appThemeModeFlow
+                .distinctUntilChanged()
+                .collect { mode ->
+                    if (mode == appThemeMode) return@collect
+                    appThemeMode = mode
+                    currentMedia?.let(::updatePalette)
+                }
+        }
     }
 
     private fun onMediaTick(media: ExternalMediaState?) {
@@ -219,9 +253,14 @@ class FloatingLyricsService : Service() {
                 lyricsResolved = false
                 lyricsJob?.cancel()
                 offsetJob?.cancel()
+                paletteJob?.cancel()
+                paletteMediaIdentity = null
+                paletteArtworkKey = ""
+                artworkPalette = null
                 lastRenderedKey = null
                 notificationLine = ""
                 notificationSecondary = ""
+                overlay?.applyColors(null)
                 overlay?.hide()
                 refreshNotification(force = true)
             }
@@ -241,7 +280,83 @@ class FloatingLyricsService : Service() {
             refreshNotification(force = true)
             syncWindow()
         }
+        updatePalette(media)
         render(media)
+    }
+
+    /**
+     * Rebuilds the window palette when the track, the artwork availability or the light/dark
+     * choice changes. Players often publish the title before the cover, so artwork arriving for
+     * an already-playing track must trigger a repaint as well.
+     */
+    private fun updatePalette(media: ExternalMediaState) {
+        val dark = isDarkTheme()
+        // The URI or bitmap appearing later in the same track must repaint; a bitmap added on top
+        // of an already published URI counts as a change because it is the more reliable source.
+        val artworkKey = "${media.artworkUri.orEmpty()}|${media.artworkBitmap != null}"
+        if (media.identity == paletteMediaIdentity &&
+            artworkKey == paletteArtworkKey &&
+            dark == paletteDark
+        ) {
+            return
+        }
+        paletteMediaIdentity = media.identity
+        paletteArtworkKey = artworkKey
+        paletteDark = dark
+        paletteJob?.cancel()
+        paletteJob = scope.launch {
+            val colors = resolvePalette(media, dark)
+            if (currentMedia?.identity != media.identity) return@launch
+            when {
+                colors != null -> {
+                    artworkPalette = colors
+                    artworkPaletteDark = dark
+                    overlay?.applyColors(colors)
+                }
+                // Like the in-app theme, hold the previous cover palette while a track has no
+                // artwork; only drop to the static app-theme colours when there is nothing to hold.
+                artworkPalette != null && artworkPaletteDark == dark ->
+                    overlay?.applyColors(artworkPalette)
+                else -> overlay?.applyColors(null)
+            }
+        }
+    }
+
+    /**
+     * Applies the same pipeline the in-app theme uses: the cover seeds an M3E tonal scheme whose
+     * surface/content/primary roles tint the card. Without cover artwork the window keeps the
+     * app-theme colours from colors.xml.
+     */
+    private suspend fun resolvePalette(media: ExternalMediaState, dark: Boolean): FloatingLyricsColors? {
+        val bitmap = media.artworkBitmap ?: media.artworkUri?.let { uri ->
+            withContext(Dispatchers.IO) { decodeArtworkBitmap(this@FloatingLyricsService, uri) }
+        } ?: return null
+        return withContext(Dispatchers.Default) {
+            runCatching {
+                val scheme = generateColorSchemeFromSeed(extractSeedColor(bitmap))
+                (if (dark) scheme.dark else scheme.light).toWindowColors()
+            }.getOrNull()
+        }
+    }
+
+    private fun ColorScheme.toWindowColors(): FloatingLyricsColors = FloatingLyricsColors(
+        container = surfaceContainerHigh.copy(alpha = WINDOW_CONTAINER_ALPHA).toArgb(),
+        textPrimary = onSurface.toArgb(),
+        textSecondary = onSurfaceVariant.copy(alpha = WINDOW_SECONDARY_ALPHA).toArgb(),
+        accent = primary.toArgb(),
+    )
+
+    private fun isDarkTheme(): Boolean = when (appThemeMode) {
+        AppThemeMode.DARK -> true
+        AppThemeMode.LIGHT -> false
+        else -> (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+            Configuration.UI_MODE_NIGHT_YES
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        // A follow-system theme flips outside the app; repaint against the new night mode.
+        currentMedia?.let(::updatePalette)
     }
 
     private fun requestLyrics(media: ExternalMediaState) {
@@ -507,6 +622,10 @@ class FloatingLyricsService : Service() {
         private const val STATE_POLL_MS = 500L
         private const val LYRICS_TIMEOUT_MS = 12_000L
         private const val LYRICS_DEEP_LINK = "carpelines://lyrics"
+
+        /** Matches the translucent card and muted secondary line of the static XML palette. */
+        private const val WINDOW_CONTAINER_ALPHA = 0.95f
+        private const val WINDOW_SECONDARY_ALPHA = 0.7f
 
         /**
          * A technically-noisy notification. Some ROMs (MIUI/HyperOS) hide silent notifications

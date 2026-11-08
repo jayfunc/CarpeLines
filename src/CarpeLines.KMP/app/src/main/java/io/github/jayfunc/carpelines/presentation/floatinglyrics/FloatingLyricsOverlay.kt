@@ -1,6 +1,7 @@
 package io.github.jayfunc.carpelines.presentation.floatinglyrics
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.PixelFormat
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -10,17 +11,31 @@ import android.view.ViewConfiguration
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
+import com.google.android.material.card.MaterialCardView
 import io.github.jayfunc.carpelines.R
 import kotlin.math.abs
 import timber.log.Timber
+
+/**
+ * The M3E roles the floating window draws with. Floating lyrics live outside the app's Compose
+ * tree, so the album-art scheme resolved by the service is handed over as plain ARGB values.
+ */
+internal data class FloatingLyricsColors(
+    val container: Int,
+    val textPrimary: Int,
+    val textSecondary: Int,
+    val accent: Int,
+)
 
 /**
  * Owns the floating lyric window: inflation, placement, dragging and content updates.
  *
  * The window is a plain overlay view rather than a Compose window so it can live in a service
  * without a lifecycle owner, and it uses the app's Material 3 theme so the tonal container and
- * rounded corners match the in-app M3E surfaces.
+ * rounded corners match the in-app M3E surfaces. Its colours are tinted per track from the album
+ * artwork palette; without artwork the app-theme defaults in colors.xml stay in place.
  */
 internal class FloatingLyricsOverlay(
     private val context: Context,
@@ -37,11 +52,30 @@ internal class FloatingLyricsOverlay(
 
     private var root: View? = null
     private var layoutParams: WindowManager.LayoutParams? = null
+    private var cardView: MaterialCardView? = null
     private var currentLineView: TextView? = null
     private var secondaryLineView: TextView? = null
+    private var previousButton: ImageButton? = null
     private var playPauseButton: ImageButton? = null
+    private var nextButton: ImageButton? = null
+    private var lockButton: ImageButton? = null
+    private var closeButton: ImageButton? = null
     private var controlsView: View? = null
     private var lockBadge: View? = null
+    private var lockBadgeCard: MaterialCardView? = null
+    private var lockBadgeButton: ImageButton? = null
+
+    /** Album-art palette in use; null means the app-theme defaults from colors.xml. */
+    private var colors: FloatingLyricsColors? = null
+
+    private val defaultColors: FloatingLyricsColors by lazy {
+        FloatingLyricsColors(
+            container = ContextCompat.getColor(context, R.color.floating_lyrics_background),
+            textPrimary = ContextCompat.getColor(context, R.color.floating_lyrics_text_primary),
+            textSecondary = ContextCompat.getColor(context, R.color.floating_lyrics_text_secondary),
+            accent = ContextCompat.getColor(context, R.color.floating_lyrics_accent),
+        )
+    }
 
     /** Locked windows ignore touches so they cannot be moved or closed by accident. */
     var isLocked: Boolean = false
@@ -64,10 +98,38 @@ internal class FloatingLyricsOverlay(
             .onFailure { Timber.w(it, "Could not remove the floating lyrics window") }
         root = null
         layoutParams = null
+        cardView = null
         currentLineView = null
         secondaryLineView = null
+        previousButton = null
         playPauseButton = null
+        nextButton = null
+        lockButton = null
+        closeButton = null
         controlsView = null
+    }
+
+    /**
+     * Paints the window with the album-art palette; null restores the app-theme defaults. The
+     * colours are kept while the window is detached, so a re-attach comes back already tinted.
+     */
+    fun applyColors(value: FloatingLyricsColors?) {
+        colors = value
+        applyColorsToViews()
+    }
+
+    private fun applyColorsToViews() {
+        val active = colors ?: defaultColors
+        cardView?.setCardBackgroundColor(active.container)
+        currentLineView?.setTextColor(active.textPrimary)
+        secondaryLineView?.setTextColor(active.textSecondary)
+        playPauseButton?.imageTintList = ColorStateList.valueOf(active.accent)
+        previousButton?.imageTintList = ColorStateList.valueOf(active.textSecondary)
+        nextButton?.imageTintList = ColorStateList.valueOf(active.textSecondary)
+        lockButton?.imageTintList = ColorStateList.valueOf(active.textSecondary)
+        closeButton?.imageTintList = ColorStateList.valueOf(active.textSecondary)
+        lockBadgeCard?.setCardBackgroundColor(active.container)
+        lockBadgeButton?.imageTintList = ColorStateList.valueOf(active.textSecondary)
     }
 
     /**
@@ -110,23 +172,33 @@ internal class FloatingLyricsOverlay(
                     hideLockBadge()
                     root = null
                     layoutParams = null
+                    cardView = null
                     currentLineView = null
                     secondaryLineView = null
+                    previousButton = null
                     playPauseButton = null
+                    nextButton = null
+                    lockButton = null
+                    closeButton = null
                     controlsView = null
                 }
             }
         })
+        cardView = view.findViewById(R.id.floating_lyrics_card)
         currentLineView = view.findViewById(R.id.floating_lyrics_current_line)
         secondaryLineView = view.findViewById(R.id.floating_lyrics_secondary_line)
+        previousButton = view.findViewById(R.id.floating_lyrics_previous)
         playPauseButton = view.findViewById(R.id.floating_lyrics_play_pause)
+        nextButton = view.findViewById(R.id.floating_lyrics_next)
+        lockButton = view.findViewById(R.id.floating_lyrics_lock)
+        closeButton = view.findViewById(R.id.floating_lyrics_close)
         controlsView = view.findViewById(R.id.floating_lyrics_controls)
 
-        view.findViewById<ImageButton>(R.id.floating_lyrics_previous).setOnClickListener { onPrevious() }
-        view.findViewById<ImageButton>(R.id.floating_lyrics_play_pause).setOnClickListener { onPlayPause() }
-        view.findViewById<ImageButton>(R.id.floating_lyrics_next).setOnClickListener { onNext() }
-        view.findViewById<ImageButton>(R.id.floating_lyrics_lock).setOnClickListener { setLocked(true) }
-        view.findViewById<ImageButton>(R.id.floating_lyrics_close).setOnClickListener { onClose() }
+        previousButton?.setOnClickListener { onPrevious() }
+        playPauseButton?.setOnClickListener { onPlayPause() }
+        nextButton?.setOnClickListener { onNext() }
+        lockButton?.setOnClickListener { setLocked(true) }
+        closeButton?.setOnClickListener { onClose() }
         attachDragAndTap(view.findViewById(R.id.floating_lyrics_text_area))
 
         val widthPx = FloatingLyricsPlacement.widthPx(context)
@@ -153,6 +225,7 @@ internal class FloatingLyricsOverlay(
         if (added) {
             root = view
             layoutParams = params
+            applyColorsToViews()
             controlsView?.visibility = if (isLocked) View.GONE else View.VISIBLE
             if (isLocked) showLockBadge()
             Timber.d("FloatingLyricsOverlay: attached")
@@ -193,8 +266,9 @@ internal class FloatingLyricsOverlay(
         val params = layoutParams ?: return
         val badge = LayoutInflater.from(themedContext)
             .inflate(R.layout.floating_lyrics_lock_badge, null)
-        badge.findViewById<ImageButton>(R.id.floating_lyrics_lock_badge)
-            .setOnClickListener { setLocked(false) }
+        lockBadgeButton = badge.findViewById<ImageButton>(R.id.floating_lyrics_lock_badge)
+            .also { it.setOnClickListener { setLocked(false) } }
+        lockBadgeCard = badge.findViewById(R.id.floating_lyrics_lock_badge_card)
         val size = context.dp(BADGE_SIZE_DP)
         val badgeParams = WindowManager.LayoutParams(
             size,
@@ -212,7 +286,11 @@ internal class FloatingLyricsOverlay(
             .isSuccess
         if (added) {
             lockBadge = badge
+            applyColorsToViews()
             Timber.d("FloatingLyricsOverlay: lock badge attached")
+        } else {
+            lockBadgeCard = null
+            lockBadgeButton = null
         }
     }
 
@@ -221,6 +299,8 @@ internal class FloatingLyricsOverlay(
         runCatching { windowManager?.removeView(badge) }
             .onFailure { Timber.w(it, "Could not remove the floating lyrics lock badge") }
         lockBadge = null
+        lockBadgeCard = null
+        lockBadgeButton = null
     }
 
     /**
