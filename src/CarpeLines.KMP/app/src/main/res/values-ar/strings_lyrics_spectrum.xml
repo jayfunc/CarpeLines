@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_spectrum_section">الطيف</string>
+    <string name="betterlyrics_spectrum_title">طيف مباشر</string>
+    <string name="betterlyrics_spectrum_subtitle">يرسم الصوت قيد التشغيل كأعمدة أو منحنى خلف الكلمات</string>
+    <string name="betterlyrics_spectrum_player_hint">تُدعم فقط المشغلات التي تفتح جلسة صوتية. يُحلَّل الصوت في الذاكرة فقط، ولا يُسجَّل أو يُحفظ أو يُرفَع.</string>
+    <string name="betterlyrics_spectrum_unavailable">هذا المشغل لا يفتح جلسة صوتية. أعد تشغيل المقطع أو استخدم مشغلاً يدعم التأثيرات الصوتية الخارجية.</string>
+    <string name="betterlyrics_spectrum_permission_hint">يلزم إذن الميكروفون لقراءة الصوت قيد التشغيل ورسم الطيف.</string>
+    <string name="betterlyrics_spectrum_style_title">نمط الطيف</string>
+    <string name="betterlyrics_spectrum_style_subtitle">أعمدة أو منحنى ناعم</string>
+    <string name="betterlyrics_spectrum_style_curve">منحنى</string>
+    <string name="betterlyrics_spectrum_style_bar">أعمدة</string>
+    <string name="betterlyrics_spectrum_placement_title">الموضع</string>
+    <string name="betterlyrics_spectrum_placement_subtitle">مكان الطيف في صفحة الكلمات</string>
+    <string name="betterlyrics_spectrum_placement_bottom">الأسفل</string>
+    <string name="betterlyrics_spectrum_placement_top">الأعلى</string>
+    <string name="betterlyrics_spectrum_bars_title">عدد الأعمدة</string>
+    <string name="betterlyrics_spectrum_bars_subtitle">مزيد من الأعمدة يظهر تفاصيل أدق</string>
+    <string name="betterlyrics_spectrum_sensitivity_title">الحساسية</string>
+    <string name="betterlyrics_spectrum_sensitivity_subtitle">مدى تحريك الترددات الهادئة للأعمدة</string>
+    <string name="betterlyrics_spectrum_sensitivity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_opacity_title">الشفافية</string>
+    <string name="betterlyrics_spectrum_opacity_subtitle">مدى وضوح الطيف فوق الخلفية</string>
+    <string name="betterlyrics_spectrum_opacity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_glow_title">التوهج</string>
+    <string name="betterlyrics_spectrum_glow_subtitle">يضيف هالة ناعمة حول الطيف</string>
+    <string name="betterlyrics_spectrum_breathing_title">تنفّس الباس</string>
+    <string name="betterlyrics_spectrum_breathing_subtitle">يتمدد الطيف مع الباس</string>
+</resources>

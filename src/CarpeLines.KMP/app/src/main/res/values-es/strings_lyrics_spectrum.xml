@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_spectrum_section">Espectro</string>
+    <string name="betterlyrics_spectrum_title">Espectro en vivo</string>
+    <string name="betterlyrics_spectrum_subtitle">Dibuja el audio en reproducción como barras o una curva detrás de la letra</string>
+    <string name="betterlyrics_spectrum_player_hint">Solo se admiten reproductores que expongan una sesión de audio. El audio se analiza solo en memoria; no se graba, guarda ni sube.</string>
+    <string name="betterlyrics_spectrum_unavailable">Este reproductor no expone una sesión de audio. Vuelve a iniciar la pista o usa un reproductor compatible con efectos de audio externos.</string>
+    <string name="betterlyrics_spectrum_permission_hint">Se requiere permiso de micrófono para leer el audio en reproducción y dibujar el espectro.</string>
+    <string name="betterlyrics_spectrum_style_title">Estilo del espectro</string>
+    <string name="betterlyrics_spectrum_style_subtitle">Barras o una curva suave</string>
+    <string name="betterlyrics_spectrum_style_curve">Curva</string>
+    <string name="betterlyrics_spectrum_style_bar">Barras</string>
+    <string name="betterlyrics_spectrum_placement_title">Ubicación</string>
+    <string name="betterlyrics_spectrum_placement_subtitle">Dónde se coloca el espectro en la página de letras</string>
+    <string name="betterlyrics_spectrum_placement_bottom">Abajo</string>
+    <string name="betterlyrics_spectrum_placement_top">Arriba</string>
+    <string name="betterlyrics_spectrum_bars_title">Número de barras</string>
+    <string name="betterlyrics_spectrum_bars_subtitle">Más barras muestran más detalle</string>
+    <string name="betterlyrics_spectrum_sensitivity_title">Sensibilidad</string>
+    <string name="betterlyrics_spectrum_sensitivity_subtitle">Cuánto mueven las barras las frecuencias suaves</string>
+    <string name="betterlyrics_spectrum_sensitivity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_opacity_title">Opacidad</string>
+    <string name="betterlyrics_spectrum_opacity_subtitle">Qué tan visible es el espectro sobre el fondo</string>
+    <string name="betterlyrics_spectrum_opacity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_glow_title">Brillo</string>
+    <string name="betterlyrics_spectrum_glow_subtitle">Añade un halo suave alrededor del espectro</string>
+    <string name="betterlyrics_spectrum_breathing_title">Respiración de graves</string>
+    <string name="betterlyrics_spectrum_breathing_subtitle">El espectro se expande con los graves</string>
+</resources>

@@ -96,6 +96,9 @@ import io.github.jayfunc.carpelines.data.preferences.FLOATING_LYRICS_ENABLED_KEY
 import io.github.jayfunc.carpelines.data.preferences.LOCK_SCREEN_LYRICS_ENABLED_KEY
 import io.github.jayfunc.carpelines.presentation.floatinglyrics.FloatingLyricsService
 import io.github.jayfunc.carpelines.presentation.components.betterlyrics.BetterLyricsAmbientStyle
+import io.github.jayfunc.carpelines.presentation.components.betterlyrics.SPECTRUM_BAR_COUNTS
+import io.github.jayfunc.carpelines.presentation.components.betterlyrics.SpectrumPlacement
+import io.github.jayfunc.carpelines.presentation.components.betterlyrics.SpectrumStyle
 import io.github.jayfunc.carpelines.presentation.components.betterlyrics.isAmbientShaderSupported
 import io.github.jayfunc.carpelines.presentation.components.lyrics.AMBIENT_ENABLED_KEY
 import io.github.jayfunc.carpelines.presentation.components.lyrics.AMBIENT_STYLE_KEY
@@ -114,6 +117,14 @@ import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_PLAYIN
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_SCALE_EFFECT_KEY
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_SCROLL_RESUME_DELAY_KEY
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LYRICS_TEXT_COLOR_MODE_KEY
+import io.github.jayfunc.carpelines.presentation.components.lyrics.SPECTRUM_BAR_COUNT_KEY
+import io.github.jayfunc.carpelines.presentation.components.lyrics.SPECTRUM_BREATHING_KEY
+import io.github.jayfunc.carpelines.presentation.components.lyrics.SPECTRUM_ENABLED_KEY
+import io.github.jayfunc.carpelines.presentation.components.lyrics.SPECTRUM_GLOW_KEY
+import io.github.jayfunc.carpelines.presentation.components.lyrics.SPECTRUM_OPACITY_KEY
+import io.github.jayfunc.carpelines.presentation.components.lyrics.SPECTRUM_PLACEMENT_KEY
+import io.github.jayfunc.carpelines.presentation.components.lyrics.SPECTRUM_SENSITIVITY_KEY
+import io.github.jayfunc.carpelines.presentation.components.lyrics.SPECTRUM_STYLE_KEY
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsAlignment
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsFontFamily
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsFontWeight
@@ -175,6 +186,18 @@ private enum class LyricsSection(val itemKeys: Set<String>) {
         )
     ),
     AMBIENT(setOf("item_lyrics_ambient_background")),
+    SPECTRUM(
+        setOf(
+            "item_lyrics_spectrum_enabled",
+            "item_lyrics_spectrum_style",
+            "item_lyrics_spectrum_placement",
+            "item_lyrics_spectrum_bars",
+            "item_lyrics_spectrum_sensitivity",
+            "item_lyrics_spectrum_opacity",
+            "item_lyrics_spectrum_glow",
+            "item_lyrics_spectrum_breathing",
+        )
+    ),
     PLAYING_LINE(setOf("item_lyrics_playing_line")),
     FOLLOW_SCROLL(
         setOf(
@@ -275,6 +298,7 @@ fun LyricsSettingsScreen(
     var pendingLockScreenEnable by remember { mutableStateOf(false) }
     var overlayPermissionDenied by remember { mutableStateOf(false) }
     var notificationPermissionDenied by remember { mutableStateOf(false) }
+    var recordAudioPermissionDenied by remember { mutableStateOf(false) }
     var permissionRequestTick by remember { mutableIntStateOf(0) }
 
     fun hasNotificationPermission(): Boolean =
@@ -283,6 +307,12 @@ fun LyricsSettingsScreen(
                 context,
                 Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
+
+    fun hasRecordAudioPermission(): Boolean =
+        ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
 
     // Both switches share one DataStore edit. Starting the service only after the edit commits
     // avoids the service reading the previous (both-off) values and stopping itself immediately.
@@ -336,6 +366,15 @@ fun LyricsSettingsScreen(
         }
     }
 
+    val recordAudioPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        recordAudioPermissionDenied = !granted
+        if (granted) {
+            persistBoolean(SPECTRUM_ENABLED_KEY, true)
+        }
+    }
+
     // Resolves the permission chain one step at a time: overlay (desktop only) → notifications →
     // commit the switch. Running it from a version tick lets each launcher request the next step
     // after it returns without forward references between local functions.
@@ -372,6 +411,11 @@ fun LyricsSettingsScreen(
     // app is in front again; the effect above only acts while a switch is waiting.
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         permissionRequestTick++
+        if (displaySettings.spectrumEnabled && !hasRecordAudioPermission()) {
+            recordAudioPermissionDenied = true
+        } else if (hasRecordAudioPermission()) {
+            recordAudioPermissionDenied = false
+        }
     }
 
     val statusBarHeight = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
@@ -746,6 +790,224 @@ fun LyricsSettingsScreen(
                                 Icon(Icons.Rounded.Gradient, null, tint = MaterialTheme.colorScheme.secondary)
                             }
                         )
+                    }
+                }
+            }
+
+            item(key = LyricsSection.SPECTRUM.name) {
+                LyricsSettingsSubsection(title = stringResource(R.string.lyrics_spectrum_section)) {
+                    SwitchSettingItem(
+                        title = stringResource(R.string.betterlyrics_spectrum_title),
+                        subtitle = stringResource(R.string.betterlyrics_spectrum_subtitle),
+                        checked = displaySettings.spectrumEnabled,
+                        onCheckedChange = { enabled ->
+                            if (!enabled) {
+                                recordAudioPermissionDenied = false
+                                persistBoolean(SPECTRUM_ENABLED_KEY, false)
+                            } else if (hasRecordAudioPermission()) {
+                                recordAudioPermissionDenied = false
+                                persistBoolean(SPECTRUM_ENABLED_KEY, true)
+                            } else {
+                                recordAudioPermissionDenied = false
+                                recordAudioPermissionLauncher.launch(
+                                    Manifest.permission.RECORD_AUDIO
+                                )
+                            }
+                        },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Rounded.Gradient,
+                                null,
+                                tint = MaterialTheme.colorScheme.secondary
+                            )
+                        },
+                        modifier = Modifier.settingHighlight(
+                            "item_lyrics_spectrum_enabled",
+                            highlightKey
+                        )
+                    )
+
+                    if (recordAudioPermissionDenied) {
+                        Text(
+                            text = stringResource(R.string.betterlyrics_spectrum_permission_hint),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+                        )
+                    }
+
+                    AnimatedVisibility(
+                        visible = displaySettings.spectrumEnabled,
+                        enter = fadeIn() + expandVertically(),
+                        exit = fadeOut() + shrinkVertically()
+                    ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                            ThemeSelectorItem(
+                                label = stringResource(R.string.betterlyrics_spectrum_style_title),
+                                description = stringResource(R.string.betterlyrics_spectrum_style_subtitle),
+                                options = mapOf(
+                                    SpectrumStyle.CURVE.name to stringResource(R.string.betterlyrics_spectrum_style_curve),
+                                    SpectrumStyle.BAR.name to stringResource(R.string.betterlyrics_spectrum_style_bar),
+                                ),
+                                selectedKey = displaySettings.spectrumStyle.name,
+                                onSelectionChanged = { key ->
+                                    val style = SpectrumStyle.entries
+                                        .firstOrNull { it.name == key } ?: return@ThemeSelectorItem
+                                    persistString(SPECTRUM_STYLE_KEY, style.name)
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Rounded.Gradient,
+                                        null,
+                                        tint = MaterialTheme.colorScheme.secondary
+                                    )
+                                },
+                                modifier = Modifier.settingHighlight(
+                                    "item_lyrics_spectrum_style",
+                                    highlightKey
+                                )
+                            )
+
+                            ThemeSelectorItem(
+                                label = stringResource(R.string.betterlyrics_spectrum_placement_title),
+                                description = stringResource(R.string.betterlyrics_spectrum_placement_subtitle),
+                                options = mapOf(
+                                    SpectrumPlacement.BOTTOM.name to stringResource(R.string.betterlyrics_spectrum_placement_bottom),
+                                    SpectrumPlacement.TOP.name to stringResource(R.string.betterlyrics_spectrum_placement_top),
+                                ),
+                                selectedKey = displaySettings.spectrumPlacement.name,
+                                onSelectionChanged = { key ->
+                                    val placement = SpectrumPlacement.entries
+                                        .firstOrNull { it.name == key } ?: return@ThemeSelectorItem
+                                    persistString(SPECTRUM_PLACEMENT_KEY, placement.name)
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Rounded.SwapVert,
+                                        null,
+                                        tint = MaterialTheme.colorScheme.secondary
+                                    )
+                                },
+                                modifier = Modifier.settingHighlight(
+                                    "item_lyrics_spectrum_placement",
+                                    highlightKey
+                                )
+                            )
+
+                            ThemeSelectorItem(
+                                label = stringResource(R.string.betterlyrics_spectrum_bars_title),
+                                description = stringResource(R.string.betterlyrics_spectrum_bars_subtitle),
+                                options = SPECTRUM_BAR_COUNTS.associate { it.toString() to it.toString() },
+                                selectedKey = displaySettings.spectrumBarCount.toString(),
+                                onSelectionChanged = { key ->
+                                    key.toIntOrNull()?.let {
+                                        persistInt(SPECTRUM_BAR_COUNT_KEY, it)
+                                    }
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Rounded.Gradient,
+                                        null,
+                                        tint = MaterialTheme.colorScheme.secondary
+                                    )
+                                },
+                                modifier = Modifier.settingHighlight(
+                                    "item_lyrics_spectrum_bars",
+                                    highlightKey
+                                )
+                            )
+
+                            LyricsSettingSlider(
+                                title = stringResource(R.string.betterlyrics_spectrum_sensitivity_title),
+                                subtitle = stringResource(R.string.betterlyrics_spectrum_sensitivity_subtitle),
+                                icon = Icons.Rounded.Animation,
+                                value = displaySettings.spectrumSensitivity,
+                                valueRange = 0.5f..2f,
+                                steps = 15,
+                                valueText = {
+                                    stringResource(
+                                        R.string.betterlyrics_spectrum_sensitivity_value,
+                                        (it * 100f).roundToInt()
+                                    )
+                                },
+                                onValueCommit = {
+                                    persistFloat(SPECTRUM_SENSITIVITY_KEY, it)
+                                },
+                                modifier = Modifier.settingHighlight(
+                                    "item_lyrics_spectrum_sensitivity",
+                                    highlightKey
+                                )
+                            )
+
+                            LyricsSettingSlider(
+                                title = stringResource(R.string.betterlyrics_spectrum_opacity_title),
+                                subtitle = stringResource(R.string.betterlyrics_spectrum_opacity_subtitle),
+                                icon = Icons.Rounded.Opacity,
+                                value = displaySettings.spectrumOpacity,
+                                valueRange = 0.2f..1f,
+                                steps = 15,
+                                valueText = {
+                                    stringResource(
+                                        R.string.betterlyrics_spectrum_opacity_value,
+                                        (it * 100f).roundToInt()
+                                    )
+                                },
+                                onValueCommit = {
+                                    persistFloat(SPECTRUM_OPACITY_KEY, it)
+                                },
+                                modifier = Modifier.settingHighlight(
+                                    "item_lyrics_spectrum_opacity",
+                                    highlightKey
+                                )
+                            )
+
+                            SwitchSettingItem(
+                                title = stringResource(R.string.betterlyrics_spectrum_glow_title),
+                                subtitle = stringResource(R.string.betterlyrics_spectrum_glow_subtitle),
+                                checked = displaySettings.spectrumGlowEnabled,
+                                onCheckedChange = {
+                                    persistBoolean(SPECTRUM_GLOW_KEY, it)
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Rounded.AutoAwesome,
+                                        null,
+                                        tint = MaterialTheme.colorScheme.secondary
+                                    )
+                                },
+                                modifier = Modifier.settingHighlight(
+                                    "item_lyrics_spectrum_glow",
+                                    highlightKey
+                                )
+                            )
+
+                            SwitchSettingItem(
+                                title = stringResource(R.string.betterlyrics_spectrum_breathing_title),
+                                subtitle = stringResource(R.string.betterlyrics_spectrum_breathing_subtitle),
+                                checked = displaySettings.spectrumBreathingEnabled,
+                                onCheckedChange = {
+                                    persistBoolean(SPECTRUM_BREATHING_KEY, it)
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Rounded.Animation,
+                                        null,
+                                        tint = MaterialTheme.colorScheme.secondary
+                                    )
+                                },
+                                modifier = Modifier.settingHighlight(
+                                    "item_lyrics_spectrum_breathing",
+                                    highlightKey
+                                )
+                            )
+
+                            Text(
+                                text = stringResource(R.string.betterlyrics_spectrum_player_hint),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                            )
+                        }
                     }
                 }
             }

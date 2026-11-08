@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_spectrum_section">Spectre</string>
+    <string name="betterlyrics_spectrum_title">Spectre en direct</string>
+    <string name="betterlyrics_spectrum_subtitle">Dessine l\'audio en cours sous forme de barres ou d\'une courbe derrière les paroles</string>
+    <string name="betterlyrics_spectrum_player_hint">Seuls les lecteurs qui exposent une session audio sont pris en charge. L\'audio est analysé en mémoire uniquement ; rien n\'est enregistré, stocké ni envoyé.</string>
+    <string name="betterlyrics_spectrum_unavailable">Ce lecteur n\'expose pas de session audio. Relance le morceau ou utilise un lecteur qui prend en charge les effets audio externes.</string>
+    <string name="betterlyrics_spectrum_permission_hint">L\'autorisation du microphone est nécessaire pour lire l\'audio en cours et dessiner le spectre.</string>
+    <string name="betterlyrics_spectrum_style_title">Style du spectre</string>
+    <string name="betterlyrics_spectrum_style_subtitle">Barres ou courbe lissée</string>
+    <string name="betterlyrics_spectrum_style_curve">Courbe</string>
+    <string name="betterlyrics_spectrum_style_bar">Barres</string>
+    <string name="betterlyrics_spectrum_placement_title">Emplacement</string>
+    <string name="betterlyrics_spectrum_placement_subtitle">Où se place le spectre sur la page des paroles</string>
+    <string name="betterlyrics_spectrum_placement_bottom">Bas</string>
+    <string name="betterlyrics_spectrum_placement_top">Haut</string>
+    <string name="betterlyrics_spectrum_bars_title">Nombre de barres</string>
+    <string name="betterlyrics_spectrum_bars_subtitle">Plus de barres montrent plus de détails</string>
+    <string name="betterlyrics_spectrum_sensitivity_title">Sensibilité</string>
+    <string name="betterlyrics_spectrum_sensitivity_subtitle">Dans quelle mesure les fréquences faibles déplacent les barres</string>
+    <string name="betterlyrics_spectrum_sensitivity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_opacity_title">Opacité</string>
+    <string name="betterlyrics_spectrum_opacity_subtitle">Visibilité du spectre sur le fond</string>
+    <string name="betterlyrics_spectrum_opacity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_glow_title">Lueur</string>
+    <string name="betterlyrics_spectrum_glow_subtitle">Ajoute un halo doux autour du spectre</string>
+    <string name="betterlyrics_spectrum_breathing_title">Respiration des basses</string>
+    <string name="betterlyrics_spectrum_breathing_subtitle">Le spectre s\'étire avec les basses</string>
+</resources>

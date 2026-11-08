@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_spectrum_section">스펙트럼</string>
+    <string name="betterlyrics_spectrum_title">라이브 스펙트럼</string>
+    <string name="betterlyrics_spectrum_subtitle">재생 중인 오디오를 가사 뒤에 막대 또는 곡선으로 그립니다</string>
+    <string name="betterlyrics_spectrum_player_hint">오디오 세션을 제공하는 플레이어만 지원됩니다. 오디오는 메모리에서만 분석되며 녹음, 저장, 전송되지 않습니다.</string>
+    <string name="betterlyrics_spectrum_unavailable">이 플레이어는 오디오 세션을 제공하지 않습니다. 곡을 다시 재생하거나 외부 오디오 효과를 지원하는 플레이어를 사용하세요.</string>
+    <string name="betterlyrics_spectrum_permission_hint">스펙트럼을 그리려면 재생 중인 오디오를 읽는 마이크 권한이 필요합니다.</string>
+    <string name="betterlyrics_spectrum_style_title">스펙트럼 스타일</string>
+    <string name="betterlyrics_spectrum_style_subtitle">막대 또는 부드러운 곡선</string>
+    <string name="betterlyrics_spectrum_style_curve">곡선</string>
+    <string name="betterlyrics_spectrum_style_bar">막대</string>
+    <string name="betterlyrics_spectrum_placement_title">위치</string>
+    <string name="betterlyrics_spectrum_placement_subtitle">가사 페이지에서 스펙트럼이 표시될 위치</string>
+    <string name="betterlyrics_spectrum_placement_bottom">아래</string>
+    <string name="betterlyrics_spectrum_placement_top">위</string>
+    <string name="betterlyrics_spectrum_bars_title">막대 수</string>
+    <string name="betterlyrics_spectrum_bars_subtitle">막대가 많을수록 더 세밀하게 표시됩니다</string>
+    <string name="betterlyrics_spectrum_sensitivity_title">감도</string>
+    <string name="betterlyrics_spectrum_sensitivity_subtitle">조용한 주파수가 막대를 움직이는 정도</string>
+    <string name="betterlyrics_spectrum_sensitivity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_opacity_title">불투명도</string>
+    <string name="betterlyrics_spectrum_opacity_subtitle">배경 위에서 스펙트럼이 보이는 정도</string>
+    <string name="betterlyrics_spectrum_opacity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_glow_title">광채</string>
+    <string name="betterlyrics_spectrum_glow_subtitle">스펙트럼 주변에 부드러운 빛을 추가합니다</string>
+    <string name="betterlyrics_spectrum_breathing_title">저음 호흡</string>
+    <string name="betterlyrics_spectrum_breathing_subtitle">저음에 맞춰 스펙트럼이 커졌다 작아집니다</string>
+</resources>

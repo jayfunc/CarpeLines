@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_spectrum_section">Spektrum</string>
+    <string name="betterlyrics_spectrum_title">Canlı spektrum</string>
+    <string name="betterlyrics_spectrum_subtitle">Çalan sesi şarkı sözlerinin arkasında çubuklar veya eğri olarak çizer</string>
+    <string name="betterlyrics_spectrum_player_hint">Yalnızca ses oturumu açan oynatıcılar desteklenir. Ses yalnızca bellekte analiz edilir; kaydedilmez, saklanmaz veya yüklenmez.</string>
+    <string name="betterlyrics_spectrum_unavailable">Bu oynatıcı bir ses oturumu açmıyor. Parçayı yeniden başlatın veya harici ses efektlerini destekleyen bir oynatıcı kullanın.</string>
+    <string name="betterlyrics_spectrum_permission_hint">Spektrumu çizmek için çalan sesi okumak üzere mikrofon izni gerekir.</string>
+    <string name="betterlyrics_spectrum_style_title">Spektrum stili</string>
+    <string name="betterlyrics_spectrum_style_subtitle">Çubuklar veya yumuşak eğri</string>
+    <string name="betterlyrics_spectrum_style_curve">Eğri</string>
+    <string name="betterlyrics_spectrum_style_bar">Çubuklar</string>
+    <string name="betterlyrics_spectrum_placement_title">Konum</string>
+    <string name="betterlyrics_spectrum_placement_subtitle">Spektrumun şarkı sözü sayfasındaki yeri</string>
+    <string name="betterlyrics_spectrum_placement_bottom">Alt</string>
+    <string name="betterlyrics_spectrum_placement_top">Üst</string>
+    <string name="betterlyrics_spectrum_bars_title">Çubuk sayısı</string>
+    <string name="betterlyrics_spectrum_bars_subtitle">Daha fazla çubuk daha ince ayrıntı gösterir</string>
+    <string name="betterlyrics_spectrum_sensitivity_title">Hassasiyet</string>
+    <string name="betterlyrics_spectrum_sensitivity_subtitle">Sessiz frekansların çubukları ne kadar hareket ettirdiği</string>
+    <string name="betterlyrics_spectrum_sensitivity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_opacity_title">Opaklık</string>
+    <string name="betterlyrics_spectrum_opacity_subtitle">Spektrumun arka plan üzerinde ne kadar görünür olduğu</string>
+    <string name="betterlyrics_spectrum_opacity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_glow_title">Parıltı</string>
+    <string name="betterlyrics_spectrum_glow_subtitle">Spektrumun çevresine yumuşak bir hale ekler</string>
+    <string name="betterlyrics_spectrum_breathing_title">Bas nefesi</string>
+    <string name="betterlyrics_spectrum_breathing_subtitle">Spektrum basla birlikte hafifçe büyür</string>
+</resources>

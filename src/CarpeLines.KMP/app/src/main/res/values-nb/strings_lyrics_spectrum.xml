@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_spectrum_section">Spekter</string>
+    <string name="betterlyrics_spectrum_title">Direktespekter</string>
+    <string name="betterlyrics_spectrum_subtitle">Tegner lyden som spilles av som søyler eller en kurve bak teksten</string>
+    <string name="betterlyrics_spectrum_player_hint">Bare spillere som åpner en lydøkt støttes. Lyden analyseres bare i minnet; ingenting tas opp, lagres eller lastes opp.</string>
+    <string name="betterlyrics_spectrum_unavailable">Denne spilleren åpner ikke en lydøkt. Start sporet på nytt eller bruk en spiller som støtter eksterne lydeffekter.</string>
+    <string name="betterlyrics_spectrum_permission_hint">Mikrofontillatelse kreves for å lese lyden som spilles av og tegne spekteret.</string>
+    <string name="betterlyrics_spectrum_style_title">Spekterstil</string>
+    <string name="betterlyrics_spectrum_style_subtitle">Søyler eller en jevn kurve</string>
+    <string name="betterlyrics_spectrum_style_curve">Kurve</string>
+    <string name="betterlyrics_spectrum_style_bar">Søyler</string>
+    <string name="betterlyrics_spectrum_placement_title">Plassering</string>
+    <string name="betterlyrics_spectrum_placement_subtitle">Hvor spekteret ligger på tekstsiden</string>
+    <string name="betterlyrics_spectrum_placement_bottom">Bunn</string>
+    <string name="betterlyrics_spectrum_placement_top">Topp</string>
+    <string name="betterlyrics_spectrum_bars_title">Antall søyler</string>
+    <string name="betterlyrics_spectrum_bars_subtitle">Flere søyler viser finere detaljer</string>
+    <string name="betterlyrics_spectrum_sensitivity_title">Følsomhet</string>
+    <string name="betterlyrics_spectrum_sensitivity_subtitle">Hvor mye svake frekvenser beveger søylene</string>
+    <string name="betterlyrics_spectrum_sensitivity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_opacity_title">Uigjennomsiktighet</string>
+    <string name="betterlyrics_spectrum_opacity_subtitle">Hvor synlig spekteret er over bakgrunnen</string>
+    <string name="betterlyrics_spectrum_opacity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_glow_title">Glød</string>
+    <string name="betterlyrics_spectrum_glow_subtitle">Legger en myk halo rundt spekteret</string>
+    <string name="betterlyrics_spectrum_breathing_title">Basspust</string>
+    <string name="betterlyrics_spectrum_breathing_subtitle">Spekteret utvider seg med bassen</string>
+</resources>

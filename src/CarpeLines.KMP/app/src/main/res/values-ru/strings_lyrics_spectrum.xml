@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_spectrum_section">Спектр</string>
+    <string name="betterlyrics_spectrum_title">Живой спектр</string>
+    <string name="betterlyrics_spectrum_subtitle">Рисует звук воспроизведения в виде столбцов или кривой за текстом</string>
+    <string name="betterlyrics_spectrum_player_hint">Поддерживаются только плееры, открывающие аудиосессию. Звук анализируется только в памяти; ничего не записывается, не сохраняется и не отправляется.</string>
+    <string name="betterlyrics_spectrum_unavailable">Этот плеер не открывает аудиосессию. Запустите трек заново или используйте плеер с поддержкой внешних аудиоэффектов.</string>
+    <string name="betterlyrics_spectrum_permission_hint">Для чтения воспроизводимого звука и отрисовки спектра нужно разрешение на микрофон.</string>
+    <string name="betterlyrics_spectrum_style_title">Стиль спектра</string>
+    <string name="betterlyrics_spectrum_style_subtitle">Столбцы или плавная кривая</string>
+    <string name="betterlyrics_spectrum_style_curve">Кривая</string>
+    <string name="betterlyrics_spectrum_style_bar">Столбцы</string>
+    <string name="betterlyrics_spectrum_placement_title">Положение</string>
+    <string name="betterlyrics_spectrum_placement_subtitle">Где спектр расположен на странице текста</string>
+    <string name="betterlyrics_spectrum_placement_bottom">Снизу</string>
+    <string name="betterlyrics_spectrum_placement_top">Сверху</string>
+    <string name="betterlyrics_spectrum_bars_title">Количество столбцов</string>
+    <string name="betterlyrics_spectrum_bars_subtitle">Больше столбцов — больше деталей</string>
+    <string name="betterlyrics_spectrum_sensitivity_title">Чувствительность</string>
+    <string name="betterlyrics_spectrum_sensitivity_subtitle">Насколько тихие частоты двигают столбцы</string>
+    <string name="betterlyrics_spectrum_sensitivity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_opacity_title">Прозрачность</string>
+    <string name="betterlyrics_spectrum_opacity_subtitle">Насколько спектр заметен на фоне</string>
+    <string name="betterlyrics_spectrum_opacity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_glow_title">Свечение</string>
+    <string name="betterlyrics_spectrum_glow_subtitle">Добавляет мягкий ореол вокруг спектра</string>
+    <string name="betterlyrics_spectrum_breathing_title">Дыхание баса</string>
+    <string name="betterlyrics_spectrum_breathing_subtitle">Спектр пульсирует вместе с басом</string>
+</resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_spectrum_section">スペクトル</string>
+    <string name="betterlyrics_spectrum_title">ライブスペクトル</string>
+    <string name="betterlyrics_spectrum_subtitle">再生中の音声を歌詞の背景にバーまたは曲線で描画します</string>
+    <string name="betterlyrics_spectrum_player_hint">オーディオセッションを公開しているプレーヤーのみ対応しています。音声はメモリ内でのみ分析され、録音・保存・送信はされません。</string>
+    <string name="betterlyrics_spectrum_unavailable">このプレーヤーはオーディオセッションを公開していません。曲を再生し直すか、外部オーディオエフェクトに対応したプレーヤーを使用してください。</string>
+    <string name="betterlyrics_spectrum_permission_hint">スペクトルを描画するために、再生中の音声を読み取るマイク権限が必要です。</string>
+    <string name="betterlyrics_spectrum_style_title">スペクトルスタイル</string>
+    <string name="betterlyrics_spectrum_style_subtitle">バーまたは滑らかな曲線</string>
+    <string name="betterlyrics_spectrum_style_curve">曲線</string>
+    <string name="betterlyrics_spectrum_style_bar">バー</string>
+    <string name="betterlyrics_spectrum_placement_title">位置</string>
+    <string name="betterlyrics_spectrum_placement_subtitle">歌詞ページ上でのスペクトルの位置</string>
+    <string name="betterlyrics_spectrum_placement_bottom">下部</string>
+    <string name="betterlyrics_spectrum_placement_top">上部</string>
+    <string name="betterlyrics_spectrum_bars_title">バー数</string>
+    <string name="betterlyrics_spectrum_bars_subtitle">バーが多いほど細かい表現になります</string>
+    <string name="betterlyrics_spectrum_sensitivity_title">感度</string>
+    <string name="betterlyrics_spectrum_sensitivity_subtitle">小さな音の周波数がバーを動かす強さ</string>
+    <string name="betterlyrics_spectrum_sensitivity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_opacity_title">不透明度</string>
+    <string name="betterlyrics_spectrum_opacity_subtitle">背景に対するスペクトルの見えやすさ</string>
+    <string name="betterlyrics_spectrum_opacity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_glow_title">グロー</string>
+    <string name="betterlyrics_spectrum_glow_subtitle">スペクトルの周囲に柔らかい光を追加します</string>
+    <string name="betterlyrics_spectrum_breathing_title">低音の呼吸</string>
+    <string name="betterlyrics_spectrum_breathing_subtitle">低音に合わせてスペクトルが伸縮します</string>
+</resources>

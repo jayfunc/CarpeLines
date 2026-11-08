@@ -28,6 +28,9 @@ import io.github.jayfunc.carpelines.data.preferences.SHOW_LYRICS_BACKGROUND_VOCA
 import io.github.jayfunc.carpelines.data.preferences.dataStore
 import io.github.jayfunc.carpelines.data.preferences.sanitizeLyricsFontSize
 import io.github.jayfunc.carpelines.presentation.components.betterlyrics.BetterLyricsAmbientStyle
+import io.github.jayfunc.carpelines.presentation.components.betterlyrics.SPECTRUM_BAR_COUNTS
+import io.github.jayfunc.carpelines.presentation.components.betterlyrics.SpectrumPlacement
+import io.github.jayfunc.carpelines.presentation.components.betterlyrics.SpectrumStyle
 import kotlinx.coroutines.flow.map
 
 /** The lyric presentation preferences shared by the lyrics page and its settings. */
@@ -43,6 +46,15 @@ data class LyricsDisplaySettings(
     val playbackSpeed: Float = 1f,
     val ambientEnabled: Boolean = true,
     val ambientStyle: BetterLyricsAmbientStyle = BetterLyricsAmbientStyle.FLUID,
+    /** Live audio spectrum drawn behind the lyrics; opt-in because it reads the playing audio. */
+    val spectrumEnabled: Boolean = false,
+    val spectrumStyle: SpectrumStyle = SpectrumStyle.CURVE,
+    val spectrumPlacement: SpectrumPlacement = SpectrumPlacement.BOTTOM,
+    val spectrumBarCount: Int = 32,
+    val spectrumSensitivity: Float = 1f,
+    val spectrumOpacity: Float = 0.9f,
+    val spectrumGlowEnabled: Boolean = true,
+    val spectrumBreathingEnabled: Boolean = true,
     /** Where the playing line sits in the viewport, 0 = top, 0.5 = middle. */
     val playingLineTopOffset: Float = DEFAULT_PLAYING_LINE_TOP_OFFSET,
     /** Whether the lyrics page hides its player chrome automatically while playing. */
@@ -239,6 +251,15 @@ const val DEFAULT_IMMERSIVE_LYRICS_TIMEOUT_MS = 4_000L
 val AMBIENT_ENABLED_KEY = booleanPreferencesKey("betterlyrics_ambient_enabled")
 val AMBIENT_STYLE_KEY = stringPreferencesKey("betterlyrics_ambient_style")
 
+val SPECTRUM_ENABLED_KEY = booleanPreferencesKey("betterlyrics_spectrum_enabled")
+val SPECTRUM_STYLE_KEY = stringPreferencesKey("betterlyrics_spectrum_style")
+val SPECTRUM_PLACEMENT_KEY = stringPreferencesKey("betterlyrics_spectrum_placement")
+val SPECTRUM_BAR_COUNT_KEY = intPreferencesKey("betterlyrics_spectrum_bar_count")
+val SPECTRUM_SENSITIVITY_KEY = floatPreferencesKey("betterlyrics_spectrum_sensitivity")
+val SPECTRUM_OPACITY_KEY = floatPreferencesKey("betterlyrics_spectrum_opacity")
+val SPECTRUM_GLOW_KEY = booleanPreferencesKey("betterlyrics_spectrum_glow")
+val SPECTRUM_BREATHING_KEY = booleanPreferencesKey("betterlyrics_spectrum_breathing")
+
 val LYRICS_PLAYING_LINE_OFFSET_KEY = floatPreferencesKey("lyrics_playing_line_offset")
 val IMMERSIVE_LYRICS_ENABLED_KEY = booleanPreferencesKey("immersive_lyrics_enabled")
 val IMMERSIVE_LYRICS_TIMEOUT_KEY = longPreferencesKey("immersive_lyrics_timeout")
@@ -293,6 +314,19 @@ fun rememberLyricsDisplaySettings(): LyricsDisplaySettings {
                 ambientStyle = BetterLyricsAmbientStyle.fromStorage(
                     preferences[AMBIENT_STYLE_KEY]
                 ),
+                spectrumEnabled = preferences[SPECTRUM_ENABLED_KEY] ?: false,
+                spectrumStyle = SpectrumStyle.fromStorage(preferences[SPECTRUM_STYLE_KEY]),
+                spectrumPlacement = SpectrumPlacement.fromStorage(
+                    preferences[SPECTRUM_PLACEMENT_KEY]
+                ),
+                spectrumBarCount = (preferences[SPECTRUM_BAR_COUNT_KEY] ?: 32)
+                    .takeIf { it in SPECTRUM_BAR_COUNTS } ?: 32,
+                spectrumSensitivity = (preferences[SPECTRUM_SENSITIVITY_KEY] ?: 1f)
+                    .coerceIn(0.5f, 2f),
+                spectrumOpacity = (preferences[SPECTRUM_OPACITY_KEY] ?: 0.9f)
+                    .coerceIn(0.2f, 1f),
+                spectrumGlowEnabled = preferences[SPECTRUM_GLOW_KEY] ?: true,
+                spectrumBreathingEnabled = preferences[SPECTRUM_BREATHING_KEY] ?: true,
                 playingLineTopOffset = (preferences[LYRICS_PLAYING_LINE_OFFSET_KEY]
                     ?: DEFAULT_PLAYING_LINE_TOP_OFFSET).coerceIn(0.2f, 0.6f),
                 immersiveLyricsEnabled = preferences[IMMERSIVE_LYRICS_ENABLED_KEY] ?: false,
@@ -364,6 +398,14 @@ suspend fun resetLyricsDisplayPreferences(context: Context) {
         preferences.remove(LYRICS_FLOAT_EFFECT_KEY)
         preferences.remove(AMBIENT_ENABLED_KEY)
         preferences.remove(AMBIENT_STYLE_KEY)
+        preferences.remove(SPECTRUM_ENABLED_KEY)
+        preferences.remove(SPECTRUM_STYLE_KEY)
+        preferences.remove(SPECTRUM_PLACEMENT_KEY)
+        preferences.remove(SPECTRUM_BAR_COUNT_KEY)
+        preferences.remove(SPECTRUM_SENSITIVITY_KEY)
+        preferences.remove(SPECTRUM_OPACITY_KEY)
+        preferences.remove(SPECTRUM_GLOW_KEY)
+        preferences.remove(SPECTRUM_BREATHING_KEY)
         preferences.remove(LYRICS_PLAYING_LINE_OFFSET_KEY)
     }
 }

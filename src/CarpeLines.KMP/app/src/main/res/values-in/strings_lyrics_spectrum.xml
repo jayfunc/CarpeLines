@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_spectrum_section">Spektrum</string>
+    <string name="betterlyrics_spectrum_title">Spektrum langsung</string>
+    <string name="betterlyrics_spectrum_subtitle">Menggambar audio yang diputar sebagai batang atau kurva di belakang lirik</string>
+    <string name="betterlyrics_spectrum_player_hint">Hanya pemutar yang membuka sesi audio yang didukung. Audio dianalisis hanya di memori; tidak direkam, disimpan, atau diunggah.</string>
+    <string name="betterlyrics_spectrum_unavailable">Pemutar ini tidak membuka sesi audio. Mulai ulang trek atau gunakan pemutar yang mendukung efek audio eksternal.</string>
+    <string name="betterlyrics_spectrum_permission_hint">Izin mikrofon diperlukan untuk membaca audio yang diputar dan menggambar spektrum.</string>
+    <string name="betterlyrics_spectrum_style_title">Gaya spektrum</string>
+    <string name="betterlyrics_spectrum_style_subtitle">Batang atau kurva halus</string>
+    <string name="betterlyrics_spectrum_style_curve">Kurva</string>
+    <string name="betterlyrics_spectrum_style_bar">Batang</string>
+    <string name="betterlyrics_spectrum_placement_title">Posisi</string>
+    <string name="betterlyrics_spectrum_placement_subtitle">Tempat spektrum di halaman lirik</string>
+    <string name="betterlyrics_spectrum_placement_bottom">Bawah</string>
+    <string name="betterlyrics_spectrum_placement_top">Atas</string>
+    <string name="betterlyrics_spectrum_bars_title">Jumlah batang</string>
+    <string name="betterlyrics_spectrum_bars_subtitle">Lebih banyak batang menunjukkan detail lebih halus</string>
+    <string name="betterlyrics_spectrum_sensitivity_title">Sensitivitas</string>
+    <string name="betterlyrics_spectrum_sensitivity_subtitle">Seberapa kuat frekuensi pelan menggerakkan batang</string>
+    <string name="betterlyrics_spectrum_sensitivity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_opacity_title">Opasitas</string>
+    <string name="betterlyrics_spectrum_opacity_subtitle">Seberapa terlihat spektrum di atas latar belakang</string>
+    <string name="betterlyrics_spectrum_opacity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_glow_title">Cahaya</string>
+    <string name="betterlyrics_spectrum_glow_subtitle">Menambahkan halo lembut di sekitar spektrum</string>
+    <string name="betterlyrics_spectrum_breathing_title">Napas bass</string>
+    <string name="betterlyrics_spectrum_breathing_subtitle">Spektrum membesar dan mengecil mengikuti bass</string>
+</resources>

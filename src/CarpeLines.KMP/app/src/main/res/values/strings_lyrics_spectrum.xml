@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_spectrum_section">Spectrum</string>
+    <string name="betterlyrics_spectrum_title">Live spectrum</string>
+    <string name="betterlyrics_spectrum_subtitle">Draw the playing audio as bars or a curve behind the lyrics</string>
+    <string name="betterlyrics_spectrum_player_hint">Only players that expose an audio session are supported. Audio is analyzed in memory only; nothing is recorded, stored or uploaded.</string>
+    <string name="betterlyrics_spectrum_unavailable">This player does not expose an audio session. Start the track again, or use a player that supports external audio effects.</string>
+    <string name="betterlyrics_spectrum_permission_hint">Microphone permission is required to read the playing audio for the spectrum.</string>
+    <string name="betterlyrics_spectrum_style_title">Spectrum style</string>
+    <string name="betterlyrics_spectrum_style_subtitle">Bars or a smooth curve</string>
+    <string name="betterlyrics_spectrum_style_curve">Curve</string>
+    <string name="betterlyrics_spectrum_style_bar">Bars</string>
+    <string name="betterlyrics_spectrum_placement_title">Placement</string>
+    <string name="betterlyrics_spectrum_placement_subtitle">Where the spectrum sits on the lyrics page</string>
+    <string name="betterlyrics_spectrum_placement_bottom">Bottom</string>
+    <string name="betterlyrics_spectrum_placement_top">Top</string>
+    <string name="betterlyrics_spectrum_bars_title">Bar count</string>
+    <string name="betterlyrics_spectrum_bars_subtitle">More bars show finer detail</string>
+    <string name="betterlyrics_spectrum_sensitivity_title">Sensitivity</string>
+    <string name="betterlyrics_spectrum_sensitivity_subtitle">How strongly quiet frequencies move the bars</string>
+    <string name="betterlyrics_spectrum_sensitivity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_opacity_title">Opacity</string>
+    <string name="betterlyrics_spectrum_opacity_subtitle">How visible the spectrum is over the background</string>
+    <string name="betterlyrics_spectrum_opacity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_glow_title">Glow</string>
+    <string name="betterlyrics_spectrum_glow_subtitle">Adds a soft halo around the spectrum</string>
+    <string name="betterlyrics_spectrum_breathing_title">Bass breathing</string>
+    <string name="betterlyrics_spectrum_breathing_subtitle">The spectrum swells with the bass</string>
+</resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_spectrum_section">頻譜</string>
+    <string name="betterlyrics_spectrum_title">即時頻譜</string>
+    <string name="betterlyrics_spectrum_subtitle">把正在播放的音訊畫成歌詞背景上的柱狀或曲線頻譜</string>
+    <string name="betterlyrics_spectrum_player_hint">僅支援開放音訊工作階段的播放器。音訊只在記憶體中分析，不會錄製、儲存或上傳。</string>
+    <string name="betterlyrics_spectrum_unavailable">目前播放器未開放音訊工作階段。請重新播放或切歌後再試，或改用支援外部音效的播放器。</string>
+    <string name="betterlyrics_spectrum_permission_hint">需要麥克風權限來讀取正在播放的音訊以繪製頻譜。</string>
+    <string name="betterlyrics_spectrum_style_title">頻譜樣式</string>
+    <string name="betterlyrics_spectrum_style_subtitle">柱狀或平滑曲線</string>
+    <string name="betterlyrics_spectrum_style_curve">曲線</string>
+    <string name="betterlyrics_spectrum_style_bar">柱狀</string>
+    <string name="betterlyrics_spectrum_placement_title">位置</string>
+    <string name="betterlyrics_spectrum_placement_subtitle">頻譜在歌詞頁上的位置</string>
+    <string name="betterlyrics_spectrum_placement_bottom">底部</string>
+    <string name="betterlyrics_spectrum_placement_top">頂部</string>
+    <string name="betterlyrics_spectrum_bars_title">柱數</string>
+    <string name="betterlyrics_spectrum_bars_subtitle">柱數越多，細節越細</string>
+    <string name="betterlyrics_spectrum_sensitivity_title">靈敏度</string>
+    <string name="betterlyrics_spectrum_sensitivity_subtitle">安靜頻段推動柱子的幅度</string>
+    <string name="betterlyrics_spectrum_sensitivity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_opacity_title">不透明度</string>
+    <string name="betterlyrics_spectrum_opacity_subtitle">頻譜在背景上的可見程度</string>
+    <string name="betterlyrics_spectrum_opacity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_glow_title">輝光</string>
+    <string name="betterlyrics_spectrum_glow_subtitle">在頻譜周圍加一層柔和光暈</string>
+    <string name="betterlyrics_spectrum_breathing_title">低頻呼吸</string>
+    <string name="betterlyrics_spectrum_breathing_subtitle">頻譜隨低頻強弱輕微縮放</string>
+</resources>

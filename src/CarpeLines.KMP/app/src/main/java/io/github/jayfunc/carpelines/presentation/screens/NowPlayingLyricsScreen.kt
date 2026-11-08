@@ -1,6 +1,8 @@
 package io.github.jayfunc.carpelines.presentation.screens
 
+import android.Manifest
 import android.content.ClipData
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -64,6 +66,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -96,6 +99,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
@@ -106,11 +110,16 @@ import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.unit.sp
 import kotlin.math.roundToInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
 import io.github.jayfunc.carpelines.R
+import io.github.jayfunc.carpelines.data.audio.ExternalSpectrumAnalyzer
+import io.github.jayfunc.carpelines.data.audio.SpectrumStatus
+import io.github.jayfunc.carpelines.data.external.ExternalAudioSessionRegistry
 import io.github.jayfunc.carpelines.data.external.ExternalMediaMonitor
 import io.github.jayfunc.carpelines.data.external.ExternalMediaState
 import io.github.jayfunc.carpelines.data.model.CoverArtSource
@@ -122,6 +131,8 @@ import io.github.jayfunc.carpelines.presentation.components.SmartImage
 import io.github.jayfunc.carpelines.presentation.components.SyncedLyricsList
 import io.github.jayfunc.carpelines.presentation.components.WavySliderExpressive
 import io.github.jayfunc.carpelines.presentation.components.betterlyrics.BetterLyricsAmbientBackground
+import io.github.jayfunc.carpelines.presentation.components.betterlyrics.BetterLyricsSpectrumOverlay
+import io.github.jayfunc.carpelines.presentation.components.betterlyrics.SpectrumPlacement
 import io.github.jayfunc.carpelines.presentation.components.lyrics.KeepLyricsScreenOn
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsAlignment
 import io.github.jayfunc.carpelines.presentation.components.lyrics.LyricsLineActionsSheet
@@ -302,14 +313,52 @@ fun NowPlayingLyricsScreen(
     var hasNotificationAccess by remember {
         mutableStateOf(ExternalMediaMonitor.hasNotificationAccess(context))
     }
+    var hasRecordAudio by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.RECORD_AUDIO,
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
     val isMiuiRom = remember { isMiuiFamilyDevice() }
     // MIUI/HyperOS can keep the listener unbound although access is granted, and the only way
     // out is its auto-start switch. Surface that only after the automatic rebind attempts have
     // had time to fail, so a slow bind is not reported as a ROM restriction.
     var connectionStalled by remember { mutableStateOf(false) }
 
+    // The spectrum reads an external player's audio session, so its session id arrives from the
+    // notification listener's audio-effect broadcast rather than from the app's own player.
+    val audioSessions by ExternalAudioSessionRegistry.sessions.collectAsStateWithLifecycle()
+    val spectrumPackage = externalMedia?.packageName
+    val spectrumSessionId = remember(spectrumPackage, audioSessions) {
+        spectrumPackage?.let { audioSessions[it] }
+    }
+    val spectrumAnalyzer = remember { ExternalSpectrumAnalyzer(context) }
+    val spectrumStatus by spectrumAnalyzer.status.collectAsStateWithLifecycle()
+    DisposableEffect(spectrumAnalyzer) {
+        onDispose { spectrumAnalyzer.release() }
+    }
+    LaunchedEffect(settings.spectrumBarCount, settings.spectrumSensitivity) {
+        spectrumAnalyzer.setConfig(settings.spectrumBarCount, settings.spectrumSensitivity)
+    }
+    // A resumed page owns the Visualizer; leaving the page (or the app going to the background)
+    // releases the effect instead of leaving it attached to another player's audio session.
+    LifecycleResumeEffect(settings.spectrumEnabled, spectrumSessionId, hasRecordAudio) {
+        if (settings.spectrumEnabled && spectrumSessionId != null && hasRecordAudio) {
+            spectrumAnalyzer.attach(spectrumSessionId)
+        } else {
+            spectrumAnalyzer.detach()
+        }
+        onPauseOrDispose { spectrumAnalyzer.detach() }
+    }
+
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         hasNotificationAccess = ExternalMediaMonitor.hasNotificationAccess(context)
+        hasRecordAudio = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.RECORD_AUDIO,
+        ) == PackageManager.PERMISSION_GRANTED
         if (hasNotificationAccess) ExternalMediaMonitor.ensureConnected(context)
     }
 
@@ -617,6 +666,38 @@ fun NowPlayingLyricsScreen(
                             )
                     }
                     Box(modifier = Modifier.fillMaxSize()) {
+                        if (settings.spectrumEnabled && spectrumSessionId != null) {
+                            BetterLyricsSpectrumOverlay(
+                                frameFlow = spectrumAnalyzer.frame,
+                                style = settings.spectrumStyle,
+                                placement = settings.spectrumPlacement,
+                                barCount = settings.spectrumBarCount,
+                                opacity = settings.spectrumOpacity,
+                                glowEnabled = settings.spectrumGlowEnabled,
+                                breathingEnabled = settings.spectrumBreathingEnabled,
+                                color = palette?.vibrant
+                                    ?: palette?.dominant
+                                    ?: MaterialTheme.colorScheme.primary,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(
+                                        if (settings.spectrumPlacement == SpectrumPlacement.TOP) {
+                                            120.dp
+                                        } else {
+                                            150.dp
+                                        }
+                                    )
+                                    .clipToBounds()
+                                    .align(
+                                        if (settings.spectrumPlacement == SpectrumPlacement.TOP) {
+                                            Alignment.TopCenter
+                                        } else {
+                                            Alignment.BottomCenter
+                                        }
+                                    ),
+                            )
+                        }
+
                         when {
                             lyrics?.synced?.isNotEmpty() == true -> {
                                 val synced = remember(lyrics) { lyrics.synced.orEmpty().toImmutableList() }
@@ -705,6 +786,33 @@ fun NowPlayingLyricsScreen(
                                     }
                                 },
                                 modifier = Modifier.fillMaxSize(),
+                            )
+                        }
+
+                        // The spectrum is opt-in, so its absence has to explain itself once instead
+                        // of leaving the user staring at a page that looks no different. The hint
+                        // sits on the lyrics band's bottom edge, where the speaker is looking for
+                        // the spectrum in the first place.
+                        if (
+                            showsWords &&
+                            settings.spectrumEnabled &&
+                            (
+                                spectrumSessionId == null ||
+                                    spectrumStatus == SpectrumStatus.UNAVAILABLE
+                                )
+                        ) {
+                            Text(
+                                text = stringResource(R.string.betterlyrics_spectrum_unavailable),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.72f),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .padding(
+                                        start = LyricsPageInset,
+                                        end = LyricsPageInset,
+                                        bottom = M3ESpacing.medium,
+                                    ),
                             )
                         }
                     }

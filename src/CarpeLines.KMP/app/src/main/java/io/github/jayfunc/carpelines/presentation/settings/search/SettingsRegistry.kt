@@ -127,6 +127,20 @@ object SettingsRegistry {
                 )
             ),
             SettingSpec(
+                id = "lyrics_spectrum",
+                itemKey = "item_lyrics_spectrum_enabled",
+                titleRes = R.string.betterlyrics_spectrum_title,
+                subtitleRes = R.string.betterlyrics_spectrum_subtitle,
+                category = SettingsCategory.LYRICS,
+                subscreenRoute = Screen.LyricsSettings.createRoute(),
+                type = SettingType.NAVIGABLE_CARD,
+                keywordsStatic = listOf(
+                    "spectrum", "visualizer", "audio reactive", "frequency", "equalizer",
+                    "bars", "wave", "music visualizer",
+                    "频谱", "可视化", "音频反应", "频段", "柱状", "曲线",
+                )
+            ),
+            SettingSpec(
                 id = "lyrics_floating_desktop",
                 itemKey = "item_lyrics_floating_enabled",
                 titleRes = R.string.floating_lyrics_desktop_title,

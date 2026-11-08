@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lyrics_spectrum_section">Spektrum</string>
+    <string name="betterlyrics_spectrum_title">Live-Spektrum</string>
+    <string name="betterlyrics_spectrum_subtitle">Spielt das Audio als Balken oder Kurve hinter den Lyrics ab</string>
+    <string name="betterlyrics_spectrum_player_hint">Nur Player, die eine Audio-Session bereitstellen, werden unterstützt. Audio wird nur im Arbeitsspeicher analysiert; nichts wird aufgezeichnet, gespeichert oder hochgeladen.</string>
+    <string name="betterlyrics_spectrum_unavailable">Dieser Player stellt keine Audio-Session bereit. Starte den Titel erneut oder verwende einen Player, der externe Audioeffekte unterstützt.</string>
+    <string name="betterlyrics_spectrum_permission_hint">Die Mikrofonberechtigung wird benötigt, um das laufende Audio für das Spektrum zu lesen.</string>
+    <string name="betterlyrics_spectrum_style_title">Spektrum-Stil</string>
+    <string name="betterlyrics_spectrum_style_subtitle">Balken oder eine glatte Kurve</string>
+    <string name="betterlyrics_spectrum_style_curve">Kurve</string>
+    <string name="betterlyrics_spectrum_style_bar">Balken</string>
+    <string name="betterlyrics_spectrum_placement_title">Position</string>
+    <string name="betterlyrics_spectrum_placement_subtitle">Wo das Spektrum auf der Lyrics-Seite sitzt</string>
+    <string name="betterlyrics_spectrum_placement_bottom">Unten</string>
+    <string name="betterlyrics_spectrum_placement_top">Oben</string>
+    <string name="betterlyrics_spectrum_bars_title">Anzahl Balken</string>
+    <string name="betterlyrics_spectrum_bars_subtitle">Mehr Balken zeigen feinere Details</string>
+    <string name="betterlyrics_spectrum_sensitivity_title">Empfindlichkeit</string>
+    <string name="betterlyrics_spectrum_sensitivity_subtitle">Wie stark leise Frequenzen die Balken bewegen</string>
+    <string name="betterlyrics_spectrum_sensitivity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_opacity_title">Deckkraft</string>
+    <string name="betterlyrics_spectrum_opacity_subtitle">Wie sichtbar das Spektrum über dem Hintergrund ist</string>
+    <string name="betterlyrics_spectrum_opacity_value">%1$d%%</string>
+    <string name="betterlyrics_spectrum_glow_title">Leuchten</string>
+    <string name="betterlyrics_spectrum_glow_subtitle">Fügt einen weichen Schein um das Spektrum hinzu</string>
+    <string name="betterlyrics_spectrum_breathing_title">Bass-Atmen</string>
+    <string name="betterlyrics_spectrum_breathing_subtitle">Das Spektrum pulsiert mit dem Bass</string>
+</resources>

@@ -3,6 +3,7 @@ package io.github.jayfunc.carpelines.data.external.service
 import android.content.ComponentName
 import android.service.notification.NotificationListenerService
 import android.util.Log
+import io.github.jayfunc.carpelines.data.external.ExternalAudioSessionRegistry
 import io.github.jayfunc.carpelines.data.external.ExternalMediaMonitor
 
 /**
@@ -18,10 +19,12 @@ class ExternalMediaListenerService : NotificationListenerService() {
             context = this,
             component = ComponentName(this, ExternalMediaListenerService::class.java),
         )
+        ExternalAudioSessionRegistry.start(this)
     }
 
     override fun onListenerDisconnected() {
         Log.d("ExternalMediaService", "onListenerDisconnected")
+        ExternalAudioSessionRegistry.stop()
         ExternalMediaMonitor.detach()
         // Some ROMs (MIUI/HyperOS in particular) keep the listener unbound after a force-stop.
         // Asking for a rebind here is the documented way back; it is a no-op without access.
@@ -30,6 +33,7 @@ class ExternalMediaListenerService : NotificationListenerService() {
     }
 
     override fun onDestroy() {
+        ExternalAudioSessionRegistry.stop()
         ExternalMediaMonitor.detach()
         super.onDestroy()
     }
