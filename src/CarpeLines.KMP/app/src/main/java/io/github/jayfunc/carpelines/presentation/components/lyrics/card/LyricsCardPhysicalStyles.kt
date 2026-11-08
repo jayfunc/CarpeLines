@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
@@ -36,6 +37,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
@@ -397,7 +399,13 @@ internal fun TicketCard(
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .border(1.dp, Color(0xFFE6DFD8), RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+                    .ticketBorder(
+                        color = Color(0xFFE6DFD8),
+                        radius = 12.dp,
+                        top = true,
+                        start = true,
+                        end = true,
+                    )
                     .padding(start = 24.dp, top = 24.dp, end = 24.dp),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -438,11 +446,11 @@ internal fun TicketCard(
                 Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .drawBehind {
-                        val stroke = 1.dp.toPx()
-                        drawLine(Color(0xFFE6DFD8), Offset(0f, 0f), Offset(0f, size.height), stroke)
-                        drawLine(Color(0xFFE6DFD8), Offset(size.width, 0f), Offset(size.width, size.height), stroke)
-                    }
+                    .ticketBorder(
+                        color = Color(0xFFE6DFD8),
+                        start = true,
+                        end = true,
+                    )
                     .padding(horizontal = 24.dp),
             ) {
                 Column(
@@ -497,7 +505,13 @@ internal fun TicketCard(
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .border(1.dp, Color(0xFFE6DFD8), RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp))
+                    .ticketBorder(
+                        color = Color(0xFFE6DFD8),
+                        radius = 12.dp,
+                        start = true,
+                        end = true,
+                        bottom = true,
+                    )
                     .padding(start = 24.dp, top = 10.dp, end = 24.dp, bottom = 24.dp),
                 verticalAlignment = Alignment.Bottom,
             ) {
@@ -635,8 +649,9 @@ internal fun ReceiptCard(
                     size = 36.sp,
                     color = Color.Black,
                     weight = FontWeight.Light,
-                    family = fontFamily,
+                    family = FontFamily.SansSerif,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
+                    maxLines = 1,
                     alpha = 0.8f,
                 )
                 CardText(
@@ -647,6 +662,81 @@ internal fun ReceiptCard(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
             }
+        }
+    }
+}
+
+/**
+ * Strokes only the requested sides, mirroring the ticket template's XAML `BorderThickness` values
+ * (`1,1,1,0`, `1,0`, `1,0,1,1`). Compose's [border] always outlines all four sides, which added
+ * stray horizontal rules above and below the ticket's lyrics area.
+ */
+private fun Modifier.ticketBorder(
+    color: Color,
+    width: Dp = 1.dp,
+    radius: Dp = 0.dp,
+    top: Boolean = false,
+    start: Boolean = false,
+    end: Boolean = false,
+    bottom: Boolean = false,
+): Modifier = drawBehind {
+    val stroke = width.toPx()
+    val half = stroke / 2f
+    val r = radius.toPx().coerceAtLeast(half)
+    val left = half
+    val topEdge = half
+    val right = size.width - half
+    val bottomEdge = size.height - half
+
+    if (top) drawLine(color, Offset(left + r, topEdge), Offset(right - r, topEdge), stroke)
+    if (bottom) drawLine(color, Offset(left + r, bottomEdge), Offset(right - r, bottomEdge), stroke)
+    if (start) drawLine(color, Offset(left, topEdge + r), Offset(left, bottomEdge - r), stroke)
+    if (end) drawLine(color, Offset(right, topEdge + r), Offset(right, bottomEdge - r), stroke)
+
+    if (radius > 0.dp) {
+        if (top && start) {
+            drawArc(
+                color = color,
+                startAngle = 180f,
+                sweepAngle = 90f,
+                useCenter = false,
+                topLeft = Offset(left, topEdge),
+                size = Size(2 * r, 2 * r),
+                style = Stroke(stroke),
+            )
+        }
+        if (top && end) {
+            drawArc(
+                color = color,
+                startAngle = 270f,
+                sweepAngle = 90f,
+                useCenter = false,
+                topLeft = Offset(right - 2 * r, topEdge),
+                size = Size(2 * r, 2 * r),
+                style = Stroke(stroke),
+            )
+        }
+        if (bottom && start) {
+            drawArc(
+                color = color,
+                startAngle = 90f,
+                sweepAngle = 90f,
+                useCenter = false,
+                topLeft = Offset(left, bottomEdge - 2 * r),
+                size = Size(2 * r, 2 * r),
+                style = Stroke(stroke),
+            )
+        }
+        if (bottom && end) {
+            drawArc(
+                color = color,
+                startAngle = 0f,
+                sweepAngle = 90f,
+                useCenter = false,
+                topLeft = Offset(right - 2 * r, bottomEdge - 2 * r),
+                size = Size(2 * r, 2 * r),
+                style = Stroke(stroke),
+            )
         }
     }
 }

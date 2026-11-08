@@ -24,8 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -47,7 +50,7 @@ private fun CardAvatar(
     }
 }
 
-/** A 6 x 12 chat tail. [tipRight] points at a bubble anchored on the right. */
+/** A 6 x 12 WeChat tail: flat edge against the bubble, tip pointing away from it. */
 @Composable
 private fun BubbleTail(
     color: Color,
@@ -57,16 +60,104 @@ private fun BubbleTail(
     Canvas(modifier.size(width = 6.dp, height = 12.dp)) {
         val path = Path()
         if (tipRight) {
+            path.moveTo(0f, 0f)
+            path.lineTo(size.width, size.height / 2f)
+            path.lineTo(0f, size.height)
+        } else {
             path.moveTo(size.width, 0f)
             path.lineTo(0f, size.height / 2f)
             path.lineTo(size.width, size.height)
-        } else {
+        }
+        path.close()
+        drawPath(path, color)
+    }
+}
+
+/**
+ * WhatsApp's 8 x 8 corner tail. The right angle sits on the bubble's top edge, so the tip points
+ * up and away from the bubble exactly as the template's `M 8 0 L 0 0 L 8 8 Z` path.
+ */
+@Composable
+private fun WhatsAppTail(
+    color: Color,
+    tipRight: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Canvas(modifier.size(8.dp)) {
+        val path = Path()
+        if (tipRight) {
             path.moveTo(0f, 0f)
-            path.lineTo(size.width, size.height / 2f)
+            path.lineTo(size.width, 0f)
+            path.lineTo(0f, size.height)
+        } else {
+            path.moveTo(size.width, 0f)
+            path.lineTo(0f, 0f)
+            path.lineTo(size.width, size.height)
+        }
+        path.close()
+        drawPath(path, color)
+    }
+}
+
+/**
+ * Telegram's 8 x 8 bottom tail. The right angle sits on the bubble's bottom edge, matching the
+ * template's `M 8 0 L 8 8 L 0 8 Z` path with its tip pointing down and away.
+ */
+@Composable
+private fun TelegramTail(
+    color: Color,
+    tipRight: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Canvas(modifier.size(8.dp)) {
+        val path = Path()
+        if (tipRight) {
+            path.moveTo(0f, size.height)
+            path.lineTo(size.width, size.height)
+            path.lineTo(0f, 0f)
+        } else {
+            path.moveTo(size.width, 0f)
+            path.lineTo(size.width, size.height)
             path.lineTo(0f, size.height)
         }
         path.close()
         drawPath(path, color)
+    }
+}
+
+/**
+ * LINE draws its tail as an 8 x 8 triangle rotated 45 degrees around its centre and shifted into
+ * the bubble's rounded top corner, so the tail reads as a pointed notch on the corner. Painting it
+ * behind the bubble's background leaves only the part that falls outside the rounded outline.
+ */
+private fun Modifier.lineBubbleTail(color: Color, tipRight: Boolean): Modifier = drawBehind {
+    val unit = 1.dp.toPx()
+    val path = Path()
+    if (tipRight) {
+        path.moveTo(0f, 0f)
+        path.lineTo(8f * unit, 4f * unit)
+        path.lineTo(0f, 8f * unit)
+    } else {
+        path.moveTo(8f * unit, 0f)
+        path.lineTo(0f, 4f * unit)
+        path.lineTo(8f * unit, 8f * unit)
+    }
+    path.close()
+
+    if (tipRight) {
+        translate(size.width) {
+            translate(left = -7f * unit, top = -2f * unit) {
+                rotate(degrees = -45f, pivot = Offset(4f * unit, 4f * unit)) {
+                    drawPath(path, color)
+                }
+            }
+        }
+    } else {
+        translate(left = 7f * unit, top = -2f * unit) {
+            rotate(degrees = 45f, pivot = Offset(4f * unit, 4f * unit)) {
+                drawPath(path, color)
+            }
+        }
     }
 }
 
@@ -450,7 +541,7 @@ internal fun WhatsAppCard(
                     CardText("TODAY", 12.sp, Color(0xFF54656F))
                 }
                 Row(Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)) {
-                    BubbleTail(Color.White, tipRight = false)
+                    WhatsAppTail(Color.White, tipRight = false, modifier = Modifier.offset(x = 1.dp))
                     Column(
                         Modifier
                             .background(Color.White, RoundedCornerShape(topEnd = 8.dp, bottomEnd = 8.dp, bottomStart = 8.dp))
@@ -472,7 +563,7 @@ internal fun WhatsAppCard(
                 }
                 data.lines.forEach { line ->
                     Row(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 4.dp)) {
-                        BubbleTail(Color.White, tipRight = false)
+                        WhatsAppTail(Color.White, tipRight = false, modifier = Modifier.offset(x = 1.dp))
                         Column(
                             Modifier
                                 .background(Color.White, RoundedCornerShape(topEnd = 8.dp, bottomEnd = 8.dp, bottomStart = 8.dp))
@@ -508,7 +599,7 @@ internal fun WhatsAppCard(
                                     CardGlyph(CardGlyphs.DoubleCheck, 13.sp, Color(0xFF53BDEB))
                                 }
                             }
-                            BubbleTail(Color(0xFFD9FDD3), tipRight = true)
+                            WhatsAppTail(Color(0xFFD9FDD3), tipRight = true, modifier = Modifier.offset(x = (-1).dp))
                         }
                     }
                 }
@@ -578,7 +669,11 @@ internal fun TelegramCard(
                     CardText("Today", 13.sp, Color(0xFF7A8B9C), weight = FontWeight.SemiBold)
                 }
                 Row(Modifier.padding(start = 16.dp, top = 20.dp, end = 16.dp, bottom = 16.dp)) {
-                    BubbleTail(Color(0xFF182533), tipRight = false)
+                    TelegramTail(
+                        Color(0xFF182533),
+                        tipRight = false,
+                        modifier = Modifier.align(Alignment.Bottom).offset(x = 1.dp),
+                    )
                     Column(
                         Modifier
                             .background(Color(0xFF182533), RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp, bottomEnd = 12.dp))
@@ -612,7 +707,11 @@ internal fun TelegramCard(
                 }
                 data.lines.forEach { line ->
                     Row(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 4.dp)) {
-                        BubbleTail(Color(0xFF182533), tipRight = false)
+                        TelegramTail(
+                            Color(0xFF182533),
+                            tipRight = false,
+                            modifier = Modifier.align(Alignment.Bottom).offset(x = 1.dp),
+                        )
                         Column(
                             Modifier
                                 .background(Color(0xFF182533), RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp, bottomEnd = 12.dp))
@@ -648,7 +747,11 @@ internal fun TelegramCard(
                                     CardGlyph(CardGlyphs.DoubleCheck, 13.sp, Color(0xFF53AEE5))
                                 }
                             }
-                            BubbleTail(Color(0xFF2B5278), tipRight = true)
+                            TelegramTail(
+                                Color(0xFF2B5278),
+                                tipRight = true,
+                                modifier = Modifier.align(Alignment.Bottom).offset(x = (-1).dp),
+                            )
                         }
                     }
                 }
@@ -730,9 +833,9 @@ internal fun LINECard(
                 Row(Modifier.padding(start = 12.dp, top = 20.dp, end = 16.dp, bottom = 16.dp)) {
                     CardAvatar(data.cover, 40.dp, Modifier.align(Alignment.Top))
                     Row(Modifier.padding(start = 4.dp)) {
-                        BubbleTail(Color.White, tipRight = false, modifier = Modifier.padding(top = 6.dp))
                         Column(
                             Modifier
+                                .lineBubbleTail(Color.White, tipRight = false)
                                 .background(Color.White, RoundedCornerShape(16.dp))
                                 .padding(horizontal = 14.dp, vertical = 10.dp),
                         ) {
@@ -766,9 +869,9 @@ internal fun LINECard(
                     Row(Modifier.padding(start = 12.dp, end = 16.dp, bottom = 4.dp)) {
                         CardAvatar(data.cover, 40.dp, Modifier.align(Alignment.Top))
                         Row(Modifier.padding(start = 4.dp)) {
-                            BubbleTail(Color.White, tipRight = false, modifier = Modifier.padding(top = 6.dp))
                             Column(
                                 Modifier
+                                    .lineBubbleTail(Color.White, tipRight = false)
                                     .background(Color.White, RoundedCornerShape(16.dp))
                                     .padding(horizontal = 14.dp, vertical = 10.dp),
                             ) {
@@ -793,12 +896,12 @@ internal fun LINECard(
                             }
                             Box(
                                 Modifier
+                                    .lineBubbleTail(Color(0xFF9DE694), tipRight = true)
                                     .background(Color(0xFF9DE694), RoundedCornerShape(16.dp))
                                     .padding(horizontal = 14.dp, vertical = 10.dp),
                             ) {
                                 CardText(line.secondary, 15.sp, Color(0xFF111111), family = fontFamily, lineHeight = 22.sp)
                             }
-                            BubbleTail(Color(0xFF9DE694), tipRight = true, modifier = Modifier.padding(top = 6.dp))
                         }
                     }
                 }

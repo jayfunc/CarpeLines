@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -69,7 +70,7 @@ internal fun RetroQQCard(
                     family = fontFamily,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(bottom = 3.dp).weight(1f, fill = false),
+                    modifier = Modifier.padding(bottom = 3.dp).widthIn(max = 200.dp),
                 )
                 CardText(
                     text = "-发送消息",
