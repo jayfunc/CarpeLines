@@ -1,3 +1,5 @@
+**English** | [**简体中文**](README.zh-CN.md)
+
 <p align="center">
   <img src="logo/carpe-lockup-horizontal.svg" width="420" alt="CarpeLines" />
 </p>
@@ -20,8 +22,6 @@
 <div align="center">
 
 **`io.github.jayfunc.carpelines`** · Android 11+ (API 30) · target SDK 37 · GPL-3.0-or-later
-
-**English** · [简体中文](README.zh-CN.md)
 
 </div>
 
