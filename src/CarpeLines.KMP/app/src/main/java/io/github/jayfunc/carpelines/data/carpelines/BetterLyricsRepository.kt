@@ -16,8 +16,19 @@ import io.github.jayfunc.carpelines.lyrics.parse.LyricsFormatDetector
 import io.github.jayfunc.carpelines.data.model.Lyrics
 import io.github.jayfunc.carpelines.data.model.Song
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.io.File
+import java.security.MessageDigest
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -45,7 +56,8 @@ data class CachedLyricsLoad(val document: LyricsDocument?)
  */
 @Singleton
 class BetterLyricsRepository @Inject constructor(
-    @ApplicationContext context: Context,
+    @ApplicationContext private val context: Context,
+    private val json: Json,
 ) {
 
     private val preferences: SharedPreferences = runCatching {
@@ -83,11 +95,35 @@ class BetterLyricsRepository @Inject constructor(
                 size > MAX_CACHED_LOADS
         }
 
+    /**
+     * Provider work runs here rather than in the caller's scope: the lyrics page cancels its job
+     * whenever the track changes, and a cancelled search used to throw away every answer it had
+     * already collected. A request that outlives its page still fills the cache, so the next visit
+     * to that track paints from it.
+     */
+    private val cacheScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    /** One running provider search per cache key; later callers for the same key await it. */
+    private val inFlightLoads = LinkedHashMap<String, InFlightLoad>()
+
+    private data class InFlightLoad(
+        val identity: String,
+        val deferred: Deferred<LyricsDocument?>,
+    )
+
     private data class CachedLoad(
         /** Normalized title/artist/album, used to drop every variant of one track at once. */
         val identity: String,
         val document: LyricsDocument?,
         val storedAtEpochMs: Long,
+    )
+
+    /** One provider answer as it survives process death; [key] guards against stale options. */
+    @Serializable
+    private data class PersistedLyricsLoad(
+        val key: String,
+        val storedAtEpochMs: Long,
+        val document: LyricsDocument? = null,
     )
 
     var appleMusicToken: String?
@@ -261,12 +297,19 @@ class BetterLyricsRepository @Inject constructor(
      *
      * Returns null while the query is still unknown. A miss (`document == null`) is reported as a
      * hit so a page that repaints does not search again for a track that genuinely has no lyrics;
-     * misses expire after [MISS_TTL_MS] so a provider that was briefly down is asked again.
+     * misses expire after [MISS_TTL_MS] so a provider that was briefly down is asked again. The
+     * last answer also outlives the process: it is read back from disk when memory is cold.
      */
-    fun peek(query: LyricsQuery, minMatchPercentage: Int = 60): CachedLyricsLoad? {
-        val entry = lookup(cacheKey(query, minMatchPercentage, parseOptions())) ?: return null
-        return CachedLyricsLoad(entry.document)
-    }
+    suspend fun peek(query: LyricsQuery, minMatchPercentage: Int = 60): CachedLyricsLoad? =
+        withContext(Dispatchers.IO) {
+            val identity = identityOf(query)
+            val key = cacheKey(query, minMatchPercentage, parseOptions())
+            lookup(key)?.let { return@withContext CachedLyricsLoad(it.document) }
+
+            val persisted = readDiskLoad(key, identity) ?: return@withContext null
+            cacheInMemory(key, identity, persisted.storedAtEpochMs, persisted.document)
+            CachedLyricsLoad(persisted.document)
+        }
 
     /** Drops every cached answer for [query]; used when the user explicitly asks to look again. */
     fun invalidate(query: LyricsQuery) {
@@ -274,13 +317,28 @@ class BetterLyricsRepository @Inject constructor(
         synchronized(recentLoads) {
             recentLoads.entries.removeAll { (_, entry) -> entry.identity == identity }
         }
+        val cancelled = mutableListOf<Deferred<LyricsDocument?>>()
+        synchronized(inFlightLoads) {
+            val iterator = inFlightLoads.entries.iterator()
+            while (iterator.hasNext()) {
+                val entry = iterator.next()
+                if (entry.value.identity == identity) {
+                    cancelled += entry.value.deferred
+                    iterator.remove()
+                }
+            }
+        }
+        cancelled.forEach { it.cancel() }
+        runCatching { diskFileFor(identity).delete() }
     }
 
     /**
      * Loads lyrics for any metadata query, used by the external media listener.
      *
      * With [useCache] the previous answer for the same query is reused instead of searching, which
-     * is what keeps a re-entered lyrics page from hitting every provider again.
+     * is what keeps a re-entered lyrics page from hitting every provider again. A search already
+     * running for the same query is awaited rather than started twice, and it is owned by
+     * [cacheScope], so changing tracks cancels only the page's wait — not the search itself.
      */
     suspend fun load(
         query: LyricsQuery,
@@ -288,40 +346,132 @@ class BetterLyricsRepository @Inject constructor(
         useCache: Boolean = true,
     ): LyricsDocument? = withContext(Dispatchers.IO) {
         val options = parseOptions()
+        val identity = identityOf(query)
         val key = cacheKey(query, minMatchPercentage, options)
         if (useCache) {
             lookup(key)?.let { return@withContext it.document }
+            readDiskLoad(key, identity)?.let { persisted ->
+                cacheInMemory(key, identity, persisted.storedAtEpochMs, persisted.document)
+                return@withContext persisted.document
+            }
         }
-        val document = engine.load(
-            query = query,
-            options = options,
-            minMatchPercentage = minMatchPercentage,
-            providerOrder = onlineProviderOrder,
-        )
-        synchronized(recentLoads) {
-            recentLoads[key] = CachedLoad(
-                identity = identityOf(query),
-                document = document,
-                storedAtEpochMs = System.currentTimeMillis(),
-            )
+
+        val deferred = synchronized(inFlightLoads) {
+            inFlightLoads[key]?.let { return@synchronized it.deferred }
+            cacheScope.async(start = CoroutineStart.LAZY) {
+                val document = engine.load(
+                    query = query,
+                    options = options,
+                    minMatchPercentage = minMatchPercentage,
+                    providerOrder = onlineProviderOrder,
+                )
+                val storedAt = System.currentTimeMillis()
+                cacheInMemory(key, identity, storedAt, document)
+                writeDiskLoad(key, identity, storedAt, document)
+                document
+            }.also { started ->
+                inFlightLoads[key] = InFlightLoad(identity, started)
+                started.invokeOnCompletion {
+                    synchronized(inFlightLoads) {
+                        if (inFlightLoads[key]?.deferred === started) inFlightLoads.remove(key)
+                    }
+                }
+            }
         }
-        document
+        deferred.start()
+        deferred.await()
     }
 
     private fun identityOf(query: LyricsQuery): String = listOf(query.title, query.artist, query.album)
         .joinToString("\u0001") { it.trim().lowercase() }
 
+    private fun cacheInMemory(
+        key: String,
+        identity: String,
+        storedAtEpochMs: Long,
+        document: LyricsDocument?,
+    ) {
+        synchronized(recentLoads) {
+            recentLoads[key] = CachedLoad(identity, document, storedAtEpochMs)
+        }
+    }
+
     /** A live cache entry, dropping "nothing found" answers once they are old enough to retry. */
     private fun lookup(key: String): CachedLoad? = synchronized(recentLoads) {
         val entry = recentLoads[key] ?: return@synchronized null
-        if (entry.document == null &&
-            System.currentTimeMillis() - entry.storedAtEpochMs > MISS_TTL_MS
-        ) {
+        if (!isFresh(entry.document, entry.storedAtEpochMs)) {
             recentLoads.remove(key)
             return@synchronized null
         }
         entry
     }
+
+    private fun isFresh(document: LyricsDocument?, storedAtEpochMs: Long): Boolean =
+        document != null || System.currentTimeMillis() - storedAtEpochMs <= MISS_TTL_MS
+
+    /**
+     * Provider answers are persisted one file per track identity, with the exact cache key inside:
+     * an answer parsed under another source order, track option or duration cannot be mistaken for
+     * this one. The directory is bounded so a long library does not accumulate files forever.
+     */
+    private fun readDiskLoad(key: String, identity: String): PersistedLyricsLoad? {
+        val file = diskFileFor(identity)
+        if (!file.isFile) return null
+        return try {
+            val persisted = json.decodeFromString<PersistedLyricsLoad>(file.readText())
+            when {
+                persisted.key != key -> null
+                !isFresh(persisted.document, persisted.storedAtEpochMs) -> {
+                    file.delete()
+                    null
+                }
+                else -> persisted
+            }
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun writeDiskLoad(
+        key: String,
+        identity: String,
+        storedAtEpochMs: Long,
+        document: LyricsDocument?,
+    ) {
+        try {
+            val dir = File(context.filesDir, DISK_CACHE_DIR)
+            dir.mkdirs()
+            val file = diskFileFor(identity)
+            file.writeText(
+                json.encodeToString(
+                    PersistedLyricsLoad(
+                        key = key,
+                        storedAtEpochMs = storedAtEpochMs,
+                        document = document,
+                    )
+                )
+            )
+            pruneDiskLoads(dir)
+        } catch (_: Exception) {
+            // A cache that cannot be written must not fail the lyrics page.
+        }
+    }
+
+    private fun pruneDiskLoads(dir: File) {
+        val files = dir.listFiles()?.filter { it.isFile } ?: return
+        if (files.size <= MAX_DISK_LOADS) return
+        files.sortedBy { it.lastModified() }
+            .take(files.size - MAX_DISK_LOADS)
+            .forEach { it.delete() }
+    }
+
+    private fun diskFileFor(identity: String): File =
+        File(File(context.filesDir, DISK_CACHE_DIR), sha256Hex(identity))
+
+    private fun sha256Hex(value: String): String =
+        MessageDigest.getInstance("SHA-256")
+            .digest(value.toByteArray())
+            .joinToString("") { byte -> "%02x".format(Locale.US, byte.toInt() and 0xFF) }
 
     private fun cacheKey(
         query: LyricsQuery,
@@ -394,6 +544,10 @@ class BetterLyricsRepository @Inject constructor(
         /** One document per track is small; a couple of dozen covers a listening session. */
         const val MAX_CACHED_LOADS = 24
         const val INITIAL_CACHE_SIZE = 8
+
+        /** Provider answers on disk keep the last visited tracks warm across process death. */
+        const val DISK_CACHE_DIR = "lyrics_provider_cache"
+        const val MAX_DISK_LOADS = 100
 
         /** A "nothing found" answer is a hint, not a verdict: ask again after a while. */
         const val MISS_TTL_MS = 10 * 60 * 1000L
