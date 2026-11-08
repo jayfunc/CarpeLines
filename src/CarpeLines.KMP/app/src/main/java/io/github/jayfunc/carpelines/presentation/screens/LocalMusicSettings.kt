@@ -166,6 +166,15 @@ internal fun LocalMusicSettingsSection(
         }
     }
 
+    // The empty-state card above it counts as the preceding row, so the import row keeps the
+    // group's smaller top corners even when no folder has been imported yet, instead of
+    // turning into a lone, fully rounded card.
+    val importFolderShape = if (folders.isEmpty()) {
+        M3EShape.groupedCards(index = 1, count = 2)
+    } else {
+        M3EShape.groupedCards(folders.size, folders.size + 1)
+    }
+
     SettingsSubsection(title = stringResource(R.string.local_music_folders_section)) {
         if (folders.isEmpty()) {
             M3ESurface(
@@ -204,7 +213,7 @@ internal fun LocalMusicSettingsSection(
             subtitle = stringResource(R.string.local_music_import_folder_subtitle),
             leadingIcon = { Icon(Icons.Rounded.CreateNewFolder, null) },
             supportingTextMaxLines = Int.MAX_VALUE,
-            shape = M3EShape.groupedCards(folders.size, folders.size + 1),
+            shape = importFolderShape,
             onClick = {
                 if (hasAudioAccess) {
                     folderImportRequest.launch(null)
