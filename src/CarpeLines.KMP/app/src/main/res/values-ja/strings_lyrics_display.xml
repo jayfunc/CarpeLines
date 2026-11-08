@@ -79,8 +79,8 @@
     <string name="betterlyrics_ambient_style_title">アンビエントスタイル</string>
     <string name="betterlyrics_ambient_style_subtitle">歌詞の背景アニメーションの見た目</string>
     <string name="lyrics_source_order_title">歌詞ソースの順序</string>
-    <string name="lyrics_source_order_subtitle">ローカルとオンラインの歌詞ソースの検索順を設定</string>
-    <string name="lyrics_source_order_intro">有効なソースは上から順に試されます。ローカルソースはオンラインソースより上にある場合にのみ優先されます。</string>
+    <string name="lyrics_source_order_subtitle">ローカルとオンラインの歌詞ソースの検索順を設定し、各ソースの有効・無効を切り替えます</string>
+    <string name="lyrics_source_order_intro">有効なソースは上から順に試されます。ローカルソースはオンラインソースより上にある場合にのみ優先されます。オンライン歌詞をオフにするには、ここですべてのオンラインソースを無効にしてください。</string>
     <string name="lyrics_source_order_local_music_hint">ローカルソースはライブラリに曲が必要です。「ローカル音楽」でスキャンまたは再スキャンしてください</string>
     <string name="lyrics_source_order_enabled">有効</string>
     <string name="lyrics_source_order_disabled">無効</string>

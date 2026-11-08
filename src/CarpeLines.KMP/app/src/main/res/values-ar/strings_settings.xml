@@ -241,7 +241,7 @@
     <string name="settings_category_about_title">حول التطبيق</string>
     <string name="settings_category_appearance_subtitle">السمات (الثيمات)، التخطيط، والأنماط المرئية</string>
     <string name="settings_category_online_services_title">الخدمات عبر الإنترنت</string>
-    <string name="settings_category_online_services_subtitle">مصادر الكلمات وصور الفنانين</string>
+    <string name="settings_category_online_services_subtitle">صور الفنانين والخدمات عبر الإنترنت الاختيارية</string>
     <string name="settings_category_appearance_title">المظهر</string>
     <string name="settings_category_backup_subtitle">تصدير واستعادة بيانات تطبيقك الشخصية</string>
     <string name="settings_category_backup_title">النسخ الاحتياطي والاستعادة</string>

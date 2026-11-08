@@ -83,8 +83,8 @@
     <string name="betterlyrics_ambient_style_title">نمط الخلفية المحيطة</string>
     <string name="betterlyrics_ambient_style_subtitle">شكل الخلفية المتحركة خلف الكلمات</string>
     <string name="lyrics_source_order_title">ترتيب مصادر الكلمات</string>
-    <string name="lyrics_source_order_subtitle">اضبط ترتيب البحث في المصادر المحلية وعبر الإنترنت</string>
-    <string name="lyrics_source_order_intro">تُجرَّب المصادر الممكّنة من الأعلى إلى الأسفل. تفوز المصادر المحلية فقط عندما تكون فوق المصادر عبر الإنترنت.</string>
+    <string name="lyrics_source_order_subtitle">اضبط ترتيب البحث في المصادر المحلية وعبر الإنترنت وفعّل أو عطّل كل مصدر</string>
+    <string name="lyrics_source_order_intro">تُجرَّب المصادر الممكّنة من الأعلى إلى الأسفل. تفوز المصادر المحلية فقط عندما تكون فوق المصادر عبر الإنترنت. لتعطيل الكلمات عبر الإنترنت، عطّل هنا جميع المصادر عبر الإنترنت.</string>
     <string name="lyrics_source_order_local_music_hint">تحتاج المصادر المحلية إلى وجود المقطع في المكتبة. امسحه أو أعد مسحه في الموسيقى المحلية</string>
     <string name="lyrics_source_order_enabled">ممكّن</string>
     <string name="lyrics_source_order_disabled">معطّل</string>

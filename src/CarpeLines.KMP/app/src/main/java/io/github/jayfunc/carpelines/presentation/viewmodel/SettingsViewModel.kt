@@ -31,7 +31,6 @@ import io.github.jayfunc.carpelines.data.preferences.FullPlayerLoadingTweaks
 import io.github.jayfunc.carpelines.data.preferences.ThemePreferencesRepository
 import io.github.jayfunc.carpelines.data.repository.LyricsRepository
 import io.github.jayfunc.carpelines.data.repository.MusicRepository
-import io.github.jayfunc.carpelines.data.model.LyricsSourcePreference
 import io.github.jayfunc.carpelines.data.worker.SyncManager
 import io.github.jayfunc.carpelines.data.worker.SyncProgress
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -81,9 +80,7 @@ data class SettingsUiState(
     val crossfadeDuration: Int = 2000,
     val persistentShuffleEnabled: Boolean = false,
     val folderBackGestureNavigation: Boolean = true,
-    val lyricsSourcePreference: LyricsSourcePreference = LyricsSourcePreference.EMBEDDED_FIRST,
     val autoScanLrcFiles: Boolean = false,
-    val externalLyricsEnabled: Boolean = true,
     val externalArtistImagesEnabled: Boolean = false,
     val blockedDirectories: Set<String> = emptySet(),
     val appRebrandDialogShown: Boolean = false,
@@ -165,7 +162,6 @@ private sealed interface SettingsUiUpdate {
         val crossfadeDuration: Int,
         val persistentShuffleEnabled: Boolean,
         val folderBackGestureNavigation: Boolean,
-        val lyricsSourcePreference: LyricsSourcePreference,
         val autoScanLrcFiles: Boolean,
         val blockedDirectories: Set<String>,
         val hapticsEnabled: Boolean,
@@ -188,7 +184,6 @@ class SettingsViewModel @Inject constructor(
     private val folderArtworkSettingsCoordinator: FolderArtworkSettingsCoordinator,
     @ApplicationContext private val context: Context,
     @AppScope private val appScope: CoroutineScope,
-    private val betterLyricsRepository: io.github.jayfunc.carpelines.data.betterlyrics.BetterLyricsRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -326,7 +321,6 @@ class SettingsViewModel @Inject constructor(
                 userPreferencesRepository.crossfadeDurationFlow,
                 userPreferencesRepository.persistentShuffleEnabledFlow,
                 userPreferencesRepository.folderBackGestureNavigationFlow,
-                userPreferencesRepository.lyricsSourcePreferenceFlow,
                 userPreferencesRepository.autoScanLrcFilesFlow,
                 userPreferencesRepository.blockedDirectoriesFlow,
                 userPreferencesRepository.hapticsEnabledFlow,
@@ -352,14 +346,13 @@ class SettingsViewModel @Inject constructor(
                     crossfadeDuration = values[5] as Int,
                     persistentShuffleEnabled = values[6] as Boolean,
                     folderBackGestureNavigation = values[7] as Boolean,
-                    lyricsSourcePreference = values[8] as LyricsSourcePreference,
-                    autoScanLrcFiles = values[9] as Boolean,
-                    blockedDirectories = @Suppress("UNCHECKED_CAST") (values[10] as Set<String>),
-                    hapticsEnabled = values[11] as Boolean,
-                    immersiveLyricsEnabled = values[12] as Boolean,
-                    immersiveLyricsTimeout = values[13] as Long,
-                    animatedLyricsBlurEnabled = values[14] as Boolean,
-                    animatedLyricsBlurStrength = values[15] as Float
+                    autoScanLrcFiles = values[8] as Boolean,
+                    blockedDirectories = @Suppress("UNCHECKED_CAST") (values[9] as Set<String>),
+                    hapticsEnabled = values[10] as Boolean,
+                    immersiveLyricsEnabled = values[11] as Boolean,
+                    immersiveLyricsTimeout = values[12] as Long,
+                    animatedLyricsBlurEnabled = values[13] as Boolean,
+                    animatedLyricsBlurStrength = values[14] as Float
                 )
             }.collect { update ->
                 _uiState.update { state ->
@@ -372,7 +365,6 @@ class SettingsViewModel @Inject constructor(
                         crossfadeDuration = update.crossfadeDuration,
                         persistentShuffleEnabled = update.persistentShuffleEnabled,
                         folderBackGestureNavigation = update.folderBackGestureNavigation,
-                        lyricsSourcePreference = update.lyricsSourcePreference,
                         autoScanLrcFiles = update.autoScanLrcFiles,
                         blockedDirectories = update.blockedDirectories,
                         hapticsEnabled = update.hapticsEnabled,
@@ -422,12 +414,6 @@ class SettingsViewModel @Inject constructor(
                         showLyricsBackgroundVocals = showBackgroundVocals
                     )
                 }
-            }
-        }
-
-        viewModelScope.launch {
-            userPreferencesRepository.externalLyricsEnabledFlow.collect { enabled ->
-                _uiState.update { it.copy(externalLyricsEnabled = enabled) }
             }
         }
 
@@ -734,23 +720,9 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun setLyricsSourcePreference(preference: LyricsSourcePreference) {
-        // The reorderable list is the single source of truth, so the preset rewrites its order.
-        betterLyricsRepository.applyPreset(preference)
-        viewModelScope.launch {
-            userPreferencesRepository.setLyricsSourcePreference(preference)
-        }
-    }
-
     fun setAutoScanLrcFiles(enabled: Boolean) {
         viewModelScope.launch {
             userPreferencesRepository.setAutoScanLrcFiles(enabled)
-        }
-    }
-
-    fun setExternalLyricsEnabled(enabled: Boolean) {
-        viewModelScope.launch {
-            userPreferencesRepository.setExternalLyricsEnabled(enabled)
         }
     }
 

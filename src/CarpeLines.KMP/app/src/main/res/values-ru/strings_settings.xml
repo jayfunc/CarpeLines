@@ -241,7 +241,7 @@
     <string name="settings_category_about_title">О приложении</string>
     <string name="settings_category_appearance_subtitle">Темы, макеты и визуальные стили</string>
     <string name="settings_category_online_services_title">Онлайн-сервисы</string>
-    <string name="settings_category_online_services_subtitle">Источники текстов и обложки исполнителей</string>
+    <string name="settings_category_online_services_subtitle">Дополнительные обложки исполнителей и онлайн-сервисы</string>
     <string name="settings_category_appearance_title">Внешний вид</string>
     <string name="settings_category_backup_subtitle">Экспорт и восстановление персональных данных приложения</string>
     <string name="settings_category_backup_title">Резервное копирование и восстановление</string>

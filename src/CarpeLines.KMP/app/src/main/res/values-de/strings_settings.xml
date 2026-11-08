@@ -241,7 +241,7 @@
     <string name="settings_category_about_title">Über</string>
     <string name="settings_category_appearance_subtitle">Design, Layout und Farben</string>
     <string name="settings_category_online_services_title">Online-Dienste</string>
-    <string name="settings_category_online_services_subtitle">Lyrics-Anbieter und Künstlerbilder</string>
+    <string name="settings_category_online_services_subtitle">Optionale Künstlerbilder und Online-Dienste</string>
     <string name="settings_category_appearance_title">Darstellung</string>
     <string name="settings_category_backup_subtitle">App-Daten exportieren und importieren</string>
     <string name="settings_category_backup_title">Backup &amp; Wiederherstellen</string>

@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Checklist
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.Refresh
@@ -43,7 +42,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -51,7 +49,6 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.jayfunc.carpelines.R
-import io.github.jayfunc.carpelines.data.model.LyricsSourcePreference
 import io.github.jayfunc.carpelines.presentation.components.rememberSyncedSliderState
 import io.github.jayfunc.carpelines.ui.m3e.M3ELeadingIconContainer
 import io.github.jayfunc.carpelines.ui.m3e.M3EModalBottomSheet
@@ -76,9 +73,8 @@ import kotlin.math.roundToInt
  * looks the same whether it is reached from this sheet or from settings, and the sheet does not
  * invent a second row style for the same content.
  *
- * The lyric source is a mutually exclusive choice, so it keeps radio semantics: the selected row
- * takes the settings picker's treatment — `primaryContainer` fill plus a check mark — instead of
- * communication by container tint alone.
+ * Source priority is intentionally not offered here: it belongs to Settings > Lyrics > Lyrics
+ * source order, so this sheet never presents a second, competing way to reorder the same sources.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -93,8 +89,6 @@ fun LyricsLineActionsSheet(
     onRefreshLyrics: () -> Unit,
     onManualSearch: () -> Unit,
     onOpenLyricsSettings: () -> Unit,
-    sourcePreference: LyricsSourcePreference,
-    onSourcePreferenceChange: (LyricsSourcePreference) -> Unit,
     providerLabel: String? = null,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -154,16 +148,6 @@ fun LyricsLineActionsSheet(
                         )
                     }
                     Spacer(Modifier.height(SectionGap))
-
-                    SheetSection(title = stringResource(R.string.setcat_lyrics_source_priority_label)) {
-                        LyricsSourcePreference.entries.forEach { preference ->
-                            ChoiceRow(
-                                title = stringResource(preference.labelRes()),
-                                selected = preference == sourcePreference,
-                                onClick = { onSourcePreferenceChange(preference) },
-                            )
-                        }
-                    }
 
                     SheetSection(title = stringResource(R.string.lyrics_line_actions_group_lyrics)) {
                         ActionRow(
@@ -422,44 +406,6 @@ private fun OffsetSlider(
     }
 }
 
-/**
- * Single-choice row.
- *
- * The lyric source is mutually exclusive, so it reads as a radio group: role and selected state
- * are announced, and the selected row takes the settings picker's treatment — `primaryContainer`
- * fill plus a check mark — rather than relying on container tint alone.
- */
-@Composable
-private fun ChoiceRow(
-    title: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-) {
-    M3EListItem(
-        headline = title,
-        onClick = onClick,
-        selected = selected,
-        role = Role.RadioButton,
-        shape = M3EShape.medium,
-        containerColor = if (selected) {
-            MaterialTheme.colorScheme.primaryContainer
-        } else {
-            MaterialTheme.colorScheme.surfaceContainer
-        },
-        contentColor = if (selected) {
-            MaterialTheme.colorScheme.onPrimaryContainer
-        } else {
-            MaterialTheme.colorScheme.onSurface
-        },
-        trailingContent = if (selected) {
-            { Icon(imageVector = Icons.Rounded.Check, contentDescription = null) }
-        } else {
-            null
-        },
-        modifier = Modifier.fillMaxWidth(),
-    )
-}
-
 /** Settings rows carry a bare icon tinted `secondary`; a tinted container would out-shout them. */
 @Composable
 private fun RowIcon(icon: ImageVector) {
@@ -490,13 +436,6 @@ private const val OffsetSliderRangeMs = 3_000f
  * stops a settings slider does instead of reading as a continuous stripe.
  */
 private val OffsetSliderSteps = (OffsetSliderRangeMs * 2 / LyricsOffsetStore.STEP_MS).toInt() - 1
-
-/** The three legacy presets keep their existing translations from the settings page. */
-private fun LyricsSourcePreference.labelRes(): Int = when (this) {
-    LyricsSourcePreference.EMBEDDED_FIRST -> R.string.setcat_lyrics_embedded_first
-    LyricsSourcePreference.API_FIRST -> R.string.setcat_lyrics_online_first
-    LyricsSourcePreference.LOCAL_FIRST -> R.string.setcat_lyrics_local_first
-}
 
 /** `+0.3 s` reads better than `+300 ms` next to a nudge button. */
 internal fun formatOffset(offsetMs: Int): String {

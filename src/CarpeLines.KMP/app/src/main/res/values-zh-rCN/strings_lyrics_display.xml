@@ -79,8 +79,8 @@
     <string name="betterlyrics_ambient_style_title">氛围背景风格</string>
     <string name="betterlyrics_ambient_style_subtitle">选择歌词背后动态背景的视觉风格</string>
     <string name="lyrics_source_order_title">歌词源顺序</string>
-    <string name="lyrics_source_order_subtitle">设置本地与在线歌词源的查找顺序</string>
-    <string name="lyrics_source_order_intro">已启用的歌词源会从上到下依次尝试；本地源排在在线源之上时优先使用本地歌词</string>
+    <string name="lyrics_source_order_subtitle">设置本地与在线歌词源的查找顺序，并可启用或停用各来源</string>
+    <string name="lyrics_source_order_intro">已启用的歌词源会从上到下依次尝试；本地源排在在线源之上时优先使用本地歌词。停用所有在线源即可关闭在线歌词</string>
     <string name="lyrics_source_order_local_music_hint">本地源需要曲库中已有这首歌。去「本地音乐」扫描或重扫</string>
     <string name="lyrics_source_order_enabled">已启用</string>
     <string name="lyrics_source_order_disabled">已停用</string>

@@ -22,7 +22,7 @@
     <string name="settings_category_local_music_title">ローカル音楽</string>
     <string name="settings_category_local_music_subtitle">端末をスキャンしてタグと .lrc の歌詞を検出します</string>
     <string name="settings_category_online_services_title">オンラインサービス</string>
-    <string name="settings_category_online_services_subtitle">歌詞プロバイダーとアーティスト画像</string>
+    <string name="settings_category_online_services_subtitle">任意のアーティスト画像とオンラインサービス</string>
     <string name="local_music_section_library">ライブラリ</string>
     <string name="local_music_song_count">%1$d 曲をスキャン済み</string>
     <string name="local_music_song_count_empty">まだスキャンしていません</string>

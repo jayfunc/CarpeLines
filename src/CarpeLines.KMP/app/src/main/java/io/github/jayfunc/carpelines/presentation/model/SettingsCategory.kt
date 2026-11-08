@@ -44,8 +44,8 @@ enum class SettingsCategory(
         icon = Icons.Rounded.LibraryMusic
     ),
     /**
-     * Network lookups that are not tied to the local scan: the online lyrics providers and the
-     * Deezer artist artwork.
+     * Optional network lookups that are not tied to the local scan: the Deezer artist artwork.
+     * Online lyrics sources are configured on the lyrics screen instead.
      */
     ONLINE_SERVICES(
         id = "online_services",

@@ -241,7 +241,7 @@
     <string name="settings_category_about_title">À propos</string>
     <string name="settings_category_appearance_subtitle">Thèmes, disposition et styles visuels</string>
     <string name="settings_category_online_services_title">Services en ligne</string>
-    <string name="settings_category_online_services_subtitle">Fournisseurs de paroles et visuels d\'artistes</string>
+    <string name="settings_category_online_services_subtitle">Visuels des artistes et services en ligne facultatifs</string>
     <string name="settings_category_appearance_title">Apparence</string>
     <string name="settings_category_backup_subtitle">Exporter et récupérer vos données personnelles de l\'application</string>
     <string name="settings_category_backup_title">Sauvegarde et restauration</string>

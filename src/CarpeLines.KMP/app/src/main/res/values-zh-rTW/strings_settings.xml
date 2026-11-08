@@ -14,7 +14,7 @@
     <string name="settings_category_local_music_title">本地音樂</string>
     <string name="settings_category_local_music_subtitle">掃描本機音樂庫，讓內嵌標籤與 .lrc 歌詞可用</string>
     <string name="settings_category_online_services_title">線上服務</string>
-    <string name="settings_category_online_services_subtitle">歌詞來源與藝人封面</string>
+    <string name="settings_category_online_services_subtitle">可選的藝人封面與線上服務</string>
     <string name="local_music_section_library">音樂庫</string>
     <string name="local_music_song_count">已掃描 %1$d 首歌曲</string>
     <string name="local_music_song_count_empty">尚未掃描到歌曲</string>

@@ -241,7 +241,7 @@
     <string name="settings_category_about_title">Informazioni</string>
     <string name="settings_category_appearance_subtitle">Temi, layout e stili visuali</string>
     <string name="settings_category_online_services_title">Servizi online</string>
-    <string name="settings_category_online_services_subtitle">Provider di testi e copertine degli artisti</string>
+    <string name="settings_category_online_services_subtitle">Copertine degli artisti facoltative e servizi online</string>
     <string name="settings_category_appearance_title">Aspetto</string>
     <string name="settings_category_backup_subtitle">Esporta e recupera i tuoi dati personali dell\'app</string>
     <string name="settings_category_backup_title">Backup e ripristino</string>

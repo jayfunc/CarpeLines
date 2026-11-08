@@ -253,7 +253,7 @@
     <string name="settings_category_about_title">Hakkında</string>
     <string name="settings_category_appearance_subtitle">Temalar, düzen ve görsel stiller</string>
     <string name="settings_category_online_services_title">Çevrimiçi Hizmetler</string>
-    <string name="settings_category_online_services_subtitle">Şarkı sözü sağlayıcıları ve sanatçı görselleri</string>
+    <string name="settings_category_online_services_subtitle">İsteğe bağlı sanatçı görselleri ve çevrimiçi hizmetler</string>
     <string name="settings_category_appearance_title">Görünüm</string>
     <string name="settings_category_backup_subtitle">Kişisel uygulama verilerinizi dışa aktarın ve kurtarın</string>
     <string name="settings_category_backup_title">Yedekle ve Geri Yükle</string>

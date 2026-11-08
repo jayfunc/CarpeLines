@@ -257,7 +257,6 @@ fun NowPlayingLyricsScreen(
     val sampledPosition = ExternalMediaMonitor.positionMs.collectAsStateWithLifecycle()
     val positionMs by sampledPosition
     val lyricsUi by lyricsViewModel.state.collectAsStateWithLifecycle()
-    val sourcePreference by lyricsViewModel.sourcePreference.collectAsStateWithLifecycle()
     val settings = rememberLyricsDisplaySettings()
 
     // Width alone decides the split. A short window scrolls the player card rather than falling
@@ -761,8 +760,6 @@ fun NowPlayingLyricsScreen(
                 actionLine = null
                 onOpenLyricsSettings()
             },
-            sourcePreference = sourcePreference,
-            onSourcePreferenceChange = lyricsViewModel::setSourcePreference,
             providerLabel = lyricsUi.providerLabel
                 ?.takeIf { it.isNotBlank() },
         )

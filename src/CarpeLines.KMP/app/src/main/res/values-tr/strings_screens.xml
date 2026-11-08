@@ -273,7 +273,7 @@
     <string name="word_delimiter_toast_invalid">Zaten var veya geçersiz</string>
     <string name="word_delimiter_toast_reset">Kelime sınırlayıcıları varsayılana sıfırlandı</string>
     <string name="word_delimiters_screen_title">Kelime Sınırlayıcıları</string>
-    <string name="setup_external_services_subtitle">Çevrimiçi şarkı sözü araması varsayılan olarak açıktır. İstemediğin hizmetleri kapat.</string>
+    <string name="setup_external_services_subtitle">Çevrimiçi şarkı sözleri varsayılan olarak açıktır. Sıralamalarını Ayarlar &gt; Şarkı Sözleri &gt; Şarkı sözü kaynak sırası bölümünden ayarla.</string>
     <string name="setup_permission_media_description">CarpeLines, gömülü şarkı sözlerini ve aynı klasördeki .lrc dosyalarını bulmak için bu cihazdaki ses dosyalarını okur. Ses dosyaların bu cihazda kalır.</string>
     <string name="setup_permission_alarms_description">İsteğe bağlıdır, ancak uyku zamanlayıcısını kullanıyorsanız ve CarpeLines\'in oynatmayı tam zamanında durdurmasını istiyorsanız önerilir</string>
     <string name="setup_backup_have_description">Zaten bir CarpeLines yedeğiniz varsa şimdi geri yükleyin ve bu cihazdaki kurulumun çoğunu atlayın</string>

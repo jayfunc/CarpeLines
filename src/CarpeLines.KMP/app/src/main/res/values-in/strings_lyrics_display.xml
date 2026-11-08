@@ -83,8 +83,8 @@
     <string name="betterlyrics_ambient_style_title">Gaya ambien</string>
     <string name="betterlyrics_ambient_style_subtitle">Tampilan latar animasi di belakang lirik</string>
     <string name="lyrics_source_order_title">Urutan sumber lirik</string>
-    <string name="lyrics_source_order_subtitle">Atur urutan pencarian sumber lirik lokal dan online</string>
-    <string name="lyrics_source_order_intro">Sumber yang aktif dicoba dari atas ke bawah. Sumber lokal hanya menang jika berada di atas sumber online.</string>
+    <string name="lyrics_source_order_subtitle">Atur urutan pencarian sumber lirik lokal dan online serta aktifkan atau nonaktifkan setiap sumber</string>
+    <string name="lyrics_source_order_intro">Sumber yang aktif dicoba dari atas ke bawah. Sumber lokal hanya menang jika berada di atas sumber online. Nonaktifkan semua sumber online di sini untuk mematikan lirik online.</string>
     <string name="lyrics_source_order_local_music_hint">Sumber lokal memerlukan trek di pustaka. Pindai atau pindai ulang di Musik Lokal</string>
     <string name="lyrics_source_order_enabled">Aktif</string>
     <string name="lyrics_source_order_disabled">Nonaktif</string>

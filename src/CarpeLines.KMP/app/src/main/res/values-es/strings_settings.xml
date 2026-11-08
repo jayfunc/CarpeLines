@@ -241,7 +241,7 @@
     <string name="settings_category_about_title">Acerca de</string>
     <string name="settings_category_appearance_subtitle">Temas, diseño y estilos visuales</string>
     <string name="settings_category_online_services_title">Servicios en línea</string>
-    <string name="settings_category_online_services_subtitle">Proveedores de letras y portadas de artistas</string>
+    <string name="settings_category_online_services_subtitle">Imágenes de artistas opcionales y servicios en línea</string>
     <string name="settings_category_appearance_title">Apariencia</string>
     <string name="settings_category_backup_subtitle">Exporta y recupera tus datos personales</string>
     <string name="settings_category_backup_title">Copia y restauración</string>

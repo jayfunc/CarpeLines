@@ -409,7 +409,6 @@ fun SetupScreen(
                     )
                     SetupPage.ExternalServices -> ExternalServicesPage(
                         uiState = uiState,
-                        onExternalLyricsChanged = setupViewModel::setExternalLyricsEnabled,
                         onExternalArtistImagesChanged = setupViewModel::setExternalArtistImagesEnabled
                     )
                     SetupPage.Finish -> FinishPage()
@@ -1228,7 +1227,6 @@ private fun ThemeModeOptionCard(
 @Composable
 fun ExternalServicesPage(
     uiState: SetupUiState,
-    onExternalLyricsChanged: (Boolean) -> Unit,
     onExternalArtistImagesChanged: (Boolean) -> Unit
 ) {
     Column(
@@ -1264,13 +1262,6 @@ fun ExternalServicesPage(
                 .fillMaxWidth()
                 .padding(top = 20.dp)
         ) {
-            ExternalServiceToggleCard(
-                title = stringResource(R.string.setup_external_lyrics_title),
-                description = stringResource(R.string.setup_external_lyrics_description),
-                checked = uiState.externalLyricsEnabled,
-                onCheckedChange = onExternalLyricsChanged,
-                icon = { Icon(painterResource(R.drawable.rounded_lyrics_24), null) }
-            )
             ExternalServiceToggleCard(
                 title = stringResource(R.string.setup_external_artist_images_title),
                 description = stringResource(R.string.setup_external_artist_images_description),

@@ -270,7 +270,7 @@
     <string name="word_delimiter_toast_invalid">이미 존재하거나 유효하지 않습니다</string>
     <string name="word_delimiter_toast_reset">단어 구분 기호가 기본값으로 재설정되었습니다</string>
     <string name="word_delimiters_screen_title">단어 구분 기호</string>
-    <string name="setup_external_services_subtitle">온라인 가사 검색은 기본으로 켜져 있습니다. 원하지 않는 항목만 끄세요.</string>
+    <string name="setup_external_services_subtitle">온라인 가사는 기본으로 켜져 있습니다. 순서는 설정 &gt; 가사 &gt; 가사 소스 순서에서 조정하세요.</string>
     <string name="setup_permission_media_description">CarpeLines는 이 기기의 오디오 파일을 읽어 내장 가사와 같은 폴더의 .lrc 파일을 찾습니다. 오디오 파일은 이 기기에 그대로 남습니다.</string>
     <string name="setup_permission_alarms_description">선택 사항이지만, 취침 타이머를 사용하며 CarpeLines가 정확한 시간에 재생을 멈추게 하려면 허용하는 것이 좋습니다</string>
     <string name="setup_backup_have_description">이미 CarpeLines 백업이 있다면 지금 복구하여 이 기기의 나머지 설정 대부분을 건너뛸 수 있습니다</string>

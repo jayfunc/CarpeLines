@@ -273,7 +273,7 @@
     <string name="word_delimiter_toast_invalid">Sudah ada atau tidak valid</string>
     <string name="word_delimiter_toast_reset">Pemisah kata direset ke default</string>
     <string name="word_delimiters_screen_title">Pemisah Kata</string>
-    <string name="setup_external_services_subtitle">Pencarian lirik online aktif secara default. Matikan yang tidak kamu inginkan.</string>
+    <string name="setup_external_services_subtitle">Lirik online aktif secara default. Atur urutannya di Pengaturan &gt; Lirik &gt; Urutan sumber lirik.</string>
     <string name="setup_permission_media_description">CarpeLines membaca file audio di perangkat ini untuk menemukan lirik tertanam dan file .lrc di folder yang sama. File audio kamu tetap di perangkat ini.</string>
     <string name="setup_permission_alarms_description">Opsional, tetapi disarankan jika Anda menggunakan Timer Tidur dan ingin CarpeLines menghentikan pemutaran tepat waktu</string>
     <string name="setup_backup_have_description">Jika Anda sudah memiliki cadangan CarpeLines, pulihkan sekarang dan lewati sebagian besar penyiapan lainnya di perangkat ini</string>

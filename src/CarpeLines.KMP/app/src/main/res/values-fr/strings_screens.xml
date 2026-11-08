@@ -273,7 +273,7 @@
     <string name="word_delimiter_toast_invalid">Existe déjà ou est invalide</string>
     <string name="word_delimiter_toast_reset">Délimiteurs de mots réinitialisés aux valeurs par défaut</string>
     <string name="word_delimiters_screen_title">Délimiteurs de mots</string>
-    <string name="setup_external_services_subtitle">La recherche de paroles en ligne est active par défaut. Désactivez ce que vous ne voulez pas.</string>
+    <string name="setup_external_services_subtitle">Les paroles en ligne sont activées par défaut. Modifiez leur ordre dans Paramètres &gt; Paroles &gt; Ordre des sources de paroles.</string>
     <string name="setup_permission_media_description">CarpeLines lit les fichiers audio de cet appareil pour trouver les paroles intégrées et les fichiers .lrc du même dossier. Vos fichiers audio restent sur cet appareil.</string>
     <string name="setup_permission_alarms_description">Facultatif, mais recommandé si vous utilisez le minuteur de sommeil et souhaitez que CarpeLines arrête la lecture exactement à l\'heure prévue</string>
     <string name="setup_backup_have_description">Si vous avez déjà une sauvegarde de CarpeLines, restaurez-la maintenant pour passer la plupart des étapes de configuration restantes sur cet appareil</string>

@@ -79,8 +79,8 @@
     <string name="betterlyrics_ambient_style_title">Ambient style</string>
     <string name="betterlyrics_ambient_style_subtitle">How the animated background behind lyrics looks</string>
     <string name="lyrics_source_order_title">Lyrics source order</string>
-    <string name="lyrics_source_order_subtitle">Set the lookup order for local and online lyrics sources</string>
-    <string name="lyrics_source_order_intro">Enabled sources are tried from top to bottom. Local sources win only when they are above online sources.</string>
+    <string name="lyrics_source_order_subtitle">Set the lookup order and enable or disable local and online lyrics sources</string>
+    <string name="lyrics_source_order_intro">Enabled sources are tried from top to bottom. Local sources win only when they are above online sources. Disable every online source here to turn off online lyrics.</string>
     <string name="lyrics_source_order_local_music_hint">Local sources need the track in the library. Scan or rescan it under Local Music</string>
     <string name="lyrics_source_order_enabled">Enabled</string>
     <string name="lyrics_source_order_disabled">Disabled</string>

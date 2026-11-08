@@ -241,7 +241,7 @@
     <string name="settings_category_about_title">Om</string>
     <string name="settings_category_appearance_subtitle">Temaer, layout og visuelle stiler</string>
     <string name="settings_category_online_services_title">Nettjenester</string>
-    <string name="settings_category_online_services_subtitle">Tekstkilder og artistbilder</string>
+    <string name="settings_category_online_services_subtitle">Valgfrie artistbilder og nettjenester</string>
     <string name="settings_category_appearance_title">Utseende</string>
     <string name="settings_category_backup_subtitle">Eksporter og gjenopprett dine personlige app-data</string>
     <string name="settings_category_backup_title">Sikkerhetskopiering og gjenoppretting</string>

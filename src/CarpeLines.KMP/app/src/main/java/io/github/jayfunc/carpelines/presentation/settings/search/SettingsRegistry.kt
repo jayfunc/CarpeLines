@@ -106,8 +106,8 @@ object SettingsRegistry {
                 },
                 keywordsStatic = listOf(
                     "lyrics source", "source order", "priority", "embedded", "lrc", "local",
-                    "qq", "netease", "kugou", "lrclib", "apple",
-                    "歌词源", "顺序", "本地", "内嵌", "在线",
+                    "qq", "netease", "kugou", "lrclib", "apple", "online lyrics", "external lyrics",
+                    "歌词源", "顺序", "优先级", "本地", "内嵌", "在线", "在线歌词", "在线服务",
                 )
             ),
             SettingSpec(
@@ -240,22 +240,6 @@ object SettingsRegistry {
                 keywordsStatic = listOf("lrc", "sidecar", "scan lyrics", "attach lyrics"),
                 getValue = { it.autoScanLrcFiles },
                 onToggle = { viewModel, checked -> viewModel.setAutoScanLrcFiles(checked) }
-            ),
-            SettingSpec(
-                id = "online_services_lyrics",
-                itemKey = "item_online_services_lyrics",
-                titleRes = R.string.setcat_external_lyrics_title,
-                subtitleRes = R.string.setcat_external_lyrics_subtitle,
-                category = SettingsCategory.ONLINE_SERVICES,
-                subscreenRoute = Screen.SettingsCategory.createRoute("online_services"),
-                type = SettingType.SWITCH,
-                keywordsStatic = listOf(
-                    "online lyrics", "lrclib", "lrclib.net", "external lyrics", "network lyrics",
-                    "qq music", "netease", "kugou", "apple music",
-                    "在线歌词", "在线服务"
-                ),
-                getValue = { it.externalLyricsEnabled },
-                onToggle = { viewModel, checked -> viewModel.setExternalLyricsEnabled(checked) }
             ),
             SettingSpec(
                 id = "online_services_artist_images",

@@ -12,19 +12,15 @@ import io.github.jayfunc.carpelines.data.carpelines.ManualLyricsChange
 import io.github.jayfunc.carpelines.data.carpelines.ManualLyricsStore
 import io.github.jayfunc.carpelines.data.external.ExternalMediaState
 import io.github.jayfunc.carpelines.data.model.Lyrics
-import io.github.jayfunc.carpelines.data.model.LyricsSourcePreference
 import io.github.jayfunc.carpelines.data.model.Song
-import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
@@ -39,7 +35,6 @@ class NowPlayingLyricsViewModel @Inject constructor(
     private val repository: BetterLyricsRepository,
     private val manualLyricsStore: ManualLyricsStore,
     private val localLyricsResolver: LocalLyricsResolver,
-    private val userPreferencesRepository: UserPreferencesRepository,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
@@ -55,15 +50,6 @@ class NowPlayingLyricsViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
-
-    /** The source priority shared with the settings page, shown in the lyric long-press sheet. */
-    val sourcePreference: StateFlow<LyricsSourcePreference> =
-        userPreferencesRepository.lyricsSourcePreferenceFlow
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.Eagerly,
-                initialValue = LyricsSourcePreference.EMBEDDED_FIRST,
-            )
 
     private var loadJob: Job? = null
     private var lastKey: String? = null
@@ -384,18 +370,6 @@ class NowPlayingLyricsViewModel @Inject constructor(
             resolveExternal(current, ignoreStored = true)
         } else {
             resolveInternal(lastInternal, _state.value.lyrics, lastLocalLoading)
-        }
-    }
-
-    /**
-     * Applies the preset to the shared source order and persists it. The screen keys its loader on
-     * [orderKey], so the new order triggers a fresh resolve; stored library lyrics still win, which
-     * keeps a preference change from throwing away words the user imported on purpose.
-     */
-    fun setSourcePreference(preference: LyricsSourcePreference) {
-        repository.applyPreset(preference)
-        viewModelScope.launch {
-            userPreferencesRepository.setLyricsSourcePreference(preference)
         }
     }
 

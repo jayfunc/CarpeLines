@@ -285,7 +285,7 @@
     <string name="word_delimiter_toast_invalid">موجود بالفعل أو غير صالح</string>
     <string name="word_delimiter_toast_reset">تمت إعادة تعيين محددات الكلمات إلى الافتراضية</string>
     <string name="word_delimiters_screen_title">محددات الكلمات</string>
-    <string name="setup_external_services_subtitle">البحث عن الكلمات عبر الإنترنت مفعّل افتراضياً. أوقف ما لا تريده.</string>
+    <string name="setup_external_services_subtitle">كلمات الأغاني عبر الإنترنت مفعّلة افتراضياً. يمكنك ضبط ترتيبها من الإعدادات &gt; كلمات الأغاني &gt; ترتيب مصادر الكلمات.</string>
     <string name="setup_permission_media_description">يقرأ CarpeLines ملفات الصوت على هذا الجهاز للعثور على الكلمات المضمنة وملفات .lrc في المجلد نفسه. تبقى ملفات الصوت على جهازك.</string>
     <string name="setup_permission_alarms_description">اختياري، لكنه موصى به إذا كنت تستخدم مؤقت النوم وتريد أن يوقف CarpeLines التشغيل في الوقت المحدد تماماً</string>
     <string name="setup_backup_have_description">إذا كانت لديك نسخة احتياطية من CarpeLines، فاستعدها الآن لتتخطى معظم خطوات الإعداد المتبقية على هذا الجهاز</string>

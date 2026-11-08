@@ -273,7 +273,7 @@
     <string name="word_delimiter_toast_invalid">Esiste già o non è valido</string>
     <string name="word_delimiter_toast_reset">Delimitatori parola reimpostati ai predefiniti</string>
     <string name="word_delimiters_screen_title">Delimitatori parola</string>
-    <string name="setup_external_services_subtitle">La ricerca dei testi online è attiva per impostazione predefinita. Disattiva ciò che non ti serve.</string>
+    <string name="setup_external_services_subtitle">I testi online sono attivi per impostazione predefinita. Modifica il loro ordine in Impostazioni &gt; Testi &gt; Ordine delle fonti dei testi.</string>
     <string name="setup_permission_media_description">CarpeLines legge i file audio di questo dispositivo per trovare i testi incorporati e i file .lrc nella stessa cartella. I tuoi file audio restano su questo dispositivo.</string>
     <string name="setup_permission_alarms_description">Facoltativo, ma consigliato se usi il timer di spegnimento e vuoi che CarpeLines interrompa la riproduzione esattamente all\'ora impostata</string>
     <string name="setup_backup_have_description">Se hai già un backup di CarpeLines, ripristinalo ora e salta gran parte della configurazione rimanente su questo dispositivo</string>

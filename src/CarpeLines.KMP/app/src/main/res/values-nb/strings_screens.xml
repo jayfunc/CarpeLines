@@ -273,7 +273,7 @@
     <string name="word_delimiter_toast_invalid">Finnes allerede eller er ugyldig</string>
     <string name="word_delimiter_toast_reset">Orddelimitere tilbakestilt til standard</string>
     <string name="word_delimiters_screen_title">Orddelimitere</string>
-    <string name="setup_external_services_subtitle">Nettsøk etter tekster er på som standard. Slå av det du ikke vil bruke.</string>
+    <string name="setup_external_services_subtitle">Nettbaserte sangtekster er på som standard. Endre rekkefølgen i Innstillinger &gt; Sangtekster &gt; Rekkefølge for sangtekstkilder.</string>
     <string name="setup_permission_media_description">CarpeLines leser lydfiler på denne enheten for å finne innebygde tekster og .lrc-filer i samme mappe. Lydfilene dine blir værende på denne enheten.</string>
     <string name="setup_permission_alarms_description">Valgfritt, men anbefalt hvis du bruker Sleep timer og vil at CarpeLines skal stoppe avspillingen nøyaktig i tide</string>
     <string name="setup_backup_have_description">Hvis du allerede har en CarpeLines-sikkerhetskopi, kan du gjenopprette den nå og hoppe over det meste av resten av oppsettet på denne enheten</string>

@@ -241,7 +241,7 @@
     <string name="settings_category_about_title">Tentang</string>
     <string name="settings_category_appearance_subtitle">Tema, tata letak, dan gaya visual</string>
     <string name="settings_category_online_services_title">Layanan Online</string>
-    <string name="settings_category_online_services_subtitle">Penyedia lirik dan gambar artis</string>
+    <string name="settings_category_online_services_subtitle">Gambar artis opsional dan layanan online</string>
     <string name="settings_category_appearance_title">Tampilan</string>
     <string name="settings_category_backup_subtitle">Ekspor dan pulihkan data aplikasi pribadi Anda</string>
     <string name="settings_category_backup_title">Cadangkan &amp; Pulihkan</string>

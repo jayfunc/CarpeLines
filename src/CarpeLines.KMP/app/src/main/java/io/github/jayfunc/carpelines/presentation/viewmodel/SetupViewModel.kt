@@ -40,7 +40,6 @@ data class SetupUiState(
     val notificationAccessGranted: Boolean = false,
     val isLoadingDirectories: Boolean = false,
     val blockedDirectories: Set<String> = emptySet(),
-    val externalLyricsEnabled: Boolean = true,
     val externalArtistImagesEnabled: Boolean = false,
     val appThemeMode: String = AppThemeMode.DARK,
     val isInspectingBackup: Boolean = false,
@@ -108,7 +107,6 @@ class SetupViewModel @Inject constructor(
         viewModelScope.launch {
             combine<Any?, SetupPrefsUpdate>(
                 userPreferencesRepository.blockedDirectoriesFlow,
-                userPreferencesRepository.externalLyricsEnabledFlow,
                 userPreferencesRepository.externalArtistImagesEnabledFlow,
                 themePreferencesRepository.appThemeModeFlow
             ) { values ->
@@ -116,15 +114,13 @@ class SetupViewModel @Inject constructor(
                 val blockedDirectories = values[0] as Set<String>
                 SetupPrefsUpdate(
                     blocked = blockedDirectories,
-                    externalLyricsEnabled = values[1] as Boolean,
-                    externalArtistImagesEnabled = values[2] as Boolean,
-                    appThemeMode = values[3] as String
+                    externalArtistImagesEnabled = values[1] as Boolean,
+                    appThemeMode = values[2] as String
                 )
             }.collect { update ->
                 _uiState.update { state ->
                     state.copy(
                         blockedDirectories = update.blocked,
-                        externalLyricsEnabled = update.externalLyricsEnabled,
                         externalArtistImagesEnabled = update.externalArtistImagesEnabled,
                         appThemeMode = update.appThemeMode
                     )
@@ -141,7 +137,6 @@ class SetupViewModel @Inject constructor(
     
     private data class SetupPrefsUpdate(
         val blocked: Set<String>,
-        val externalLyricsEnabled: Boolean,
         val externalArtistImagesEnabled: Boolean,
         val appThemeMode: String
     )
@@ -220,12 +215,6 @@ class SetupViewModel @Inject constructor(
     fun isAtRoot(): Boolean = fileExplorerStateHolder.isAtRoot()
 
     fun explorerRoot(): File = fileExplorerStateHolder.rootDirectory()
-
-    fun setExternalLyricsEnabled(enabled: Boolean) {
-        viewModelScope.launch {
-            userPreferencesRepository.setExternalLyricsEnabled(enabled)
-        }
-    }
 
     fun setExternalArtistImagesEnabled(enabled: Boolean) {
         viewModelScope.launch {

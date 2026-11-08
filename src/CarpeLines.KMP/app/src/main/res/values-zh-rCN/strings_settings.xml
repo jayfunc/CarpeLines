@@ -14,7 +14,7 @@
     <string name="settings_category_local_music_title">本地音乐</string>
     <string name="settings_category_local_music_subtitle">扫描本机曲库，让内嵌标签与 .lrc 歌词可用</string>
     <string name="settings_category_online_services_title">在线服务</string>
-    <string name="settings_category_online_services_subtitle">歌词来源与艺术家封面</string>
+    <string name="settings_category_online_services_subtitle">可选的艺术家封面与在线服务</string>
     <string name="local_music_section_library">曲库</string>
     <string name="local_music_song_count">已扫描 %1$d 首歌曲</string>
     <string name="local_music_song_count_empty">尚未扫描到歌曲</string>

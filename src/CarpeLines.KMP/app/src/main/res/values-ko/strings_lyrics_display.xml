@@ -83,8 +83,8 @@
     <string name="betterlyrics_ambient_style_title">앰비언트 스타일</string>
     <string name="betterlyrics_ambient_style_subtitle">가사 뒤 애니메이션 배경의 모양</string>
     <string name="lyrics_source_order_title">가사 소스 순서</string>
-    <string name="lyrics_source_order_subtitle">로컬 및 온라인 가사 소스의 검색 순서 설정</string>
-    <string name="lyrics_source_order_intro">활성화된 소스는 위에서 아래로 시도됩니다. 로컬 소스는 온라인 소스보다 위에 있을 때만 우선합니다.</string>
+    <string name="lyrics_source_order_subtitle">로컬 및 온라인 가사 소스의 검색 순서 설정 및 각 소스 켜기/끄기</string>
+    <string name="lyrics_source_order_intro">활성화된 소스는 위에서 아래로 시도됩니다. 로컬 소스는 온라인 소스보다 위에 있을 때만 우선합니다. 온라인 가사를 끄려면 여기에서 모든 온라인 소스를 비활성화하세요.</string>
     <string name="lyrics_source_order_local_music_hint">로컬 소스는 라이브러리에 트랙이 있어야 합니다. 로컬 음악에서 스캔하거나 다시 스캔하세요</string>
     <string name="lyrics_source_order_enabled">활성화됨</string>
     <string name="lyrics_source_order_disabled">비활성화됨</string>

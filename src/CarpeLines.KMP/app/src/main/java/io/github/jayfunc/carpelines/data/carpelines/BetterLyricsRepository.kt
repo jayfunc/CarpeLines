@@ -11,7 +11,6 @@ import io.github.jayfunc.carpelines.lyrics.model.LyricsProvider
 import io.github.jayfunc.carpelines.lyrics.model.LyricsQuery
 import io.github.jayfunc.carpelines.lyrics.model.LyricsSearchResult
 import io.github.jayfunc.carpelines.data.model.Lyrics
-import io.github.jayfunc.carpelines.data.model.LyricsSourcePreference
 import io.github.jayfunc.carpelines.data.model.Song
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -146,25 +145,6 @@ class BetterLyricsRepository @Inject constructor(
         }
 
     fun isLocalSourceEnabled(source: LyricsSourceId): Boolean = sourceOrder.contains(source)
-
-    /**
-     * Re-applies one of the legacy three-way priority presets on top of the user's enabled
-     * sources, so the preset dropdown and the reorderable source list never disagree.
-     */
-    fun applyPreset(preset: LyricsSourcePreference) {
-        val enabled = sourceOrder.toSet()
-        val available = LyricsSourceId.DefaultOrder.filter { it in enabled }
-        val local = available.filter { it.isLocal }
-        val online = available.filterNot { it.isLocal }
-        val orderedLocals = when (preset) {
-            LyricsSourcePreference.LOCAL_FIRST -> local.sortedBy { if (it == LyricsSourceId.LOCAL_LRC) 0 else 1 }
-            else -> local.sortedBy { if (it == LyricsSourceId.EMBEDDED) 0 else 1 }
-        }
-        sourceOrder = when (preset) {
-            LyricsSourcePreference.API_FIRST -> online + orderedLocals
-            else -> orderedLocals + online
-        }
-    }
 
     fun parseOptions(): LyricsParseOptions {
         val server = libreTranslateServer
