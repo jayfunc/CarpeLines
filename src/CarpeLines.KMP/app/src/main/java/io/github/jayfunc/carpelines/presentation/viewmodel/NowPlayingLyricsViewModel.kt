@@ -131,6 +131,14 @@ class NowPlayingLyricsViewModel @Inject constructor(
     val orderKey: Int
         get() = repository.sourceOrder.hashCode()
 
+    /**
+     * Changes whenever the translation/transliteration switches change. The page keeps the
+     * resolved [Lyrics] in its state, so without this key a toggle edited on the settings page
+     * would only take effect after the track changed.
+     */
+    val settingsKey: Int
+        get() = repository.parseOptionsKey
+
     fun resolveInternal(song: Song?, localLyrics: Lyrics?, localLoading: Boolean) {
         lastInternal = song
         lastExternal = null
@@ -139,7 +147,7 @@ class NowPlayingLyricsViewModel @Inject constructor(
             clear()
             return
         }
-        val key = "i|${song.id}|${song.lyrics != null}|$orderKey"
+        val key = "i|${song.id}|${song.lyrics != null}|$orderKey|$settingsKey"
         // "loading" alone is not proof that work is still running: a cancelled job can leave the
         // flag set, and returning early on it used to pin the page on its spinner forever.
         if (key == lastKey && (loadJob?.isActive == true || _state.value.lyrics?.hasContent() == true)) return
@@ -229,7 +237,7 @@ class NowPlayingLyricsViewModel @Inject constructor(
             clear()
             return
         }
-        val trackKey = "e|${media.identity}|$orderKey"
+        val trackKey = "e|${media.identity}|$orderKey|$settingsKey"
         // Duration is resolution input, not track identity: it often arrives a beat after the
         // title/artist. A later duration retries a failed lookup, but must not restart one that
         // already has lyrics on screen or is still running.

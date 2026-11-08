@@ -151,16 +151,28 @@ class BetterLyricsRepository @Inject constructor(
 
     fun isLocalSourceEnabled(source: LyricsSourceId): Boolean = sourceOrder.contains(source)
 
+    /**
+     * How a provider payload is parsed. Both tracks are always attached so a stored selection
+     * keeps them for later: the switches are presentation rules and are applied by
+     * [toPlayerLyrics]. Only the LibreTranslate fallback, which costs a network call, stays
+     * disabled while the translation switch is off.
+     */
     fun parseOptions(): LyricsParseOptions {
         val server = libreTranslateServer
         return LyricsParseOptions(
-            translationEnabled = translationEnabled,
-            romanizationEnabled = romanizationEnabled,
+            translationEnabled = true,
+            romanizationEnabled = true,
             targetTranslationLanguage = translationTargetLanguage,
-            libreTranslateEnabled = !server.isNullOrBlank(),
+            libreTranslateEnabled = translationEnabled && !server.isNullOrBlank(),
             libreTranslateServer = server,
         )
     }
+
+    /** Changes whenever a track option changes; lyrics pages key their reload on this. */
+    val parseOptionsKey: Int
+        get() = parseOptions().hashCode() * 31 +
+            translationEnabled.hashCode() * 17 +
+            romanizationEnabled.hashCode()
 
     /** Searches every configured provider and returns scored, unparsed candidates. */
     suspend fun search(song: Song, perProviderLimit: Int = 5): List<BetterLyricsCandidate> =
@@ -341,9 +353,30 @@ class BetterLyricsRepository @Inject constructor(
         )
     }
 
-    /** Converts a shared document into the model the existing player renderer consumes. */
-    fun toPlayerLyrics(document: LyricsDocument, fromRemote: Boolean = true): Lyrics =
-        BetterLyricsMapper.toPlayerLyrics(document, fromRemote)
+    /**
+     * Converts a shared document into the model the existing player renderer consumes.
+     *
+     * The two track switches are applied here as well, not only while parsing: a payload the core
+     * parser already paired with a translation, or a document persisted before the switch was
+     * turned off, would otherwise keep painting a layer the user asked not to use.
+     */
+    fun toPlayerLyrics(document: LyricsDocument, fromRemote: Boolean = true): Lyrics {
+        val showTranslation = translationEnabled
+        val showRomanization = romanizationEnabled
+        val visible = if (showTranslation && showRomanization) {
+            document
+        } else {
+            document.copy(
+                lines = document.lines.map { line ->
+                    line.copy(
+                        translation = line.translation.takeIf { showTranslation },
+                        romanization = line.romanization.takeIf { showRomanization },
+                    )
+                }
+            )
+        }
+        return BetterLyricsMapper.toPlayerLyrics(visible, fromRemote)
+    }
 
     /** Serializes a document back to enhanced LRC for persistence / export. */
     fun toEnhancedLrc(document: LyricsDocument): String =

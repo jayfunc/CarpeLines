@@ -58,7 +58,9 @@ object BetterLyricsMapper {
     /** Writes the enhanced-LRC the player persists, keeping syllable timing and voices. */
     fun toEnhancedLrc(document: LyricsDocument): String = buildString {
         document.lines.forEach { line ->
-            if (line.text.isBlank() && !line.hasBackgroundVocals) return@forEach
+            if (line.text.isBlank() && !line.hasBackgroundVocals && line.translation.isNullOrBlank()) {
+                return@forEach
+            }
             append(LyricsTime.formatLrcTimestamp(line.startMs))
             line.voice?.let { append("v$it:") }
             if (line.syllables.isNotEmpty() && line.hasRealSyllableTiming) {
@@ -86,6 +88,22 @@ object BetterLyricsMapper {
                     append(line.backgroundText.orEmpty().replace('\n', ' '))
                 }
                 append("]\n")
+            }
+
+            // Translations travel with the line they translate: a second line at the same
+            // timestamp is read back as its translation by the parser. A line that only has
+            // backing vocals cannot take that slot — the next sung line shares its time — so it
+            // uses the explicit tag instead. A translation identical to the original is skipped:
+            // the parser refuses to pair it and would draw it as a duplicated lyric line.
+            line.translation?.let { translation ->
+                if (translation.trim() == line.text.trim()) return@let
+                translation.lines().filter { it.isNotBlank() }.forEach { part ->
+                    if (line.text.isBlank()) {
+                        append("[tr:").append(part).append("]\n")
+                    } else {
+                        append(LyricsTime.formatLrcTimestamp(line.startMs)).append(part).append('\n')
+                    }
+                }
             }
         }
     }.trimEnd()

@@ -159,4 +159,25 @@ class BetterLyricsMapperTest {
         assertEquals("echo", parsed.backgroundText)
         assertEquals(1_000L, parsed.startMs)
     }
+
+    @Test
+    fun `enhanced lrc export keeps the translation readable by the parser`() {
+        val line = LyricsLine(
+            startMs = 1_000L,
+            endMs = 3_000L,
+            text = "Hello world",
+            syllables = listOf(
+                LyricsSyllable("Hello ", 1_000L, 1_500L, 0),
+                LyricsSyllable("world", 1_500L, 3_000L, 6),
+            ),
+            hasRealSyllableTiming = true,
+            translation = "你好世界",
+        )
+
+        val lrc = BetterLyricsMapper.toEnhancedLrc(document(listOf(line)))
+        val parsed = CoreLyricsMapper.toLines(CoreLyricsParser.parse(lrc)).single()
+
+        assertEquals("Hello world", parsed.text)
+        assertEquals("你好世界", parsed.translation)
+    }
 }

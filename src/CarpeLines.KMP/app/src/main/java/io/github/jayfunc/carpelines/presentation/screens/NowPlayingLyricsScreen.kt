@@ -290,7 +290,12 @@ fun NowPlayingLyricsScreen(
     // process being recreated — does not silently drop the cover back into the identity row.
     var albumFocused by rememberSaveable { mutableStateOf(false) }
 
-    LaunchedEffect(externalMedia?.identity, externalMedia?.durationMs, lyricsViewModel.orderKey) {
+    LaunchedEffect(
+        externalMedia?.identity,
+        externalMedia?.durationMs,
+        lyricsViewModel.orderKey,
+        lyricsViewModel.settingsKey,
+    ) {
         lyricsViewModel.resolveExternal(externalMedia)
     }
 
