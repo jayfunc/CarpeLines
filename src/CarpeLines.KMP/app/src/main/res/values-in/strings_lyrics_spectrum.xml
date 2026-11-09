@@ -14,6 +14,7 @@
     <string name="betterlyrics_spectrum_placement_subtitle">Tempat spektrum di halaman lirik</string>
     <string name="betterlyrics_spectrum_placement_bottom">Bawah</string>
     <string name="betterlyrics_spectrum_placement_top">Atas</string>
+    <string name="betterlyrics_spectrum_placement_around_album_art">Di sekitar sampul</string>
     <string name="betterlyrics_spectrum_bars_title">Jumlah batang</string>
     <string name="betterlyrics_spectrum_bars_subtitle">Lebih banyak batang menunjukkan detail lebih halus</string>
     <string name="betterlyrics_spectrum_sensitivity_title">Sensitivitas</string>

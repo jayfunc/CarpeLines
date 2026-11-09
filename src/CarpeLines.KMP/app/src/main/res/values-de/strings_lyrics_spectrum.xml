@@ -14,6 +14,7 @@
     <string name="betterlyrics_spectrum_placement_subtitle">Wo das Spektrum auf der Lyrics-Seite sitzt</string>
     <string name="betterlyrics_spectrum_placement_bottom">Unten</string>
     <string name="betterlyrics_spectrum_placement_top">Oben</string>
+    <string name="betterlyrics_spectrum_placement_around_album_art">Um das Cover</string>
     <string name="betterlyrics_spectrum_bars_title">Anzahl Balken</string>
     <string name="betterlyrics_spectrum_bars_subtitle">Mehr Balken zeigen feinere Details</string>
     <string name="betterlyrics_spectrum_sensitivity_title">Empfindlichkeit</string>

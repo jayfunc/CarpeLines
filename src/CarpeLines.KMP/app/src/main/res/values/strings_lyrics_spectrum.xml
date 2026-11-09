@@ -14,6 +14,7 @@
     <string name="betterlyrics_spectrum_placement_subtitle">Where the spectrum sits on the lyrics page</string>
     <string name="betterlyrics_spectrum_placement_bottom">Bottom</string>
     <string name="betterlyrics_spectrum_placement_top">Top</string>
+    <string name="betterlyrics_spectrum_placement_around_album_art">Around cover</string>
     <string name="betterlyrics_spectrum_bars_title">Bar count</string>
     <string name="betterlyrics_spectrum_bars_subtitle">More bars show finer detail</string>
     <string name="betterlyrics_spectrum_sensitivity_title">Sensitivity</string>

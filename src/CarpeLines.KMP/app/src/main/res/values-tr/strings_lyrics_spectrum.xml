@@ -14,6 +14,7 @@
     <string name="betterlyrics_spectrum_placement_subtitle">Spektrumun şarkı sözü sayfasındaki yeri</string>
     <string name="betterlyrics_spectrum_placement_bottom">Alt</string>
     <string name="betterlyrics_spectrum_placement_top">Üst</string>
+    <string name="betterlyrics_spectrum_placement_around_album_art">Kapak resminin çevresinde</string>
     <string name="betterlyrics_spectrum_bars_title">Çubuk sayısı</string>
     <string name="betterlyrics_spectrum_bars_subtitle">Daha fazla çubuk daha ince ayrıntı gösterir</string>
     <string name="betterlyrics_spectrum_sensitivity_title">Hassasiyet</string>

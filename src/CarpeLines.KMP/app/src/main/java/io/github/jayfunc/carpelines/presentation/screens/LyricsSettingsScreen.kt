@@ -874,6 +874,7 @@ fun LyricsSettingsScreen(
                                 options = mapOf(
                                     SpectrumPlacement.BOTTOM.name to stringResource(R.string.betterlyrics_spectrum_placement_bottom),
                                     SpectrumPlacement.TOP.name to stringResource(R.string.betterlyrics_spectrum_placement_top),
+                                    SpectrumPlacement.AROUND_ALBUM_ART.name to stringResource(R.string.betterlyrics_spectrum_placement_around_album_art),
                                 ),
                                 selectedKey = displaySettings.spectrumPlacement.name,
                                 onSelectionChanged = { key ->

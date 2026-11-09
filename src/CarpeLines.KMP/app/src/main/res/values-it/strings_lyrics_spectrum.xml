@@ -14,6 +14,7 @@
     <string name="betterlyrics_spectrum_placement_subtitle">Dove si trova lo spettro nella pagina dei testi</string>
     <string name="betterlyrics_spectrum_placement_bottom">In basso</string>
     <string name="betterlyrics_spectrum_placement_top">In alto</string>
+    <string name="betterlyrics_spectrum_placement_around_album_art">Attorno alla copertina</string>
     <string name="betterlyrics_spectrum_bars_title">Numero di barre</string>
     <string name="betterlyrics_spectrum_bars_subtitle">Più barre mostrano più dettagli</string>
     <string name="betterlyrics_spectrum_sensitivity_title">Sensibilità</string>

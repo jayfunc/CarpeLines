@@ -14,7 +14,10 @@ enum class SpectrumStyle {
 /** Where the spectrum band sits on the lyrics page. */
 enum class SpectrumPlacement {
     BOTTOM,
-    TOP;
+    TOP,
+
+    /** A frame around the album artwork, whichever size it is currently drawn at. */
+    AROUND_ALBUM_ART;
 
     companion object {
         fun fromStorage(value: String?): SpectrumPlacement =

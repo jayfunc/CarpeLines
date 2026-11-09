@@ -14,6 +14,7 @@
     <string name="betterlyrics_spectrum_placement_subtitle">가사 페이지에서 스펙트럼이 표시될 위치</string>
     <string name="betterlyrics_spectrum_placement_bottom">아래</string>
     <string name="betterlyrics_spectrum_placement_top">위</string>
+    <string name="betterlyrics_spectrum_placement_around_album_art">앨범 커버 주변</string>
     <string name="betterlyrics_spectrum_bars_title">막대 수</string>
     <string name="betterlyrics_spectrum_bars_subtitle">막대가 많을수록 더 세밀하게 표시됩니다</string>
     <string name="betterlyrics_spectrum_sensitivity_title">감도</string>

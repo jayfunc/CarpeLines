@@ -14,6 +14,7 @@
     <string name="betterlyrics_spectrum_placement_subtitle">歌詞ページ上でのスペクトルの位置</string>
     <string name="betterlyrics_spectrum_placement_bottom">下部</string>
     <string name="betterlyrics_spectrum_placement_top">上部</string>
+    <string name="betterlyrics_spectrum_placement_around_album_art">ジャケットの周囲</string>
     <string name="betterlyrics_spectrum_bars_title">バー数</string>
     <string name="betterlyrics_spectrum_bars_subtitle">バーが多いほど細かい表現になります</string>
     <string name="betterlyrics_spectrum_sensitivity_title">感度</string>

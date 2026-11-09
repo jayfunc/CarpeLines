@@ -14,6 +14,7 @@
     <string name="betterlyrics_spectrum_placement_subtitle">Hvor spekteret ligger på tekstsiden</string>
     <string name="betterlyrics_spectrum_placement_bottom">Bunn</string>
     <string name="betterlyrics_spectrum_placement_top">Topp</string>
+    <string name="betterlyrics_spectrum_placement_around_album_art">Rundt omslaget</string>
     <string name="betterlyrics_spectrum_bars_title">Antall søyler</string>
     <string name="betterlyrics_spectrum_bars_subtitle">Flere søyler viser finere detaljer</string>
     <string name="betterlyrics_spectrum_sensitivity_title">Følsomhet</string>

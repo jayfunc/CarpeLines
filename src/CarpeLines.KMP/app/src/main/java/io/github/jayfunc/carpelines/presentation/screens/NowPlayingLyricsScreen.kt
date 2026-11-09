@@ -433,6 +433,13 @@ fun NowPlayingLyricsScreen(
 
     var actionLine by remember { mutableStateOf<SyncedLine?>(null) }
 
+    // The around-the-artwork placement frames a rectangle that moves with the cover's flight.
+    // The panel reports it from its layout and the spectrum reads it in its draw pass, so the
+    // flight stays a layout animation instead of recomposing the page every frame.
+    var coverBoundsInRoot by remember { mutableStateOf(Rect.Zero) }
+    var coverCornerRadius by remember { mutableStateOf(ArtworkThumbnailCorner) }
+    var spectrumOriginInRoot by remember { mutableStateOf(Offset.Zero) }
+
     Box(modifier = Modifier.fillMaxSize()) {
         if (settings.ambientEnabled) {
             BetterLyricsAmbientBackground(
@@ -455,6 +462,68 @@ fun NowPlayingLyricsScreen(
         // A fixed scrim under the lyrics, not a per-line shadow: it darkens the whole column evenly,
         // so the words keep their edge on a busy cover and the page keeps one flat tone.
         LyricsScrim(colors = colors, modifier = Modifier.fillMaxSize())
+
+        // The spectrum belongs to the window, not to the lyrics band: the band is inset by the
+        // status bar and by the identity stack, so anchoring it there left a visible gap on
+        // whichever edge it was placed. Composed here it touches the screen edge directly.
+        val aroundAlbumArt = settings.spectrumPlacement == SpectrumPlacement.AROUND_ALBUM_ART
+        if (
+            header != null &&
+            settings.spectrumEnabled &&
+            spectrumSessionId != null &&
+            // The artwork is chrome, so a frame around it goes with the chrome: with the cover
+            // off the page there is nothing for the spectrum to surround.
+            (!aroundAlbumArt || chrome.visible)
+        ) {
+            BetterLyricsSpectrumOverlay(
+                frameFlow = spectrumAnalyzer.frame,
+                style = settings.spectrumStyle,
+                placement = settings.spectrumPlacement,
+                barCount = settings.spectrumBarCount,
+                opacity = settings.spectrumOpacity,
+                glowEnabled = settings.spectrumGlowEnabled,
+                breathingEnabled = settings.spectrumBreathingEnabled,
+                // The scheme's primary is the page's accent — the same colour as the title,
+                // the artist and the transport — so the spectrum stays on the app's palette
+                // instead of sampling a second hue off the cover.
+                color = MaterialTheme.colorScheme.primary,
+                coverBounds = if (aroundAlbumArt) {
+                    {
+                        coverBoundsInRoot.translate(
+                            -spectrumOriginInRoot.x,
+                            -spectrumOriginInRoot.y,
+                        )
+                    }
+                } else {
+                    null
+                },
+                // Read at draw time as well: the corner opens up while the cover grows.
+                coverCornerRadius = { coverCornerRadius },
+                modifier = if (aroundAlbumArt) {
+                    Modifier
+                        .fillMaxSize()
+                        .onGloballyPositioned { spectrumOriginInRoot = it.positionInRoot() }
+                } else {
+                    Modifier
+                        .fillMaxWidth()
+                        .height(
+                            if (settings.spectrumPlacement == SpectrumPlacement.TOP) {
+                                120.dp
+                            } else {
+                                150.dp
+                            }
+                        )
+                        .clipToBounds()
+                        .align(
+                            if (settings.spectrumPlacement == SpectrumPlacement.TOP) {
+                                Alignment.TopCenter
+                            } else {
+                                Alignment.BottomCenter
+                            }
+                        )
+                },
+            )
+        }
 
         // No track, no lyrics page: the permission / reconnect / empty states take the screen.
         if (header == null) {
@@ -666,38 +735,6 @@ fun NowPlayingLyricsScreen(
                             )
                     }
                     Box(modifier = Modifier.fillMaxSize()) {
-                        if (settings.spectrumEnabled && spectrumSessionId != null) {
-                            BetterLyricsSpectrumOverlay(
-                                frameFlow = spectrumAnalyzer.frame,
-                                style = settings.spectrumStyle,
-                                placement = settings.spectrumPlacement,
-                                barCount = settings.spectrumBarCount,
-                                opacity = settings.spectrumOpacity,
-                                glowEnabled = settings.spectrumGlowEnabled,
-                                breathingEnabled = settings.spectrumBreathingEnabled,
-                                color = palette?.vibrant
-                                    ?: palette?.dominant
-                                    ?: MaterialTheme.colorScheme.primary,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(
-                                        if (settings.spectrumPlacement == SpectrumPlacement.TOP) {
-                                            120.dp
-                                        } else {
-                                            150.dp
-                                        }
-                                    )
-                                    .clipToBounds()
-                                    .align(
-                                        if (settings.spectrumPlacement == SpectrumPlacement.TOP) {
-                                            Alignment.TopCenter
-                                        } else {
-                                            Alignment.BottomCenter
-                                        }
-                                    ),
-                            )
-                        }
-
                         when {
                             lyrics?.synced?.isNotEmpty() == true -> {
                                 val synced = remember(lyrics) { lyrics.synced.orEmpty().toImmutableList() }
@@ -819,6 +856,10 @@ fun NowPlayingLyricsScreen(
                 },
                 bottomPadding = paddingValues.calculateBottomPadding(),
                 splitLayout = splitLayout,
+                onCoverBoundsChange = { bounds, cornerRadius ->
+                    coverBoundsInRoot = bounds
+                    coverCornerRadius = cornerRadius
+                },
                 modifier = Modifier.fillMaxSize(),
             )
         }
@@ -930,6 +971,7 @@ private fun LyricsOverviewPanel(
     lyricsContent: @Composable (Modifier) -> Unit,
     bottomPadding: Dp,
     splitLayout: Boolean,
+    onCoverBoundsChange: (Rect, Dp) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // A window wide enough for two panes gets the player card beside the words; the compact page
@@ -954,6 +996,7 @@ private fun LyricsOverviewPanel(
             onSeek = onSeek,
             lyricsContent = lyricsContent,
             bottomPadding = bottomPadding,
+            onCoverBoundsChange = onCoverBoundsChange,
             modifier = modifier,
         )
         return
@@ -1259,7 +1302,14 @@ private fun LyricsOverviewPanel(
                         // belongs to bringing the chrome back — the band underneath listens.
                         Modifier
                     },
-                ),
+                )
+                .onGloballyPositioned {
+                    onCoverBoundsChange(
+                        it.boundsInRoot(),
+                        ArtworkThumbnailCorner +
+                            (ArtworkStageCorner - ArtworkThumbnailCorner) * focusProgress.value,
+                    )
+                },
         ) {
             LyricsIdentityArtwork(track = header, modifier = Modifier.fillMaxSize())
         }
@@ -1524,6 +1574,7 @@ private fun LyricsWidePanel(
     onSeek: (Long) -> Unit,
     lyricsContent: @Composable (Modifier) -> Unit,
     bottomPadding: Dp,
+    onCoverBoundsChange: (Rect, Dp) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // The face is the page's, not the track's: the split is only where a *new* page starts, so a
@@ -1735,7 +1786,14 @@ private fun LyricsWidePanel(
                     } else {
                         Modifier
                     },
-                ),
+                )
+                .onGloballyPositioned {
+                    onCoverBoundsChange(
+                        it.boundsInRoot(),
+                        ArtworkCardCorner +
+                            (ArtworkStageCorner - ArtworkCardCorner) * focusProgress.value,
+                    )
+                },
         ) {
             LyricsIdentityArtwork(track = header, modifier = Modifier.fillMaxSize())
         }

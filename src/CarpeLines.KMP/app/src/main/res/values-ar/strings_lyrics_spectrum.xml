@@ -14,6 +14,7 @@
     <string name="betterlyrics_spectrum_placement_subtitle">مكان الطيف في صفحة الكلمات</string>
     <string name="betterlyrics_spectrum_placement_bottom">الأسفل</string>
     <string name="betterlyrics_spectrum_placement_top">الأعلى</string>
+    <string name="betterlyrics_spectrum_placement_around_album_art">حول الغلاف</string>
     <string name="betterlyrics_spectrum_bars_title">عدد الأعمدة</string>
     <string name="betterlyrics_spectrum_bars_subtitle">مزيد من الأعمدة يظهر تفاصيل أدق</string>
     <string name="betterlyrics_spectrum_sensitivity_title">الحساسية</string>

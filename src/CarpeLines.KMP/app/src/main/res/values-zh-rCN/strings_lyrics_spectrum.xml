@@ -14,6 +14,7 @@
     <string name="betterlyrics_spectrum_placement_subtitle">频谱在歌词页上的位置</string>
     <string name="betterlyrics_spectrum_placement_bottom">底部</string>
     <string name="betterlyrics_spectrum_placement_top">顶部</string>
+    <string name="betterlyrics_spectrum_placement_around_album_art">专辑封面四周</string>
     <string name="betterlyrics_spectrum_bars_title">柱数</string>
     <string name="betterlyrics_spectrum_bars_subtitle">柱数越多，细节越细</string>
     <string name="betterlyrics_spectrum_sensitivity_title">灵敏度</string>

@@ -14,6 +14,7 @@
     <string name="betterlyrics_spectrum_placement_subtitle">Где спектр расположен на странице текста</string>
     <string name="betterlyrics_spectrum_placement_bottom">Снизу</string>
     <string name="betterlyrics_spectrum_placement_top">Сверху</string>
+    <string name="betterlyrics_spectrum_placement_around_album_art">Вокруг обложки</string>
     <string name="betterlyrics_spectrum_bars_title">Количество столбцов</string>
     <string name="betterlyrics_spectrum_bars_subtitle">Больше столбцов — больше деталей</string>
     <string name="betterlyrics_spectrum_sensitivity_title">Чувствительность</string>
