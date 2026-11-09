@@ -69,15 +69,13 @@
     <string name="setcat_application">Application</string>
     <string name="setcat_auto_hide_delay_desc">Temps avant que les contrôles ne se masquent</string>
     <string name="setcat_auto_hide_delay_label">Délai de masquage auto</string>
-    <string name="setcat_folder_album_art_permission_required">L\'accès complet aux photos est nécessaire pour lire les images des albums et des artistes dans vos dossiers de musique</string>
+    <string name="setcat_folder_album_art_permission_required">L\'accès complet aux photos est nécessaire pour lire les pochettes d\'album dans vos dossiers de musique</string>
     <string name="setcat_folder_album_art_refreshing">Actualisation des images…</string>
     <string name="setcat_create_backup">Créer une sauvegarde</string>
     <string name="setcat_default_tab_desc">Choisissez l\'onglet par défaut au lancement</string>
     <string name="setcat_default_tab_label">Onglet par défaut</string>
     <string name="setcat_export_backup_subtitle">%1$s Crée un fichier de sauvegarde .zip</string>
     <string name="setcat_export_backup_title">Exporter la sauvegarde</string>
-    <string name="setcat_external_artist_images_subtitle">Autoriser la récupération sur Deezer des images d\'artistes manquantes et leur mise en cache locale</string>
-    <string name="setcat_external_artist_images_title">Visuels d\'artistes depuis Deezer</string>
     <string name="setcat_global_theme">Thème global</string>
     <string name="setcat_immersive_lyrics_subtitle">Masquer auto les contrôles et agrandir le texte</string>
     <string name="setcat_immersive_lyrics_title">Paroles immersives</string>
@@ -204,7 +202,6 @@
     <string name="cover_source_deezer_subtitle">Rechercher la pochette de l\'album sur Deezer par titre et artiste</string>
     <string name="cover_source_local_title">Pochette intégrée locale</string>
     <string name="cover_source_local_subtitle">Utiliser la pochette intégrée ou du dossier du morceau correspondant dans la bibliothèque</string>
-    <string name="cover_sources_artist_section">Images d\'artistes</string>
     <string name="settings_category_player_filter_title">Filtre de lecteurs</string>
     <string name="settings_category_player_filter_subtitle">Choisissez les lecteurs que CarpeLines suit</string>
     <string name="player_filter_intro">Lorsque le filtre est activé, CarpeLines ne suit que les lecteurs sélectionnés. Leurs sessions multimédias alimentent l\'écran des paroles et les statistiques d\'écoute ; la lecture des autres applications est ignorée.</string>

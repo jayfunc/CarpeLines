@@ -69,15 +69,13 @@
     <string name="setcat_application">Applikasjon</string>
     <string name="setcat_auto_hide_delay_desc">Tid før kontrollene skjules</string>
     <string name="setcat_auto_hide_delay_label">Forsinkelse for autoskjuling</string>
-    <string name="setcat_folder_album_art_permission_required">Full tilgang til bilder kreves for å lese album- og artistbilder fra musikkmappene dine</string>
+    <string name="setcat_folder_album_art_permission_required">Full tilgang til bilder kreves for å lese albumomslag fra musikkmappene dine</string>
     <string name="setcat_folder_album_art_refreshing">Oppdaterer bilder…</string>
     <string name="setcat_create_backup">Opprett sikkerhetskopi</string>
     <string name="setcat_default_tab_desc">Velg standardfane ved oppstart</string>
     <string name="setcat_default_tab_label">Standardfane</string>
     <string name="setcat_export_backup_subtitle">%1$s Oppretter en .zip-fil</string>
     <string name="setcat_export_backup_title">Eksporter sikkerhetskopi</string>
-    <string name="setcat_external_artist_images_subtitle">Tillat at manglende artistbilder hentes fra Deezer og lagres lokalt i cachen</string>
-    <string name="setcat_external_artist_images_title">Artistbilder fra Deezer</string>
     <string name="setcat_global_theme">Globalt tema</string>
     <string name="setcat_immersive_lyrics_subtitle">Skjul kontroller automatisk og forstørr tekst</string>
     <string name="setcat_immersive_lyrics_title">Immersiv sangtekst</string>
@@ -204,7 +202,6 @@
     <string name="cover_source_deezer_subtitle">Slå opp albumomslaget på Deezer etter tittel og artist</string>
     <string name="cover_source_local_title">Lokalt innebygd omslag</string>
     <string name="cover_source_local_subtitle">Bruk innebygd eller mappeomslag for den matchende sangen i biblioteket</string>
-    <string name="cover_sources_artist_section">Artistbilder</string>
     <string name="settings_category_player_filter_title">Spillerfilter</string>
     <string name="settings_category_player_filter_subtitle">Velg hvilke spillere CarpeLines følger</string>
     <string name="player_filter_intro">Når filteret er på, følger CarpeLines bare spillerne du velger. Medieøktene deres brukes til tekstskjermen og lyttestatistikken; avspilling fra andre apper ignoreres.</string>

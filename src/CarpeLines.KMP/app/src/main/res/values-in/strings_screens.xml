@@ -74,10 +74,6 @@
     <string name="setup_choose_folders_ignore">Pilih folder untuk diabaikan</string>
     <string name="setup_excluded_folders_description">Semua folder dipindai secara default. Pilih lokasi yang ingin diabaikan saat memindai lirik tertanam dan file .lrc.</string>
     <string name="setup_excluded_folders_title">Folder yang dikecualikan</string>
-    <string name="setup_external_artist_images_description">Ambil foto artis yang belum tersedia dari Deezer dan simpan di cache lokal</string>
-    <string name="setup_external_artist_images_title">Gambar artis dari Deezer</string>
-    <string name="setup_external_services_footer">Kamu dapat mengubahnya nanti di Pengaturan &gt; Layanan Online</string>
-    <string name="setup_external_services_title">Layanan Online</string>
     <string name="setup_grant_media_permission">Berikan Izin Media</string>
     <string name="setup_import_backup">Impor cadangan</string>
     <string name="setup_inspecting_backup">Memeriksa cadangan</string>
@@ -111,7 +107,6 @@
     <string name="toast_grant_permission_first">Mohon berikan izin yang diperlukan terlebih dahulu</string>
     <string name="toast_grant_storage_first">Berikan izin penyimpanan terlebih dahulu</string>
     <string name="unknown_version">Versi tidak dikenal</string>
-    <string name="setup_external_services_subtitle">Lirik online aktif secara default. Atur urutannya di Pengaturan &gt; Lirik &gt; Urutan sumber lirik.</string>
     <string name="setup_permission_media_description">CarpeLines membaca file audio di perangkat ini untuk menemukan lirik tertanam dan file .lrc di folder yang sama. File audio kamu tetap di perangkat ini.</string>
     <string name="setup_backup_have_description">Jika Anda sudah memiliki cadangan CarpeLines, pulihkan sekarang dan lewati sebagian besar penyiapan lainnya di perangkat ini</string>
     <string name="setup_theme_dark_description">Tampilan gelap Material 3 bawaan untuk CarpeLines</string>

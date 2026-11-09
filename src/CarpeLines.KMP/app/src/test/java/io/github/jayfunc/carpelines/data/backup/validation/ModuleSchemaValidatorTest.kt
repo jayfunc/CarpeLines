@@ -44,22 +44,6 @@ class ModuleSchemaValidatorTest {
     }
 
     @Test
-    fun `artist images with non-https URL emits warning`() {
-        val payload = """[{"artistName": "Test", "imageUrl": "http://insecure.com/img.jpg"}]"""
-        val result = validator.validate(BackupSection.ARTIST_IMAGES, payload)
-        assertTrue(result is BackupValidationResult.Invalid)
-        val warnings = (result as BackupValidationResult.Invalid).warnings
-        assertTrue(warnings.any { it.code == "INSECURE_URL" })
-    }
-
-    @Test
-    fun `artist images with valid https URL passes`() {
-        val payload = """[{"artistName": "Test", "imageUrl": "https://cdn.example.com/img.jpg"}]"""
-        val result = validator.validate(BackupSection.ARTIST_IMAGES, payload)
-        assertTrue(result.isValid())
-    }
-
-    @Test
     fun `playback history with negative duration emits warning`() {
         val payload = """[{"songId": "123", "timestamp": 1700000000000, "durationMs": -500}]"""
         val result = validator.validate(BackupSection.PLAYBACK_HISTORY, payload)
@@ -129,12 +113,6 @@ class ModuleSchemaValidatorTest {
         )
         assertTrue(history is BackupValidationResult.Invalid)
         assertTrue((history as BackupValidationResult.Invalid).warnings.any { it.code == "INVALID_DURATION" })
-
-        val images = validator.validate(
-            BackupSection.ARTIST_IMAGES,
-            """[{"artistName":"Test","imageUrl":{"bad":1}}]"""
-        )
-        assertTrue(images is BackupValidationResult.Invalid)
     }
 
     @Test

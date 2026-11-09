@@ -395,7 +395,7 @@ object AlbumArtUtils {
         }
     }
 
-    /** Shared validation for folder album covers and artist portraits. */
+    /** Shared validation for folder album covers. */
     internal fun isUsableExternalArtwork(file: File): Boolean =
         readExternalArtworkFileBytes(file) != null
 

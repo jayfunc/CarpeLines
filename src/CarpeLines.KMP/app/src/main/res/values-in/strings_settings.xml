@@ -69,15 +69,13 @@
     <string name="setcat_application">Aplikasi</string>
     <string name="setcat_auto_hide_delay_desc">Waktu sebelum kontrol disembunyikan</string>
     <string name="setcat_auto_hide_delay_label">Penundaan Sembunyi Otomatis</string>
-    <string name="setcat_folder_album_art_permission_required">Akses foto penuh diperlukan untuk membaca gambar album dan artis dari folder musik Anda</string>
+    <string name="setcat_folder_album_art_permission_required">Akses foto penuh diperlukan untuk membaca sampul album dari folder musik Anda</string>
     <string name="setcat_folder_album_art_refreshing">Memperbarui gambar…</string>
     <string name="setcat_create_backup">Buat Cadangan</string>
     <string name="setcat_default_tab_desc">Pilih tab peluncuran Default</string>
     <string name="setcat_default_tab_label">Tab Default</string>
     <string name="setcat_export_backup_subtitle">%1$s Membuat file cadangan .zip</string>
     <string name="setcat_export_backup_title">Ekspor Cadangan</string>
-    <string name="setcat_external_artist_images_subtitle">Izinkan gambar artis yang belum tersedia diambil dari Deezer dan disimpan di cache lokal</string>
-    <string name="setcat_external_artist_images_title">Gambar artis dari Deezer</string>
     <string name="setcat_global_theme">Tema Global</string>
     <string name="setcat_immersive_lyrics_subtitle">Sembunyikan kontrol otomatis dan perbesar teks</string>
     <string name="setcat_immersive_lyrics_title">Lirik Imersif</string>
@@ -204,7 +202,6 @@
     <string name="cover_source_deezer_subtitle">Cari sampul album di Deezer berdasarkan judul lagu dan artis</string>
     <string name="cover_source_local_title">Sampul tertanam lokal</string>
     <string name="cover_source_local_subtitle">Gunakan sampul tertanam atau folder dari lagu yang cocok di pustaka</string>
-    <string name="cover_sources_artist_section">Gambar artis</string>
     <string name="settings_category_player_filter_title">Filter pemutar</string>
     <string name="settings_category_player_filter_subtitle">Pilih pemutar yang diikuti CarpeLines</string>
     <string name="player_filter_intro">Saat filter aktif, CarpeLines hanya mengikuti pemutar yang Anda pilih. Sesi media mereka mengisi layar lirik dan statistik mendengarkan; pemutaran dari aplikasi lain diabaikan.</string>

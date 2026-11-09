@@ -32,12 +32,6 @@ enum class BackupSection(
         labelRes = R.string.backup_module_playback_history_label,
         descriptionRes = R.string.backup_module_playback_history_description,
         iconRes = R.drawable.rounded_schedule_24
-    ),
-    ARTIST_IMAGES(
-        key = "artist_images",
-        labelRes = R.string.backup_module_artist_images_label,
-        descriptionRes = R.string.backup_module_artist_images_description,
-        iconRes = R.drawable.rounded_person_24
     );
 
     companion object {

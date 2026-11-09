@@ -74,10 +74,6 @@
     <string name="setup_choose_folders_ignore">Velg mapper som skal ignoreres</string>
     <string name="setup_excluded_folders_description">Alle mapper skannes som standard. Velg plasseringer du vil ignorere når det søkes etter innebygde tekster og .lrc-filer.</string>
     <string name="setup_excluded_folders_title">Ekskluderte mapper</string>
-    <string name="setup_external_artist_images_description">Hent manglende artistbilder fra Deezer og lagre dem lokalt i cachen</string>
-    <string name="setup_external_artist_images_title">Artistbilder fra Deezer</string>
-    <string name="setup_external_services_footer">Du kan endre dette senere i Innstillinger &gt; Nettjenester</string>
-    <string name="setup_external_services_title">Nettjenester</string>
     <string name="setup_grant_media_permission">Gi medietilgang</string>
     <string name="setup_import_backup">Importer sikkerhetskopi</string>
     <string name="setup_inspecting_backup">Inspiserer sikkerhetskopi</string>
@@ -111,7 +107,6 @@
     <string name="toast_grant_permission_first">Vennligst gi nødvendig tillatelse først</string>
     <string name="toast_grant_storage_first">Gi lagringstilgang først</string>
     <string name="unknown_version">Ukjent versjon</string>
-    <string name="setup_external_services_subtitle">Nettbaserte sangtekster er på som standard. Endre rekkefølgen i Innstillinger &gt; Sangtekster &gt; Rekkefølge for sangtekstkilder.</string>
     <string name="setup_permission_media_description">CarpeLines leser lydfiler på denne enheten for å finne innebygde tekster og .lrc-filer i samme mappe. Lydfilene dine blir værende på denne enheten.</string>
     <string name="setup_backup_have_description">Hvis du allerede har en CarpeLines-sikkerhetskopi, kan du gjenopprette den nå og hoppe over det meste av resten av oppsettet på denne enheten</string>
     <string name="setup_theme_dark_description">Standard mørkt Material 3-utseende for CarpeLines</string>

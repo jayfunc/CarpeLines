@@ -21,7 +21,6 @@ import io.github.jayfunc.carpelines.data.external.ExternalMediaMonitor
 import io.github.jayfunc.carpelines.data.preferences.AppThemeMode
 import io.github.jayfunc.carpelines.data.preferences.ThemePreferencesRepository
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
-import io.github.jayfunc.carpelines.data.repository.MusicRepository
 import io.github.jayfunc.carpelines.data.worker.SyncManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -34,7 +33,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 import java.io.File
 
@@ -43,7 +41,6 @@ data class SetupUiState(
     val notificationAccessGranted: Boolean = false,
     val isLoadingDirectories: Boolean = false,
     val blockedDirectories: Set<String> = emptySet(),
-    val externalArtistImagesEnabled: Boolean = false,
     val appThemeMode: String = AppThemeMode.DARK,
     val isInspectingBackup: Boolean = false,
     val isRestoringBackup: Boolean = false,
@@ -72,7 +69,6 @@ class SetupViewModel @Inject constructor(
     private val themePreferencesRepository: ThemePreferencesRepository,
     private val syncManager: SyncManager,
     private val backupManager: BackupManager,
-    private val musicRepository: MusicRepository,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -113,21 +109,18 @@ class SetupViewModel @Inject constructor(
         viewModelScope.launch {
             combine<Any?, SetupPrefsUpdate>(
                 userPreferencesRepository.blockedDirectoriesFlow,
-                userPreferencesRepository.externalArtistImagesEnabledFlow,
                 themePreferencesRepository.appThemeModeFlow
             ) { values ->
                 @Suppress("UNCHECKED_CAST")
                 val blockedDirectories = values[0] as Set<String>
                 SetupPrefsUpdate(
                     blocked = blockedDirectories,
-                    externalArtistImagesEnabled = values[1] as Boolean,
-                    appThemeMode = values[2] as String
+                    appThemeMode = values[1] as String
                 )
             }.collect { update ->
                 _uiState.update { state ->
                     state.copy(
                         blockedDirectories = update.blocked,
-                        externalArtistImagesEnabled = update.externalArtistImagesEnabled,
                         appThemeMode = update.appThemeMode
                     )
                 }
@@ -143,7 +136,6 @@ class SetupViewModel @Inject constructor(
     
     private data class SetupPrefsUpdate(
         val blocked: Set<String>,
-        val externalArtistImagesEnabled: Boolean,
         val appThemeMode: String
     )
 
@@ -221,12 +213,6 @@ class SetupViewModel @Inject constructor(
     fun isAtRoot(): Boolean = fileExplorerStateHolder.isAtRoot()
 
     fun explorerRoot(): File = fileExplorerStateHolder.rootDirectory()
-
-    fun setExternalArtistImagesEnabled(enabled: Boolean) {
-        viewModelScope.launch {
-            userPreferencesRepository.setExternalArtistImagesEnabled(enabled)
-        }
-    }
 
     fun setAppThemeMode(mode: String) {
         viewModelScope.launch {
@@ -353,8 +339,6 @@ class SetupViewModel @Inject constructor(
                 )
             }
 
-            ensureLibraryScannedFor(plan)
-
             val result = backupManager.restore(uri, plan) { progress ->
                 _uiState.update { state -> state.copy(backupTransferProgress = progress) }
             }
@@ -408,38 +392,10 @@ class SetupViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Artist images are matched by artist name, so on a fresh install the library has to exist
-     * before that module can be applied. Setup restores before its own scan, so run (and wait for)
-     * the initial scan first.
-     *
-     * The wait is bounded: a huge library that is still scanning when the timeout hits lets the
-     * restore continue, and the affected module reports itself as skipped instead of silently
-     * restoring nothing.
-     */
-    private suspend fun ensureLibraryScannedFor(plan: RestorePlan) {
-        val needsLibrary = plan.selectedModules.any {
-            it == BackupSection.ARTIST_IMAGES
-        }
-        if (!needsLibrary) return
-        if (musicRepository.getSongCountFlow().first() > 0) return
-
-        syncManager.fullSync(deepScan = false)
-        withTimeoutOrNull(INITIAL_SCAN_WAIT_MS) {
-            syncManager.syncProgress.first { it.isRunning }
-            syncManager.syncProgress.first { !it.isRunning }
-        }
-    }
-
     private suspend fun completeSetup(syncAfter: Boolean) {
         userPreferencesRepository.setInitialSetupDone(true)
         if (syncAfter) {
             syncManager.fullSync(deepScan = false)
         }
-    }
-
-    private companion object {
-        /** How long a restore waits for the initial scan before applying what it can. */
-        const val INITIAL_SCAN_WAIT_MS = 120_000L
     }
 }

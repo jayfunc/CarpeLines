@@ -8,7 +8,6 @@ import io.github.jayfunc.carpelines.data.backup.format.BackupReader
 import io.github.jayfunc.carpelines.data.backup.model.BackupSection
 import io.github.jayfunc.carpelines.data.backup.model.ModuleRestoreDetail
 import io.github.jayfunc.carpelines.data.backup.model.RestorePlan
-import io.github.jayfunc.carpelines.data.backup.module.BackupSongResolver
 import io.github.jayfunc.carpelines.data.backup.validation.ContentSanitizer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,23 +18,8 @@ import javax.inject.Singleton
 class RestorePlanner @Inject constructor(
     @ApplicationContext private val context: Context,
     private val backupReader: BackupReader,
-    private val songResolver: BackupSongResolver,
     private val contentSanitizer: ContentSanitizer
 ) {
-    companion object {
-        /**
-         * Sections whose restore merges into the existing data instead of replacing it: entries the
-         * backup does not mention keep their local values.
-         */
-        private val MERGING_SECTIONS = setOf(
-            BackupSection.ARTIST_IMAGES
-        )
-
-        /** Sections that need the library to be scanned before their entries can be matched. */
-        private val LIBRARY_MATCHED_SECTIONS = setOf(
-            BackupSection.ARTIST_IMAGES
-        )
-    }
 
     /**
      * Reads the backup manifest and builds a RestorePlan showing what modules are available, their
@@ -65,8 +49,7 @@ class RestorePlanner @Inject constructor(
                 }
                 moduleDetails[section] = ModuleRestoreDetail(
                     entryCount = info?.entryCount ?: 0,
-                    sizeBytes = sizeBytes,
-                    willOverwrite = section !in MERGING_SECTIONS
+                    sizeBytes = sizeBytes
                 )
             }
             val restorableModules = availableModules - oversizedModules.toSet()
@@ -86,11 +69,6 @@ class RestorePlanner @Inject constructor(
                     sizeMb,
                     BackupReader.MAX_MODULE_PAYLOAD_BYTES / (1024 * 1024)
                 )
-            }
-            if (restorableModules.any { it in LIBRARY_MATCHED_SECTIONS } &&
-                songResolver.library().isEmpty
-            ) {
-                warnings += context.getString(R.string.backup_plan_warning_library_not_scanned)
             }
 
             RestorePlan(

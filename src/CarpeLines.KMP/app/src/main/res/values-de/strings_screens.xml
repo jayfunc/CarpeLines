@@ -74,10 +74,6 @@
     <string name="setup_choose_folders_ignore">Zu ignorierende Ordner wählen</string>
     <string name="setup_excluded_folders_description">Standardmäßig werden alle Ordner durchsucht. Wähle Orte aus, die beim Suchen nach eingebetteten Lyrics und .lrc-Dateien ignoriert werden sollen.</string>
     <string name="setup_excluded_folders_title">Ausgeschlossene Ordner</string>
-    <string name="setup_external_artist_images_description">Fehlende Künstlerfotos von Deezer laden und lokal zwischenspeichern</string>
-    <string name="setup_external_artist_images_title">Künstlerbilder von Deezer</string>
-    <string name="setup_external_services_footer">Du kannst das später unter Einstellungen &gt; Online-Dienste ändern</string>
-    <string name="setup_external_services_title">Online-Dienste</string>
     <string name="setup_grant_media_permission">Medienberechtigung erteilen</string>
     <string name="setup_import_backup">Backup importieren</string>
     <string name="setup_inspecting_backup">Backup wird geprüft</string>
@@ -111,7 +107,6 @@
     <string name="toast_grant_permission_first">Bitte zuerst die erforderliche Berechtigung erteilen</string>
     <string name="toast_grant_storage_first">Zuerst Speicherberechtigung erteilen</string>
     <string name="unknown_version">Unbekannte Version</string>
-    <string name="setup_external_services_subtitle">Online-Lyrics sind standardmäßig aktiv. Ihre Reihenfolge lässt sich unter Einstellungen &gt; Lyrics &gt; Reihenfolge der Lyrikquellen anpassen.</string>
     <string name="setup_permission_media_description">CarpeLines liest Audiodateien auf diesem Gerät, um eingebettete Lyrics und .lrc-Dateien im selben Ordner zu finden. Deine Audiodateien bleiben auf diesem Gerät.</string>
     <string name="setup_backup_have_description">Wenn du bereits ein CarpeLines-Backup hast, stelle es jetzt wieder her und überspringe den Großteil der restlichen Einrichtung auf diesem Gerät</string>
     <string name="setup_theme_dark_description">Das standardmäßige dunkle Material-3-Design für CarpeLines</string>

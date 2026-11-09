@@ -220,7 +220,6 @@ constructor(
 
         val LYRICS_SOURCE_PREFERENCE = stringPreferencesKey("lyrics_source_preference")
         val EXTERNAL_LYRICS_ENABLED = booleanPreferencesKey("external_lyrics_enabled")
-        val EXTERNAL_ARTIST_IMAGES_ENABLED = booleanPreferencesKey("external_artist_images_enabled")
         val COVER_ART_SOURCE_ORDER = stringPreferencesKey("cover_art_source_order")
         val EXTERNAL_PLAYER_FILTER_ENABLED = booleanPreferencesKey("external_player_filter_enabled")
         val EXTERNAL_PLAYER_ALLOWED_PACKAGES =
@@ -661,17 +660,6 @@ constructor(
             if (!enabled && preferences[PreferencesKeys.LYRICS_SOURCE_PREFERENCE] == LyricsSourcePreference.API_FIRST.name) {
                 preferences[PreferencesKeys.LYRICS_SOURCE_PREFERENCE] = LyricsSourcePreference.EMBEDDED_FIRST.name
             }
-        }
-    }
-
-    val externalArtistImagesEnabledFlow: Flow<Boolean> =
-            dataStore.data.map { preferences ->
-                preferences[PreferencesKeys.EXTERNAL_ARTIST_IMAGES_ENABLED] ?: false
-            }.distinctUntilChanged()
-
-    suspend fun setExternalArtistImagesEnabled(enabled: Boolean) {
-        dataStore.edit { preferences ->
-            preferences[PreferencesKeys.EXTERNAL_ARTIST_IMAGES_ENABLED] = enabled
         }
     }
 

@@ -278,22 +278,6 @@ object SettingsRegistry {
                     "封面", "封面源", "专辑封面", "内嵌封面", "封面来源"
                 )
             ),
-            SettingSpec(
-                id = "cover_sources_deezer_artist_images",
-                itemKey = "item_cover_sources_deezer_artist_images",
-                titleRes = R.string.setcat_external_artist_images_title,
-                subtitleRes = R.string.setcat_external_artist_images_subtitle,
-                category = SettingsCategory.COVER_SOURCES,
-                subscreenRoute = Screen.CoverSources.createRoute(),
-                type = SettingType.SWITCH,
-                keywordsStatic = listOf(
-                    "deezer", "artist images", "artist artwork", "portraits",
-                    "歌手封面", "艺术家图片"
-                ),
-                getValue = { it.externalArtistImagesEnabled },
-                onToggle = { viewModel, checked -> viewModel.setExternalArtistImagesEnabled(checked) }
-            ),
-
             // --- PLAYER FILTER CATEGORY ---
             SettingSpec(
                 id = "player_filter",

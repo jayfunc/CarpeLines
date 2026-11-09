@@ -22,7 +22,7 @@ class RecapSlidesTest {
 
     @Test
     fun `a full year tells every slide in story order`() {
-        val slides = buildRecapSlides(recap(), isSoFar = false, artistImages = emptyMap(), canPlayTopSongs = true)
+        val slides = buildRecapSlides(recap(), isSoFar = false, artistCovers = emptyMap(), canPlayTopSongs = true)
 
         assertThat(slides.map { it::class }).containsExactly(
             RecapSlide.Intro::class,
@@ -41,7 +41,7 @@ class RecapSlidesTest {
 
     @Test
     fun `slide keys are unique`() {
-        val slides = buildRecapSlides(recap(), isSoFar = false, artistImages = emptyMap(), canPlayTopSongs = true)
+        val slides = buildRecapSlides(recap(), isSoFar = false, artistCovers = emptyMap(), canPlayTopSongs = true)
 
         assertThat(slides.map { it.key }).containsNoDuplicates()
     }
@@ -56,7 +56,7 @@ class RecapSlidesTest {
             topDecade = null
         )
 
-        val slides = buildRecapSlides(bare, isSoFar = true, artistImages = emptyMap(), canPlayTopSongs = false)
+        val slides = buildRecapSlides(bare, isSoFar = true, artistCovers = emptyMap(), canPlayTopSongs = false)
 
         assertThat(slides.map { it::class }).containsExactly(
             RecapSlide.Intro::class,
@@ -75,7 +75,7 @@ class RecapSlidesTest {
             summary = summary(genres = listOf(genre(PlaybackStatsRepository.UNKNOWN_GENRE, 3 * hour)))
         )
 
-        val slides = buildRecapSlides(onlyUnknown, isSoFar = false, artistImages = emptyMap(), canPlayTopSongs = true)
+        val slides = buildRecapSlides(onlyUnknown, isSoFar = false, artistCovers = emptyMap(), canPlayTopSongs = true)
 
         assertThat(slides.none { it is RecapSlide.Genres }).isTrue()
         assertThat((slides.last() as RecapSlide.Summary).topGenre).isNull()
@@ -99,7 +99,7 @@ class RecapSlidesTest {
         val slides = buildRecapSlides(
             withUnknowns,
             isSoFar = false,
-            artistImages = mapOf("Aurora Fields" to "content://artist/aurora"),
+            artistCovers = mapOf("Aurora Fields" to "content://artist/aurora"),
             canPlayTopSongs = true
         )
 
@@ -118,7 +118,7 @@ class RecapSlidesTest {
             )
         )
 
-        val slides = buildRecapSlides(onlyUnknown, isSoFar = false, artistImages = emptyMap(), canPlayTopSongs = true)
+        val slides = buildRecapSlides(onlyUnknown, isSoFar = false, artistCovers = emptyMap(), canPlayTopSongs = true)
 
         assertThat(slides.none { it is RecapSlide.TopArtists }).isTrue()
     }
@@ -128,7 +128,7 @@ class RecapSlidesTest {
         val slides = buildRecapSlides(
             recap(topDecade = null),
             isSoFar = false,
-            artistImages = emptyMap(),
+            artistCovers = emptyMap(),
             canPlayTopSongs = true
         )
 
@@ -146,7 +146,7 @@ class RecapSlidesTest {
                 )
             ),
             isSoFar = false,
-            artistImages = emptyMap(),
+            artistCovers = emptyMap(),
             canPlayTopSongs = true
         )
 
@@ -160,7 +160,7 @@ class RecapSlidesTest {
         val slides = buildRecapSlides(
             recap(summary = summary(totalMs = 300 * hour, averageDailyMs = 2 * hour), daysInRange = 296),
             isSoFar = true,
-            artistImages = emptyMap(),
+            artistCovers = emptyMap(),
             canPlayTopSongs = true
         )
 
@@ -175,7 +175,7 @@ class RecapSlidesTest {
         val slides = buildRecapSlides(
             recap(summary = summary(totalMs = 10 * hour, genres = listOf(genre("Indie Rock", 4 * hour)))),
             isSoFar = false,
-            artistImages = emptyMap(),
+            artistCovers = emptyMap(),
             canPlayTopSongs = true
         )
 

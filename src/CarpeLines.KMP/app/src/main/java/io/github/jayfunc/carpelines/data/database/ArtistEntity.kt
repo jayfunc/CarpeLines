@@ -15,6 +15,9 @@ data class ArtistEntity(
     @PrimaryKey val id: Long,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "track_count") val trackCount: Int,
+    // Legacy columns from the removed artist-portrait feature. They stay in the schema because
+    // dropping them would rebuild a table referenced by two foreign keys; nothing reads or
+    // writes them any more.
     @ColumnInfo(name = "image_url") val imageUrl: String? = null,
     @ColumnInfo(name = "custom_image_uri") val customImageUri: String? = null
 )
@@ -23,9 +26,7 @@ fun ArtistEntity.toArtist(): Artist {
     return Artist(
         id = this.id,
         name = this.name.normalizeMetadataTextOrEmpty(),
-        songCount = this.trackCount,
-        imageUrl = this.imageUrl,
-        customImageUri = this.customImageUri
+        songCount = this.trackCount
     )
 }
 
@@ -37,8 +38,6 @@ fun Artist.toEntity(): ArtistEntity {
     return ArtistEntity(
         id = this.id,
         name = this.name,
-        trackCount = this.songCount,
-        imageUrl = this.imageUrl,
-        customImageUri = this.customImageUri
+        trackCount = this.songCount
     )
 }

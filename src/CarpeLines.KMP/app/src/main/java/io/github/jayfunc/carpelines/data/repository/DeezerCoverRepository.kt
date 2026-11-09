@@ -22,9 +22,9 @@ import timber.log.Timber
 /**
  * Resolves an album cover for the playing track from Deezer.
  *
- * Deezer was previously only used for artist portraits. The cover-source chain asks this
- * repository only when Deezer outranks the sources that can already produce a picture, so a
- * track whose session or library already has artwork never pays for a network search.
+ * The cover-source chain asks this repository only when Deezer outranks the sources that can
+ * already produce a picture, so a track whose session or library already has artwork never pays
+ * for a network search.
  *
  * The cover is downloaded into the app cache and handed back as a `file` URI: the lyrics page
  * samples that bitmap for its palette and the share card decodes it, and neither can read a

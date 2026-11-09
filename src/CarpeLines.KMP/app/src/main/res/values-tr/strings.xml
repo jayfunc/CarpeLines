@@ -145,12 +145,9 @@
     <string name="backup_module_engagement_stats_description">Şarkı başına çalma sayısı ve toplam dinleme süresi</string>
     <string name="backup_module_playback_history_label">Oynatma geçmişi</string>
     <string name="backup_module_playback_history_description">Son Çalınanlar ve istatistikler için kullanılan her dinleme oturumunun zamanı ve süresi</string>
-    <string name="backup_module_artist_images_label">Sanatçı görselleri</string>
-    <string name="backup_module_artist_images_description">Sanatçı görsel bağlantıları ve yüklediğiniz özel görseller</string>
     <string name="backup_module_skipped_warning">%1$s atlandı: %2$s</string>
     <string name="backup_error_export_module_too_large">%1$s %2$dMB boyutunda, modül başına %3$dMB sınırını aşıyor. Seçimi kaldırıp tekrar deneyin</string>
     <string name="backup_error_export_too_large">Yedek %1$dMB olacak, %2$dMB sınırını aşıyor. Bazı modüllerin seçimini kaldırıp tekrar deneyin</string>
     <string name="backup_plan_warning_legacy_schema">Bu eski bir yedek (v%1$d). Bazı modüller kullanılamayabilir</string>
-    <string name="backup_plan_warning_library_not_scanned">Önce müzik kitaplığını tarayın: sanatçı görselleri kitaplıkla eşleştirilir</string>
     <string name="data_restored_with_warnings">Veriler geri yüklendi ancak bazı modüller atlandı:\n%1$s</string>
 </resources>

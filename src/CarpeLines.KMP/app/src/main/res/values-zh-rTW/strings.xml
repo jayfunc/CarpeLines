@@ -83,13 +83,10 @@
 <string name="backup_module_engagement_stats_description">每首歌的播放次數與累計收聽時長</string>
 <string name="backup_module_playback_history_label">播放歷史</string>
 <string name="backup_module_playback_history_description">每次播放的時間與時長記錄，用於最近播放和統計</string>
-<string name="backup_module_artist_images_label">歌手頭像</string>
-<string name="backup_module_artist_images_description">歌手頭像連結，以及你上傳的自訂頭像</string>
 <string name="backup_module_skipped_warning">已略過%1$s：%2$s</string>
 <string name="backup_error_export_module_too_large">%1$s 已達 %2$dMB，超過單一模組 %3$dMB 上限。請取消勾選後重試</string>
 <string name="backup_error_export_too_large">備份總大小將達 %1$dMB，超過 %2$dMB 上限。請減少勾選的模組後重試</string>
 <string name="backup_plan_warning_legacy_schema">這是舊版備份（v%1$d），部分模組可能無法使用</string>
-<string name="backup_plan_warning_library_not_scanned">請先掃描音樂庫：歌手頭像需要與音樂庫比對</string>
 <string name="backup_progress_starting_backup_task">開始備份任務</string>
 <string name="restore_completed_success">備份還原成功</string>
 <string name="restore_completed_partial_issues">還原完成，但存在部分未解決問題</string>

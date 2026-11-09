@@ -241,9 +241,7 @@ class SongMetadataEditor(
                     val newArtist = ArtistEntity(
                         id = newId,
                         name = normalizedName,
-                        trackCount = 0,
-                        imageUrl = null,
-                        customImageUri = null
+                        trackCount = 0
                     )
                     existingByNormalizedName[normalizedKey] = newArtist
                     artistsToEnsure += newArtist

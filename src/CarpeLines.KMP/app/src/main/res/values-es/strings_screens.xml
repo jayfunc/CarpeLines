@@ -74,10 +74,6 @@
     <string name="setup_choose_folders_ignore">Elegir carpetas a ignorar</string>
     <string name="setup_excluded_folders_description">Todas las carpetas se escanean de forma predeterminada. Elige las ubicaciones que quieras ignorar al buscar letras integradas y archivos .lrc.</string>
     <string name="setup_excluded_folders_title">Carpetas excluidas</string>
-    <string name="setup_external_artist_images_description">Obtén de Deezer las fotos de artista que falten y guárdalas en la caché local</string>
-    <string name="setup_external_artist_images_title">Imágenes de artista desde Deezer</string>
-    <string name="setup_external_services_footer">Puedes cambiarlo después en Ajustes &gt; Servicios en línea</string>
-    <string name="setup_external_services_title">Servicios en línea</string>
     <string name="setup_grant_media_permission">Conceder permiso de medios</string>
     <string name="setup_import_backup">Importar copia</string>
     <string name="setup_inspecting_backup">Inspeccionando copia</string>
@@ -111,7 +107,6 @@
     <string name="toast_grant_permission_first">Concede primero el permiso necesario</string>
     <string name="toast_grant_storage_first">Concede primero los permisos de almacenamiento</string>
     <string name="unknown_version">Versión desconocida</string>
-    <string name="setup_external_services_subtitle">Las letras en línea están activadas por defecto. Ajusta su orden en Ajustes &gt; Letras &gt; Orden de las fuentes de letras.</string>
     <string name="setup_permission_media_description">CarpeLines lee los archivos de audio de este dispositivo para encontrar letras integradas y archivos .lrc en la misma carpeta. Tus archivos de audio permanecen en este dispositivo.</string>
     <string name="setup_backup_have_description">Si ya tienes una copia de seguridad de CarpeLines, restáurala ahora y sáltate la mayor parte de la configuración restante en este dispositivo</string>
     <string name="setup_theme_dark_description">El aspecto oscuro Material 3 predeterminado de CarpeLines</string>

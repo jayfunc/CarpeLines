@@ -7,7 +7,6 @@ import io.github.jayfunc.carpelines.MainCoroutineExtension
 import io.github.jayfunc.carpelines.R
 import io.github.jayfunc.carpelines.data.external.ExternalPlaybackStore
 import io.github.jayfunc.carpelines.data.model.Song
-import io.github.jayfunc.carpelines.data.repository.ArtistImageRepository
 import io.github.jayfunc.carpelines.data.repository.MusicRepository
 import io.github.jayfunc.carpelines.data.stats.PlaybackPlayerFilterProvider
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository
@@ -111,8 +110,6 @@ class StatsViewModelTest {
     private val musicRepository = mockk<MusicRepository>(relaxed = true) {
         coEvery { getAllSongsOnce() } returns listOf(song("s1"), song("s2"))
     }
-
-    private val artistImageRepository = mockk<ArtistImageRepository>(relaxed = true)
 
     /** These tests are about library songs; external playback contributes nothing here. */
     private val externalPlaybackStore = mockk<ExternalPlaybackStore>(relaxed = true) {
@@ -299,7 +296,6 @@ class StatsViewModelTest {
     private fun createViewModel() = StatsViewModel(
         playbackStatsRepository = playbackStatsRepository,
         musicRepository = musicRepository,
-        artistImageRepository = artistImageRepository,
         externalPlaybackStore = externalPlaybackStore,
         playerFilterProvider = playerFilterProvider,
         dispatchers = dispatchers

@@ -36,7 +36,7 @@ data class RecapArtistItem(
     val name: String,
     val durationMs: Long,
     val songCount: Int,
-    /** The artist's picture, else the cover of their most played track. */
+    /** The cover of their most played track in the library. */
     val imageUri: String?
 )
 
@@ -160,13 +160,14 @@ sealed interface RecapSlide {
  * The story for [recap]: intro, minutes and summary always, every other slide only when it has
  * something to show. The repository's "unknown" buckets are grouping keys, never shown.
  *
- * @param artistImages picture per artist name, see [RecapArtistItem.imageUri].
+ * @param artistCovers cover of the most played track per artist name, see
+ * [RecapArtistItem.imageUri].
  * @param canPlayTopSongs whether any top song is still in the library to play.
  */
 internal fun buildRecapSlides(
     recap: ListeningRecap,
     isSoFar: Boolean,
-    artistImages: Map<String, String>,
+    artistCovers: Map<String, String>,
     canPlayTopSongs: Boolean
 ): List<RecapSlide> {
     val summary = recap.summary
@@ -180,7 +181,7 @@ internal fun buildRecapSlides(
                 name = it.artist,
                 durationMs = it.totalDurationMs,
                 songCount = it.uniqueSongs,
-                imageUri = artistImages[it.artist]
+                imageUri = artistCovers[it.artist]
             )
         }
     val albums = summary.topAlbums

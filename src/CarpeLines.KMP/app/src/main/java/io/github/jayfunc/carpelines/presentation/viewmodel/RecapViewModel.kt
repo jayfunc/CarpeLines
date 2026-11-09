@@ -4,18 +4,15 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.jayfunc.carpelines.data.model.Song
-import io.github.jayfunc.carpelines.data.repository.ArtistImageRepository
 import io.github.jayfunc.carpelines.data.repository.MusicRepository
 import io.github.jayfunc.carpelines.data.stats.ListeningRecap
 import io.github.jayfunc.carpelines.data.stats.PlaybackPlayerFilterProvider
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository
 import io.github.jayfunc.carpelines.di.DispatcherProvider
 import io.github.jayfunc.carpelines.presentation.recap.RecapSchedule
-import io.github.jayfunc.carpelines.presentation.recap.RecapSlide
 import io.github.jayfunc.carpelines.presentation.recap.RecapUiModel
 import io.github.jayfunc.carpelines.presentation.recap.RecapUiState
 import io.github.jayfunc.carpelines.presentation.recap.buildRecapSlides
-import io.github.jayfunc.carpelines.presentation.stats.resolveStatsArtistImages
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import java.util.Locale
@@ -38,7 +35,6 @@ class RecapViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val playbackStatsRepository: PlaybackStatsRepository,
     private val musicRepository: MusicRepository,
-    private val artistImageRepository: ArtistImageRepository,
     private val playerFilterProvider: PlaybackPlayerFilterProvider,
     private val dispatchers: DispatcherProvider
 ) : ViewModel() {
@@ -66,10 +62,6 @@ class RecapViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Shows the story as soon as the listening data is in, with each artist's most played cover
-     * standing in for their picture, then swaps the pictures in: those can wait on the network.
-     */
     private suspend fun load() {
         val songs = withContext(dispatchers.io) { musicRepository.getAllSongsOnce() }
         val recap = playbackStatsRepository.loadRecap(
@@ -91,42 +83,19 @@ class RecapViewModel @Inject constructor(
         val covers = recap.summary.topArtists
             .mapNotNull { artist -> recap.mostPlayedCoverOf(artist.artist, songsById)?.let { artist.artist to it } }
             .toMap()
-        val model = buildModel(recap, isSoFar, covers)
-        _uiState.value = RecapUiState.Ready(model)
-
-        val shownArtists = model.slides
-            .filterIsInstance<RecapSlide.TopArtists>()
-            .singleOrNull()
-            ?.artists
-            ?.map { it.name }
-            .orEmpty()
-        if (shownArtists.isEmpty()) return
-        val pictures = try {
-            withContext(dispatchers.io) {
-                resolveStatsArtistImages(shownArtists, musicRepository, artistImageRepository)
-            }
-        } catch (cancellation: CancellationException) {
-            throw cancellation
-        } catch (throwable: Exception) {
-            // The story is already up with cover stand-ins; keep it rather than failing it.
-            Timber.w(throwable, "Failed to load artist pictures for the %d recap", year)
-            return
-        }
-        if (pictures.isNotEmpty()) {
-            _uiState.value = RecapUiState.Ready(buildModel(recap, isSoFar, covers + pictures))
-        }
+        _uiState.value = RecapUiState.Ready(buildModel(recap, isSoFar, covers))
     }
 
     private suspend fun buildModel(
         recap: ListeningRecap,
         isSoFar: Boolean,
-        artistImages: Map<String, String>
+        artistCovers: Map<String, String>
     ): RecapUiModel {
         val slides = withContext(dispatchers.default) {
             buildRecapSlides(
                 recap = recap,
                 isSoFar = isSoFar,
-                artistImages = artistImages,
+                artistCovers = artistCovers,
                 canPlayTopSongs = topSongsQueue.isNotEmpty()
             )
         }
@@ -140,7 +109,7 @@ class RecapViewModel @Inject constructor(
 }
 
 /**
- * Cover of the most played track by [artistName], for artists without a picture of their own.
+ * Cover of the most played track by [artistName], used as the artist's picture in the recap.
  * Matches the way stats split multi-artist songs into their separate artists.
  */
 private fun ListeningRecap.mostPlayedCoverOf(artistName: String, songsById: Map<String, Song>): String? {

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.jayfunc.carpelines.data.external.ExternalPlaybackStore
 import io.github.jayfunc.carpelines.data.model.Song
-import io.github.jayfunc.carpelines.data.repository.ArtistImageRepository
 import io.github.jayfunc.carpelines.data.repository.MusicRepository
 import io.github.jayfunc.carpelines.data.stats.PlaybackPlayerFilterProvider
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository
@@ -12,7 +11,6 @@ import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository.Listening
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository.PlaybackStatsSummary
 import io.github.jayfunc.carpelines.data.stats.StatsTimeRange
 import io.github.jayfunc.carpelines.di.DispatcherProvider
-import io.github.jayfunc.carpelines.presentation.stats.resolveStatsArtistImages
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
@@ -33,7 +31,6 @@ import kotlinx.collections.immutable.toImmutableList
 class StatsViewModel @Inject constructor(
     private val playbackStatsRepository: PlaybackStatsRepository,
     private val musicRepository: MusicRepository,
-    private val artistImageRepository: ArtistImageRepository,
     private val externalPlaybackStore: ExternalPlaybackStore,
     private val playerFilterProvider: PlaybackPlayerFilterProvider,
     private val dispatchers: DispatcherProvider
@@ -231,16 +228,6 @@ class StatsViewModel @Inject constructor(
         val knownIds = library.mapTo(HashSet(library.size)) { it.id }
         return library + external.filterNot { it.id in knownIds }
     }
-
-    /**
-     * The artist pictures the rest of the app shows: the user's custom image or a local folder
-     * portrait, otherwise the Deezer picture when external artist images are enabled.
-     * Names with no picture are absent.
-     */
-    suspend fun resolveArtistImages(names: Collection<String>): Map<String, String> =
-        withContext(dispatchers.io) {
-            resolveStatsArtistImages(names, musicRepository, artistImageRepository)
-        }
 
     private companion object {
         val HomeOverviewRanges = listOf(

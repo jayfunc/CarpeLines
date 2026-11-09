@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.github.jayfunc.carpelines.data.backup.format.BackupFormatDetector
 import io.github.jayfunc.carpelines.data.backup.model.BackupSection
-import io.github.jayfunc.carpelines.data.backup.module.ArtistImagesModuleHandler
 import io.github.jayfunc.carpelines.data.backup.module.BackupModuleHandler
 import io.github.jayfunc.carpelines.data.backup.module.EngagementStatsModuleHandler
 import io.github.jayfunc.carpelines.data.backup.module.GlobalSettingsModuleHandler
@@ -42,15 +41,13 @@ object BackupModule {
         globalSettingsHandler: GlobalSettingsModuleHandler,
         lyricsHandler: LyricsModuleHandler,
         engagementStatsHandler: EngagementStatsModuleHandler,
-        playbackHistoryHandler: PlaybackHistoryModuleHandler,
-        artistImagesHandler: ArtistImagesModuleHandler
+        playbackHistoryHandler: PlaybackHistoryModuleHandler
     ): Map<BackupSection, BackupModuleHandler> {
         return mapOf(
             BackupSection.GLOBAL_SETTINGS to globalSettingsHandler,
             BackupSection.LYRICS to lyricsHandler,
             BackupSection.ENGAGEMENT_STATS to engagementStatsHandler,
-            BackupSection.PLAYBACK_HISTORY to playbackHistoryHandler,
-            BackupSection.ARTIST_IMAGES to artistImagesHandler
+            BackupSection.PLAYBACK_HISTORY to playbackHistoryHandler
         )
     }
 }

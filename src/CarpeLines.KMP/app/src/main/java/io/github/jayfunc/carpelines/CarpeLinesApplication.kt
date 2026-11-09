@@ -16,7 +16,6 @@ import coil.ImageLoaderFactory
 import io.github.jayfunc.carpelines.data.diagnostics.AdvancedPerformanceDiagnosticsController
 import io.github.jayfunc.carpelines.data.media.SongMetadataEditor
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
-import io.github.jayfunc.carpelines.data.repository.ArtistImageRepository
 import io.github.jayfunc.carpelines.presentation.viewmodel.LibraryStateHolder
 import io.github.jayfunc.carpelines.presentation.viewmodel.ThemeStateHolder
 import io.github.jayfunc.carpelines.utils.AlbumArtCacheManager
@@ -50,9 +49,6 @@ class CarpeLinesApplication : Application(), ImageLoaderFactory, Configuration.P
 
     @Inject
     lateinit var themeStateHolder: dagger.Lazy<ThemeStateHolder>
-
-    @Inject
-    lateinit var artistImageRepository: dagger.Lazy<ArtistImageRepository>
 
     @Inject
     lateinit var libraryStateHolder: dagger.Lazy<LibraryStateHolder>
@@ -259,7 +255,6 @@ class CarpeLinesApplication : Application(), ImageLoaderFactory, Configuration.P
             level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND ||
             level == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN
         ) {
-            artistImageRepository.get().clearCache()
             MediaMetadataRetrieverPool.clear()
         }
 

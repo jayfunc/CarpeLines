@@ -74,10 +74,6 @@
     <string name="setup_choose_folders_ignore">Yok sayılacak klasörleri seçin</string>
     <string name="setup_excluded_folders_description">Tüm klasörler varsayılan olarak taranır. Gömülü şarkı sözleri ve .lrc dosyaları aranırken yok sayılacak konumları seç.</string>
     <string name="setup_excluded_folders_title">Hariç tutulan klasörler</string>
-    <string name="setup_external_artist_images_description">Eksik sanatçı fotoğraflarını Deezer\'den getirir ve yerel olarak önbelleğe alır</string>
-    <string name="setup_external_artist_images_title">Deezer\'den sanatçı görselleri</string>
-    <string name="setup_external_services_footer">Bunu daha sonra Ayarlar &gt; Çevrimiçi Hizmetler bölümünden değiştirebilirsin</string>
-    <string name="setup_external_services_title">Çevrimiçi Hizmetler</string>
     <string name="setup_grant_media_permission">Medya İzni Ver</string>
     <string name="setup_import_backup">Yedeği içe aktar</string>
     <string name="setup_inspecting_backup">Yedek inceleniyor</string>
@@ -111,7 +107,6 @@
     <string name="toast_grant_permission_first">Lütfen önce gerekli izni verin</string>
     <string name="toast_grant_storage_first">Önce depolama izinlerini verin</string>
     <string name="unknown_version">Bilinmeyen sürüm</string>
-    <string name="setup_external_services_subtitle">Çevrimiçi şarkı sözleri varsayılan olarak açıktır. Sıralamalarını Ayarlar &gt; Şarkı Sözleri &gt; Şarkı sözü kaynak sırası bölümünden ayarla.</string>
     <string name="setup_permission_media_description">CarpeLines, gömülü şarkı sözlerini ve aynı klasördeki .lrc dosyalarını bulmak için bu cihazdaki ses dosyalarını okur. Ses dosyaların bu cihazda kalır.</string>
     <string name="setup_backup_have_description">Zaten bir CarpeLines yedeğiniz varsa şimdi geri yükleyin ve bu cihazdaki kurulumun çoğunu atlayın</string>
     <string name="setup_theme_dark_description">CarpeLines için varsayılan Material 3 koyu görünümü</string>

@@ -18,7 +18,6 @@
     <string name="cover_source_deezer_subtitle">曲名とアーティストから Deezer でアルバムカバーを検索</string>
     <string name="cover_source_local_title">ローカル埋め込みカバー</string>
     <string name="cover_source_local_subtitle">ライブラリで一致した曲の埋め込みカバーまたはフォルダーの画像を使用</string>
-    <string name="cover_sources_artist_section">アーティスト画像</string>
     <string name="settings_category_player_filter_title">プレイヤーフィルター</string>
     <string name="settings_category_player_filter_subtitle">CarpeLines が追跡するプレイヤーを選択</string>
     <string name="player_filter_intro">フィルターを有効にすると、選択したプレイヤーだけを追跡します。そのメディアセッションが歌詞画面と再生統計に使われ、ほかのアプリの再生は無視されます。</string>
@@ -71,10 +70,8 @@
     <string name="cd_close_notice">お知らせを閉じる</string>
 
     <string name="toast_library_sync_finished">ライブラリの同期が完了しました</string>
-    <string name="setcat_folder_album_art_permission_required">音楽フォルダーからアルバムとアーティストの画像を読み取るには、写真へのフルアクセスが必要です</string>
+    <string name="setcat_folder_album_art_permission_required">音楽フォルダーからアルバムアートを読み取るには、写真へのフルアクセスが必要です</string>
     <string name="setcat_folder_album_art_refreshing">アートワークを更新中…</string>
-    <string name="setcat_external_artist_images_title">Deezer のアーティスト画像</string>
-    <string name="setcat_external_artist_images_subtitle">不足しているアーティスト画像を Deezer から取得し、端末にキャッシュできるようにします</string>
     <string name="setcat_lyrics_management">歌詞の管理</string>
     <string name="settings_category_lyrics_management_subtitle">歌詞ソース、インポートした歌詞、メンテナンス</string>
     <string name="setcat_lyrics_title">歌詞</string>

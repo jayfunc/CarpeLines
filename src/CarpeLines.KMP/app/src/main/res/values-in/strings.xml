@@ -145,12 +145,9 @@
     <string name="backup_module_engagement_stats_description">Jumlah pemutaran dan total waktu mendengarkan per lagu</string>
     <string name="backup_module_playback_history_label">Riwayat pemutaran</string>
     <string name="backup_module_playback_history_description">Waktu dan durasi setiap sesi mendengarkan, digunakan untuk Baru Diputar dan statistik</string>
-    <string name="backup_module_artist_images_label">Gambar artis</string>
-    <string name="backup_module_artist_images_description">Tautan gambar artis serta gambar kustom yang Anda unggah</string>
     <string name="backup_module_skipped_warning">%1$s dilewati: %2$s</string>
     <string name="backup_error_export_module_too_large">%1$s berukuran %2$dMB, melebihi batas %3$dMB per modul. Hapus pilihan lalu coba lagi</string>
     <string name="backup_error_export_too_large">Cadangan akan berukuran %1$dMB, melebihi batas %2$dMB. Kurangi modul yang dipilih</string>
     <string name="backup_plan_warning_legacy_schema">Ini cadangan versi lama (v%1$d). Sebagian modul mungkin tidak tersedia</string>
-    <string name="backup_plan_warning_library_not_scanned">Pindai pustaka musik terlebih dahulu: gambar artis dicocokkan dengannya</string>
     <string name="data_restored_with_warnings">Data dipulihkan, tetapi sebagian modul dilewati:\n%1$s</string>
 </resources>

@@ -26,7 +26,6 @@ class BackupSectionTest {
         assertEquals(BackupSection.LYRICS, BackupSection.fromKey("lyrics"))
         assertEquals(BackupSection.ENGAGEMENT_STATS, BackupSection.fromKey("engagement_stats"))
         assertEquals(BackupSection.PLAYBACK_HISTORY, BackupSection.fromKey("playback_history"))
-        assertEquals(BackupSection.ARTIST_IMAGES, BackupSection.fromKey("artist_images"))
     }
 
     @Test
@@ -41,8 +40,8 @@ class BackupSectionTest {
     }
 
     @Test
-    fun `there are exactly 5 backup sections`() {
-        assertEquals(5, BackupSection.entries.size)
+    fun `there are exactly 4 backup sections`() {
+        assertEquals(4, BackupSection.entries.size)
     }
 
     @Test

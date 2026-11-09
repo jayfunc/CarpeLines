@@ -147,7 +147,7 @@ class MusicDaoTest {
     }
 
     private fun createArtistEntity(id: Long, name: String): ArtistEntity {
-        return ArtistEntity(id = id, name = name, trackCount = 10, imageUrl = null)
+        return ArtistEntity(id = id, name = name, trackCount = 10)
     }
 
     @Test

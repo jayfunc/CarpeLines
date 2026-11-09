@@ -29,7 +29,6 @@ import io.github.jayfunc.carpelines.data.media.normalizeArtistMetadataValues
 import io.github.jayfunc.carpelines.data.model.Song
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
 import io.github.jayfunc.carpelines.data.repository.LyricsRepository
-import io.github.jayfunc.carpelines.data.repository.ArtistImageRepository
 import io.github.jayfunc.carpelines.data.service.PlaybackActivityTracker
 import io.github.jayfunc.carpelines.utils.AlbumArtCacheManager
 import io.github.jayfunc.carpelines.utils.AlbumArtUtils
@@ -107,7 +106,6 @@ constructor(
         private val musicDao: MusicDao,
         private val userPreferencesRepository: UserPreferencesRepository,
         private val lyricsRepository: LyricsRepository,
-        private val artistImageRepository: ArtistImageRepository,
         private val localLibraryChangeTracker: LocalLibraryChangeTracker
 ) : CoroutineWorker(appContext, workerParams) {
 
@@ -321,9 +319,6 @@ constructor(
                                     musicDao.getAllAlbumsList(emptyList(), false, 0)
                                 }
 
-                        val existingArtistMetadata =
-                                allExistingArtists.associate { it.id to (it.imageUrl to it.customImageUri) }
-                        
                         val existingArtistIdMap = allExistingArtists.associate { it.name to it.id }.toMutableMap()
                         val maxArtistId = (musicDao.getMaxArtistId() ?: 0L).coerceAtLeast(0L)
 
@@ -337,7 +332,6 @@ constructor(
                                         wordDelimiters = artistWordDelimiters,
                                         extractFromTitle = extractArtistsFromTitle,
                                         groupByAlbumArtist = groupByAlbumArtist,
-                                        existingArtistMetadata = existingArtistMetadata,
                                         existingAlbums = allExistingAlbums,
                                         existingArtistIdMap = existingArtistIdMap,
                                         initialMaxArtistId = maxArtistId
@@ -435,7 +429,6 @@ constructor(
                                 "totalSongs" to totalSongs.toString()
                             )
                         }
-                        artistImageRepository.clearCache()
                         return@withContext Result.success(
                             workDataOf(OUTPUT_TOTAL_SONGS to totalSongs)
                         )
@@ -522,7 +515,6 @@ constructor(
                             "totalSongs" to finalTotalSongs.toString()
                         )
                     }
-                    artistImageRepository.clearCache()
                     Result.success(workDataOf(OUTPUT_TOTAL_SONGS to finalTotalSongs))
                 } catch (e: Exception) {
                     Timber.tag(TAG).e(e, "Error during MediaStore synchronization")
@@ -565,7 +557,6 @@ constructor(
             wordDelimiters: List<String> = emptyList(),
             extractFromTitle: Boolean = true,
             groupByAlbumArtist: Boolean,
-            existingArtistMetadata: Map<Long, Pair<String?, String?>>,
             existingAlbums: List<AlbumEntity>,
             existingArtistIdMap: MutableMap<String, Long>,
             initialMaxArtistId: Long
@@ -665,14 +656,10 @@ constructor(
         }
 
         val artistEntities = artistNameToId.map { (name, id) ->
-            val count = artistTrackCounts[id] ?: 0
-            val metadata = existingArtistMetadata[id]
             ArtistEntity(
                 id = id,
                 name = name,
-                trackCount = count,
-                imageUrl = metadata?.first,
-                customImageUri = metadata?.second
+                trackCount = artistTrackCounts[id] ?: 0
             )
         }
         

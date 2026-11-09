@@ -13,11 +13,6 @@
     <string name="setup_theme_subtitle">開始跟隨歌詞前，先選擇你喜歡的介面風格</string>
     <string name="setup_theme_footer">後續可在 設定＞外觀＞應用程式主題 中修改</string>
     <string name="setup_recommended">推薦</string>
-    <string name="setup_external_services_title">線上服務</string>
-    <string name="setup_external_services_subtitle">線上歌詞預設開啟，可在 設定＞歌詞＞歌詞源順序 中調整</string>
-    <string name="setup_external_artist_images_title">來自 Deezer 的藝人封面</string>
-    <string name="setup_external_artist_images_description">拉取缺失的藝人圖片並快取至本地</string>
-    <string name="setup_external_services_footer">後續可在 設定＞線上服務 修改</string>
     <string name="tab_library">音樂庫</string>
     <string name="setup_all_set_title">配置完成！</string>
     <string name="setup_all_set_body">CarpeLines 已就緒。在任意音樂播放器中開始播放，歌詞會自動跟隨。</string>

@@ -38,7 +38,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -126,7 +125,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -166,9 +164,7 @@ import io.github.jayfunc.carpelines.presentation.viewmodel.DirectoryEntry
 import io.github.jayfunc.carpelines.presentation.viewmodel.SetupEvent
 import io.github.jayfunc.carpelines.presentation.viewmodel.SetupUiState
 import io.github.jayfunc.carpelines.presentation.viewmodel.SetupViewModel
-import io.github.jayfunc.carpelines.ui.m3e.M3ESwitch
 import io.github.jayfunc.carpelines.ui.theme.M3EShape
-import io.github.jayfunc.carpelines.ui.theme.M3ESpacing
 import io.github.jayfunc.carpelines.ui.theme.RoundedSans
 import io.github.jayfunc.carpelines.ui.theme.emphasized
 import io.github.jayfunc.carpelines.utils.AppLocaleManager
@@ -408,10 +404,6 @@ fun SetupScreen(
                         uiState = uiState,
                         onModeSelected = setupViewModel::setAppThemeMode
                     )
-                    SetupPage.ExternalServices -> ExternalServicesPage(
-                        uiState = uiState,
-                        onExternalArtistImagesChanged = setupViewModel::setExternalArtistImagesEnabled
-                    )
                     SetupPage.Finish -> FinishPage()
                 }
             }
@@ -553,7 +545,6 @@ sealed class SetupPage {
     object MediaPermission : SetupPage()
     object BackupRestore : SetupPage()
     object DirectorySelection : SetupPage()
-    object ExternalServices : SetupPage()
     object ThemeSelection : SetupPage()
     object BatteryOptimization : SetupPage()
     object Finish : SetupPage()
@@ -565,7 +556,6 @@ private fun buildSetupPages(includeDirectorySelection: Boolean): List<SetupPage>
     add(SetupPage.MediaPermission)
     add(SetupPage.BackupRestore)
     if (includeDirectorySelection) add(SetupPage.DirectorySelection)
-    add(SetupPage.ExternalServices)
     add(SetupPage.ThemeSelection)
     add(SetupPage.BatteryOptimization)
     add(SetupPage.Finish)
@@ -1239,134 +1229,6 @@ private fun ThemeModeOptionCard(
     }
 }
 
-@Composable
-fun ExternalServicesPage(
-    uiState: SetupUiState,
-    onExternalArtistImagesChanged: (Boolean) -> Unit
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(24.dp)
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = stringResource(R.string.setup_external_services_title),
-                style = MaterialTheme.typography.displayMedium.copy(
-                    fontFamily = RoundedSans,
-                    fontSize = 32.sp
-                ),
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(R.string.setup_external_services_subtitle),
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp)
-        ) {
-            ExternalServiceToggleCard(
-                title = stringResource(R.string.setup_external_artist_images_title),
-                description = stringResource(R.string.setup_external_artist_images_description),
-                checked = uiState.externalArtistImagesEnabled,
-                onCheckedChange = onExternalArtistImagesChanged,
-                icon = { Icon(painterResource(R.drawable.rounded_artist_24), null) }
-            )
-
-            Text(
-                text = stringResource(R.string.setup_external_services_footer),
-                style = MaterialTheme.typography.labelMedium,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 6.dp)
-            )
-        }
-    }
-}
-
-@Composable
-private fun ExternalServiceToggleCard(
-    title: String,
-    description: String,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-    icon: @Composable () -> Unit
-) {
-    Surface(
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = M3EShape.extraLarge,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            // The whole card is the switch: `toggleable` reports the checked state to a screen
-            // reader and the inner Switch is the visual affordance only.
-            modifier = Modifier
-                .fillMaxWidth()
-                .toggleable(
-                    value = checked,
-                    role = Role.Switch,
-                    onValueChange = onCheckedChange
-                )
-                .padding(horizontal = M3ESpacing.large, vertical = M3ESpacing.large),
-            horizontalArrangement = Arrangement.spacedBy(M3ESpacing.medium),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Surface(
-                color = if (checked) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.secondaryContainer
-                },
-                contentColor = if (checked) {
-                    MaterialTheme.colorScheme.onPrimary
-                } else {
-                    MaterialTheme.colorScheme.onSecondaryContainer
-                },
-                shape = M3EShape.large,
-                modifier = Modifier.size(46.dp)
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    icon()
-                }
-            }
-
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(M3ESpacing.extraSmall)
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            M3ESwitch(
-                checked = checked,
-                onCheckedChange = null
-            )
-        }
-    }
-}
 
 @Composable
 fun FinishPage() {

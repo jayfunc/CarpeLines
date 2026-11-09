@@ -4,7 +4,6 @@ import android.content.Context
 import com.google.common.truth.Truth.assertThat
 import io.github.jayfunc.carpelines.data.media.ImageCacheManager
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
-import io.github.jayfunc.carpelines.data.repository.ArtistImageRepository
 import io.github.jayfunc.carpelines.data.worker.SyncManager
 import io.github.jayfunc.carpelines.presentation.viewmodel.ColorSchemeProcessor
 import dagger.Lazy
@@ -32,7 +31,6 @@ class FolderArtworkSettingsCoordinatorTest {
     private val context = mockk<Context>()
     private val preferences = mockk<UserPreferencesRepository>()
     private val imageCacheManager = mockk<ImageCacheManager>(relaxed = true)
-    private val artistImageRepository = mockk<ArtistImageRepository>(relaxed = true)
     private val syncManager = mockk<SyncManager>(relaxed = true)
     private val colorSchemeProcessor = mockk<ColorSchemeProcessor>(relaxed = true)
     private val enabled = MutableStateFlow(false)
@@ -65,7 +63,7 @@ class FolderArtworkSettingsCoordinatorTest {
         every { AlbumArtUtils.notifyArtworkCacheInvalidated() } just Runs
         coEvery { AlbumArtCacheManager.clearAllCache(context) } returns 0
         coordinator = FolderArtworkSettingsCoordinator(
-            context, preferences, imageCacheManager, artistImageRepository, syncManager,
+            context, preferences, imageCacheManager, syncManager,
             Lazy { colorSchemeProcessor }
         )
     }
@@ -96,7 +94,6 @@ class FolderArtworkSettingsCoordinatorTest {
         assertThat(mirrored).isTrue()
         coVerify(exactly = 1) { AlbumArtCacheManager.clearAllCache(context) }
         verify(exactly = 1) { imageCacheManager.clearAllCoverArtCaches() }
-        verify(exactly = 1) { artistImageRepository.clearCache() }
         verify(exactly = 1) { syncManager.fullSync() }
     }
 
@@ -110,7 +107,6 @@ class FolderArtworkSettingsCoordinatorTest {
             AlbumArtCacheManager.clearAllCache(context)
             imageCacheManager.clearAllCoverArtCaches()
             colorSchemeProcessor.invalidateLocalArtworkSchemes()
-            artistImageRepository.clearCache()
             AlbumArtUtils.notifyArtworkCacheInvalidated()
         }
     }

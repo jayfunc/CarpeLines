@@ -74,10 +74,6 @@
     <string name="setup_choose_folders_ignore">Выбрать папки для игнорирования</string>
     <string name="setup_excluded_folders_description">По умолчанию сканируются все папки. Выберите расположения, которые нужно игнорировать при поиске встроенных текстов и файлов .lrc.</string>
     <string name="setup_excluded_folders_title">Исключённые папки</string>
-    <string name="setup_external_artist_images_description">Загружать недостающие фото исполнителей из Deezer и кэшировать их локально</string>
-    <string name="setup_external_artist_images_title">Изображения исполнителей из Deezer</string>
-    <string name="setup_external_services_footer">Изменить можно позже в Настройки &gt; Онлайн-сервисы</string>
-    <string name="setup_external_services_title">Онлайн-сервисы</string>
     <string name="setup_grant_media_permission">Предоставить доступ к медиафайлам</string>
     <string name="setup_import_backup">Импортировать резервную копию</string>
     <string name="setup_inspecting_backup">Проверка резервной копии</string>
@@ -111,7 +107,6 @@
     <string name="toast_grant_permission_first">Сначала предоставьте необходимое разрешение</string>
     <string name="toast_grant_storage_first">Сначала предоставьте доступ к хранилищу</string>
     <string name="unknown_version">Неизвестная версия</string>
-    <string name="setup_external_services_subtitle">Онлайн-тексты включены по умолчанию. Изменить их порядок можно в разделе Настройки &gt; Текст песни &gt; Порядок источников текста.</string>
     <string name="setup_permission_media_description">CarpeLines читает аудиофайлы на этом устройстве, чтобы найти встроенные тексты и файлы .lrc в той же папке. Ваши аудиофайлы остаются на этом устройстве.</string>
     <string name="setup_backup_have_description">Если у вас уже есть резервная копия CarpeLines, восстановите её сейчас и пропустите большую часть оставшейся настройки на этом устройстве</string>
     <string name="setup_theme_dark_description">Стандартная тёмная тема Material 3 для CarpeLines</string>

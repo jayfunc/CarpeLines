@@ -35,23 +35,15 @@ data class Album(
 data class Artist(
     val id: Long,
     val name: String,
-    val songCount: Int,
-    val imageUrl: String? = null,
-    val customImageUri: String? = null
+    val songCount: Int
 ) : Parcelable {
     companion object {
         fun empty() = Artist(
             id = -1,
             name = "",
-            songCount = 0,
-            imageUrl = null,
-            customImageUri = null
+            songCount = 0
         )
     }
-
-    /** Returns the image URL/path to use, preferring the user's custom image. */
-    val effectiveImageUrl: String?
-        get() = customImageUri?.takeIf { it.isNotBlank() } ?: imageUrl?.takeIf { it.isNotBlank() }
 }
 
 /**

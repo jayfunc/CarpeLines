@@ -69,15 +69,13 @@
     <string name="setcat_application">التطبيق</string>
     <string name="setcat_auto_hide_delay_desc">الوقت المستغرق قبل إخفاء عناصر التحكم</string>
     <string name="setcat_auto_hide_delay_label">مهلة الإخفاء التلقائي</string>
-    <string name="setcat_folder_album_art_permission_required">يلزم الوصول الكامل إلى الصور لقراءة صور الألبومات والفنانين من مجلدات الموسيقى</string>
+    <string name="setcat_folder_album_art_permission_required">يلزم الوصول الكامل إلى الصور لقراءة أغلفة الألبومات من مجلدات الموسيقى</string>
     <string name="setcat_folder_album_art_refreshing">جارٍ تحديث الصور…</string>
     <string name="setcat_create_backup">إنشاء نسخة احتياطية</string>
     <string name="setcat_default_tab_desc">اختر علامة التبويب الافتراضية عند تشغيل التطبيق</string>
     <string name="setcat_default_tab_label">علامة التبويب الافتراضية</string>
     <string name="setcat_export_backup_subtitle">يقوم بإنشاء ملف نسخة احتياطية بصيغة %1$s .zip</string>
     <string name="setcat_export_backup_title">تصدير النسخة الاحتياطية</string>
-    <string name="setcat_external_artist_images_subtitle">السماح بجلب صور الفنانين المفقودة من Deezer وتخزينها محلياً</string>
-    <string name="setcat_external_artist_images_title">صور الفنانين من Deezer</string>
     <string name="setcat_global_theme">المظهر العام</string>
     <string name="setcat_immersive_lyrics_subtitle">إخفاء عناصر التحكم تلقائياً وتكبير حجم الخط</string>
     <string name="setcat_immersive_lyrics_title">كلمات غامرة وملء الشاشة</string>
@@ -204,7 +202,6 @@
     <string name="cover_source_deezer_subtitle">البحث عن غلاف الألبوم في Deezer حسب اسم المقطع والفنان</string>
     <string name="cover_source_local_title">الغلاف المضمن المحلي</string>
     <string name="cover_source_local_subtitle">استخدام الغلاف المضمن أو غلاف المجلد للأغنية المطابقة في المكتبة</string>
-    <string name="cover_sources_artist_section">صور الفنانين</string>
     <string name="settings_category_player_filter_title">فلتر المشغلات</string>
     <string name="settings_category_player_filter_subtitle">اختر المشغلات التي يتبعها CarpeLines</string>
     <string name="player_filter_intro">عند تفعيل الفلتر، يتبع CarpeLines المشغلات المحددة فقط. تُستخدم جلساتها الإعلامية لشاشة الكلمات وإحصاءات الاستماع، ويُتجاهل التشغيل من التطبيقات الأخرى.</string>

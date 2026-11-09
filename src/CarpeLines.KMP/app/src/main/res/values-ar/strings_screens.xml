@@ -74,10 +74,6 @@
     <string name="setup_choose_folders_ignore">اختر المجلدات لتجاهلها</string>
     <string name="setup_excluded_folders_description">يتم فحص جميع المجلدات افتراضياً. اختر المواقع التي تريد تجاهلها عند البحث عن الكلمات المضمنة وملفات .lrc.</string>
     <string name="setup_excluded_folders_title">المجلدات المستبعدة</string>
-    <string name="setup_external_artist_images_description">جلب صور الفنانين المفقودة من Deezer وتخزينها محلياً</string>
-    <string name="setup_external_artist_images_title">صور الفنانين من Deezer</string>
-    <string name="setup_external_services_footer">يمكنك تغيير ذلك لاحقاً من الإعدادات &gt; الخدمات عبر الإنترنت</string>
-    <string name="setup_external_services_title">الخدمات عبر الإنترنت</string>
     <string name="setup_grant_media_permission">منح إذن الوسائط</string>
     <string name="setup_import_backup">استيراد نسخة احتياطية</string>
     <string name="setup_inspecting_backup">جاري فحص النسخة الاحتياطية</string>
@@ -111,7 +107,6 @@
     <string name="toast_grant_permission_first">يرجى منح الإذن المطلوب أولاً</string>
     <string name="toast_grant_storage_first">يرجى منح أذونات التخزين أولاً</string>
     <string name="unknown_version">إصدار غير معروف</string>
-    <string name="setup_external_services_subtitle">كلمات الأغاني عبر الإنترنت مفعّلة افتراضياً. يمكنك ضبط ترتيبها من الإعدادات &gt; كلمات الأغاني &gt; ترتيب مصادر الكلمات.</string>
     <string name="setup_permission_media_description">يقرأ CarpeLines ملفات الصوت على هذا الجهاز للعثور على الكلمات المضمنة وملفات .lrc في المجلد نفسه. تبقى ملفات الصوت على جهازك.</string>
     <string name="setup_backup_have_description">إذا كانت لديك نسخة احتياطية من CarpeLines، فاستعدها الآن لتتخطى معظم خطوات الإعداد المتبقية على هذا الجهاز</string>
     <string name="setup_theme_dark_description">مظهر Material 3 الداكن الافتراضي لتطبيق CarpeLines</string>

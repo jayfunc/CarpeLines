@@ -74,10 +74,6 @@
     <string name="setup_choose_folders_ignore">무시할 폴더 선택</string>
     <string name="setup_excluded_folders_description">기본적으로 모든 폴더를 검사합니다. 내장 가사와 .lrc 파일을 검색할 때 무시할 위치를 선택하세요.</string>
     <string name="setup_excluded_folders_title">제외된 폴더</string>
-    <string name="setup_external_artist_images_description">없는 아티스트 사진을 Deezer에서 가져와 로컬에 캐시합니다</string>
-    <string name="setup_external_artist_images_title">Deezer의 아티스트 이미지</string>
-    <string name="setup_external_services_footer">나중에 설정 &gt; 온라인 서비스에서 변경할 수 있습니다</string>
-    <string name="setup_external_services_title">온라인 서비스</string>
     <string name="setup_grant_media_permission">미디어 권한 허용</string>
     <string name="setup_import_backup">백업 가져오기</string>
     <string name="setup_inspecting_backup">백업 검사 중</string>
@@ -111,7 +107,6 @@
     <string name="toast_grant_permission_first">먼저 필요한 권한을 허용해 주세요</string>
     <string name="toast_grant_storage_first">먼저 저장공간 권한을 허용해 주세요</string>
     <string name="unknown_version">알 수 없는 버전</string>
-    <string name="setup_external_services_subtitle">온라인 가사는 기본으로 켜져 있습니다. 순서는 설정 &gt; 가사 &gt; 가사 소스 순서에서 조정하세요.</string>
     <string name="setup_permission_media_description">CarpeLines는 이 기기의 오디오 파일을 읽어 내장 가사와 같은 폴더의 .lrc 파일을 찾습니다. 오디오 파일은 이 기기에 그대로 남습니다.</string>
     <string name="setup_backup_have_description">이미 CarpeLines 백업이 있다면 지금 복구하여 이 기기의 나머지 설정 대부분을 건너뛸 수 있습니다</string>
     <string name="setup_theme_dark_description">CarpeLines의 기본 Material 3 다크 룩입니다</string>

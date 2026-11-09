@@ -24,7 +24,6 @@ class ModuleSchemaValidator @Inject constructor() {
 
     companion object {
         const val MAX_ENTRIES_PER_MODULE = 100_000
-        private const val MAX_ARTIST_IMAGE_URL_LENGTH = 2_000
         private val VALID_PREF_TYPES = setOf("string", "int", "long", "boolean", "float", "double", "string_set")
     }
 
@@ -52,7 +51,6 @@ class ModuleSchemaValidator @Inject constructor() {
             BackupSection.LYRICS -> validateLyrics(array, errors)
             BackupSection.ENGAGEMENT_STATS -> validateEngagementStats(array, errors)
             BackupSection.PLAYBACK_HISTORY -> validatePlaybackHistory(array, errors)
-            BackupSection.ARTIST_IMAGES -> validateArtistImages(array, errors)
             BackupSection.GLOBAL_SETTINGS -> validatePreferenceEntries(jsonElement, section.key, errors)
         }
 
@@ -301,65 +299,6 @@ class ModuleSchemaValidator @Inject constructor() {
                         "INVALID_TIMESTAMP",
                         "PlaybackHistory[$i]: timestamp is not numeric",
                         module = "playback_history",
-                        severity = Severity.WARNING
-                    )
-                )
-            }
-        }
-    }
-
-    private fun validateArtistImages(array: com.google.gson.JsonArray, errors: MutableList<ValidationError>) {
-        array.forEachIndexed { i, element ->
-            if (!element.isJsonObject) {
-                errors.add(
-                    ValidationError(
-                        "INVALID_ARTIST_IMAGE_ENTRY",
-                        "ArtistImages[$i]: entry is not a JSON object",
-                        module = "artist_images",
-                        severity = Severity.WARNING
-                    )
-                )
-                return@forEachIndexed
-            }
-            val obj = element.asJsonObject
-            if (readStringField(obj, "artistName", "artist_name")?.trim().isNullOrEmpty()) {
-                errors.add(
-                    ValidationError(
-                        "MISSING_ARTIST_NAME",
-                        "ArtistImages[$i]: missing artist name",
-                        module = "artist_images",
-                        severity = Severity.WARNING
-                    )
-                )
-            }
-            val urlElement = obj.get("imageUrl") ?: obj.get("image_url")
-            if (urlElement != null && !urlElement.isJsonPrimitive) {
-                errors.add(
-                    ValidationError(
-                        "INVALID_URL",
-                        "ArtistImages[$i]: URL is not text and will be ignored",
-                        module = "artist_images",
-                        severity = Severity.WARNING
-                    )
-                )
-            }
-            val imageUrl = readStringField(obj, "imageUrl", "image_url").orEmpty()
-            if (imageUrl.isNotEmpty() && !imageUrl.startsWith("https://")) {
-                errors.add(
-                    ValidationError(
-                        "INSECURE_URL",
-                        "ArtistImages[$i]: URL is not HTTPS",
-                        module = "artist_images",
-                        severity = Severity.WARNING
-                    )
-                )
-            }
-            if (imageUrl.length > MAX_ARTIST_IMAGE_URL_LENGTH) {
-                errors.add(
-                    ValidationError(
-                        "URL_TOO_LONG",
-                        "ArtistImages[$i]: URL exceeds $MAX_ARTIST_IMAGE_URL_LENGTH chars",
-                        module = "artist_images",
                         severity = Severity.WARNING
                     )
                 )

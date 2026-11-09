@@ -7,7 +7,6 @@ import com.google.common.truth.Truth.assertThat
 import io.github.jayfunc.carpelines.MainCoroutineExtension
 import io.github.jayfunc.carpelines.R
 import io.github.jayfunc.carpelines.data.model.Song
-import io.github.jayfunc.carpelines.data.repository.ArtistImageRepository
 import io.github.jayfunc.carpelines.data.repository.MusicRepository
 import io.github.jayfunc.carpelines.data.stats.PlaybackPlayerFilterProvider
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository
@@ -23,7 +22,6 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 import kotlin.io.path.createTempDirectory
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -76,11 +74,6 @@ class RecapViewModelTest {
 
     private val musicRepository = mockk<MusicRepository>(relaxed = true) {
         coEvery { getAllSongsOnce() } returns librarySongs
-        coEvery { getArtistIdByName(any()) } returns null
-    }
-
-    private val artistImageRepository = mockk<ArtistImageRepository> {
-        coEvery { getEffectiveArtistImageUrl(any(), any()) } returns null
     }
 
     private val dispatchers = object : DispatcherProvider {
@@ -139,60 +132,14 @@ class RecapViewModelTest {
     }
 
     @Test
-    fun `artists without a picture borrow the cover of their most played track`() = runTest {
+    fun `top artists use the cover of their most played track`() = runTest {
         events = yearOfListening()
-        coEvery { artistImageRepository.getEffectiveArtistImageUrl(any(), "Blue Quartet") } returns "https://img/blue"
 
         createViewModel(year = 2025).uiState.test {
             val model = (awaitResult() as RecapUiState.Ready).model
             val artists = model.slides.filterIsInstance<RecapSlide.TopArtists>().single().artists
 
             assertThat(artists.associate { it.name to it.imageUri }).containsExactly(
-                "Aurora Fields", "content://art/a",
-                "Blue Quartet", "https://img/blue"
-            )
-        }
-    }
-
-    @Test
-    fun `the story shows with cover stand-ins before slow artist pictures arrive`() = runTest {
-        events = yearOfListening()
-        val slowPicture = CompletableDeferred<String?>()
-        coEvery { artistImageRepository.getEffectiveArtistImageUrl(any(), "Aurora Fields") } coAnswers {
-            slowPicture.await()
-        }
-
-        createViewModel(year = 2025).uiState.test {
-            // Ready while the picture request is still out: the listening data alone is enough.
-            val first = (awaitResult() as RecapUiState.Ready).model
-            assertThat(first.artistImages()).containsExactly(
-                "Aurora Fields", "content://art/a",
-                "Blue Quartet", "content://art/c"
-            )
-
-            slowPicture.complete("https://img/aurora")
-
-            val updated = (awaitItem() as RecapUiState.Ready).model
-            assertThat(updated.artistImages()).containsExactly(
-                "Aurora Fields", "https://img/aurora",
-                "Blue Quartet", "content://art/c"
-            )
-            assertThat(updated.slides.filterIsInstance<RecapSlide.Summary>().single().topArtist?.imageUri)
-                .isEqualTo("https://img/aurora")
-            // Only the pictures change; the story itself stays the same snapshot.
-            assertThat(updated.slides.map { it.key }).isEqualTo(first.slides.map { it.key })
-        }
-    }
-
-    @Test
-    fun `a failed artist picture lookup keeps the story with cover stand-ins`() = runTest {
-        events = yearOfListening()
-        coEvery { musicRepository.getArtistIdByName(any()) } throws IllegalStateException("database closed")
-
-        createViewModel(year = 2025).uiState.test {
-            val model = (awaitResult() as RecapUiState.Ready).model
-
-            assertThat(model.artistImages()).containsExactly(
                 "Aurora Fields", "content://art/a",
                 "Blue Quartet", "content://art/c"
             )
@@ -212,13 +159,9 @@ class RecapViewModelTest {
         savedStateHandle = SavedStateHandle(mapOf(RecapViewModel.YEAR_ARG to year)),
         playbackStatsRepository = playbackStatsRepository,
         musicRepository = musicRepository,
-        artistImageRepository = artistImageRepository,
         playerFilterProvider = playerFilterProvider,
         dispatchers = dispatchers
     )
-
-    private fun RecapUiModel.artistImages(): Map<String, String?> =
-        slides.filterIsInstance<RecapSlide.TopArtists>().single().artists.associate { it.name to it.imageUri }
 
     private suspend fun ReceiveTurbine<RecapUiState>.awaitResult(): RecapUiState {
         val first = awaitItem()

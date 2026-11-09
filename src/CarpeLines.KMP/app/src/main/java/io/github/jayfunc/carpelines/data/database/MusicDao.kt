@@ -150,9 +150,6 @@ interface MusicDao {
     @Update
     suspend fun updateArtists(artists: List<ArtistEntity>)
 
-    @Query("SELECT * FROM artists WHERE id IN (:artistIds)")
-    suspend fun getArtistsByIds(artistIds: List<Long>): List<ArtistEntity>
-
     @Transaction
     suspend fun insertSongs(songs: List<SongEntity>) {
         if (songs.isEmpty()) return
@@ -188,19 +185,7 @@ interface MusicDao {
             if (rowId == -1L) artistsToUpdate.add(artists[index])
         }
         if (artistsToUpdate.isNotEmpty()) {
-            val existingById = getArtistsByIds(artistsToUpdate.map { it.id }).associateBy { it.id }
-            val mergedArtists = artistsToUpdate.map { incoming ->
-                val existing = existingById[incoming.id]
-                if (existing == null) {
-                    incoming
-                } else {
-                    incoming.copy(
-                        imageUrl = incoming.imageUrl ?: existing.imageUrl,
-                        customImageUri = incoming.customImageUri ?: existing.customImageUri
-                    )
-                }
-            }
-            updateArtists(mergedArtists)
+            updateArtists(artistsToUpdate)
         }
     }
 
@@ -1315,15 +1300,6 @@ interface MusicDao {
         applyDirectoryFilter: Boolean
     ): Flow<List<ArtistEntity>>
 
-    @Query("SELECT image_url FROM artists WHERE id = :artistId")
-    suspend fun getArtistImageUrl(artistId: Long): String?
-
-    @Query("SELECT image_url FROM artists WHERE LOWER(TRIM(name)) = LOWER(TRIM(:name)) LIMIT 1")
-    suspend fun getArtistImageUrlByNormalizedName(name: String): String?
-
-    @Query("UPDATE artists SET image_url = :imageUrl WHERE id = :artistId")
-    suspend fun updateArtistImageUrl(artistId: Long, imageUrl: String)
-
     @Query("SELECT id FROM artists WHERE name = :name LIMIT 1")
     suspend fun getArtistIdByName(name: String): Long?
 
@@ -1332,31 +1308,6 @@ interface MusicDao {
 
     @Query("SELECT MAX(id) FROM artists")
     suspend fun getMaxArtistId(): Long?
-
-    @Query("UPDATE artists SET custom_image_uri = :uri WHERE id = :artistId")
-    suspend fun updateArtistCustomImage(artistId: Long, uri: String?)
-
-    @Query("SELECT custom_image_uri FROM artists WHERE id = :artistId")
-    suspend fun getArtistCustomImage(artistId: Long): String?
-
-    /**
-     * Resolve indexed artist IDs first, then look up their paths by primary key. CROSS JOIN
-     * keeps SQLite from scanning every local song via source_type for each artist in a list.
-     */
-    @Query("""
-        SELECT DISTINCT songs.parent_directory_path FROM (
-            SELECT id AS song_id FROM songs WHERE artist_id = :artistId
-            UNION
-            SELECT id AS song_id FROM songs WHERE album_artist_id = :artistId
-            UNION
-            SELECT song_id FROM song_artist_cross_ref WHERE artist_id = :artistId
-        ) AS artist_songs
-        CROSS JOIN songs ON songs.id = artist_songs.song_id
-        WHERE songs.source_type = 0 AND songs.parent_directory_path != ''
-        ORDER BY songs.parent_directory_path
-        LIMIT :limit
-    """)
-    suspend fun getLocalArtistDirectories(artistId: Long, limit: Int): List<String>
 
     /**
      * Songs whose genre value matches the LIKE [pattern]. This is only a prefilter for one genre:

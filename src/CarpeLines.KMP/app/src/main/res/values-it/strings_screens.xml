@@ -74,10 +74,6 @@
     <string name="setup_choose_folders_ignore">Scegli cartelle da ignorare</string>
     <string name="setup_excluded_folders_description">Tutte le cartelle vengono analizzate per impostazione predefinita. Scegli le posizioni da ignorare durante la ricerca dei testi incorporati e dei file .lrc.</string>
     <string name="setup_excluded_folders_title">Cartelle escluse</string>
-    <string name="setup_external_artist_images_description">Recupera da Deezer le foto degli artisti mancanti e salvale nella cache locale</string>
-    <string name="setup_external_artist_images_title">Immagini artista da Deezer</string>
-    <string name="setup_external_services_footer">Puoi modificarlo in seguito in Impostazioni &gt; Servizi online</string>
-    <string name="setup_external_services_title">Servizi online</string>
     <string name="setup_grant_media_permission">Concedi permesso media</string>
     <string name="setup_import_backup">Importa backup</string>
     <string name="setup_inspecting_backup">Ispezione backup</string>
@@ -111,7 +107,6 @@
     <string name="toast_grant_permission_first">Concedi prima il permesso richiesto</string>
     <string name="toast_grant_storage_first">Concedi prima i permessi di archiviazione</string>
     <string name="unknown_version">Versione sconosciuta</string>
-    <string name="setup_external_services_subtitle">I testi online sono attivi per impostazione predefinita. Modifica il loro ordine in Impostazioni &gt; Testi &gt; Ordine delle fonti dei testi.</string>
     <string name="setup_permission_media_description">CarpeLines legge i file audio di questo dispositivo per trovare i testi incorporati e i file .lrc nella stessa cartella. I tuoi file audio restano su questo dispositivo.</string>
     <string name="setup_backup_have_description">Se hai già un backup di CarpeLines, ripristinalo ora e salta gran parte della configurazione rimanente su questo dispositivo</string>
     <string name="setup_theme_dark_description">L\'aspetto scuro Material 3 predefinito per CarpeLines</string>

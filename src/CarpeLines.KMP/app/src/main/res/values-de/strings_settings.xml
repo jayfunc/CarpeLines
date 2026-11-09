@@ -69,15 +69,13 @@
     <string name="setcat_application">App</string>
     <string name="setcat_auto_hide_delay_desc">Wie lange die Steuerung sichtbar bleibt, bevor sie ausblendet</string>
     <string name="setcat_auto_hide_delay_label">Ausblend-Verzögerung</string>
-    <string name="setcat_folder_album_art_permission_required">Voller Fotozugriff ist erforderlich, um Album- und Künstlerbilder aus deinen Musikordnern zu lesen</string>
+    <string name="setcat_folder_album_art_permission_required">Voller Fotozugriff ist erforderlich, um Albumcover aus deinen Musikordnern zu lesen</string>
     <string name="setcat_folder_album_art_refreshing">Bilder werden aktualisiert…</string>
     <string name="setcat_create_backup">Backup erstellen</string>
     <string name="setcat_default_tab_desc">Welcher Tab beim Öffnen der App zuerst erscheint</string>
     <string name="setcat_default_tab_label">Start-Tab</string>
     <string name="setcat_export_backup_subtitle">%1$s Speichert alles in einer .zip-Datei</string>
     <string name="setcat_export_backup_title">Backup exportieren</string>
-    <string name="setcat_external_artist_images_subtitle">Erlaubt, fehlende Künstlerbilder von Deezer zu laden und lokal zwischenzuspeichern</string>
-    <string name="setcat_external_artist_images_title">Künstlerbilder von Deezer</string>
     <string name="setcat_global_theme">Design</string>
     <string name="setcat_immersive_lyrics_subtitle">Steuerung automatisch ausblenden und Text im Vollbild genießen</string>
     <string name="setcat_immersive_lyrics_title">Immersive Lyrics</string>
@@ -204,7 +202,6 @@
     <string name="cover_source_deezer_subtitle">Album-Cover über Titel und Künstler bei Deezer suchen</string>
     <string name="cover_source_local_title">Lokales eingebettetes Cover</string>
     <string name="cover_source_local_subtitle">Eingebettetes Cover oder Ordnerbild des passenden Bibliothekstitels verwenden</string>
-    <string name="cover_sources_artist_section">Künstlerbilder</string>
     <string name="settings_category_player_filter_title">Player-Filter</string>
     <string name="settings_category_player_filter_subtitle">Wähle, welchen Playern CarpeLines folgt</string>
     <string name="player_filter_intro">Ist der Filter aktiv, folgt CarpeLines nur den ausgewählten Playern. Ihre Mediensitzungen speisen Liedschirm und Hörstatistik; die Wiedergabe anderer Apps wird ignoriert.</string>

@@ -74,7 +74,7 @@ class RecapStatsParityTest {
             zoneId = zone
         )!!,
         isSoFar = true,
-        artistImages = emptyMap(),
+        artistCovers = emptyMap(),
         canPlayTopSongs = true
     )
 

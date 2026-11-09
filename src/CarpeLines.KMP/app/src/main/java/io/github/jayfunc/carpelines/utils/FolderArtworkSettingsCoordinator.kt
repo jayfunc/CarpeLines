@@ -3,7 +3,6 @@ package io.github.jayfunc.carpelines.utils
 import android.content.Context
 import io.github.jayfunc.carpelines.data.media.ImageCacheManager
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
-import io.github.jayfunc.carpelines.data.repository.ArtistImageRepository
 import io.github.jayfunc.carpelines.data.worker.SyncManager
 import io.github.jayfunc.carpelines.presentation.viewmodel.ColorSchemeProcessor
 import dagger.Lazy
@@ -24,7 +23,6 @@ class FolderArtworkSettingsCoordinator @Inject constructor(
     @ApplicationContext private val context: Context,
     private val preferences: UserPreferencesRepository,
     private val imageCacheManager: ImageCacheManager,
-    private val artistImageRepository: ArtistImageRepository,
     private val syncManager: SyncManager,
     private val colorSchemeProcessor: Lazy<ColorSchemeProcessor>
 ) {
@@ -73,7 +71,6 @@ class FolderArtworkSettingsCoordinator @Inject constructor(
         AlbumArtUtils.bumpArtworkCacheGeneration()
         imageCacheManager.clearAllCoverArtCaches()
         colorSchemeProcessor.get().invalidateLocalArtworkSchemes()
-        artistImageRepository.clearCache()
         AlbumArtUtils.notifyArtworkCacheInvalidated()
 
         // A song previously resolved without artwork can have a null database URI. Clearing

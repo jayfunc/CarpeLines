@@ -85,13 +85,10 @@
     <string name="backup_module_engagement_stats_description">曲ごとの再生回数と合計再生時間</string>
     <string name="backup_module_playback_history_label">再生履歴</string>
     <string name="backup_module_playback_history_description">各再生セッションの時刻と時間。最近再生した曲と統計に使います</string>
-    <string name="backup_module_artist_images_label">アーティスト画像</string>
-    <string name="backup_module_artist_images_description">アーティスト画像のリンクと、アップロードしたカスタム画像</string>
     <string name="backup_module_skipped_warning">%1$s をスキップしました：%2$s</string>
     <string name="backup_error_export_module_too_large">%1$s は %2$dMB で、1 モジュールの上限 %3$dMB を超えています。選択を解除して再試行してください</string>
     <string name="backup_error_export_too_large">バックアップは %1$dMB となり、上限 %2$dMB を超えます。選択するモジュールを減らして再試行してください</string>
     <string name="backup_plan_warning_legacy_schema">これは旧形式のバックアップ（v%1$d）です。一部のモジュールは利用できない場合があります</string>
-    <string name="backup_plan_warning_library_not_scanned">先に音楽ライブラリをスキャンしてください：アーティスト画像はライブラリと照合されます</string>
     <string name="data_restored_with_warnings">データを復元しましたが、一部のモジュールはスキップされました：\n%1$s</string>
     <string name="restore_completed_success">バックアップを復元しました</string>
     <string name="restore_completed_partial_issues">復元は完了しましたが、未解決の問題があります</string>

@@ -69,15 +69,13 @@
     <string name="setcat_application">애플리케이션</string>
     <string name="setcat_auto_hide_delay_desc">컨트롤이 숨겨지기 전까지의 시간입니다</string>
     <string name="setcat_auto_hide_delay_label">자동 숨김 지연 시간</string>
-    <string name="setcat_folder_album_art_permission_required">음악 폴더에서 앨범 및 아티스트 이미지를 읽으려면 모든 사진에 대한 접근 권한이 필요합니다</string>
+    <string name="setcat_folder_album_art_permission_required">음악 폴더에서 앨범 아트를 읽으려면 모든 사진에 대한 접근 권한이 필요합니다</string>
     <string name="setcat_folder_album_art_refreshing">이미지를 새로 고치는 중…</string>
     <string name="setcat_create_backup">백업 생성</string>
     <string name="setcat_default_tab_desc">시작 시 열릴 기본 탭을 선택하세요</string>
     <string name="setcat_default_tab_label">기본 탭</string>
     <string name="setcat_export_backup_subtitle">%1$s .zip 백업 파일을 생성합니다</string>
     <string name="setcat_export_backup_title">백업 내보내기</string>
-    <string name="setcat_external_artist_images_subtitle">없는 아티스트 이미지를 Deezer에서 가져와 로컬에 캐시하도록 허용합니다</string>
-    <string name="setcat_external_artist_images_title">Deezer의 아티스트 이미지</string>
     <string name="setcat_global_theme">전체 테마</string>
     <string name="setcat_immersive_lyrics_subtitle">컨트롤을 자동으로 숨기고 텍스트를 확대합니다</string>
     <string name="setcat_immersive_lyrics_title">몰입형 가사</string>
@@ -204,7 +202,6 @@
     <string name="cover_source_deezer_subtitle">곡 제목과 아티스트로 Deezer에서 앨범 커버 검색</string>
     <string name="cover_source_local_title">로컬 내장 커버</string>
     <string name="cover_source_local_subtitle">라이브러리에서 일치한 곡의 내장 또는 폴더 커버 사용</string>
-    <string name="cover_sources_artist_section">아티스트 이미지</string>
     <string name="settings_category_player_filter_title">플레이어 필터</string>
     <string name="settings_category_player_filter_subtitle">CarpeLines가 따라갈 플레이어 선택</string>
     <string name="player_filter_intro">필터를 켜면 선택한 플레이어만 따라갑니다. 해당 미디어 세션이 가사 화면과 청취 통계에 사용되며, 다른 앱의 재생은 무시됩니다.</string>

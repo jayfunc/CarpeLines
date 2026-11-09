@@ -98,7 +98,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
@@ -298,14 +297,6 @@ fun StatsScreen(
         }
     }
 
-    // Artist pictures live in the artists table (custom image, folder portrait, else Deezer when
-    // the user enabled it), not on the played songs, so they are looked up once there is
-    // something to show.
-    val topArtistNames = remember(summary) { summary?.topArtists.orEmpty().map { it.artist } }
-    val artistImages by produceState(emptyMap<String, String>(), topArtistNames) {
-        value = if (topArtistNames.isEmpty()) emptyMap() else statsViewModel.resolveArtistImages(topArtistNames)
-    }
-
     // The recap card usually arrives after the first items are laid out. The list keeps its
     // first visible item in place when something is inserted above it, so an untouched list
     // is moved back to the top to actually show the card.
@@ -408,7 +399,6 @@ fun StatsScreen(
                         item(key = "heavy_rotation", contentType = "heavy_rotation") {
                             HeavyRotationSection(
                                 summary = activeSummary,
-                                artistImages = artistImages,
                                 selected = selectedRotation,
                                 onSelected = { selectedRotation = it },
                                 modifier = Modifier.padding(horizontal = ScreenGutter)
@@ -1803,8 +1793,7 @@ private data class RotationEntry(
 
 private fun buildRotationEntries(
     summary: PlaybackStatsSummary,
-    dimension: RotationDimension,
-    artistImages: Map<String, String>
+    dimension: RotationDimension
 ): List<RotationEntry> {
     val entries = when (dimension) {
         RotationDimension.Tracks -> summary.topSongs.ifEmpty { summary.songs }.map {
@@ -1821,8 +1810,7 @@ private fun buildRotationEntries(
         }
 
         RotationDimension.Artists -> {
-            // The artist's own picture wins; artists without one borrow the cover of their
-            // most-played track before falling back to initials.
+            // Artists use the cover of their most played track, falling back to initials.
             val coverByArtist = summary.songs
                 .asSequence()
                 .filter { !it.albumArtUri.isNullOrBlank() }
@@ -1834,7 +1822,7 @@ private fun buildRotationEntries(
                     dimension = dimension,
                     title = it.artist,
                     artist = null,
-                    artUri = artistImages[it.artist] ?: coverByArtist[it.artist],
+                    artUri = coverByArtist[it.artist],
                     durationMs = it.totalDurationMs,
                     playCount = it.playCount,
                     childCount = it.uniqueSongs
@@ -1882,7 +1870,6 @@ private fun RotationEntry.supportingText(): String? = when (dimension) {
 @Composable
 private fun HeavyRotationSection(
     summary: PlaybackStatsSummary,
-    artistImages: Map<String, String>,
     selected: RotationDimension,
     onSelected: (RotationDimension) -> Unit,
     modifier: Modifier = Modifier
@@ -1919,8 +1906,8 @@ private fun HeavyRotationSection(
             },
             label = "heavyRotationContent"
         ) { dimension ->
-            val entries = remember(summary, dimension, artistImages) {
-                buildRotationEntries(summary, dimension, artistImages)
+            val entries = remember(summary, dimension) {
+                buildRotationEntries(summary, dimension)
             }
             if (entries.isEmpty()) {
                 StatsEmptyState(

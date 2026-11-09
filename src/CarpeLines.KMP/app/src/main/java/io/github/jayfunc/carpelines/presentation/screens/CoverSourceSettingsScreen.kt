@@ -60,7 +60,6 @@ import io.github.jayfunc.carpelines.presentation.settings.search.settingHighligh
 import io.github.jayfunc.carpelines.presentation.utils.LocalAppHapticsConfig
 import io.github.jayfunc.carpelines.presentation.utils.performAppCompatHapticFeedback
 import io.github.jayfunc.carpelines.presentation.viewmodel.CoverArtSourceOrderViewModel
-import io.github.jayfunc.carpelines.presentation.viewmodel.SettingsViewModel
 import io.github.jayfunc.carpelines.ui.theme.M3EShape
 import io.github.jayfunc.carpelines.ui.theme.m3eContentWidth
 import kotlin.math.roundToInt
@@ -72,21 +71,15 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
  * Which cover the app shows for the playing track, and in what order. Modelled on the lyrics
  * source page: the stored list is both the priority order and the enabled set, and dragging a row
  * is the only way to change the priority.
- *
- * The Deezer artist portrait switch used to live under "Online services". It is not a track
- * cover, but it is the other Deezer-backed image in the app, so it moved here when that
- * category went away.
  */
 @Composable
 fun CoverSourceSettingsScreen(
     navController: NavController,
-    settingsViewModel: SettingsViewModel = hiltViewModel(),
     orderViewModel: CoverArtSourceOrderViewModel = hiltViewModel(),
     highlightKey: String? = null,
 ) {
     val order by orderViewModel.order.collectAsStateWithLifecycle()
     val disabled = CoverArtSource.entries.filterNot { order.contains(it) }
-    val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
 
     val title = stringResource(R.string.settings_category_cover_sources_title)
     val isLongTitle = title.length > 13
@@ -290,29 +283,6 @@ fun CoverSourceSettingsScreen(
                         shape = M3EShape.groupedCards(index = index, count = disabled.size),
                     )
                 }
-            }
-
-            item(key = "artist_images_header") {
-                Column {
-                    Spacer(Modifier.height(10.dp))
-                    SettingsSubsectionHeader(stringResource(R.string.cover_sources_artist_section))
-                }
-            }
-
-            item(key = "artist_images_toggle") {
-                SwitchSettingItem(
-                    title = stringResource(R.string.setcat_external_artist_images_title),
-                    subtitle = stringResource(R.string.setcat_external_artist_images_subtitle),
-                    checked = uiState.externalArtistImagesEnabled,
-                    onCheckedChange = settingsViewModel::setExternalArtistImagesEnabled,
-                    leadingIcon = {
-                        Icon(Icons.Outlined.Cloud, null, tint = MaterialTheme.colorScheme.secondary)
-                    },
-                    modifier = Modifier.settingHighlight(
-                        "item_cover_sources_deezer_artist_images",
-                        highlightKey
-                    ),
-                )
             }
         }
 

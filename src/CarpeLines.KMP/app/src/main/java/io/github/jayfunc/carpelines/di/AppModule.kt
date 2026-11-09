@@ -37,7 +37,6 @@ import io.github.jayfunc.carpelines.data.preferences.dataStore
 import io.github.jayfunc.carpelines.data.media.SongMetadataEditor
 import io.github.jayfunc.carpelines.data.network.deezer.DeezerApiService
 import io.github.jayfunc.carpelines.data.network.lyrics.LrcLibApiService
-import io.github.jayfunc.carpelines.data.repository.ArtistImageRepository
 import io.github.jayfunc.carpelines.data.repository.AudioBookmarkRepository
 import io.github.jayfunc.carpelines.data.repository.AudioBookmarkRepositoryImpl
 import io.github.jayfunc.carpelines.data.repository.LyricsRepository
@@ -243,7 +242,6 @@ object AppModule {
         musicDao: MusicDao,
         lyricsRepository: LyricsRepository,
         songRepository: SongRepository,
-        artistImageRepository: ArtistImageRepository,
         folderTreeBuilder: FolderTreeBuilder
     ): MusicRepository {
         return MusicRepositoryImpl(
@@ -252,7 +250,6 @@ object AppModule {
             musicDao = musicDao,
             lyricsRepository = lyricsRepository,
             songRepository = songRepository,
-            artistImageRepository = artistImageRepository,
             folderTreeBuilder = folderTreeBuilder
         )
 
@@ -425,19 +422,5 @@ object AppModule {
     @Singleton
     fun provideDeezerApiService(@DeezerRetrofit retrofit: Retrofit): DeezerApiService {
         return retrofit.create(DeezerApiService::class.java)
-    }
-
-    /**
-     * Provides the artist image repository.
-     */
-    @Provides
-    @Singleton
-    fun provideArtistImageRepository(
-        deezerApiService: DeezerApiService,
-        musicDao: MusicDao,
-        userPreferencesRepository: UserPreferencesRepository,
-        @ApplicationContext context: Context
-    ): ArtistImageRepository {
-        return ArtistImageRepository(deezerApiService, musicDao, userPreferencesRepository, context)
     }
 }

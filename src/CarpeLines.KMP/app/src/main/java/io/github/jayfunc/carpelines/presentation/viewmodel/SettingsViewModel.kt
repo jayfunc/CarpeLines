@@ -80,7 +80,6 @@ data class SettingsUiState(
     val crossfadeDuration: Int = 2000,
     val persistentShuffleEnabled: Boolean = false,
     val folderBackGestureNavigation: Boolean = true,
-    val externalArtistImagesEnabled: Boolean = false,
     val blockedDirectories: Set<String> = emptySet(),
     val appRebrandDialogShown: Boolean = false,
     val fullPlayerLoadingTweaks: FullPlayerLoadingTweaks = FullPlayerLoadingTweaks(),
@@ -413,12 +412,6 @@ class SettingsViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            userPreferencesRepository.externalArtistImagesEnabledFlow.collect { enabled ->
-                _uiState.update { it.copy(externalArtistImagesEnabled = enabled) }
-            }
-        }
-
-        viewModelScope.launch {
             userPreferencesRepository.backupInfoDismissedFlow.collect { dismissed ->
                 _uiState.update { it.copy(backupInfoDismissed = dismissed) }
             }
@@ -712,12 +705,6 @@ class SettingsViewModel @Inject constructor(
     fun setFolderBackGestureNavigation(enabled: Boolean) {
         viewModelScope.launch {
             userPreferencesRepository.setFolderBackGestureNavigation(enabled)
-        }
-    }
-
-    fun setExternalArtistImagesEnabled(enabled: Boolean) {
-        viewModelScope.launch {
-            userPreferencesRepository.setExternalArtistImagesEnabled(enabled)
         }
     }
 
