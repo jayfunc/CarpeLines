@@ -153,7 +153,6 @@ class DebugPerformanceReportCollector @Inject constructor(
     ): LibrarySection = LibrarySection(
         totalSongs = stats.totalCount,
         localSongs = stats.localCount,
-        cloudSongs = stats.cloudCount,
         mimeCounts = mimeCounts,
         maxBitrate = stats.maxBitrate?.takeIf { it > 0 },
         minSampleRate = stats.minSampleRate?.takeIf { it > 0 },

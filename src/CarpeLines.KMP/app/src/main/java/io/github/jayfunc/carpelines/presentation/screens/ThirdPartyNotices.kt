@@ -106,7 +106,6 @@ internal fun LicenseNotice.licenseTextAssetPath(): String? {
         "mit" in license -> "MIT.txt"
         "bsd" in license -> "BSD-3-Clause.txt"
         "cc0" in license -> "CC0-1.0.txt"
-        "jdom" in license -> "JDOM.txt"
         usesOpenFontLicense() -> "OFL-1.1.txt"
         else -> null
     }

@@ -1412,10 +1412,9 @@ class PlaybackStatsRepository @Inject constructor(
 
         /**
          * Entries in each top list of a recap: enough that its top five stay full once the
-         * entries it hides are left out. Genres hide the most: the unknown bucket and every
-         * cloud source placeholder.
+         * unknown bucket it hides is left out.
          */
-        private val RECAP_RANKING_LIMIT = TOP_RANKING_LIMIT + 1 + GenreParser.SOURCE_PLACEHOLDERS.size
+        private val RECAP_RANKING_LIMIT = TOP_RANKING_LIMIT + 1
 
         private val MAX_HISTORY_AGE_MS = TimeUnit.DAYS.toMillis(730)
         private const val SEGMENT_JOIN_TOLERANCE_MS = 0L

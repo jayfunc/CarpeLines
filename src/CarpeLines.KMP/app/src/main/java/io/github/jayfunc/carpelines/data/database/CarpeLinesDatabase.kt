@@ -15,15 +15,9 @@ import androidx.sqlite.db.SupportSQLiteDatabase
         SongArtistCrossRef::class,
         SongEngagementEntity::class,
         LyricsEntity::class,
-        NavidromeSongEntity::class,
-        NavidromePlaylistEntity::class,
-        JellyfinSongEntity::class,
-        JellyfinPlaylistEntity::class,
-        ListenBrainzPendingListenEntity::class,
-        AudioBookmarkEntity::class,
-        OfflineTrackEntity::class
+        AudioBookmarkEntity::class
     ],
-    version = 8,
+    version = 9,
     exportSchema = true
 )
 abstract class CarpeLinesDatabase : RoomDatabase() {
@@ -32,11 +26,7 @@ abstract class CarpeLinesDatabase : RoomDatabase() {
     abstract fun musicDao(): MusicDao
     abstract fun engagementDao(): EngagementDao
     abstract fun lyricsDao(): LyricsDao
-    abstract fun navidromeDao(): NavidromeDao
-    abstract fun jellyfinDao(): JellyfinDao
-    abstract fun listenBrainzDao(): ListenBrainzDao
     abstract fun audioBookmarkDao(): AudioBookmarkDao
-    abstract fun offlineTrackDao(): OfflineTrackDao
 
     companion object {
         private fun createSongsSearchVirtualTable(db: SupportSQLiteDatabase) {

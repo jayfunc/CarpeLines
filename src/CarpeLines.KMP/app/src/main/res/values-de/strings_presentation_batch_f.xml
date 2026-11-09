@@ -12,6 +12,5 @@
     <string name="presentation_batch_f_sync_phase_reading_mediastore">MediaStore wird gelesen</string>
     <string name="presentation_batch_f_sync_phase_saving_db">In Datenbank speichern</string>
     <string name="presentation_batch_f_sync_phase_scanning_lrc">Lyrics-Dateien scannen</string>
-    <string name="presentation_batch_f_sync_phase_syncing_cloud">Cloud-Quellen synchronisieren</string>
     <string name="presentation_batch_f_unknown_short">\?</string>
 </resources>

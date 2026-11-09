@@ -12,6 +12,5 @@
     <string name="presentation_batch_f_sync_phase_reading_mediastore">MediaStore okunuyor</string>
     <string name="presentation_batch_f_sync_phase_saving_db">Veri tabanına kaydediliyor</string>
     <string name="presentation_batch_f_sync_phase_scanning_lrc">Şarkı sözü dosyaları taranıyor</string>
-    <string name="presentation_batch_f_sync_phase_syncing_cloud">Bulut kaynakları senkronize ediliyor</string>
     <string name="presentation_batch_f_unknown_short">\?</string>
 </resources>

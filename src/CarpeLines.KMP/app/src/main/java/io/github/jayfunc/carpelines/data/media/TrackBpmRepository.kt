@@ -10,12 +10,12 @@ import javax.inject.Singleton
 
 /**
  * Tempo source for the smart crossfade: resolves a track's BPM from its embedded tag
- * (via [TagBpmReader]) and memoizes the result — including misses — so the transition
+ * (via [TagBpmReader]) and memoizes the result 鈥?including misses 鈥?so the transition
  * scheduler pays the file read at most once per track per process.
  *
  * Tag-only by design: no audio decoding or on-device analysis ever runs here, so a call
  * costs a handful of small file seeks on a cache miss and nothing at all afterwards.
- * Tracks without a readable local file path (cloud streams) or without a plausible tag
+ * Tracks without a readable local file path or without a plausible tag
  * value simply resolve to null and the caller falls back to the standard crossfade.
  */
 @Singleton

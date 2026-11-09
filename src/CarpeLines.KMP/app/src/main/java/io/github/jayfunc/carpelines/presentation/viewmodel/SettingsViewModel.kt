@@ -880,7 +880,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     /**
-     * Rebuilds local MediaStore-backed songs from scratch while preserving cloud sources.
+     * Rebuilds local MediaStore-backed songs from scratch.
      * Local imported lyrics, favorites, and user metadata edits are removed for rebuilt songs.
      * Use when local library data is corrupted or as a last resort.
      */

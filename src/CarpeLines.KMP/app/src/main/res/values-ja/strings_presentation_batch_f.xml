@@ -6,7 +6,6 @@
     <string name="presentation_batch_f_sync_phase_saving_db">データベースに保存中</string>
     <string name="presentation_batch_f_sync_phase_scanning_lrc">歌詞ファイルをスキャン中</string>
     <string name="presentation_batch_f_sync_phase_cleaning_cache">アルバムアートのキャッシュを整理中</string>
-    <string name="presentation_batch_f_sync_phase_syncing_cloud">クラウドソースを同期中</string>
     <string name="presentation_batch_f_sync_phase_completing">同期を完了中</string>
 
 

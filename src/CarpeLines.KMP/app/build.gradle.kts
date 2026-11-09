@@ -305,12 +305,10 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material3.adaptive)
     implementation(libs.androidx.material.icons.core)
     implementation(libs.androidx.material.icons.extended)
-    implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.animation)
     implementation(libs.androidx.palette.ktx)
@@ -320,7 +318,6 @@ dependencies {
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
-    implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
@@ -336,12 +333,9 @@ dependencies {
     implementation(libs.androidx.paging.common)
 
     implementation(libs.androidx.media3.exoplayer)
-    implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.session)
     implementation(libs.androidx.media3.exoplayer.ffmpeg)
     implementation(libs.androidx.media3.exoplayer.midi)
-    implementation(libs.androidx.media3.transformer)
-    implementation(libs.androidx.media)
     implementation(libs.coil.compose)
     implementation(libs.taglib)
     implementation(libs.jaudiotagger)
@@ -357,11 +351,10 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.snakeyaml)
     implementation(libs.kotlinx.collections.immutable)
-    implementation(libs.ktor.server.core)
-    implementation(libs.ktor.server.cio)
 
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.security.crypto)
+    implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.timber)
     implementation(libs.smooth.corner.rect.android.compose)
@@ -375,13 +368,6 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.accompanist.lyrics.core)
     implementation(libs.accompanist.lyrics.ui)
-    implementation(libs.capturable) {
-        exclude(group = "androidx.compose.animation")
-        exclude(group = "androidx.compose.foundation")
-        exclude(group = "androidx.compose.material")
-        exclude(group = "androidx.compose.runtime")
-        exclude(group = "androidx.compose.ui")
-    }
 
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.junit.jupiter.params)
@@ -396,36 +382,19 @@ dependencies {
     testImplementation(libs.org.json)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.androidx.junit)
-    testImplementation(kotlin("test"))
 
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.room.testing)
     androidTestImplementation(libs.truth)
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.worktesting)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation(libs.androidx.uiautomator)
 
     debugImplementation(platform(libs.androidx.compose.bom))
-    debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    constraints {
-        implementation(libs.netty.common)
-        implementation(libs.netty.handler)
-        implementation(libs.netty.codec.http)
-        implementation(libs.netty.codec.http2)
-        implementation(libs.bouncycastle.bcprov)
-        implementation(libs.bouncycastle.bcpkix)
-        implementation(libs.commons.lang3)
-        implementation(libs.jdom2)
-        implementation(libs.jose4j)
-        implementation(libs.apache.httpclient)
-    }
 }
 
 tasks.withType<Test> {

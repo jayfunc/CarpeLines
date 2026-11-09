@@ -20,7 +20,6 @@ import io.github.jayfunc.carpelines.CarpeLinesApplication
 import io.github.jayfunc.carpelines.data.database.AlbumArtThemeDao
 import io.github.jayfunc.carpelines.data.database.EngagementDao
 import io.github.jayfunc.carpelines.data.database.LyricsDao
-import io.github.jayfunc.carpelines.data.database.ListenBrainzDao
 import io.github.jayfunc.carpelines.data.database.AudioBookmarkDao
 import io.github.jayfunc.carpelines.data.database.MIGRATION_1_2
 import io.github.jayfunc.carpelines.data.database.MIGRATION_2_3
@@ -29,8 +28,8 @@ import io.github.jayfunc.carpelines.data.database.MIGRATION_4_5
 import io.github.jayfunc.carpelines.data.database.MIGRATION_5_6
 import io.github.jayfunc.carpelines.data.database.MIGRATION_6_7
 import io.github.jayfunc.carpelines.data.database.MIGRATION_7_8
+import io.github.jayfunc.carpelines.data.database.MIGRATION_8_9
 import io.github.jayfunc.carpelines.data.database.MusicDao
-import io.github.jayfunc.carpelines.data.database.OfflineTrackDao
 import io.github.jayfunc.carpelines.data.database.CarpeLinesDatabase
 import io.github.jayfunc.carpelines.data.database.SearchHistoryDao
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
@@ -127,6 +126,7 @@ object AppModule {
                 MIGRATION_5_6,
                 MIGRATION_6_7,
                 MIGRATION_7_8,
+                MIGRATION_8_9,
             )
             .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
 
@@ -169,32 +169,8 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideNavidromeDao(database: CarpeLinesDatabase): io.github.jayfunc.carpelines.data.database.NavidromeDao {
-        return database.navidromeDao()
-    }
-    
-    @Singleton
-    @Provides
-    fun provideJellyfinDao(database: CarpeLinesDatabase): io.github.jayfunc.carpelines.data.database.JellyfinDao {
-        return database.jellyfinDao()
-    }
-
-    @Singleton
-    @Provides
-    fun provideListenBrainzDao(database: CarpeLinesDatabase): ListenBrainzDao {
-        return database.listenBrainzDao()
-    }
-
-    @Singleton
-    @Provides
     fun provideAudioBookmarkDao(database: CarpeLinesDatabase): AudioBookmarkDao {
         return database.audioBookmarkDao()
-    }
-
-    @Singleton
-    @Provides
-    fun provideOfflineTrackDao(database: CarpeLinesDatabase): OfflineTrackDao {
-        return database.offlineTrackDao()
     }
 
     @Provides

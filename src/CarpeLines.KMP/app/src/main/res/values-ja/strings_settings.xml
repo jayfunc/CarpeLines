@@ -192,7 +192,7 @@
 
     <string name="confirm">確認</string>
     <string name="dialog_rebuild_database_title">データベースを再構築しますか？</string>
-    <string name="dialog_rebuild_database_message">MediaStore からローカルファイルを作り直し、それらの曲の読み込み歌詞、お気に入り、カスタムメタデータを削除します。Navidrome と Jellyfin の曲は保持されます。この操作は元に戻せません。</string>
+    <string name="dialog_rebuild_database_message">MediaStore からローカルファイルを作り直し、それらの曲の読み込み歌詞、お気に入り、カスタムメタデータを削除します。この操作は元に戻せません。</string>
     <string name="rebuild">再構築</string>
     <string name="sync_indicator_rebuilding">データベースを再構築中</string>
     <string name="toast_rebuilding_database">データベースを再構築中…</string>

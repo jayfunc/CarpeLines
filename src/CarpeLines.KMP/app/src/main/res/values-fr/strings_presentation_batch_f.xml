@@ -12,6 +12,5 @@
     <string name="presentation_batch_f_sync_phase_reading_mediastore">Lecture de MediaStore</string>
     <string name="presentation_batch_f_sync_phase_saving_db">Enregistrement dans la base de données</string>
     <string name="presentation_batch_f_sync_phase_scanning_lrc">Analyse des fichiers de paroles</string>
-    <string name="presentation_batch_f_sync_phase_syncing_cloud">Synchronisation des sources cloud</string>
     <string name="presentation_batch_f_unknown_short">\?</string>
 </resources>

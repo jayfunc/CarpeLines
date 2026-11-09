@@ -55,7 +55,6 @@ import io.github.jayfunc.carpelines.data.service.player.FadingPlayer
 import io.github.jayfunc.carpelines.data.service.player.MappingPlayer
 import io.github.jayfunc.carpelines.data.service.player.PreviousButtonPlayer
 import io.github.jayfunc.carpelines.data.service.player.TransitionController
-import io.github.jayfunc.carpelines.data.service.player.selectCanonicalCloudPlaybackUri
 import io.github.jayfunc.carpelines.utils.AlbumArtUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -73,7 +72,6 @@ import io.github.jayfunc.carpelines.data.preferences.AlbumArtColorAccuracy
 import io.github.jayfunc.carpelines.data.preferences.ThemePreference
 import io.github.jayfunc.carpelines.utils.ArtworkTransportSanitizer
 import io.github.jayfunc.carpelines.utils.MediaItemBuilder
-import io.github.jayfunc.carpelines.data.navidrome.NavidromeRepository
 import io.github.jayfunc.carpelines.di.AppScope
 import io.github.jayfunc.carpelines.presentation.viewmodel.ListeningStatsTracker
 import kotlin.math.abs
@@ -141,8 +139,6 @@ class MusicService : MediaSessionService() {
     @Inject
     lateinit var replayGainManager: io.github.jayfunc.carpelines.data.media.ReplayGainManager
     @Inject
-    lateinit var navidromeRepository: NavidromeRepository
-    @Inject
     lateinit var listeningStatsTracker: ListeningStatsTracker
     @Inject
     lateinit var sleepTimerSession: SleepTimerSession
@@ -209,6 +205,7 @@ class MusicService : MediaSessionService() {
         private const val MEDIA_SESSION_BUTTON_DEBOUNCE_MS = 250L
         private const val DEFERRED_SERVICE_STARTUP_WORK_DELAY_MS = 1_000L
         private const val PAUSED_RESTORE_PREPARE_QUEUE_LIMIT = 50
+        private val RETIRED_MEDIA_SCHEMES = setOf("navidrome", "jellyfin")
         private val pendingTemporaryForegroundStarts = AtomicInteger(0)
 
         private const val APP_PACKAGE_PREFIX = "io.github.jayfunc.carpelines"
@@ -791,8 +788,6 @@ class MusicService : MediaSessionService() {
         PlaybackActivityTracker.setPlaybackActive(false)
         io.github.jayfunc.carpelines.data.provider.SharedArtworkContentProvider.clearPublishedSessionArtwork()
         listeningStatsTracker.finalizeCurrentSession(forceSynchronousPersistence = true)
-        reportNavidromePlayback("stopped")
-        stopNavidromePlaybackReporting()
         flushPendingPlaybackSnapshotOnDestroy()
         playbackSnapshotPersistJob?.cancel()
         mediaSessionButtonRefreshJob?.cancel()
@@ -821,61 +816,6 @@ class MusicService : MediaSessionService() {
         super.onDestroy()
     }
 
-    private fun getNavidromeId(mediaItem: MediaItem?): String? {
-        if (mediaItem == null) return null
-        return mediaItem.mediaMetadata.extras?.getString(MediaItemBuilder.EXTERNAL_EXTRA_NAVIDROME_ID)
-            ?: mediaItem.mediaId.let { if (it.startsWith("navidrome_")) it.substringAfter("navidrome_") else null }
-            ?: mediaItem.mediaMetadata.extras?.getString(MediaItemBuilder.EXTERNAL_EXTRA_CONTENT_URI)?.let {
-                if (it.startsWith("navidrome://")) it.substringAfter("navidrome://") else null
-            }
-    }
-
-    private fun isNavidromeMediaItem(mediaItem: MediaItem?): Boolean {
-        return getNavidromeId(mediaItem) != null
-    }
-
-    private fun reportNavidromePlayback(state: String, mediaItem: MediaItem? = engine.masterPlayer.currentMediaItem) {
-        val player = engine.masterPlayer
-        val targetItem = mediaItem ?: return
-        val navidromeId = getNavidromeId(targetItem) ?: return
-
-        val positionMs = if (targetItem === player.currentMediaItem) {
-            player.currentPosition
-        } else {
-            targetItem.mediaMetadata.extras?.getLong(MediaItemBuilder.EXTERNAL_EXTRA_DURATION) ?: 0L
-        }
-        val playbackRate = player.playbackParameters.speed
-
-        appScope.launch(Dispatchers.IO) {
-            navidromeRepository.reportPlayback(
-                navidromeId = navidromeId,
-                positionMs = positionMs,
-                state = state,
-                playbackRate = playbackRate
-            )
-        }
-    }
-
-    private var navidromePlaybackReportJob: Job? = null
-
-    private fun startNavidromePlaybackReporting() {
-        navidromePlaybackReportJob?.cancel()
-        navidromePlaybackReportJob = serviceScope.launch {
-            while (true) {
-                delay(30_000)
-                val player = engine.masterPlayer
-                if (player.isPlaying && isNavidromeMediaItem(player.currentMediaItem)) {
-                    reportNavidromePlayback("playing")
-                }
-            }
-        }
-    }
-
-    private fun stopNavidromePlaybackReporting() {
-        navidromePlaybackReportJob?.cancel()
-        navidromePlaybackReportJob = null
-    }
-
     private var consecutivePlaybackErrors = 0
     private val maxConsecutivePlaybackErrors = 5
 
@@ -889,15 +829,6 @@ class MusicService : MediaSessionService() {
             Timber.tag(TAG).d("onIsPlayingChanged: $isPlaying. Duration: ${player.duration}, Seekable: ${player.isCurrentMediaItemSeekable}")
             PlaybackActivityTracker.setPlaybackActive(isPlaying)
             syncLocalListeningStatsFromPlayer(player)
-
-            if (isPlaying) {
-                reportNavidromePlayback("playing")
-                startNavidromePlaybackReporting()
-            } else {
-                val state = if (player.playbackState == Player.STATE_ENDED) "stopped" else "paused"
-                reportNavidromePlayback(state)
-                stopNavidromePlaybackReporting()
-            }
 
             if (isPlaying) {
                 replayGainProcessor.reapplyLastAppliedVolume(player)
@@ -934,16 +865,7 @@ class MusicService : MediaSessionService() {
             }
             if (playbackState == Player.STATE_ENDED) {
                 listeningStatsTracker.finalizeCurrentSession()
-                val mediaItem = (mediaSession?.player ?: engine.masterPlayer).currentMediaItem
-                getNavidromeId(mediaItem)?.let { navidromeId ->
-                    appScope.launch(Dispatchers.IO) {
-                        navidromeRepository.scrobble(navidromeId, submission = true)
-                    }
-                }
-
                 sleepTimerController.onPlaybackEnded()
-                reportNavidromePlayback("stopped")
-                stopNavidromePlaybackReporting()
             } else {
                 syncLocalListeningStatsFromPlayer(mediaSession?.player ?: engine.masterPlayer)
             }
@@ -971,24 +893,6 @@ class MusicService : MediaSessionService() {
             newPosition: Player.PositionInfo,
             reason: Int
         ) {
-            if (reason == Player.DISCONTINUITY_REASON_SEEK) {
-                val state = if (engine.masterPlayer.isPlaying) "playing" else "paused"
-                reportNavidromePlayback(state)
-            }
-
-            if (reason == Player.DISCONTINUITY_REASON_AUTO_TRANSITION) {
-                val finishedItem = oldPosition.mediaItem
-                if (isNavidromeMediaItem(finishedItem)) {
-                    val prevId = getNavidromeId(finishedItem)
-                    reportNavidromePlayback("stopped", finishedItem)
-                    if (prevId != null) {
-                        appScope.launch(Dispatchers.IO) {
-                            navidromeRepository.scrobble(prevId, submission = true)
-                        }
-                    }
-                }
-            }
-
             if (reason == Player.DISCONTINUITY_REASON_AUTO_TRANSITION ||
                 reason == Player.DISCONTINUITY_REASON_SEEK
             ) {
@@ -1013,14 +917,6 @@ class MusicService : MediaSessionService() {
             }
             mediaItem?.let(::grantArtworkUriPermissionsToConnectedControllers)
             syncLocalListeningStatsFromPlayer(mediaSession?.player ?: engine.masterPlayer, forceNewSession = true)
-            if (isNavidromeMediaItem(mediaItem)) {
-                reportNavidromePlayback("starting")
-                if (engine.masterPlayer.isPlaying) {
-                    startNavidromePlaybackReporting()
-                }
-            } else {
-                stopNavidromePlaybackReporting()
-            }
 
             sleepTimerController.onMediaItemTransition(mediaItem, reason)
             replayGainProcessor.apply(mediaSession?.player?.currentMediaItem)
@@ -1286,12 +1182,7 @@ class MusicService : MediaSessionService() {
         for (index in 0 until mediaItemCount) {
             val mediaItem = mediaItemAt(index)
             val metadata = mediaItem.mediaMetadata
-            val playerUri = mediaItem.localConfiguration?.uri?.toString()
-            val originalContentUri = metadata.extras
-                ?.getString(MediaItemBuilder.EXTERNAL_EXTRA_CONTENT_URI)
-            // Persist the provider URI for cloud items. Proxy ports die with the process and an
-            // app-private offline file can be removed while this item remains in the queue.
-            val uri = selectCanonicalCloudPlaybackUri(playerUri, originalContentUri)
+            val uri = mediaItem.localConfiguration?.uri?.toString()
             if (mediaItem.mediaId.isBlank() || uri.isNullOrBlank()) continue
 
             snapshotItems += PlaybackQueueItemSnapshot(
@@ -1344,12 +1235,6 @@ class MusicService : MediaSessionService() {
         }
 
         val preparedItems = restoredItems.toMutableList()
-        preparedItems.getOrNull(resolvedIndex)?.let { currentItem ->
-            val resolvedCurrentItem = runCatching { engine.resolveMediaItem(currentItem) }.getOrNull()
-            if (resolvedCurrentItem != null && resolvedCurrentItem != currentItem) {
-                preparedItems[resolvedIndex] = resolvedCurrentItem
-            }
-        }
 
         withContext(Dispatchers.Main.immediate) {
             val player = engine.masterPlayer
@@ -1398,6 +1283,10 @@ class MusicService : MediaSessionService() {
 
     private fun buildMediaItemFromSnapshot(snapshotItem: PlaybackQueueItemSnapshot): MediaItem? {
         if (snapshotItem.mediaId.isBlank() || snapshotItem.uri.isBlank()) {
+            return null
+        }
+        // Snapshots written by older builds can still reference the removed cloud providers.
+        if (snapshotItem.uri.substringBefore(':', "").lowercase() in RETIRED_MEDIA_SCHEMES) {
             return null
         }
 

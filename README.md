@@ -71,6 +71,7 @@
 - **System media sessions** — `NotificationListenerService` and `MediaSessionManager` track the active player's artwork, playback position and playback state. CarpeLines estimates progress between system updates.
 - **Three lyrics widgets** — The now-playing bar, lyric control card and square tile each follow the active media session, control playback and open the lyrics page.
 - **Playback without a local audio library** — CarpeLines has no audio engine or music library; its controls operate the active player.
+- **No server or account setup** — There is no cloud library to connect, no server address to enter and no scrobbling account to link.
 - **Seven lyric sources** — Read embedded tags or sibling `.lrc` files, or retrieve lyrics from QQ Music (QRC), NetEase Cloud Music (EAPI), Kugou (KRC), LRCLIB or Apple Music (TTML).
 - **Configurable source order** — Reorder lyric sources in Settings → Lyrics → Lyrics source order. The same order applies to in-app and external playback.
 

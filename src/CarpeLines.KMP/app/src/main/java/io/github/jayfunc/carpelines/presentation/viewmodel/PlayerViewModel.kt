@@ -1043,15 +1043,6 @@ class PlayerViewModel @Inject constructor(
             initialValue = 0
         )
 
-    val hasCloudSongsFlow: StateFlow<Boolean?> = musicRepository.getCloudSongCountFlow()
-        .map<Int, Boolean?> { it > 0 }
-        .distinctUntilChanged()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = null
-        )
-
     val albumsFlow: StateFlow<ImmutableList<Album>> = libraryStateHolder.albums
     val artistsFlow: StateFlow<ImmutableList<Artist>> = libraryStateHolder.artists
 
@@ -2627,7 +2618,6 @@ class PlayerViewModel @Inject constructor(
                 if (reason == Player.TIMELINE_CHANGE_REASON_PLAYLIST_CHANGED ||
                     reason == Player.TIMELINE_CHANGE_REASON_SOURCE_UPDATE) {
                     updateCurrentPlaybackQueueFromPlayer(mediaController)
-                    dualPlayerEngine.triggerAdjacentPreResolution()
                 }
             }
         }
@@ -2934,13 +2924,10 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    private suspend fun buildResolvedPlaybackMediaItem(
+    private fun buildResolvedPlaybackMediaItem(
         song: Song,
         playlistId: String? = null,
-    ): MediaItem {
-        val mediaItem = buildPlaybackMediaItem(song, playlistId)
-        return dualPlayerEngine.resolveMediaItem(mediaItem)
-    }
+    ): MediaItem = buildPlaybackMediaItem(song, playlistId)
 
 
     private fun loadAndPlaySong(song: Song) {

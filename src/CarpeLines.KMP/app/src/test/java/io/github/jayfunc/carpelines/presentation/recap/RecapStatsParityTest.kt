@@ -6,7 +6,6 @@ import io.github.jayfunc.carpelines.data.model.Song
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository.PlaybackEvent
 import io.github.jayfunc.carpelines.data.stats.StatsTimeRange
-import io.github.jayfunc.carpelines.utils.GenreParser
 import io.mockk.every
 import io.mockk.mockk
 import java.time.LocalDateTime
@@ -122,7 +121,7 @@ class RecapStatsParityTest {
         assertLeads(
             recap = slide<RecapSlide.Genres>().genres.map { it.name to it.durationMs },
             yearView = yearView.topGenres
-                .filter { it.genre != PlaybackStatsRepository.UNKNOWN_GENRE && !GenreParser.isSourcePlaceholder(it.genre) }
+                .filter { it.genre != PlaybackStatsRepository.UNKNOWN_GENRE }
                 .map { it.genre to it.totalDurationMs }
         )
         val topSongs = slide<RecapSlide.TopSongs>()

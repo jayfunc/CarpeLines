@@ -203,14 +203,12 @@ class PlaybackStatsRepositoryRecapTest {
     }
 
     @Test
-    fun `recap genre list keeps five named genres when the cloud placeholders and unknown bucket lead it`() {
+    fun `recap genre list keeps five named genres when the unknown bucket leads it`() {
         val tagged = (1..5).map { song("tagged-$it", genre = "Genre $it") }
-        val songs = tagged + song("jellyfin", genre = "Jellyfin") + song("navidrome", genre = "Navidrome")
+        val songs = tagged
         val events = tagged.mapIndexed { index, song ->
             play(song.id, LocalDateTime.of(2025, 2, 1 + index, 10, 0), minutes(10L - index))
         } +
-            play("jellyfin", LocalDateTime.of(2025, 2, 8, 10, 0), minutes(60)) +
-            play("navidrome", LocalDateTime.of(2025, 2, 9, 10, 0), minutes(55)) +
             // No longer in the library: counted under the unknown genre.
             play("deleted", LocalDateTime.of(2025, 2, 10, 10, 0), minutes(50))
 
@@ -219,7 +217,7 @@ class PlaybackStatsRepositoryRecapTest {
         assertThat(
             summary.topGenres
                 .map { it.genre }
-                .filter { it != PlaybackStatsRepository.UNKNOWN_GENRE && !GenreParser.isSourcePlaceholder(it) }
+                .filter { it != PlaybackStatsRepository.UNKNOWN_GENRE }
         ).containsExactly("Genre 1", "Genre 2", "Genre 3", "Genre 4", "Genre 5").inOrder()
     }
 

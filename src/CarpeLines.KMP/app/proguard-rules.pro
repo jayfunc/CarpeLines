@@ -37,20 +37,14 @@
 -keep class io.github.jayfunc.carpelines.data.external.ExternalPlaybackStore$PlayerRecord { *; }
 -keep class io.github.jayfunc.carpelines.data.backup.model.** { *; }
 -keep class io.github.jayfunc.carpelines.data.backup.module.** { *; }
--keep class io.github.jayfunc.carpelines.data.database.FavoritesEntity { *; }
 -keep class io.github.jayfunc.carpelines.data.database.SongEngagementEntity { *; }
 -keep class io.github.jayfunc.carpelines.data.database.LyricsEntity { *; }
 -keep class io.github.jayfunc.carpelines.data.database.SearchHistoryEntity { *; }
--keep class io.github.jayfunc.carpelines.data.database.TransitionRuleEntity { *; }
 -keep class io.github.jayfunc.carpelines.data.database.AudioBookmarkEntity { *; }
 
--keep class io.ktor.server.engine.** { *; }
--keep class io.ktor.server.cio.** { *; }
 -dontwarn io.ktor.**
 -dontwarn kotlinx.coroutines.**
 -dontwarn org.slf4j.**
--dontwarn java.lang.management.**
--dontwarn reactor.blockhound.**
 
 -keep class com.atilika.kuromoji.** { *; }
 -keepnames class com.atilika.kuromoji.** { *; }

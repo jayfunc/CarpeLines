@@ -36,7 +36,7 @@
     <string name="dialog_palette_progress_format">%1$d von %2$d fertig</string>
     <string name="dialog_palette_regenerate_failed">Palette für %1$s konnte nicht neu generiert werden</string>
     <string name="dialog_palette_regenerated">Palette für %1$s neu generiert</string>
-    <string name="dialog_rebuild_database_message">Dadurch werden die lokalen Dateien aus dem MediaStore neu aufgebaut und importierte Lyrics, Favoriten und eigene Metadaten dieser Songs entfernt. Songs aus Navidrome und Jellyfin bleiben erhalten. Das lässt sich nicht rückgängig machen.</string>
+    <string name="dialog_rebuild_database_message">Dadurch werden die lokalen Dateien aus dem MediaStore neu aufgebaut und importierte Lyrics, Favoriten und eigene Metadaten dieser Songs entfernt. Das lässt sich nicht rückgängig machen.</string>
     <string name="dialog_rebuild_database_title">Datenbank neu aufbauen?</string>
     <string name="dialog_regenerate">Neu generieren</string>
     <string name="dialog_regenerate_daily_mix_body">Dadurch wird der aktuelle Mix verworfen und ein neuer basierend auf den letzten Hörgewohnheiten generiert</string>

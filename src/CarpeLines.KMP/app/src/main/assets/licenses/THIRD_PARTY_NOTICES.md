@@ -36,11 +36,7 @@ The full text of every license listed here is bundled in `licenses/texts/`, exce
 | OkHttp | Square, Inc. | Apache 2.0 |
 | Timber | Jake Wharton | Apache 2.0 |
 | Ktor | JetBrains s.r.o. | Apache 2.0 |
-| Netty | The Netty Project | Apache 2.0 |
 | SnakeYAML | Andrey Somov and SnakeYAML contributors | Apache 2.0 |
-| Apache Commons Lang | The Apache Software Foundation | Apache 2.0 |
-| Apache HttpComponents HttpClient | The Apache Software Foundation | Apache 2.0 |
-| jose4j | Brian Campbell | Apache 2.0 |
 | Kuromoji | Atilika Inc. | Apache 2.0 |
 | TagLib Android bindings (`libtaglib.so`) | Kyant0 · `https://github.com/Kyant0/taglib` | Apache 2.0 |
 | Vorbis Java | Nick Burch (Gagravarr) | Apache 2.0 |
@@ -48,14 +44,11 @@ The full text of every license listed here is bundled in `licenses/texts/`, exce
 | Wavy Slider | Mahdi Hosseinzadeh (Mahozad) | Apache 2.0 |
 | Compose Reorderable | Calvin Liang | Apache 2.0 |
 | Accompanist Lyrics (`lyrics-core`, `lyrics-ui`) | Simon Scholz (6xingyv) · `https://github.com/6xingyv/accompanist-lyrics-core` | Apache 2.0 |
-| Capturable | Shreyas Patil | MIT License |
 | Smooth Corner Rect Android Compose | racra · `https://github.com/racra/smooth-corner-rect-android-compose` | MIT License |
-| Bouncy Castle (bcprov, bcpkix) | The Legion of the Bouncy Castle Inc. | MIT License |
 | TagLib (native audio metadata library) | TagLib authors · `https://taglib.org` | LGPL-2.1 |
 | JAudioTagger | Paul Taylor and JAudioTagger contributors | LGPL-2.1 |
 | Jellyfin FFmpeg decoder (`libffmpegJNI.so`) | Jellyfin · `https://github.com/jellyfin/jellyfin-androidx-media` | GPL-3.0 |
 | pinyin4j | Li Min and pinyin4j contributors | BSD 3-Clause |
-| JDOM 2 | Jason Hunter & Brett McLaughlin | JDOM License |
 | Lyricify-Lyrics-Helper (QQ Music, NetEase Cloud Music and Kugou lyrics protocols, ported to Kotlin) | WXRIW · `https://github.com/WXRIW/Lyricify-Lyrics-Helper` | Apache 2.0 |
 
 ## Bundled fonts

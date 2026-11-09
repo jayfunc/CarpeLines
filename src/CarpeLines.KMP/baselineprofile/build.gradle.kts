@@ -29,12 +29,10 @@ baselineProfile {
 
 dependencies {
     implementation(libs.androidx.junit)
-    implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.uiautomator)
     implementation(libs.androidx.benchmark.macro.junit4)
     implementation(libs.androidx.test.core)
-    implementation(libs.androidx.datastore.preferences)
-    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.test.runner)
 }
 
 androidComponents {

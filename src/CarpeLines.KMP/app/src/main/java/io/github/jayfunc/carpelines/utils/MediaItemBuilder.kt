@@ -67,13 +67,8 @@ object MediaItemBuilder {
         "audio/x-alac",
         "audio/x-aiff",
     )
-    private val CLOUD_ARTWORK_SCHEMES = setOf(
-        "navidrome_cover",
-        "jellyfin_cover",
-    )
     private val SUPPORTED_INTERNAL_ARTWORK_SCHEMES = setOf(
         LocalArtworkUri.SCHEME,
-        *CLOUD_ARTWORK_SCHEMES.toTypedArray(),
         "content",
         "file",
         "android.resource",
@@ -100,7 +95,6 @@ object MediaItemBuilder {
     const val EXTERNAL_EXTRA_BITRATE = EXTERNAL_EXTRA_PREFIX + "BITRATE"
     const val EXTERNAL_EXTRA_SAMPLE_RATE = EXTERNAL_EXTRA_PREFIX + "SAMPLE_RATE"
     const val EXTERNAL_EXTRA_FILE_PATH = EXTERNAL_EXTRA_PREFIX + "FILE_PATH"
-    const val EXTERNAL_EXTRA_NAVIDROME_ID = EXTERNAL_EXTRA_PREFIX + "NAVIDROME_ID"
 
     fun build(song: Song): MediaItem {
         return MediaItem.Builder()
@@ -256,17 +250,6 @@ object MediaItemBuilder {
             )
         }
 
-        val internalArtworkUri = normalizeArtworkUri(
-            rawArtworkUri,
-            CLOUD_ARTWORK_SCHEMES
-        )
-        if (internalArtworkUri != null) {
-            return SharedArtworkContentProvider.buildCloudUri(
-                context = context.applicationContext,
-                rawArtworkUri = internalArtworkUri.toString()
-            )
-        }
-
         val normalizedUri = normalizeArtworkUri(rawArtworkUri, SUPPORTED_EXTERNAL_ARTWORK_SCHEMES)
             ?: return null
         return when (normalizedUri.scheme?.lowercase()) {
@@ -310,7 +293,6 @@ object MediaItemBuilder {
             putInt(EXTERNAL_EXTRA_BITRATE, song.bitrate ?: 0)
             putInt(EXTERNAL_EXTRA_SAMPLE_RATE, song.sampleRate ?: 0)
             putString(EXTERNAL_EXTRA_FILE_PATH, song.path)
-            song.navidromeId?.let { putString(EXTERNAL_EXTRA_NAVIDROME_ID, it) }
         }
 
         metadataBuilder.setExtras(extras)

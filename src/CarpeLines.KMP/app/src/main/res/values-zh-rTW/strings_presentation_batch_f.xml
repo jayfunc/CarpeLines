@@ -6,7 +6,6 @@
     <string name="presentation_batch_f_sync_phase_saving_db">儲存至資料庫</string>
     <string name="presentation_batch_f_sync_phase_scanning_lrc">掃描歌詞檔案</string>
     <string name="presentation_batch_f_sync_phase_cleaning_cache">清理專輯封面快取</string>
-    <string name="presentation_batch_f_sync_phase_syncing_cloud">同步雲端資料源</string>
     <string name="presentation_batch_f_sync_phase_completing">完成同步</string>
 
 

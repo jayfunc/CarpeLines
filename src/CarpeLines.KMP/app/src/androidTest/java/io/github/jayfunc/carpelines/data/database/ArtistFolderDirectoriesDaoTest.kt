@@ -61,11 +61,7 @@ class ArtistFolderDirectoriesDaoTest {
             song(3L, "/music/Album B", albumArtistId = ARTIST_ID),
             song(4L, "/music/Album C"),
             song(5L, "/aaa-unrelated"),
-            song(6L, "", artistId = ARTIST_ID, albumArtistId = ARTIST_ID),
-            // Plausible cached paths on cloud tracks must be excluded in each UNION branch.
-            song(-1L, "/aaa-cloud-primary", artistId = ARTIST_ID, sourceType = SourceType.NAVIDROME),
-            song(-2L, "/aaa-cloud-album", albumArtistId = ARTIST_ID, sourceType = SourceType.JELLYFIN),
-            song(-3L, "/aaa-cloud-guest", sourceType = SourceType.NAVIDROME)
+            song(6L, "", artistId = ARTIST_ID, albumArtistId = ARTIST_ID)
         )
         musicDao.insertMusicData(
             songs = songs,
@@ -91,8 +87,7 @@ class ArtistFolderDirectoriesDaoTest {
                 SongArtistCrossRef(songId = 1L, artistId = ARTIST_ID, isPrimary = true),
                 SongArtistCrossRef(songId = 4L, artistId = ARTIST_ID, isPrimary = false),
                 SongArtistCrossRef(songId = 5L, artistId = OTHER_ARTIST_ID, isPrimary = true),
-                SongArtistCrossRef(songId = 6L, artistId = ARTIST_ID, isPrimary = true),
-                SongArtistCrossRef(songId = -3L, artistId = ARTIST_ID, isPrimary = false)
+                SongArtistCrossRef(songId = 6L, artistId = ARTIST_ID, isPrimary = true)
             )
         )
     }
@@ -101,8 +96,7 @@ class ArtistFolderDirectoriesDaoTest {
         id: Long,
         directory: String,
         artistId: Long = OTHER_ARTIST_ID,
-        albumArtistId: Long = OTHER_ARTIST_ID,
-        sourceType: Int = SourceType.LOCAL
+        albumArtistId: Long = OTHER_ARTIST_ID
     ): SongEntity = SongEntity(
         id = id,
         title = "Track $id",
@@ -111,17 +105,13 @@ class ArtistFolderDirectoriesDaoTest {
         albumArtistId = albumArtistId,
         albumName = "Fixture Album",
         albumId = ALBUM_ID,
-        contentUriString = when (sourceType) {
-            SourceType.NAVIDROME -> "navidrome://track-$id"
-            SourceType.JELLYFIN -> "jellyfin://track-$id"
-            else -> "content://media/external/audio/media/$id"
-        },
+        contentUriString = "content://media/external/audio/media/$id",
         albumArtUriString = null,
         duration = 180_000L,
         genre = null,
         filePath = "$directory/track-$id.flac",
         parentDirectoryPath = directory,
-        sourceType = sourceType
+        sourceType = SourceType.LOCAL
     )
 
     private companion object {

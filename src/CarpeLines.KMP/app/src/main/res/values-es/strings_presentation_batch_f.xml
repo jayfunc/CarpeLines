@@ -12,6 +12,5 @@
     <string name="presentation_batch_f_sync_phase_reading_mediastore">Leyendo MediaStore</string>
     <string name="presentation_batch_f_sync_phase_saving_db">Guardando en la base de datos</string>
     <string name="presentation_batch_f_sync_phase_scanning_lrc">Buscando archivos de letras</string>
-    <string name="presentation_batch_f_sync_phase_syncing_cloud">Sincronizando fuentes en la nube</string>
     <string name="presentation_batch_f_unknown_short">\?</string>
 </resources>

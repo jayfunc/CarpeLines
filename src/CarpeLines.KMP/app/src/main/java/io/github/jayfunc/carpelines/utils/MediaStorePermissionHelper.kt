@@ -28,7 +28,7 @@ object MediaStorePermissionHelper {
 
     /**
      * Returns the MediaStore content URI for a given audio song ID, querying the correct volume name.
-     * Returns null for cloud songs (negative IDs).
+     * Returns null for non-local media (negative IDs).
      */
     fun getMediaStoreUri(context: Context, songId: Long): Uri? {
         if (songId <= 0) return null
@@ -301,7 +301,7 @@ object MediaStorePermissionHelper {
 
     /**
      * Convenience: creates a write-request IntentSender for a single song ID.
-     * Returns null for cloud songs or Android < 11.
+     * Returns null for non-local media or Android < 11.
      */
     @RequiresApi(Build.VERSION_CODES.R)
     fun createWriteRequestForSong(context: Context, songId: Long): IntentSender? {
@@ -311,7 +311,7 @@ object MediaStorePermissionHelper {
 
     /**
      * Convenience: creates a delete-request IntentSender for a single song ID.
-     * Returns null for cloud songs or Android < 11.
+     * Returns null for non-local media or Android < 11.
      */
     @RequiresApi(Build.VERSION_CODES.R)
     fun createDeleteRequestForSong(context: Context, songId: Long): IntentSender? {

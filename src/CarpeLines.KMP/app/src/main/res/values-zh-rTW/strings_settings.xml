@@ -164,7 +164,7 @@
 
     <string name="confirm">確認</string>
     <string name="dialog_rebuild_database_title">重建資料庫？</string>
-    <string name="dialog_rebuild_database_message">將從系統媒體庫重建本地歌曲記錄，會刪除本地匯入歌詞、收藏、自訂中繼資料；Navidrome/Jellyfin雲端歌曲不受影響。該操作不可復原。</string>
+    <string name="dialog_rebuild_database_message">將從系統媒體庫重建本地歌曲記錄，會刪除本地匯入歌詞、收藏、自訂中繼資料。該操作不可復原。</string>
     <string name="rebuild">重建</string>
     <string name="sync_indicator_rebuilding">正在重建資料庫</string>
     <string name="toast_rebuilding_database">正在重建資料庫…</string>

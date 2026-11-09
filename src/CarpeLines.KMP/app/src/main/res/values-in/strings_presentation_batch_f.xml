@@ -12,6 +12,5 @@
     <string name="presentation_batch_f_sync_phase_reading_mediastore">Membaca MediaStore</string>
     <string name="presentation_batch_f_sync_phase_saving_db">Menyimpan ke database</string>
     <string name="presentation_batch_f_sync_phase_scanning_lrc">Memindai file lirik</string>
-    <string name="presentation_batch_f_sync_phase_syncing_cloud">Menyinkronkan sumber cloud</string>
     <string name="presentation_batch_f_unknown_short">\?</string>
 </resources>

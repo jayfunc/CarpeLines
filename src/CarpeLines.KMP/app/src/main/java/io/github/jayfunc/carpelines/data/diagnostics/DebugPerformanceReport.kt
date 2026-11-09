@@ -60,7 +60,6 @@ data class DebugPerformanceReport(
         section("LIBRARY")
         kv("Total songs", library.totalSongs.toString())
         kv("Local songs", library.localSongs.toString())
-        kv("Cloud/remote songs", library.cloudSongs.toString())
         kv("Max bitrate", library.maxBitrate?.let { "${it / 1000} kbps" } ?: UNKNOWN)
         kv("Sample rate range", sampleRateRange(library.minSampleRate, library.maxSampleRate))
         kv("Max channels (observed)", library.maxObservedChannels?.toString() ?: NOT_OBSERVED)
@@ -242,7 +241,6 @@ data class AppSection(
 data class LibrarySection(
     val totalSongs: Int,
     val localSongs: Int,
-    val cloudSongs: Int,
     val mimeCounts: Map<String, Int>,
     val maxBitrate: Int?,
     val minSampleRate: Int?,

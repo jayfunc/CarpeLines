@@ -3,7 +3,6 @@ package io.github.jayfunc.carpelines.presentation.viewmodel
 import android.os.SystemClock
 import com.google.common.truth.Truth.assertThat
 import io.github.jayfunc.carpelines.data.DailyMixManager
-import io.github.jayfunc.carpelines.data.listenbrainz.ScrobbleManager
 import io.github.jayfunc.carpelines.data.model.Song
 import io.github.jayfunc.carpelines.data.stats.PlaybackPlayerFilterProvider
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository
@@ -21,7 +20,6 @@ class ListeningStatsTrackerTest {
 
     private val dailyMixManager: DailyMixManager = mockk(relaxed = true)
     private val playbackStatsRepository: PlaybackStatsRepository = mockk(relaxed = true)
-    private val scrobbleManager: ScrobbleManager = mockk(relaxed = true)
     private val playerFilterProvider: PlaybackPlayerFilterProvider = mockk(relaxed = true)
 
     @BeforeEach
@@ -39,7 +37,6 @@ class ListeningStatsTrackerTest {
         val tracker = ListeningStatsTracker(
             dailyMixManager = dailyMixManager,
             playbackStatsRepository = playbackStatsRepository,
-            scrobbleManager = scrobbleManager,
             playerFilterProvider = playerFilterProvider
         )
         val song = song(
@@ -74,7 +71,6 @@ class ListeningStatsTrackerTest {
         val tracker = ListeningStatsTracker(
             dailyMixManager = dailyMixManager,
             playbackStatsRepository = playbackStatsRepository,
-            scrobbleManager = scrobbleManager,
             playerFilterProvider = playerFilterProvider
         )
         val song = song(songId = "song-1")

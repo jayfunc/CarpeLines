@@ -46,12 +46,6 @@ class CarpeLinesApplication : Application(), ImageLoaderFactory, Configuration.P
     lateinit var imageLoader: dagger.Lazy<ImageLoader>
 
     @Inject
-    lateinit var navidromeCoilFetcherFactory: dagger.Lazy<io.github.jayfunc.carpelines.data.image.NavidromeCoilFetcher.Factory>
-
-    @Inject
-    lateinit var jellyfinCoilFetcherFactory: dagger.Lazy<io.github.jayfunc.carpelines.data.image.JellyfinCoilFetcher.Factory>
-
-    @Inject
     lateinit var localArtworkCoilFetcherFactory: dagger.Lazy<io.github.jayfunc.carpelines.data.image.LocalArtworkCoilFetcher.Factory>
 
     @Inject
@@ -241,11 +235,7 @@ class CarpeLinesApplication : Application(), ImageLoaderFactory, Configuration.P
     override fun newImageLoader(): ImageLoader {
         return imageLoader.get().newBuilder()
             .components {
-                add(io.github.jayfunc.carpelines.data.image.SharedCloudArtworkStringMapper(packageName))
-                add(io.github.jayfunc.carpelines.data.image.SharedCloudArtworkUriMapper(packageName))
                 add(localArtworkCoilFetcherFactory.get())
-                add(navidromeCoilFetcherFactory.get())
-                add(jellyfinCoilFetcherFactory.get())
             }
             .build()
     }

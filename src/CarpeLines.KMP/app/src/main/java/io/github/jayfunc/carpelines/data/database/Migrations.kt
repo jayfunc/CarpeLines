@@ -192,6 +192,57 @@ val MIGRATION_7_8 = object : Migration(7, 8) {
     }
 }
 
+/**
+ * v8 -> v9: the Navidrome, Jellyfin, offline cloud-download and ListenBrainz features are gone.
+ *
+ * The cloud cache tables and the pending-scrobble queue are dropped so no orphan rows survive.
+ * Songs the servers had synced into the unified `songs` table are removed too (with their
+ * lyrics, artist links and engagement rows), because nothing can resolve a `navidrome://` or
+ * `jellyfin://` URI anymore; albums and artists left without songs are dropped and the
+ * remaining counts recomputed.
+ *
+ * Idempotent (`IF EXISTS`) per the Auto Backup drift guard above.
+ */
+val MIGRATION_8_9 = object : Migration(8, 9) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("DROP TABLE IF EXISTS `navidrome_songs`")
+        db.execSQL("DROP TABLE IF EXISTS `navidrome_playlists`")
+        db.execSQL("DROP TABLE IF EXISTS `jellyfin_songs`")
+        db.execSQL("DROP TABLE IF EXISTS `jellyfin_playlists`")
+        db.execSQL("DROP TABLE IF EXISTS `offline_tracks`")
+        db.execSQL("DROP TABLE IF EXISTS `listenbrainz_pending_listens`")
+
+        db.execSQL(
+            "DELETE FROM `song_artist_cross_ref` " +
+                "WHERE `song_id` IN (SELECT `id` FROM `songs` WHERE `source_type` != 0)"
+        )
+        db.execSQL(
+            "DELETE FROM `lyrics` " +
+                "WHERE `songId` IN (SELECT `id` FROM `songs` WHERE `source_type` != 0)"
+        )
+        db.execSQL(
+            "DELETE FROM `song_engagements` " +
+                "WHERE `song_id` IN (SELECT CAST(`id` AS TEXT) FROM `songs` WHERE `source_type` != 0)"
+        )
+        db.execSQL("DELETE FROM `songs` WHERE `source_type` != 0")
+        db.execSQL("DELETE FROM `albums` WHERE `id` NOT IN (SELECT DISTINCT `album_id` FROM `songs`)")
+        db.execSQL(
+            "DELETE FROM `artists` WHERE `id` NOT IN (" +
+                "SELECT `artist_id` FROM `songs` WHERE `artist_id` != 0 " +
+                "UNION SELECT `artist_id` FROM `song_artist_cross_ref`)"
+        )
+        db.execSQL(
+            "UPDATE `albums` SET `song_count` = (" +
+                "SELECT COUNT(*) FROM `songs` WHERE `songs`.`album_id` = `albums`.`id`)"
+        )
+        db.execSQL(
+            "UPDATE `artists` SET `track_count` = (" +
+                "SELECT COUNT(DISTINCT `song_id`) FROM `song_artist_cross_ref` " +
+                "WHERE `song_artist_cross_ref`.`artist_id` = `artists`.`id`)"
+        )
+    }
+}
+
 val MIGRATION_5_6 = object : Migration(5, 6) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL("DROP TABLE IF EXISTS `playlist_songs_v6`")

@@ -11,7 +11,7 @@ JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew :app:dependencies --configurati
 rg -o "[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+:-]+" /tmp/carpelines-releaseRuntimeClasspath.txt | sort -u | wc -l
 ```
 
-Last local review result: 631 unique runtime coordinates in `releaseRuntimeClasspath`.
+Last local review result: 647 unique runtime coordinates in `releaseRuntimeClasspath`.
 
 ## Exact Review Items
 
@@ -32,11 +32,11 @@ These are the dependencies most likely to trigger manual review because they shi
 | AndroidX app/platform | `androidx.core`, `androidx.appcompat`, `androidx.activity`, `androidx.profileinstaller`, `androidx.media`, `androidx.security`, `androidx.work` | Apache-2.0, AndroidX/AOSP source |
 | AndroidX Compose/UI | Compose BOM, UI, UI graphics/tooling, Foundation, Animation, Material icons, Material3, ConstraintLayout Compose, Glance | Apache-2.0, AndroidX source |
 | AndroidX architecture/data | Lifecycle, Navigation, Paging, Room, Hilt integration, Benchmark/profile modules | Apache-2.0, AndroidX source |
-| Media playback | AndroidX Media3 ExoPlayer/session/UI/MIDI/Transformer, Jellyfin FFmpeg decoder | Apache-2.0 for AndroidX; Jellyfin FFmpeg decoder GPL-3.0 |
+| Media playback | AndroidX Media3 ExoPlayer/session/MIDI, Jellyfin FFmpeg decoder | Apache-2.0 for AndroidX; Jellyfin FFmpeg decoder GPL-3.0 |
 | Dependency injection | Dagger/Hilt and compilers | Apache-2.0 |
 | Kotlin/KSP/serialization | Kotlin stdlib/test, coroutines, serialization, immutable collections, KSP | Apache-2.0 |
 | Networking | Retrofit, Gson converter, OkHttp, logging interceptor, Gson | Apache-2.0 |
-| Ktor/server transitive stack | Ktor CIO/core, Netty constraints | Apache-2.0 |
+| Ktor client stack | Ktor client core/CIO/OkHttp, content negotiation, kotlinx JSON | Apache-2.0 |
 | Media metadata/audio parsing | TagLib, JAudioTagger, Vorbis Java | TagLib Apache-2.0; verify JAudioTagger/Vorbis Java POMs when versions change |
 | UI utilities | Coil, Accompanist, Accompanist Lyrics (`com.mocharealm.accompanist`), Capturable, CodeView, Reorderables, Wavy Slider, smooth-corner JitPack | Apache-2.0/MIT-compatible; smooth-corner is MIT; Accompanist Lyrics POM declares Apache-2.0 |
 | Text/search utilities | Kuromoji IPADIC, pinyin4j | Apache-2.0/BSD-style; verify POMs when versions change |

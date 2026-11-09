@@ -98,7 +98,7 @@ class SharedArtworkContentProviderTest {
     fun publishedSessionArtwork_keepsOnlyRecentTracks() {
         SharedArtworkContentProvider.clearPublishedSessionArtwork()
         val covers = (1..4).map { index ->
-            SharedArtworkContentProvider.buildCloudUriString(PACKAGE, "navidrome_cover://al-$index")!!
+            SharedArtworkContentProvider.buildSongUriString(PACKAGE, index.toLong())
         }
         covers.forEach { SharedArtworkContentProvider.publishSessionArtwork(PACKAGE, it) }
 
@@ -147,50 +147,6 @@ class SharedArtworkContentProviderTest {
         )
 
         assertThat(songId).isEqualTo(42L)
-    }
-
-    @Test
-    fun cloudArtworkUri_roundTripsNavidromeArtwork() {
-        val rawArtworkUri = "navidrome_cover://album-42"
-        val sharedUri = SharedArtworkContentProvider.buildCloudUriString(
-            packageName = "io.github.jayfunc.carpelines",
-            rawArtworkUri = rawArtworkUri,
-        )
-
-        assertThat(sharedUri).isNotNull()
-        assertThat(
-            SharedArtworkContentProvider.parseCloudArtworkUri(
-                uriString = sharedUri!!,
-                packageName = "io.github.jayfunc.carpelines",
-            )
-        ).isEqualTo(rawArtworkUri)
-    }
-
-    @Test
-    fun cloudArtworkUri_roundTripsJellyfinArtwork() {
-        val rawArtworkUri = "jellyfin_cover://item-84"
-        val sharedUri = SharedArtworkContentProvider.buildCloudUriString(
-            packageName = "io.github.jayfunc.carpelines",
-            rawArtworkUri = rawArtworkUri,
-        )
-
-        assertThat(sharedUri).isNotNull()
-        assertThat(
-            SharedArtworkContentProvider.parseCloudArtworkUri(
-                uriString = sharedUri!!,
-                packageName = "io.github.jayfunc.carpelines",
-            )
-        ).isEqualTo(rawArtworkUri)
-    }
-
-    @Test
-    fun cloudArtworkUri_rejectsUnsupportedRemoteArtwork() {
-        val sharedUri = SharedArtworkContentProvider.buildCloudUriString(
-            packageName = "io.github.jayfunc.carpelines",
-            rawArtworkUri = "https://example.com/cover.jpg",
-        )
-
-        assertThat(sharedUri).isNull()
     }
 
     private companion object {

@@ -17,15 +17,6 @@ import org.json.JSONObject
 /** Integer constants for the `source_type` column — faster than LIKE checks on URI scheme. */
 object SourceType {
     const val LOCAL = 0
-    const val NAVIDROME = 5
-    const val JELLYFIN = 6
-
-    /** Derive source type from a content URI string (fallback for migration / conversion). */
-    fun fromContentUri(uri: String): Int = when {
-        uri.startsWith("navidrome://") -> NAVIDROME
-        uri.startsWith("jellyfin://") -> JELLYFIN
-        else -> LOCAL
-    }
 }
 
 @Entity(
@@ -130,12 +121,6 @@ private fun SongEntity.toSongInternal(artists: List<ArtistRef>): Song {
         discNumber = this.discNumber,
         dateAdded = this.dateAdded,
         year = this.year,
-        navidromeId = if (this.contentUriString.startsWith("navidrome://")) {
-            this.contentUriString.removePrefix("navidrome://")
-        } else null,
-        jellyfinId = if (this.contentUriString.startsWith("jellyfin://")) {
-            this.contentUriString.removePrefix("jellyfin://")
-        } else null,
         mimeType = this.mimeType,
         bitrate = this.bitrate,
         sampleRate = this.sampleRate
@@ -226,7 +211,7 @@ fun Song.toEntity(filePathFromMediaStore: String, parentDirFromMediaStore: Strin
         mimeType = this.mimeType,
         bitrate = this.bitrate,
         sampleRate = this.sampleRate,
-        sourceType = SourceType.fromContentUri(this.contentUriString)
+        sourceType = SourceType.LOCAL
     )
 }
 
@@ -262,6 +247,6 @@ fun Song.toEntityWithoutPaths(): SongEntity {
         mimeType = this.mimeType,
         bitrate = this.bitrate,
         sampleRate = this.sampleRate,
-        sourceType = SourceType.fromContentUri(this.contentUriString)
+        sourceType = SourceType.LOCAL
     )
 }

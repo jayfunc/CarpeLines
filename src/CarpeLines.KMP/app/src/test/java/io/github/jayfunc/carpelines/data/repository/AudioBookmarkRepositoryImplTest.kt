@@ -28,7 +28,7 @@ class AudioBookmarkRepositoryImplTest {
     private fun song(id: Long, title: String, artist: String = "Artist", artists: List<String> = emptyList()) =
         SongEntity(
             id = id, title = title, artistName = artist, artistId = 1, albumName = "Album", albumId = 1,
-            contentUriString = "jellyfin://$id", albumArtUriString = "art://$id", duration = 200_000, genre = null,
+            contentUriString = "https://example.com/$id", albumArtUriString = "art://$id", duration = 200_000, genre = null,
             filePath = "", parentDirectoryPath = "",
             artistsJson = artists.takeIf { it.isNotEmpty() }?.let { names ->
                 serializeArtistRefs(names.mapIndexed { index, name -> ArtistRef(index.toLong(), name, index == 0) })
