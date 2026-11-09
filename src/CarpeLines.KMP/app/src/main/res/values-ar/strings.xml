@@ -146,5 +146,11 @@
     <string name="backup_module_playback_history_label">سجل التشغيل</string>
     <string name="backup_module_playback_history_description">وقت ومدة كل جلسة استماع، تُستخدم في شوغّل حديثًا والإحصاءات</string>
     <string name="backup_module_artist_images_label">صور الفنانين</string>
-    <string name="backup_module_artist_images_description">روابط صور الفنانين المعروضة في صفحة الإحصاءات</string>
+    <string name="backup_module_artist_images_description">روابط صور الفنانين والصور المخصصة التي رفعتها</string>
+    <string name="backup_module_skipped_warning">تم تخطي %1$s: %2$s</string>
+    <string name="backup_error_export_module_too_large">حجم %1$s هو %2$dMB، وهو يتجاوز حد %3$dMB للوحدة الواحدة. ألغِ تحديده وحاول مجددًا</string>
+    <string name="backup_error_export_too_large">سيكون حجم النسخة الاحتياطية %1$dMB، وهو يتجاوز حد %2$dMB. ألغِ تحديد بعض الوحدات وحاول مجددًا</string>
+    <string name="backup_plan_warning_legacy_schema">هذه نسخة احتياطية قديمة (v%1$d). قد لا تتوفر بعض الوحدات</string>
+    <string name="backup_plan_warning_library_not_scanned">افحص مكتبة الموسيقى أولًا: تتم مطابقة صور الفنانين معها</string>
+    <string name="data_restored_with_warnings">تمت استعادة البيانات، لكن تم تخطي بعض الوحدات:\n%1$s</string>
 </resources>

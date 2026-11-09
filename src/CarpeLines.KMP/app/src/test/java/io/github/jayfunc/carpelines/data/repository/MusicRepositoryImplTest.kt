@@ -3,7 +3,6 @@ package io.github.jayfunc.carpelines.data.repository
 import android.content.Context
 import io.github.jayfunc.carpelines.data.database.GenreSongCountRow
 import io.github.jayfunc.carpelines.data.database.MusicDao
-import io.github.jayfunc.carpelines.data.database.SearchHistoryDao
 import io.github.jayfunc.carpelines.data.database.SongEntity
 import io.github.jayfunc.carpelines.data.database.AlbumEntity
 import io.github.jayfunc.carpelines.data.database.ArtistEntity
@@ -34,7 +33,6 @@ class MusicRepositoryImplTest {
 
     private lateinit var musicRepository: MusicRepositoryImpl
     private val mockMusicDao: MusicDao = mockk()
-    private val mockSearchHistoryDao: SearchHistoryDao = mockk(relaxed = true)
     private val mockContext: Context = mockk(relaxed = true)
     private val mockUserPreferencesRepository: UserPreferencesRepository = mockk()
     private val mockLyricsRepository: LyricsRepository = mockk(relaxed = true)
@@ -93,7 +91,6 @@ class MusicRepositoryImplTest {
         musicRepository = MusicRepositoryImpl(
             context = mockContext,
             userPreferencesRepository = mockUserPreferencesRepository,
-            searchHistoryDao = mockSearchHistoryDao,
             musicDao = mockMusicDao,
             lyricsRepository = mockLyricsRepository,
             songRepository = mockSongRepository,
@@ -452,24 +449,6 @@ class MusicRepositoryImplTest {
             assertEquals(all.filterIsInstance<SearchResultItem.AlbumItem>(), albums)
             assertEquals(listOf(101L), artists.map { (it as SearchResultItem.ArtistItem).artist.id })
             assertEquals(all.filterIsInstance<SearchResultItem.ArtistItem>(), artists)
-        }
-    }
-
-    @Nested
-    @DisplayName("Search History Functions")
-    inner class SearchHistoryFunctions {
-        @Test
-        fun `addSearchHistoryItem calls dao methods`() = runTest {
-            val query = "test query"
-            coEvery { mockSearchHistoryDao.deleteByQuery(query) } just runs
-            coEvery { mockSearchHistoryDao.insert(any()) } just runs
-
-            musicRepository.addSearchHistoryItem(query)
-
-            coVerifyOrder {
-                mockSearchHistoryDao.deleteByQuery(query)
-                mockSearchHistoryDao.insert(any())
-            }
         }
     }
 

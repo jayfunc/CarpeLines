@@ -9,8 +9,10 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
@@ -52,8 +54,10 @@ class LyricsModuleHandlerTest {
     }
 
     @Test
-    fun `legacy payload leaves manual selections untouched`() = runTest {
-        handler.restore("""[{"songId":123,"content":"la la"}]""")
+    fun `legacy payload leaves manual selections untouched and reports the skip`() {
+        assertThrows(ModuleRestoreSkippedException::class.java) {
+            runBlocking { handler.restore("""[{"songId":123,"content":"la la"}]""") }
+        }
 
         coVerify(exactly = 0) { store.replaceRaw(any()) }
     }

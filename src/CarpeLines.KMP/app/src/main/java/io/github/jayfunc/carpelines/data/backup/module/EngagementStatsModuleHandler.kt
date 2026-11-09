@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import io.github.jayfunc.carpelines.data.backup.model.BackupSection
 import io.github.jayfunc.carpelines.data.database.EngagementDao
 import io.github.jayfunc.carpelines.data.database.SongEngagementEntity
 import io.github.jayfunc.carpelines.di.BackupGson
@@ -19,14 +18,8 @@ class EngagementStatsModuleHandler @Inject constructor(
     @BackupGson private val gson: Gson
 ) : BackupModuleHandler {
 
-    override val section = BackupSection.ENGAGEMENT_STATS
-
     override suspend fun export(): String = withContext(Dispatchers.IO) {
         gson.toJson(engagementDao.getAllEngagements())
-    }
-
-    override suspend fun countEntries(): Int = withContext(Dispatchers.IO) {
-        engagementDao.getAllEngagements().size
     }
 
     override suspend fun snapshot(): String = export()

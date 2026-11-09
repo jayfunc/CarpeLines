@@ -243,6 +243,19 @@ val MIGRATION_8_9 = object : Migration(8, 9) {
     }
 }
 
+/**
+ * v9 -> v10: the search-history feature is gone.
+ *
+ * The `search_history` table backed a "recent searches" list that no screen renders any more, so
+ * it is dropped rather than left to accumulate rows nothing can read. Idempotent (`IF EXISTS`)
+ * per the Auto Backup drift guard above.
+ */
+val MIGRATION_9_10 = object : Migration(9, 10) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("DROP TABLE IF EXISTS `search_history`")
+    }
+}
+
 val MIGRATION_5_6 = object : Migration(5, 6) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL("DROP TABLE IF EXISTS `playlist_songs_v6`")

@@ -1535,7 +1535,6 @@ class PlayerViewModel @Inject constructor(
             }
 
             loadPersistedDailyMix()
-            loadSearchHistory()
 
             viewModelScope.launch {
                 isSyncingStateFlow.collect { isSyncing ->
@@ -1571,15 +1570,13 @@ class PlayerViewModel @Inject constructor(
                 combine(
                     searchStateHolder.searchResults,
                     searchStateHolder.selectedSearchFilter,
-                    searchStateHolder.searchHistory,
-                ) { results, filter, history ->
-                    Triple(results, filter, history)
-                }.collect { (results, filter, history) ->
+                ) { results, filter ->
+                    results to filter
+                }.collect { (results, filter) ->
                     _playerUiState.update {
                         it.copy(
                             searchResults = results,
                             selectedSearchFilter = filter,
-                            searchHistory = history,
                         )
                     }
                 }
@@ -3799,24 +3796,8 @@ class PlayerViewModel @Inject constructor(
         searchStateHolder.updateSearchFilter(filterType)
     }
 
-    fun loadSearchHistory(limit: Int = 15) {
-        searchStateHolder.loadSearchHistory(limit)
-    }
-
-    fun onSearchQuerySubmitted(query: String) {
-        searchStateHolder.onSearchQuerySubmitted(query)
-    }
-
     fun performSearch(query: String) {
         searchStateHolder.performSearch(query)
-    }
-
-    fun deleteSearchHistoryItem(query: String) {
-        searchStateHolder.deleteSearchHistoryItem(query)
-    }
-
-    fun clearSearchHistory() {
-        searchStateHolder.clearSearchHistory()
     }
 
     fun clearQueueExceptCurrent() {

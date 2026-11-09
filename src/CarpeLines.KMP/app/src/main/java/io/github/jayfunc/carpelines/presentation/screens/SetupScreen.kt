@@ -155,6 +155,7 @@ import io.github.jayfunc.carpelines.data.preferences.AppLanguage
 import io.github.jayfunc.carpelines.data.preferences.AppThemeMode
 import io.github.jayfunc.carpelines.presentation.components.PermissionIconCollage
 import io.github.jayfunc.carpelines.presentation.components.BackupModuleSelectionDialog
+import io.github.jayfunc.carpelines.presentation.components.BackupPasswordPromptDialog
 import io.github.jayfunc.carpelines.presentation.components.LocalAppMessageHost
 import io.github.jayfunc.carpelines.presentation.components.rememberAppMessage
 import io.github.jayfunc.carpelines.presentation.components.rememberAppMessageHost
@@ -435,6 +436,20 @@ fun SetupScreen(
                 val uri = selectedBackupUri ?: return@BackupModuleSelectionDialog
                 selectedBackupUri = null
                 setupViewModel.restoreFromPlan(uri)
+            }
+        )
+    }
+
+    val pendingEncryptedUri = uiState.pendingEncryptedBackupUri
+    if (pendingEncryptedUri != null) {
+        BackupPasswordPromptDialog(
+            wrongPassword = uiState.wrongBackupPassword,
+            isInspecting = uiState.isInspectingBackup,
+            onDismiss = setupViewModel::dismissEncryptedBackupPrompt,
+            onConfirm = { password ->
+                val uri = pendingEncryptedUri.toUri()
+                selectedBackupUri = uri
+                setupViewModel.inspectBackupFile(uri, password)
             }
         )
     }

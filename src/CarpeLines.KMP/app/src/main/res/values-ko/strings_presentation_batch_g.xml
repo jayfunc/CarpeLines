@@ -7,6 +7,7 @@
     <string name="presentation_batch_g_backup_details">백업 상세 정보</string>
     <string name="presentation_batch_g_backup_device">기기</string>
     <string name="presentation_batch_g_backup_entries_will_replace">%1$d개 항목 · 현재 데이터를 대체합니다</string>
+    <string name="presentation_batch_g_backup_entries_will_merge">%1$d개 항목 · 현재 데이터에 병합됩니다</string>
     <string name="presentation_batch_g_backup_modules_selected">%2$d개 중 %1$d개 모듈 선택됨</string>
     <string name="presentation_batch_g_backup_restore_modules">모듈 복구</string>
     <string name="presentation_batch_g_backup_restore_selected">선택 항목 복구</string>

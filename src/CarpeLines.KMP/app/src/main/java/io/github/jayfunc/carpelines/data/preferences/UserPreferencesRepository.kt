@@ -101,7 +101,13 @@ constructor(
         // restoring them onto another channel's install would offer a cross-signed update.
         PreferencesKeys.UPDATE_CHANNEL.name,
         PreferencesKeys.UPDATE_AUTO_CHECK.name,
-        PreferencesKeys.UPDATE_LAST_NOTIFIED_VERSION.name
+        PreferencesKeys.UPDATE_LAST_NOTIFIED_VERSION.name,
+        // Absolute storage paths of *this* device. Restoring another device's values would
+        // either hide the local library behind its block rules or leave the imported folders
+        // pointing at directories that do not exist here.
+        PreferencesKeys.ALLOWED_DIRECTORIES.name,
+        PreferencesKeys.BLOCKED_DIRECTORIES.name,
+        PreferencesKeys.LOCAL_LIBRARY_FOLDERS.name
     )
 
     private object PreferencesKeys {

@@ -46,20 +46,9 @@ class BackupSectionTest {
     }
 
     @Test
-    fun `new sections have sinceVersion 3`() {
-        assertEquals(3, BackupSection.ARTIST_IMAGES.sinceVersion)
-    }
-
-    @Test
-    fun `original sections have sinceVersion 1`() {
-        val originalSections = listOf(
-            BackupSection.GLOBAL_SETTINGS,
-            BackupSection.LYRICS,
-            BackupSection.ENGAGEMENT_STATS,
-            BackupSection.PLAYBACK_HISTORY
-        )
-        originalSections.forEach { section ->
-            assertEquals(1, section.sinceVersion, "${section.key} should have sinceVersion 1")
+    fun `all sections have an icon`() {
+        BackupSection.entries.forEach { section ->
+            assertTrue(section.iconRes != 0, "${section.key} should have an icon resource")
         }
     }
 

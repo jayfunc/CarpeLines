@@ -2,7 +2,6 @@ package io.github.jayfunc.carpelines.data.backup.module
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.github.jayfunc.carpelines.data.backup.model.BackupSection
 import io.github.jayfunc.carpelines.data.preferences.PreferenceBackupEntry
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
 import io.github.jayfunc.carpelines.di.BackupGson
@@ -17,14 +16,8 @@ class GlobalSettingsModuleHandler @Inject constructor(
     @BackupGson private val gson: Gson
 ) : BackupModuleHandler {
 
-    override val section = BackupSection.GLOBAL_SETTINGS
-
     override suspend fun export(): String = withContext(Dispatchers.IO) {
         gson.toJson(userPreferencesRepository.exportPreferencesForBackup())
-    }
-
-    override suspend fun countEntries(): Int = withContext(Dispatchers.IO) {
-        userPreferencesRepository.exportPreferencesForBackup().size
     }
 
     override suspend fun snapshot(): String = export()

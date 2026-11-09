@@ -7,7 +7,6 @@ import io.github.jayfunc.carpelines.data.model.Artist
 import io.github.jayfunc.carpelines.data.model.Lyrics
 import io.github.jayfunc.carpelines.data.model.LyricsSourcePreference
 import io.github.jayfunc.carpelines.data.model.SearchFilterType
-import io.github.jayfunc.carpelines.data.model.SearchHistoryItem
 import io.github.jayfunc.carpelines.data.model.SearchResultItem
 import io.github.jayfunc.carpelines.data.model.Song
 import kotlinx.coroutines.flow.Flow
@@ -198,11 +197,6 @@ interface MusicRepository {
     fun searchAlbums(query: String, minTracks: Int = 1): Flow<List<Album>>
     fun searchArtists(query: String): Flow<List<Artist>>
     fun searchAll(query: String, filterType: SearchFilterType): Flow<List<SearchResultItem>>
-
-    suspend fun addSearchHistoryItem(query: String)
-    suspend fun getRecentSearchHistory(limit: Int): List<SearchHistoryItem>
-    suspend fun deleteSearchHistoryItemByQuery(query: String)
-    suspend fun clearSearchHistory()
 
     /**
      * Returns the list of songs for a specific genre (placeholder implementation).

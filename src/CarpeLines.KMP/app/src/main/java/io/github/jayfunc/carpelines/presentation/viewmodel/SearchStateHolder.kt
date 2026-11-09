@@ -1,7 +1,6 @@
 package io.github.jayfunc.carpelines.presentation.viewmodel
 
 import io.github.jayfunc.carpelines.data.model.SearchFilterType
-import io.github.jayfunc.carpelines.data.model.SearchHistoryItem
 import io.github.jayfunc.carpelines.data.model.SearchResultItem
 import io.github.jayfunc.carpelines.data.repository.MusicRepository
 import kotlinx.collections.immutable.ImmutableList
@@ -9,7 +8,6 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,7 +16,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
@@ -32,7 +29,6 @@ import kotlinx.coroutines.FlowPreview
  * Responsibilities:
  * - Search query execution
  * - Search filter management
- * - Search history CRUD operations
  */
 @Singleton
 class SearchStateHolder @Inject constructor(
@@ -56,9 +52,6 @@ class SearchStateHolder @Inject constructor(
 
     private val _selectedSearchFilter = MutableStateFlow(SearchFilterType.ALL)
     val selectedSearchFilter = _selectedSearchFilter.asStateFlow()
-
-    private val _searchHistory = MutableStateFlow<ImmutableList<SearchHistoryItem>>(persistentListOf())
-    val searchHistory = _searchHistory.asStateFlow()
 
     // Replays the latest request so a collector restarted for another PlayerViewModel resumes
     // the current search; the request id check below drops a replayed query that is stale.
@@ -145,34 +138,6 @@ class SearchStateHolder @Inject constructor(
         }
     }
 
-    fun loadSearchHistory(limit: Int = 15) {
-        scope?.launch {
-            try {
-                val history = withContext(Dispatchers.IO) {
-                    musicRepository.getRecentSearchHistory(limit)
-                }
-                _searchHistory.value = history.toImmutableList()
-            } catch (e: Exception) {
-                Timber.e(e, "Error loading search history")
-            }
-        }
-    }
-
-    fun onSearchQuerySubmitted(query: String) {
-        scope?.launch {
-            if (query.isNotBlank()) {
-                try {
-                    withContext(Dispatchers.IO) {
-                        musicRepository.addSearchHistoryItem(query)
-                    }
-                    loadSearchHistory()
-                } catch (e: Exception) {
-                    Timber.e(e, "Error adding search history item")
-                }
-            }
-        }
-    }
-
     fun performSearch(query: String) {
         requestSearch(query.trim(), immediate = false)
     }
@@ -196,32 +161,6 @@ class SearchStateHolder @Inject constructor(
                 immediate = immediate,
             )
         )
-    }
-
-    fun deleteSearchHistoryItem(query: String) {
-        scope?.launch {
-            try {
-                withContext(Dispatchers.IO) {
-                    musicRepository.deleteSearchHistoryItemByQuery(query)
-                }
-                loadSearchHistory()
-            } catch (e: Exception) {
-                Timber.e(e, "Error deleting search history item")
-            }
-        }
-    }
-
-    fun clearSearchHistory() {
-        scope?.launch {
-            try {
-                withContext(Dispatchers.IO) {
-                    musicRepository.clearSearchHistory()
-                }
-                _searchHistory.value = persistentListOf()
-            } catch (e: Exception) {
-                Timber.e(e, "Error clearing search history")
-            }
-        }
     }
 
     /**

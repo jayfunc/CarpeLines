@@ -167,6 +167,7 @@ import io.github.jayfunc.carpelines.utils.isIgnoringBatteryOptimizations
 import io.github.jayfunc.carpelines.utils.openBatteryOptimizationSettings
 import io.github.jayfunc.carpelines.data.model.Song
 import io.github.jayfunc.carpelines.presentation.components.BackupDialogHeader
+import io.github.jayfunc.carpelines.presentation.components.BackupPasswordPromptDialog
 import io.github.jayfunc.carpelines.presentation.components.CollapsibleCommonTopBar
 import io.github.jayfunc.carpelines.presentation.components.ExpressiveTopBarContent
 import io.github.jayfunc.carpelines.presentation.components.MiniPlayerHeight
@@ -2069,63 +2070,6 @@ private fun BackupEncryptionDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel), maxLines = 1, overflow = TextOverflow.Ellipsis) }
-        }
-    )
-}
-
-/** Password prompt for opening an encrypted backup. */
-@Composable
-private fun BackupPasswordPromptDialog(
-    wrongPassword: Boolean,
-    isInspecting: Boolean,
-    onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
-) {
-    var password by remember { mutableStateOf("") }
-
-    AlertDialog(
-        onDismissRequest = { if (!isInspecting) onDismiss() },
-        title = { Text(stringResource(R.string.backup_encrypted_prompt_title)) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text(
-                    text = stringResource(R.string.backup_encrypted_prompt_body),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                M3ETextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text(stringResource(R.string.backup_password_hint)) },
-                    singleLine = true,
-                    enabled = !isInspecting,
-                    isError = wrongPassword,
-                    supportingText = if (wrongPassword) {
-                        { Text(stringResource(R.string.backup_wrong_password)) }
-                    } else null,
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    modifier = Modifier.fillMaxWidth()
-                )
-                if (isInspecting) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        LoadingIndicator(modifier = Modifier.size(24.dp))
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(
-                enabled = password.isNotEmpty() && !isInspecting,
-                onClick = { onConfirm(password) }
-            ) { Text(stringResource(R.string.backup_unlock), maxLines = 1, overflow = TextOverflow.Ellipsis) }
-        },
-        dismissButton = {
-            TextButton(enabled = !isInspecting, onClick = onDismiss) {
-                Text(stringResource(R.string.cancel), maxLines = 1, overflow = TextOverflow.Ellipsis)
-            }
         }
     )
 }

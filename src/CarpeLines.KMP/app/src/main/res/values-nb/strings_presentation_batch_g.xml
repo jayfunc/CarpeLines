@@ -7,6 +7,7 @@
     <string name="presentation_batch_g_backup_details">Detaljer om sikkerhetskopi</string>
     <string name="presentation_batch_g_backup_device">Enhet</string>
     <string name="presentation_batch_g_backup_entries_will_replace">%1$d oppføringer · Vil erstatte gjeldende data</string>
+    <string name="presentation_batch_g_backup_entries_will_merge">%1$d oppføringer · Slås sammen med gjeldende data</string>
     <string name="presentation_batch_g_backup_modules_selected">%1$d av %2$d moduler valgt</string>
     <string name="presentation_batch_g_backup_restore_modules">Gjenopprett moduler</string>
     <string name="presentation_batch_g_backup_restore_selected">Gjenopprett valgte</string>

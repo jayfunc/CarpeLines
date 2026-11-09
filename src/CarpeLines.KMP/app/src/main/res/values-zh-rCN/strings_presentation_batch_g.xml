@@ -109,5 +109,6 @@
     <string name="presentation_batch_g_backup_cd_select_all">全选</string>
     <string name="presentation_batch_g_backup_cd_clear_selection">清空选择</string>
     <string name="presentation_batch_g_backup_entries_will_replace">%1$d 条数据 · 将会覆盖当前数据</string>
+<string name="presentation_batch_g_backup_entries_will_merge">%1$d 条数据 · 将合并到当前数据</string>
 
 </resources>

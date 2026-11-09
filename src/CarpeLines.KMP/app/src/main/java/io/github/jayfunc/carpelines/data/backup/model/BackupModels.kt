@@ -80,7 +80,11 @@ data class ValidationError(
 enum class Severity { ERROR, WARNING }
 
 sealed class RestoreResult {
-    data object Success : RestoreResult()
+    /**
+     * Every selected module was restored; [warnings] names the modules that a handler skipped
+     * because this library cannot take their payload (see ModuleRestoreSkippedException).
+     */
+    data class Success(val warnings: List<String> = emptyList()) : RestoreResult()
     data class PartialFailure(
         val succeeded: Set<BackupSection>,
         val failed: Map<BackupSection, String>,

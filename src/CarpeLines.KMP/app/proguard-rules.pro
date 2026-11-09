@@ -39,7 +39,6 @@
 -keep class io.github.jayfunc.carpelines.data.backup.module.** { *; }
 -keep class io.github.jayfunc.carpelines.data.database.SongEngagementEntity { *; }
 -keep class io.github.jayfunc.carpelines.data.database.LyricsEntity { *; }
--keep class io.github.jayfunc.carpelines.data.database.SearchHistoryEntity { *; }
 -keep class io.github.jayfunc.carpelines.data.database.AudioBookmarkEntity { *; }
 
 -dontwarn io.ktor.**

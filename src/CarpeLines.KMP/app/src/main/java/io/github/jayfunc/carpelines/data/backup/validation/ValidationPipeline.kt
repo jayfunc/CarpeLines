@@ -56,15 +56,4 @@ class ValidationPipeline @Inject constructor(
         }
     }
 
-    /**
-     * Collect all warnings from validation results (non-fatal).
-     */
-    fun collectWarnings(vararg results: BackupValidationResult): List<ValidationError> {
-        return results.flatMap { result ->
-            when (result) {
-                is BackupValidationResult.Invalid -> result.warnings
-                is BackupValidationResult.Valid -> emptyList()
-            }
-        }
-    }
 }

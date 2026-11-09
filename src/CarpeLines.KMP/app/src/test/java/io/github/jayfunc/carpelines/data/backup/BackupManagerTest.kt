@@ -19,6 +19,7 @@ import io.github.jayfunc.carpelines.data.backup.restore.RestoreExecutor
 import io.github.jayfunc.carpelines.data.backup.restore.RestorePlanner
 import io.github.jayfunc.carpelines.data.backup.validation.ValidationPipeline
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -130,11 +131,19 @@ class BackupManagerTest {
     }
 
     @Test
-    fun `inspectBackup skips oversized module preview validation`() = runTest {
+    fun `inspectBackup never previews modules the planner dropped for size`() = runTest {
+        // RestorePlanner removes payloads above the in-memory limit from the plan, so the
+        // inspector must not try to load them into memory either.
         val oversizedModule = BackupReader.MAX_MODULE_PAYLOAD_BYTES + 1L
+        val warning = "Playback History: payload exceeds the restore safety limit"
         val plan = restorePlan(
             selectedModules = setOf(BackupSection.PLAYBACK_HISTORY),
             moduleSizeBytes = oversizedModule
+        ).copy(
+            availableModules = emptySet(),
+            selectedModules = emptySet(),
+            moduleDetails = emptyMap(),
+            warnings = listOf(warning)
         )
 
         every { validationPipeline.validateFile(backupUri) } returns BackupValidationResult.Valid
@@ -143,9 +152,9 @@ class BackupManagerTest {
 
         val result = manager.inspectBackup(backupUri).getOrThrow()
 
-        assertTrue(
-            result.warnings.any { it.contains("preview validation was skipped", ignoreCase = true) }
-        )
+        assertTrue(result.availableModules.isEmpty())
+        assertTrue(result.warnings.contains(warning))
+        coVerify(exactly = 0) { backupReader.readModulePayload(any(), any()) }
     }
 
     private fun restorePlan(

@@ -146,5 +146,11 @@
     <string name="backup_module_playback_history_label">История воспроизведения</string>
     <string name="backup_module_playback_history_description">Время и длительность каждого прослушивания для раздела «Недавно прослушано» и статистики</string>
     <string name="backup_module_artist_images_label">Изображения исполнителей</string>
-    <string name="backup_module_artist_images_description">URL изображений исполнителей на странице статистики</string>
+    <string name="backup_module_artist_images_description">Ссылки на изображения исполнителей и загруженные вами изображения</string>
+    <string name="backup_module_skipped_warning">%1$s пропущен: %2$s</string>
+    <string name="backup_error_export_module_too_large">%1$s занимает %2$d МБ — больше предела %3$d МБ на модуль. Снимите выбор и повторите</string>
+    <string name="backup_error_export_too_large">Резервная копия займёт %1$d МБ — больше предела %2$d МБ. Снимите выбор с части модулей</string>
+    <string name="backup_plan_warning_legacy_schema">Это старая резервная копия (v%1$d). Некоторые модули могут быть недоступны</string>
+    <string name="backup_plan_warning_library_not_scanned">Сначала просканируйте медиатеку: изображения исполнителей сопоставляются с ней</string>
+    <string name="data_restored_with_warnings">Данные восстановлены, но некоторые модули пропущены:\n%1$s</string>
 </resources>

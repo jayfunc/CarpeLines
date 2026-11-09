@@ -86,8 +86,14 @@
     <string name="backup_module_playback_history_label">Playback History</string>
     <string name="backup_module_playback_history_description">Time and duration of each listening session, used for Recently Played and stats</string>
     <string name="backup_module_artist_images_label">Artist Images</string>
-    <string name="backup_module_artist_images_description">Artist image URLs shown on the stats page</string>
+    <string name="backup_module_artist_images_description">Artist image links plus the custom images you uploaded</string>
+    <string name="backup_module_skipped_warning">%1$s skipped: %2$s</string>
+    <string name="backup_error_export_module_too_large">%1$s is %2$dMB, over the %3$dMB limit for one module. Deselect it and try again</string>
+    <string name="backup_error_export_too_large">The backup would be %1$dMB, over the %2$dMB limit. Deselect some modules and try again</string>
+    <string name="backup_plan_warning_legacy_schema">This is a legacy backup (v%1$d). Some modules may not be available</string>
+    <string name="backup_plan_warning_library_not_scanned">Scan your music library first: artist images are matched against it</string>
     <string name="restore_completed_success">Backup restored successfully</string>
+    <string name="data_restored_with_warnings">Data restored, but some modules were skipped:\n%1$s</string>
     <string name="restore_completed_partial_issues">Restore completed with some unresolved issues</string>
     <string name="restore_could_not_complete">Restore could not be completed: %1$s</string>
     <string name="restore_failed_format">Restore failed: %1$s</string>

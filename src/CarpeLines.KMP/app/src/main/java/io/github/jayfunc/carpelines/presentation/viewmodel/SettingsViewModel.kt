@@ -1102,7 +1102,16 @@ class SettingsViewModel @Inject constructor(
             }
             when (result) {
                 is RestoreResult.Success -> {
-                    _dataTransferEvents.send(context.getString(R.string.data_restored_successfully))
+                    _dataTransferEvents.send(
+                        if (result.warnings.isEmpty()) {
+                            context.getString(R.string.data_restored_successfully)
+                        } else {
+                            context.getString(
+                                R.string.data_restored_with_warnings,
+                                result.warnings.joinToString("\n"),
+                            )
+                        }
+                    )
                     syncManager.sync()
                 }
                 is RestoreResult.PartialFailure -> {

@@ -224,6 +224,12 @@ data class SongSummary(
     val duration: Long
 )
 
+/** A local song id with its file path, used to re-find a song after a reinstall or rescan. */
+data class SongPathRow(
+    val id: Long,
+    @ColumnInfo(name = "file_path") val filePath: String
+)
+
 fun Song.toEntityWithoutPaths(): SongEntity {
     return SongEntity(
         id = this.id.toLong(),

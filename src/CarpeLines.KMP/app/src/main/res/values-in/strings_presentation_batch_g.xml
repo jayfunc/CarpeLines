@@ -7,6 +7,7 @@
     <string name="presentation_batch_g_backup_details">Detail Cadangan</string>
     <string name="presentation_batch_g_backup_device">Perangkat</string>
     <string name="presentation_batch_g_backup_entries_will_replace">%1$d entri · Akan menggantikan data saat ini</string>
+    <string name="presentation_batch_g_backup_entries_will_merge">%1$d entri · Akan digabungkan dengan data saat ini</string>
     <string name="presentation_batch_g_backup_modules_selected">%1$d dari %2$d modul terpilih</string>
     <string name="presentation_batch_g_backup_restore_modules">Pulihkan Modul</string>
     <string name="presentation_batch_g_backup_restore_selected">Pulihkan yang terpilih</string>

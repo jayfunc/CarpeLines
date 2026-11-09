@@ -9,18 +9,22 @@ import io.github.jayfunc.carpelines.data.carpelines.ManualLyricsStore
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Per-module payload checks.
+ *
+ * Everything here reads JSON defensively: a payload field of the wrong type is a warning about
+ * that entry, never an exception, so one malformed entry cannot make the whole backup unreadable.
+ */
 @Singleton
-class ModuleSchemaValidator @Inject constructor(
-    private val contentSanitizer: ContentSanitizer
-) {
+class ModuleSchemaValidator @Inject constructor() {
     private data class NumericFieldResult(
         val present: Boolean,
         val value: Long?
     )
 
     companion object {
-        const val MAX_STRING_LENGTH = 50_000
         const val MAX_ENTRIES_PER_MODULE = 100_000
+        private const val MAX_ARTIST_IMAGE_URL_LENGTH = 2_000
         private val VALID_PREF_TYPES = setOf("string", "int", "long", "boolean", "float", "double", "string_set")
     }
 
@@ -45,18 +49,14 @@ class ModuleSchemaValidator @Inject constructor(
         }
 
         when (section) {
-            BackupSection.LYRICS -> validateLyrics(jsonElement.asJsonArray, errors)
-            BackupSection.ENGAGEMENT_STATS -> validateEngagementStats(jsonElement.asJsonArray, errors)
-            BackupSection.PLAYBACK_HISTORY -> validatePlaybackHistory(jsonElement.asJsonArray, errors)
-            BackupSection.ARTIST_IMAGES -> validateArtistImages(jsonElement.asJsonArray, errors)
-            BackupSection.GLOBAL_SETTINGS -> {
-                validatePreferenceEntries(jsonElement, section.key, errors)
-            }
+            BackupSection.LYRICS -> validateLyrics(array, errors)
+            BackupSection.ENGAGEMENT_STATS -> validateEngagementStats(array, errors)
+            BackupSection.PLAYBACK_HISTORY -> validatePlaybackHistory(array, errors)
+            BackupSection.ARTIST_IMAGES -> validateArtistImages(array, errors)
+            BackupSection.GLOBAL_SETTINGS -> validatePreferenceEntries(jsonElement, section.key, errors)
         }
 
-        return if (errors.any { it.severity == Severity.ERROR }) {
-            BackupValidationResult.Invalid(errors)
-        } else if (errors.isNotEmpty()) {
+        return if (errors.isNotEmpty()) {
             BackupValidationResult.Invalid(errors)
         } else {
             BackupValidationResult.Valid
@@ -251,36 +251,128 @@ class ModuleSchemaValidator @Inject constructor(
 
     private fun validatePlaybackHistory(array: com.google.gson.JsonArray, errors: MutableList<ValidationError>) {
         array.forEachIndexed { i, element ->
-            if (!element.isJsonObject) return@forEachIndexed
+            if (!element.isJsonObject) {
+                errors.add(
+                    ValidationError(
+                        "INVALID_HISTORY_ENTRY",
+                        "PlaybackHistory[$i]: entry is not a JSON object",
+                        module = "playback_history",
+                        severity = Severity.WARNING
+                    )
+                )
+                return@forEachIndexed
+            }
             val obj = element.asJsonObject
-            val durationMs = obj.get("durationMs")?.asLong ?: 0
-            if (durationMs < 0) {
-                errors.add(ValidationError("NEGATIVE_DURATION", "PlaybackHistory[$i]: negative duration", module = "playback_history", severity = Severity.WARNING))
+            if (readStringField(obj, "songId", "song_id")?.trim().isNullOrEmpty()) {
+                errors.add(
+                    ValidationError(
+                        "MISSING_SONG_ID",
+                        "PlaybackHistory[$i]: missing songId",
+                        module = "playback_history",
+                        severity = Severity.WARNING
+                    )
+                )
+            }
+
+            val duration = readNumericField(obj, "durationMs", "duration_ms")
+            when {
+                duration.present && duration.value == null -> errors.add(
+                    ValidationError(
+                        "INVALID_DURATION",
+                        "PlaybackHistory[$i]: duration is not numeric",
+                        module = "playback_history",
+                        severity = Severity.WARNING
+                    )
+                )
+                (duration.value ?: 0L) < 0L -> errors.add(
+                    ValidationError(
+                        "NEGATIVE_DURATION",
+                        "PlaybackHistory[$i]: negative duration",
+                        module = "playback_history",
+                        severity = Severity.WARNING
+                    )
+                )
+            }
+
+            val timestamp = readNumericField(obj, "timestamp")
+            if (timestamp.present && timestamp.value == null) {
+                errors.add(
+                    ValidationError(
+                        "INVALID_TIMESTAMP",
+                        "PlaybackHistory[$i]: timestamp is not numeric",
+                        module = "playback_history",
+                        severity = Severity.WARNING
+                    )
+                )
             }
         }
     }
 
     private fun validateArtistImages(array: com.google.gson.JsonArray, errors: MutableList<ValidationError>) {
         array.forEachIndexed { i, element ->
-            if (!element.isJsonObject) return@forEachIndexed
-            val obj = element.asJsonObject
-            val imageUrl = obj.get("imageUrl")?.asString ?: ""
-            if (imageUrl.isNotEmpty() && !imageUrl.startsWith("https://")) {
-                errors.add(ValidationError("INSECURE_URL", "ArtistImages[$i]: URL is not HTTPS", module = "artist_images", severity = Severity.WARNING))
+            if (!element.isJsonObject) {
+                errors.add(
+                    ValidationError(
+                        "INVALID_ARTIST_IMAGE_ENTRY",
+                        "ArtistImages[$i]: entry is not a JSON object",
+                        module = "artist_images",
+                        severity = Severity.WARNING
+                    )
+                )
+                return@forEachIndexed
             }
-            if (imageUrl.length > 2000) {
-                errors.add(ValidationError("URL_TOO_LONG", "ArtistImages[$i]: URL exceeds 2000 chars", module = "artist_images", severity = Severity.WARNING))
+            val obj = element.asJsonObject
+            if (readStringField(obj, "artistName", "artist_name")?.trim().isNullOrEmpty()) {
+                errors.add(
+                    ValidationError(
+                        "MISSING_ARTIST_NAME",
+                        "ArtistImages[$i]: missing artist name",
+                        module = "artist_images",
+                        severity = Severity.WARNING
+                    )
+                )
+            }
+            val urlElement = obj.get("imageUrl") ?: obj.get("image_url")
+            if (urlElement != null && !urlElement.isJsonPrimitive) {
+                errors.add(
+                    ValidationError(
+                        "INVALID_URL",
+                        "ArtistImages[$i]: URL is not text and will be ignored",
+                        module = "artist_images",
+                        severity = Severity.WARNING
+                    )
+                )
+            }
+            val imageUrl = readStringField(obj, "imageUrl", "image_url").orEmpty()
+            if (imageUrl.isNotEmpty() && !imageUrl.startsWith("https://")) {
+                errors.add(
+                    ValidationError(
+                        "INSECURE_URL",
+                        "ArtistImages[$i]: URL is not HTTPS",
+                        module = "artist_images",
+                        severity = Severity.WARNING
+                    )
+                )
+            }
+            if (imageUrl.length > MAX_ARTIST_IMAGE_URL_LENGTH) {
+                errors.add(
+                    ValidationError(
+                        "URL_TOO_LONG",
+                        "ArtistImages[$i]: URL exceeds $MAX_ARTIST_IMAGE_URL_LENGTH chars",
+                        module = "artist_images",
+                        severity = Severity.WARNING
+                    )
+                )
             }
         }
     }
 
     private fun validatePreferenceEntries(jsonElement: com.google.gson.JsonElement, moduleKey: String, errors: MutableList<ValidationError>) {
-        if (!jsonElement.isJsonArray) return
         jsonElement.asJsonArray.forEachIndexed { i, element ->
             if (!element.isJsonObject) return@forEachIndexed
             val obj = element.asJsonObject
-            val key = obj.get("key")?.asString
-            val type = obj.get("type")?.asString
+            val key = readStringField(obj, "key")
+            val type = readStringField(obj, "type")
             if (key.isNullOrBlank()) {
                 errors.add(ValidationError("MISSING_PREF_KEY", "Preference[$i]: missing key", module = moduleKey, severity = Severity.WARNING))
             }
@@ -302,10 +394,9 @@ class ModuleSchemaValidator @Inject constructor(
 
     private fun readNumericField(obj: com.google.gson.JsonObject, vararg keys: String): NumericFieldResult {
         keys.forEach { key ->
-            val primitive = obj.get(key)
-                ?.takeIf { it.isJsonPrimitive }
-                ?.asJsonPrimitive
-                ?: return@forEach
+            val element = obj.get(key) ?: return@forEach
+            val primitive = element.takeIf { it.isJsonPrimitive }?.asJsonPrimitive
+                ?: return NumericFieldResult(present = true, value = null)
             return when {
                 primitive.isNumber -> NumericFieldResult(present = true, value = primitive.asNumber.toLong())
                 primitive.isString -> NumericFieldResult(present = true, value = primitive.asString.toLongOrNull())

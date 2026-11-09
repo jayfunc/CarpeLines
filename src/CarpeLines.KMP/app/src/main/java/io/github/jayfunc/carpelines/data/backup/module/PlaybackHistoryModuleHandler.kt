@@ -2,7 +2,6 @@ package io.github.jayfunc.carpelines.data.backup.module
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.github.jayfunc.carpelines.data.backup.model.BackupSection
 import io.github.jayfunc.carpelines.data.backup.model.PlaybackHistoryBackupEntry
 import io.github.jayfunc.carpelines.data.stats.PlaybackStatsRepository
 import io.github.jayfunc.carpelines.di.BackupGson
@@ -17,8 +16,6 @@ class PlaybackHistoryModuleHandler @Inject constructor(
     @BackupGson private val gson: Gson
 ) : BackupModuleHandler {
 
-    override val section = BackupSection.PLAYBACK_HISTORY
-
     override suspend fun export(): String = withContext(Dispatchers.IO) {
         val entries = playbackStatsRepository.exportEventsForBackup().map { event ->
             PlaybackHistoryBackupEntry(
@@ -31,10 +28,6 @@ class PlaybackHistoryModuleHandler @Inject constructor(
             )
         }
         gson.toJson(entries)
-    }
-
-    override suspend fun countEntries(): Int = withContext(Dispatchers.IO) {
-        playbackStatsRepository.exportEventsForBackup().size
     }
 
     override suspend fun snapshot(): String = export()

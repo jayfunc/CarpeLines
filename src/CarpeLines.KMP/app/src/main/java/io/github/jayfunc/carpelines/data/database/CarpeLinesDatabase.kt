@@ -7,7 +7,6 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 @Database(
     entities = [
         AlbumArtThemeEntity::class,
-        SearchHistoryEntity::class,
         SongEntity::class,
         SongSearchFtsEntity::class,
         AlbumEntity::class,
@@ -17,12 +16,11 @@ import androidx.sqlite.db.SupportSQLiteDatabase
         LyricsEntity::class,
         AudioBookmarkEntity::class
     ],
-    version = 9,
+    version = 10,
     exportSchema = true
 )
 abstract class CarpeLinesDatabase : RoomDatabase() {
     abstract fun albumArtThemeDao(): AlbumArtThemeDao
-    abstract fun searchHistoryDao(): SearchHistoryDao
     abstract fun musicDao(): MusicDao
     abstract fun engagementDao(): EngagementDao
     abstract fun lyricsDao(): LyricsDao

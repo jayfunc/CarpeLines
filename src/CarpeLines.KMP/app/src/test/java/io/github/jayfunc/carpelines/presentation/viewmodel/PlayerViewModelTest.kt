@@ -8,7 +8,6 @@ import app.cash.turbine.test
 import io.github.jayfunc.carpelines.data.database.AlbumArtThemeDao
 import com.google.common.util.concurrent.ListenableFuture
 import io.github.jayfunc.carpelines.data.model.SearchFilterType
-import io.github.jayfunc.carpelines.data.model.SearchHistoryItem
 import io.github.jayfunc.carpelines.data.model.SearchResultItem
 import io.github.jayfunc.carpelines.data.model.Album
 import io.github.jayfunc.carpelines.data.model.Artist
@@ -109,7 +108,6 @@ class PlayerViewModelTest {
     }
 
     private val _allSongsFlow = MutableStateFlow<ImmutableList<Song>>(persistentListOf())
-    private val _searchHistoryFlow = MutableStateFlow<ImmutableList<SearchHistoryItem>>(persistentListOf())
     private val _searchResultsFlow = MutableStateFlow<ImmutableList<SearchResultItem>>(persistentListOf())
     private val _selectedSearchFilterFlow = MutableStateFlow(SearchFilterType.ALL)
     private val _repeatModeFlow = MutableStateFlow(Player.REPEAT_MODE_OFF)
@@ -157,12 +155,8 @@ class PlayerViewModelTest {
         every { mockLibraryStateHolder.currentFolderSongSortOption } returns folderSongSortFlow
         every { mockLibraryStateHolder.currentStorageFilter } returns MutableStateFlow(StorageFilter.ALL)
 
-        every { mockSearchStateHolder.searchHistory } returns _searchHistoryFlow
         every { mockSearchStateHolder.searchResults } returns _searchResultsFlow
         every { mockSearchStateHolder.selectedSearchFilter } returns _selectedSearchFilterFlow
-        every { mockSearchStateHolder.loadSearchHistory(any()) } just runs
-        every { mockSearchStateHolder.clearSearchHistory() } just runs
-        every { mockSearchStateHolder.deleteSearchHistoryItem(any()) } just runs
         every { mockSearchStateHolder.updateSearchFilter(any()) } just runs
         every { mockSearchStateHolder.initialize(any()) } just runs
 
@@ -819,90 +813,9 @@ class PlayerViewModelTest {
     }
 
     @Nested
-    @DisplayName("Search History")
-    inner class SearchHistoryTests {
+    @DisplayName("Search")
+    inner class SearchTests {
 
-        @Test
-        fun `test_loadSearchHistory_updatesUiState`() = runTest {
-            val historyItems = listOf(SearchHistoryItem(query = "q1", timestamp = 1L))
-            every { mockSearchStateHolder.loadSearchHistory(any()) } answers {
-                _searchHistoryFlow.value = historyItems.toImmutableList()
-            }
-
-            playerViewModel.playerUiState.test {
-                val initialState = awaitItem()
-                if (initialState.searchHistory == historyItems) {
-                    cancelAndConsumeRemainingEvents()
-                    return@test
-                }
-
-                playerViewModel.loadSearchHistory()
-                
-                val currentItem = awaitItem()
-                assertEquals(historyItems, currentItem.searchHistory)
-                cancelAndConsumeRemainingEvents()
-            }
-        }
-
-
-        @Test
-        fun `test_clearSearchHistory_callsRepository_andUpdatesUiState`() = runTest {
-            val initialHistory = listOf(SearchHistoryItem(query = "q1", timestamp = 1L))
-            _searchHistoryFlow.value = initialHistory.toImmutableList()
-            
-            every { mockSearchStateHolder.clearSearchHistory() } answers {
-                _searchHistoryFlow.value = persistentListOf()
-            }
-
-            playerViewModel.playerUiState.test {
-               var state = awaitItem()
-               while (state.searchHistory != initialHistory) {
-                   state = awaitItem()
-               }
-
-                playerViewModel.clearSearchHistory()
-
-                var emitted = awaitItem()
-                while (emitted.searchHistory.isNotEmpty()) {
-                    emitted = awaitItem()
-                }
-                assertTrue(emitted.searchHistory.isEmpty())
-                verify { mockSearchStateHolder.clearSearchHistory() }
-                cancelAndConsumeRemainingEvents()
-            }
-        }
-
-        @Test
-        fun `test_deleteSearchHistoryItem_callsRepository_andRefreshesHistory`() = runTest {
-            val queryToDelete = "delete me"
-            val keepQuery = "keep me"
-            val initialHistory = listOf(SearchHistoryItem(query = queryToDelete, timestamp = 1L), SearchHistoryItem(query = keepQuery, timestamp = 2L))
-            val finalHistory = listOf(SearchHistoryItem(query = keepQuery, timestamp = 2L))
-
-            _searchHistoryFlow.value = initialHistory.toImmutableList()
-            
-            every { mockSearchStateHolder.deleteSearchHistoryItem(queryToDelete) } answers {
-                _searchHistoryFlow.value = finalHistory.toImmutableList()
-            }
-
-            playerViewModel.playerUiState.test {
-               var state = awaitItem()
-               while (state.searchHistory != initialHistory) {
-                   state = awaitItem()
-               }
-
-                playerViewModel.deleteSearchHistoryItem(queryToDelete)
-
-                var emitted = awaitItem()
-                while (emitted.searchHistory != finalHistory) {
-                    emitted = awaitItem()
-                }
-                assertEquals(finalHistory, emitted.searchHistory)
-                
-                cancelAndConsumeRemainingEvents()
-            }
-        }
-        
         @Test
         fun `test_updateSearchFilter_updatesUiState`() = runTest {
              val newFilter = SearchFilterType.ARTISTS

@@ -12,6 +12,7 @@ import io.github.jayfunc.carpelines.data.backup.model.BackupValidationResult
 import io.github.jayfunc.carpelines.data.backup.model.RestorePlan
 import io.github.jayfunc.carpelines.data.backup.model.RestoreResult
 import io.github.jayfunc.carpelines.data.backup.module.BackupModuleHandler
+import io.github.jayfunc.carpelines.data.backup.module.ModuleRestoreSkippedException
 import io.github.jayfunc.carpelines.data.backup.validation.ValidationPipeline
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -35,6 +36,7 @@ class RestoreExecutor @Inject constructor(
         plan: RestorePlan,
         onProgress: (BackupTransferProgressUpdate) -> Unit
     ): RestoreResult = withContext(Dispatchers.IO) {
+        val warnings = mutableListOf<String>()
         val selectedModules = plan.selectedModules.toList().sortedBy { it.key }
         val totalSteps = selectedModules.size * 2 + 3
         var step = 0
@@ -122,8 +124,19 @@ class RestoreExecutor @Inject constructor(
 
                 val handler = handlers[section]
                     ?: throw IllegalStateException("No handler for module ${section.key}")
-                handler.restore(payload)
-                restoredModules.add(section)
+                try {
+                    handler.restore(payload)
+                    restoredModules.add(section)
+                } catch (skipped: ModuleRestoreSkippedException) {
+                    // The payload is fine but this library cannot take it (legacy format, or the
+                    // library has not been scanned yet). Nothing was written, so no rollback.
+                    Timber.tag(TAG).w("Skipped ${section.key}: ${skipped.message}")
+                    warnings += context.getString(
+                        R.string.backup_module_skipped_warning,
+                        context.getString(section.labelRes),
+                        skipped.message.orEmpty()
+                    )
+                }
             }
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "Restore failed while processing backup module, rolling back")
@@ -169,7 +182,7 @@ class RestoreExecutor @Inject constructor(
             context.getString(R.string.backup_progress_restore_complete_detail)
         )
 
-        RestoreResult.Success
+        RestoreResult.Success(warnings)
     }
 
     private fun reportProgress(

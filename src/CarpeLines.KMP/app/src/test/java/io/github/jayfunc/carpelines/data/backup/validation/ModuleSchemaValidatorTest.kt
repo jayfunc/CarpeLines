@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test
 
 class ModuleSchemaValidatorTest {
 
-    private val sanitizer = ContentSanitizer()
-    private val validator = ModuleSchemaValidator(sanitizer)
+    private val validator = ModuleSchemaValidator()
 
     @Test
     fun `valid lyrics array passes validation`() {
@@ -120,6 +119,22 @@ class ModuleSchemaValidatorTest {
         assertTrue(result is BackupValidationResult.Invalid)
         val warnings = (result as BackupValidationResult.Invalid).warnings
         assertTrue(warnings.any { it.code == "DUPLICATE_SONG_ID" })
+    }
+
+    @Test
+    fun `wrong field types are warnings instead of throwing`() {
+        val history = validator.validate(
+            BackupSection.PLAYBACK_HISTORY,
+            """[{"songId":"123","durationMs":{"bad":1}}]"""
+        )
+        assertTrue(history is BackupValidationResult.Invalid)
+        assertTrue((history as BackupValidationResult.Invalid).warnings.any { it.code == "INVALID_DURATION" })
+
+        val images = validator.validate(
+            BackupSection.ARTIST_IMAGES,
+            """[{"artistName":"Test","imageUrl":{"bad":1}}]"""
+        )
+        assertTrue(images is BackupValidationResult.Invalid)
     }
 
     @Test

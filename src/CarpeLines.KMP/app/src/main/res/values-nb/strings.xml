@@ -146,5 +146,11 @@
     <string name="backup_module_playback_history_label">Avspillingshistorikk</string>
     <string name="backup_module_playback_history_description">Tid og varighet for hver lytteseanse, brukt til Nylig spilt og statistikk</string>
     <string name="backup_module_artist_images_label">Artistbilder</string>
-    <string name="backup_module_artist_images_description">Artistbilde-URL-er som vises på statistikksiden</string>
+    <string name="backup_module_artist_images_description">Artistbildelenker og egendefinerte bilder du har lastet opp</string>
+    <string name="backup_module_skipped_warning">%1$s hoppet over: %2$s</string>
+    <string name="backup_error_export_module_too_large">%1$s er %2$dMB, over grensen på %3$dMB per modul. Fjern valget og prøv igjen</string>
+    <string name="backup_error_export_too_large">Sikkerhetskopien vil bli %1$dMB, over grensen på %2$dMB. Fjern valget på noen moduler</string>
+    <string name="backup_plan_warning_legacy_schema">Dette er en eldre sikkerhetskopi (v%1$d). Enkelte moduler er kanskje ikke tilgjengelige</string>
+    <string name="backup_plan_warning_library_not_scanned">Skann musikkbiblioteket først: artistbilder matches mot det</string>
+    <string name="data_restored_with_warnings">Data gjenopprettet, men enkelte moduler ble hoppet over:\n%1$s</string>
 </resources>

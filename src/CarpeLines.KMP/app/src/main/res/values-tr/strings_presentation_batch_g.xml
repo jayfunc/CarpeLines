@@ -7,6 +7,7 @@
     <string name="presentation_batch_g_backup_details">Yedek Ayrıntıları</string>
     <string name="presentation_batch_g_backup_device">Cihaz</string>
     <string name="presentation_batch_g_backup_entries_will_replace">%1$d öge · Mevcut verilerin yerine geçecek</string>
+    <string name="presentation_batch_g_backup_entries_will_merge">%1$d öge · Mevcut verilerle birleştirilecek</string>
     <string name="presentation_batch_g_backup_modules_selected">%2$d modülden %1$d tanesi seçildi</string>
     <string name="presentation_batch_g_backup_restore_modules">Modülleri Geri Yükle</string>
     <string name="presentation_batch_g_backup_restore_selected">Seçilenleri Geri Yükle</string>

@@ -7,6 +7,7 @@
     <string name="presentation_batch_g_backup_details">تفاصيل النسخة الاحتياطية</string>
     <string name="presentation_batch_g_backup_device">الجهاز</string>
     <string name="presentation_batch_g_backup_entries_will_replace">%1$d إدخالات · سوف تستبدل البيانات الحالية</string>
+    <string name="presentation_batch_g_backup_entries_will_merge">%1$d إدخالات · ستُدمج مع البيانات الحالية</string>
     <string name="presentation_batch_g_backup_modules_selected">تم تحديد %1$d من أصل %2$d وحدة</string>
     <string name="presentation_batch_g_backup_restore_modules">استعادة الوحدات</string>
     <string name="presentation_batch_g_backup_restore_selected">استعادة المحدد</string>

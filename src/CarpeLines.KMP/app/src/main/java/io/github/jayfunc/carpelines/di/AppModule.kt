@@ -29,9 +29,9 @@ import io.github.jayfunc.carpelines.data.database.MIGRATION_5_6
 import io.github.jayfunc.carpelines.data.database.MIGRATION_6_7
 import io.github.jayfunc.carpelines.data.database.MIGRATION_7_8
 import io.github.jayfunc.carpelines.data.database.MIGRATION_8_9
+import io.github.jayfunc.carpelines.data.database.MIGRATION_9_10
 import io.github.jayfunc.carpelines.data.database.MusicDao
 import io.github.jayfunc.carpelines.data.database.CarpeLinesDatabase
-import io.github.jayfunc.carpelines.data.database.SearchHistoryDao
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
 import io.github.jayfunc.carpelines.data.preferences.dataStore
 import io.github.jayfunc.carpelines.data.media.SongMetadataEditor
@@ -127,6 +127,7 @@ object AppModule {
                 MIGRATION_6_7,
                 MIGRATION_7_8,
                 MIGRATION_8_9,
+                MIGRATION_9_10,
             )
             .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
 
@@ -141,12 +142,6 @@ object AppModule {
     @Provides
     fun provideAlbumArtThemeDao(database: CarpeLinesDatabase): AlbumArtThemeDao {
         return database.albumArtThemeDao()
-    }
-
-    @Singleton
-    @Provides
-    fun provideSearchHistoryDao(database: CarpeLinesDatabase): SearchHistoryDao {
-        return database.searchHistoryDao()
     }
 
     @Singleton
@@ -245,7 +240,6 @@ object AppModule {
     fun provideMusicRepository(
         @ApplicationContext context: Context,
         userPreferencesRepository: UserPreferencesRepository,
-        searchHistoryDao: SearchHistoryDao,
         musicDao: MusicDao,
         lyricsRepository: LyricsRepository,
         songRepository: SongRepository,
@@ -255,7 +249,6 @@ object AppModule {
         return MusicRepositoryImpl(
             context = context,
             userPreferencesRepository = userPreferencesRepository,
-            searchHistoryDao = searchHistoryDao,
             musicDao = musicDao,
             lyricsRepository = lyricsRepository,
             songRepository = songRepository,

@@ -9,7 +9,6 @@ import io.github.jayfunc.carpelines.data.model.Song
 import io.github.jayfunc.carpelines.data.model.SearchResultItem
 import io.github.jayfunc.carpelines.data.model.SortOption
 import io.github.jayfunc.carpelines.data.model.SearchFilterType
-import io.github.jayfunc.carpelines.data.model.SearchHistoryItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -47,7 +46,6 @@ data class PlayerUiState(
     val currentFolderSongSortOption: SortOption = SortOption.FolderSongTitleAZ,
     val folderBackGestureNavigationEnabled: Boolean = true,
     val currentSongSortOption: SortOption = SortOption.SongTitleAZ,
-    val searchHistory: ImmutableList<SearchHistoryItem> = persistentListOf(),
     val searchQuery: String = "",
     val isSyncingLibrary: Boolean = false,
     val selectedSearchFilter: SearchFilterType = SearchFilterType.ALL,

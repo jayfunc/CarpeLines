@@ -7,6 +7,7 @@
     <string name="presentation_batch_g_backup_details">Сведения о резервной копии</string>
     <string name="presentation_batch_g_backup_device">Устройство</string>
     <string name="presentation_batch_g_backup_entries_will_replace">%1$d записей · Текущие данные будут заменены</string>
+    <string name="presentation_batch_g_backup_entries_will_merge">%1$d записей · Будут добавлены к текущим данным</string>
     <string name="presentation_batch_g_backup_modules_selected">Выбрано модулей: %1$d из %2$d</string>
     <string name="presentation_batch_g_backup_restore_modules">Модули восстановления</string>
     <string name="presentation_batch_g_backup_restore_selected">Восстановить выбранное</string>

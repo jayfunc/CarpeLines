@@ -78,6 +78,7 @@ class BackupManager @Inject constructor(
                 context.getString(R.string.backup_progress_building_sections))
 
             val modulePayloads = mutableMapOf<String, String>()
+            var totalPayloadBytes = 0L
             selectedSections.forEach { section ->
                 reportProgress(onProgress, BackupOperationType.EXPORT, ++step, totalSteps,
                     context.getString(
@@ -88,7 +89,32 @@ class BackupManager @Inject constructor(
                     section)
                 val handler = handlers[section]
                     ?: throw IllegalStateException("No handler for module ${section.key}")
-                modulePayloads[section.key] = handler.export()
+                val payload = handler.export()
+
+                // Refuse to write a file the reader would refuse to load: restore caps a module at
+                // BackupReader.MAX_MODULE_PAYLOAD_BYTES and the whole file at the validator limit.
+                val payloadBytes = payload.toByteArray(Charsets.UTF_8).size
+                if (payloadBytes > BackupReader.MAX_MODULE_PAYLOAD_BYTES) {
+                    throw IllegalArgumentException(
+                        context.getString(
+                            R.string.backup_error_export_module_too_large,
+                            context.getString(section.labelRes),
+                            payloadBytes / (1024 * 1024),
+                            BackupReader.MAX_MODULE_PAYLOAD_BYTES / (1024 * 1024)
+                        )
+                    )
+                }
+                totalPayloadBytes += payloadBytes
+                if (totalPayloadBytes > BackupFileValidator.MAX_BACKUP_SIZE_BYTES) {
+                    throw IllegalArgumentException(
+                        context.getString(
+                            R.string.backup_error_export_too_large,
+                            totalPayloadBytes / (1024 * 1024),
+                            BackupFileValidator.MAX_BACKUP_SIZE_BYTES / (1024 * 1024)
+                        )
+                    )
+                }
+                modulePayloads[section.key] = payload
             }
 
             val packageInfo = try {
@@ -162,16 +188,9 @@ class BackupManager @Inject constructor(
                 warnings.addAll(manifestValidation.warnings.map { it.message })
             }
 
+            // Only modules the planner kept are listed here; oversized payloads were already
+            // dropped from the plan, so loading one cannot run out of memory.
             plan.availableModules.toList().sortedBy { it.key }.forEach { section ->
-                val moduleInfo = plan.manifest.modules[section.key]
-                if (moduleInfo != null && moduleInfo.sizeBytes > BackupReader.MAX_MODULE_PAYLOAD_BYTES) {
-                    warnings.add(
-                        "${context.getString(section.labelRes)}: payload is ${moduleInfo.sizeBytes / (1024 * 1024)}MB, " +
-                            "so preview validation was skipped to avoid running out of memory."
-                    )
-                    return@forEach
-                }
-
                 val payload = backupReader.readModulePayload(uri, section.key).getOrThrow()
 
                 val moduleValidation = validationPipeline.validateModulePayload(

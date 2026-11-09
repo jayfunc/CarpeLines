@@ -146,5 +146,11 @@
     <string name="backup_module_playback_history_label">Historial de reproducción</string>
     <string name="backup_module_playback_history_description">Hora y duración de cada sesión de escucha, usado para Reproducido recientemente y estadísticas</string>
     <string name="backup_module_artist_images_label">Imágenes de artistas</string>
-    <string name="backup_module_artist_images_description">URL de imágenes de artistas mostradas en las estadísticas</string>
+    <string name="backup_module_artist_images_description">Enlaces de imágenes de artistas e imágenes personalizadas que subiste</string>
+    <string name="backup_module_skipped_warning">%1$s omitido: %2$s</string>
+    <string name="backup_error_export_module_too_large">%1$s ocupa %2$dMB y supera el límite de %3$dMB por módulo. Desmárcalo e inténtalo de nuevo</string>
+    <string name="backup_error_export_too_large">La copia ocuparía %1$dMB y supera el límite de %2$dMB. Desmarca algunos módulos e inténtalo de nuevo</string>
+    <string name="backup_plan_warning_legacy_schema">Es una copia antigua (v%1$d). Puede que algunos módulos no estén disponibles</string>
+    <string name="backup_plan_warning_library_not_scanned">Analiza primero tu biblioteca: las imágenes de artistas se comparan con ella</string>
+    <string name="data_restored_with_warnings">Datos restaurados, pero se omitieron algunos módulos:\n%1$s</string>
 </resources>

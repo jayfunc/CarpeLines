@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import io.github.jayfunc.carpelines.data.backup.model.BackupSection
 import io.github.jayfunc.carpelines.data.carpelines.ManualLyricsStore
 import io.github.jayfunc.carpelines.data.carpelines.RawManualLyrics
 import io.github.jayfunc.carpelines.di.BackupGson
@@ -25,8 +24,6 @@ class LyricsModuleHandler @Inject constructor(
     @BackupGson private val gson: Gson
 ) : BackupModuleHandler {
 
-    override val section = BackupSection.LYRICS
-
     override suspend fun export(): String = withContext(Dispatchers.IO) {
         val array = JsonArray()
         manualLyricsStore.exportRaw().forEach { entry ->
@@ -40,10 +37,6 @@ class LyricsModuleHandler @Inject constructor(
             )
         }
         gson.toJson(array)
-    }
-
-    override suspend fun countEntries(): Int = withContext(Dispatchers.IO) {
-        manualLyricsStore.exportRaw().size
     }
 
     override suspend fun snapshot(): String = export()
@@ -60,9 +53,15 @@ class LyricsModuleHandler @Inject constructor(
                 ?: return@mapNotNull null
             RawManualLyrics(key = key, json = gson.toJson(selection))
         }
-        // Older backups stored the legacy lyric table, which the current page never reads.
-        // Leave manual selections untouched rather than clearing them for an unsupported payload.
-        if (entries.isEmpty() && array.size() > 0) return@withContext
+
+        // Older backups stored the legacy lyric table, which the current page never reads, and a
+        // payload whose entries are all unusable cannot be applied either. Skipping reports it as a
+        // warning; clearing the current manual selections would be silent data loss.
+        if (entries.isEmpty() && array.size() > 0) {
+            throw ModuleRestoreSkippedException(
+                "the lyrics payload is in a format this version cannot read"
+            )
+        }
         manualLyricsStore.replaceRaw(entries)
     }
 

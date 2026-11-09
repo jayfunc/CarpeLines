@@ -5,6 +5,7 @@ import io.github.jayfunc.carpelines.data.database.AudioBookmarkDao
 import io.github.jayfunc.carpelines.data.database.AudioBookmarkEntity
 import io.github.jayfunc.carpelines.data.database.MusicDao
 import io.github.jayfunc.carpelines.data.database.SongEntity
+import io.github.jayfunc.carpelines.data.database.SongPathRow
 import io.github.jayfunc.carpelines.data.database.SongSummary
 import io.github.jayfunc.carpelines.data.database.restoredBookmarkSongId
 import io.github.jayfunc.carpelines.data.database.serializeArtistRefs
@@ -49,6 +50,9 @@ class AudioBookmarkRepositoryImplTest {
         }
         coEvery { musicDao.getAllLocalSongSummaries() } returns songs.map {
             SongSummary(it.id, it.title, it.artistName, it.albumName, it.duration)
+        }
+        coEvery { musicDao.getAllLocalSongPaths() } returns songs.map {
+            SongPathRow(it.id, it.filePath)
         }
     }
 

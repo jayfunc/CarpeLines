@@ -13,6 +13,7 @@ import io.github.jayfunc.carpelines.data.backup.model.ModuleRestoreDetail
 import io.github.jayfunc.carpelines.data.backup.model.RestorePlan
 import io.github.jayfunc.carpelines.data.backup.model.RestoreResult
 import io.github.jayfunc.carpelines.data.backup.module.BackupModuleHandler
+import io.github.jayfunc.carpelines.data.backup.module.ModuleRestoreSkippedException
 import io.github.jayfunc.carpelines.data.backup.validation.ValidationPipeline
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -67,6 +68,8 @@ class RestoreExecutorTest {
             when (firstArg<Int>()) {
                 R.string.backup_error_restore_failed_rolled_back ->
                     "Restore failed at ${args.getOrNull(0)}: ${args.getOrNull(1)}. All applied changes were rolled back."
+                R.string.backup_module_skipped_warning ->
+                    "Skipped ${args.getOrNull(0)}: ${args.getOrNull(1)}"
                 else -> "text"
             }
         }
@@ -121,6 +124,34 @@ class RestoreExecutorTest {
             failure.error
         )
         coVerify(exactly = 0) { lyricsHandler.restore(any()) }
+    }
+
+    @Test
+    fun `execute keeps restoring when a module skips itself`() = runTest {
+        val plan = restorePlan(
+            selectedModules = setOf(BackupSection.LYRICS, BackupSection.PLAYBACK_HISTORY)
+        )
+
+        coEvery { lyricsHandler.snapshot() } returns "lyrics-snapshot"
+        coEvery { playbackHistoryHandler.snapshot() } returns "history-snapshot"
+        coEvery { backupReader.readModulePayload(backupUri, BackupSection.LYRICS.key) } returns
+            Result.success("lyrics-payload")
+        coEvery { backupReader.readModulePayload(backupUri, BackupSection.PLAYBACK_HISTORY.key) } returns
+            Result.success("history-payload")
+        every {
+            validationPipeline.validateModulePayload(any(), any(), any())
+        } returns BackupValidationResult.Valid
+        coEvery { lyricsHandler.restore("lyrics-payload") } throws
+            ModuleRestoreSkippedException("the lyrics payload is in a format this version cannot read")
+        coEvery { playbackHistoryHandler.restore("history-payload") } returns Unit
+
+        val result = executor.execute(backupUri, plan) { }
+
+        val success = assertInstanceOf(RestoreResult.Success::class.java, result)
+        assertEquals(1, success.warnings.size)
+        assertTrue(success.warnings.single().contains("Lyrics"))
+        coVerify(exactly = 1) { playbackHistoryHandler.restore("history-payload") }
+        coVerify(exactly = 0) { lyricsHandler.rollback(any()) }
     }
 
     @Test

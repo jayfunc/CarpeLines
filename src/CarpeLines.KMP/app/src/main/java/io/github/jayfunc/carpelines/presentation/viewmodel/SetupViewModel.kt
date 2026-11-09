@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.jayfunc.carpelines.R
 import io.github.jayfunc.carpelines.data.backup.BackupManager
+import io.github.jayfunc.carpelines.data.backup.format.BackupEncryptedException
+import io.github.jayfunc.carpelines.data.backup.format.BackupWrongPassphraseException
 import io.github.jayfunc.carpelines.data.backup.model.BackupTransferProgressUpdate
 import io.github.jayfunc.carpelines.data.backup.model.BackupOperationType
 import io.github.jayfunc.carpelines.data.backup.model.BackupSection
@@ -32,6 +34,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 import java.io.File
 
@@ -45,7 +48,10 @@ data class SetupUiState(
     val isInspectingBackup: Boolean = false,
     val isRestoringBackup: Boolean = false,
     val restorePlan: RestorePlan? = null,
-    val backupTransferProgress: BackupTransferProgressUpdate? = null
+    val backupTransferProgress: BackupTransferProgressUpdate? = null,
+    /** Set when the picked backup is encrypted and waits for its passphrase. */
+    val pendingEncryptedBackupUri: String? = null,
+    val wrongBackupPassword: Boolean = false
 ) {
     /**
      * Notification access is the only permission setup insists on: media access is optional and
@@ -244,7 +250,10 @@ class SetupViewModel @Inject constructor(
         }
     }
 
-    fun inspectBackupFile(uri: Uri) {
+    /**
+     * @param passphrase the password of an encrypted backup, supplied by the password prompt.
+     */
+    fun inspectBackupFile(uri: Uri, passphrase: String? = null) {
         if (_uiState.value.isInspectingBackup || _uiState.value.isRestoringBackup) return
         viewModelScope.launch {
             _uiState.update {
@@ -254,28 +263,56 @@ class SetupViewModel @Inject constructor(
                     backupTransferProgress = null
                 )
             }
-            val result = backupManager.inspectBackup(uri)
+            val result = backupManager.inspectBackup(uri, passphrase)
             result.fold(
                 onSuccess = { plan ->
                     _uiState.update {
                         it.copy(
                             isInspectingBackup = false,
-                            restorePlan = plan
+                            restorePlan = plan,
+                            pendingEncryptedBackupUri = null,
+                            wrongBackupPassword = false
                         )
                     }
                 },
                 onFailure = { error ->
-                    _uiState.update { it.copy(isInspectingBackup = false) }
-                    _events.send(
-                        SetupEvent.Message(
-                            context.getString(
-                                R.string.backup_invalid_format,
-                                error.localizedMessage ?: context.getString(R.string.error_unknown),
+                    // An encrypted backup is not an invalid file: keep the URI so the password
+                    // prompt can retry instead of reporting the backup as unreadable.
+                    when (error) {
+                        is BackupEncryptedException -> _uiState.update {
+                            it.copy(
+                                isInspectingBackup = false,
+                                pendingEncryptedBackupUri = uri.toString()
                             )
-                        )
-                    )
+                        }
+                        is BackupWrongPassphraseException -> _uiState.update {
+                            it.copy(
+                                isInspectingBackup = false,
+                                pendingEncryptedBackupUri = uri.toString(),
+                                wrongBackupPassword = true
+                            )
+                        }
+                        else -> {
+                            _uiState.update { it.copy(isInspectingBackup = false) }
+                            _events.send(
+                                SetupEvent.Message(
+                                    context.getString(
+                                        R.string.backup_invalid_format,
+                                        error.localizedMessage ?: context.getString(R.string.error_unknown),
+                                    )
+                                )
+                            )
+                        }
+                    }
                 }
             )
+        }
+    }
+
+    /** Called when the user dismisses the encrypted-backup password prompt. */
+    fun dismissEncryptedBackupPrompt() {
+        _uiState.update {
+            it.copy(pendingEncryptedBackupUri = null, wrongBackupPassword = false)
         }
     }
 
@@ -316,13 +353,26 @@ class SetupViewModel @Inject constructor(
                 )
             }
 
+            ensureLibraryScannedFor(plan)
+
             val result = backupManager.restore(uri, plan) { progress ->
                 _uiState.update { state -> state.copy(backupTransferProgress = progress) }
             }
 
             when (result) {
                 is RestoreResult.Success -> {
-                    _events.send(SetupEvent.RestoreCompleted(context.getString(R.string.restore_completed_success)))
+                    _events.send(
+                        SetupEvent.RestoreCompleted(
+                            if (result.warnings.isEmpty()) {
+                                context.getString(R.string.restore_completed_success)
+                            } else {
+                                context.getString(
+                                    R.string.data_restored_with_warnings,
+                                    result.warnings.joinToString("\n"),
+                                )
+                            }
+                        )
+                    )
                 }
                 is RestoreResult.PartialFailure -> {
                     val canFinishSetup = result.succeeded.isNotEmpty() || !result.rolledBack
@@ -358,10 +408,38 @@ class SetupViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Artist images are matched by artist name, so on a fresh install the library has to exist
+     * before that module can be applied. Setup restores before its own scan, so run (and wait for)
+     * the initial scan first.
+     *
+     * The wait is bounded: a huge library that is still scanning when the timeout hits lets the
+     * restore continue, and the affected module reports itself as skipped instead of silently
+     * restoring nothing.
+     */
+    private suspend fun ensureLibraryScannedFor(plan: RestorePlan) {
+        val needsLibrary = plan.selectedModules.any {
+            it == BackupSection.ARTIST_IMAGES
+        }
+        if (!needsLibrary) return
+        if (musicRepository.getSongCountFlow().first() > 0) return
+
+        syncManager.fullSync(deepScan = false)
+        withTimeoutOrNull(INITIAL_SCAN_WAIT_MS) {
+            syncManager.syncProgress.first { it.isRunning }
+            syncManager.syncProgress.first { !it.isRunning }
+        }
+    }
+
     private suspend fun completeSetup(syncAfter: Boolean) {
         userPreferencesRepository.setInitialSetupDone(true)
         if (syncAfter) {
             syncManager.fullSync(deepScan = false)
         }
+    }
+
+    private companion object {
+        /** How long a restore waits for the initial scan before applying what it can. */
+        const val INITIAL_SCAN_WAIT_MS = 120_000L
     }
 }

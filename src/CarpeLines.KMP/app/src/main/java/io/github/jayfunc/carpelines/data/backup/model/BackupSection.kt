@@ -7,8 +7,7 @@ enum class BackupSection(
     val key: String,
     @StringRes val labelRes: Int,
     @StringRes val descriptionRes: Int,
-    val iconRes: Int,
-    val sinceVersion: Int = 1
+    val iconRes: Int
 ) {
     GLOBAL_SETTINGS(
         key = "global_settings",
@@ -38,8 +37,7 @@ enum class BackupSection(
         key = "artist_images",
         labelRes = R.string.backup_module_artist_images_label,
         descriptionRes = R.string.backup_module_artist_images_description,
-        iconRes = R.drawable.rounded_person_24,
-        sinceVersion = 3
+        iconRes = R.drawable.rounded_person_24
     );
 
     companion object {

@@ -1528,6 +1528,10 @@ interface MusicDao {
     @Query("SELECT id, title, artist_name, album_name, duration FROM songs WHERE source_type = 0")
     suspend fun getAllLocalSongSummaries(): List<SongSummary>
 
+    /** Local song ids with their file path, for path-based matching on restore. */
+    @Query("SELECT id, file_path FROM songs WHERE source_type = 0")
+    suspend fun getAllLocalSongPaths(): List<SongPathRow>
+
     @Query("SELECT album_art_uri_string FROM songs WHERE id=:id")
     suspend fun getAlbumArtUriById(id: Long) : String?
 

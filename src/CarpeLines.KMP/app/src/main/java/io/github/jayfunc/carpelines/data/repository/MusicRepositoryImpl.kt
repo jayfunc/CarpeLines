@@ -20,11 +20,8 @@ import javax.inject.Singleton
 import androidx.core.net.toUri
 import io.github.jayfunc.carpelines.data.database.GenreSongCountRow
 import io.github.jayfunc.carpelines.data.database.MusicDao
-import io.github.jayfunc.carpelines.data.database.SearchHistoryDao
-import io.github.jayfunc.carpelines.data.database.SearchHistoryEntity
 import io.github.jayfunc.carpelines.data.database.toAlbum
 import io.github.jayfunc.carpelines.data.database.toArtist
-import io.github.jayfunc.carpelines.data.database.toSearchHistoryItem
 import io.github.jayfunc.carpelines.data.database.toSong
 import io.github.jayfunc.carpelines.data.model.Album
 import io.github.jayfunc.carpelines.data.model.Artist
@@ -33,7 +30,6 @@ import io.github.jayfunc.carpelines.data.model.Lyrics
 import io.github.jayfunc.carpelines.data.model.LyricsSourcePreference
 import io.github.jayfunc.carpelines.data.model.MusicFolder
 import io.github.jayfunc.carpelines.data.model.SearchFilterType
-import io.github.jayfunc.carpelines.data.model.SearchHistoryItem
 import io.github.jayfunc.carpelines.data.model.SearchResultItem
 import io.github.jayfunc.carpelines.data.model.SortOption
 import io.github.jayfunc.carpelines.data.model.FolderSource
@@ -81,7 +77,6 @@ import timber.log.Timber
 class MusicRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val userPreferencesRepository: UserPreferencesRepository,
-    private val searchHistoryDao: SearchHistoryDao,
     private val musicDao: MusicDao,
     private val lyricsRepository: LyricsRepository,
     private val songRepository: SongRepository,
@@ -565,31 +560,6 @@ class MusicRepositoryImpl @Inject constructor(
                 SearchFilterType.ARTISTS -> searchArtists(query).map { artists -> artists.map { SearchResultItem.ArtistItem(it) } }
             }
         }.flowOn(Dispatchers.Default)
-    }
-
-    override suspend fun addSearchHistoryItem(query: String) {
-        withContext(Dispatchers.IO) {
-            searchHistoryDao.deleteByQuery(query)
-            searchHistoryDao.insert(SearchHistoryEntity(query = query, timestamp = System.currentTimeMillis()))
-        }
-    }
-
-    override suspend fun getRecentSearchHistory(limit: Int): List<SearchHistoryItem> {
-        return withContext(Dispatchers.IO) {
-            searchHistoryDao.getRecentSearches(limit).map { it.toSearchHistoryItem() }
-        }
-    }
-
-    override suspend fun deleteSearchHistoryItemByQuery(query: String) {
-        withContext(Dispatchers.IO) {
-            searchHistoryDao.deleteByQuery(query)
-        }
-    }
-
-    override suspend fun clearSearchHistory() {
-        withContext(Dispatchers.IO) {
-            searchHistoryDao.clearAll()
-        }
     }
 
     override fun getMusicByGenre(genreId: String): Flow<List<Song>> {

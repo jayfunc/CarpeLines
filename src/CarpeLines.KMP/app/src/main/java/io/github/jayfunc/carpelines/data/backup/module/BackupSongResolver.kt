@@ -17,9 +17,8 @@ data class BackupSongMetadata(
 
 /**
  * Song ids are MediaStore ids: they differ between devices and can even be reused for another
- * song after a rescan. Sections that store song ids (playlists, transition rules, bookmarks)
- * export [BackupSongMetadata] next to them, and resolve them against the current library on
- * restore.
+ * song after a rescan. Sections that store song ids export [BackupSongMetadata] (or the file
+ * path) next to them, and resolve them against the current library on restore.
  */
 @Singleton
 class BackupSongResolver @Inject constructor(private val musicDao: MusicDao) {
@@ -47,7 +46,10 @@ class BackupSongResolver @Inject constructor(private val musicDao: MusicDao) {
     }
 
     /** A snapshot of the current library to resolve many ids against. */
-    suspend fun library(): Library = Library(musicDao.getAllLocalSongSummaries())
+    suspend fun library(): Library = Library(
+        summaries = musicDao.getAllLocalSongSummaries(),
+        pathsBySongId = musicDao.getAllLocalSongPaths().associate { it.id.toString() to it.filePath }
+    )
 
     /**
      * Whether two titles, or two artists, are the same as far as matching goes: case and outer
@@ -55,11 +57,26 @@ class BackupSongResolver @Inject constructor(private val musicDao: MusicDao) {
      */
     fun sameTag(a: String, b: String): Boolean = normalize(a) == normalize(b)
 
-    class Library internal constructor(summaries: List<SongSummary>) {
+    class Library internal constructor(
+        summaries: List<SongSummary>,
+        private val pathsBySongId: Map<String, String> = emptyMap()
+    ) {
         private val byId = summaries.associateBy { it.id.toString() }
         private val byTitleArtist: Map<String, List<SongSummary>> =
             summaries.groupBy { matchKey(it.title, it.artistName) }
         private val byTitle: Map<String, List<SongSummary>> = summaries.groupBy { normalize(it.title) }
+
+        /** Song ids grouped by every trailing-path key a backup path can be matched on. */
+        private val byPath: Map<String, List<String>> = run {
+            val index = mutableMapOf<String, MutableList<String>>()
+            pathsBySongId.forEach { (songId, path) ->
+                pathKeys(path).forEach { key -> index.getOrPut(key) { mutableListOf() }.add(songId) }
+            }
+            index
+        }
+
+        /** True when the library holds no local song, e.g. before the first scan finishes. */
+        val isEmpty: Boolean get() = byId.isEmpty()
 
         /**
          * The ids of the songs titled [title], whatever their artist. For callers that only know
@@ -94,6 +111,30 @@ class BackupSongResolver @Inject constructor(private val musicDao: MusicDao) {
             return durationMatch.singleOrNull()?.id?.toString()
         }
 
+        /**
+         * The current id of the song a backup placed at [backupPath], or null without a confident
+         * match.
+         *
+         * The path is what survives a reinstall: ids do not, and user-edited tags are exactly the
+         * values the file's own tags do not carry. Longer trailing segments ("Artist/Album/
+         * track.flac") are tried first so a shared file name alone never decides; [durationMs]
+         * breaks a tie between equal paths, and anything still ambiguous is left unmatched.
+         */
+        fun resolveByPath(backupPath: String, durationMs: Long): String? {
+            pathKeys(backupPath).forEach { key ->
+                val candidates = byPath[key]
+                if (candidates.isNullOrEmpty()) return@forEach
+                if (candidates.size == 1) return candidates[0]
+
+                val sameDuration = candidates.filter { songId ->
+                    val song = byId[songId] ?: return@filter false
+                    kotlin.math.abs(song.duration - durationMs) <= DURATION_TOLERANCE_MS
+                }
+                sameDuration.singleOrNull()?.let { return it }
+            }
+            return null
+        }
+
         private fun metadataMatches(meta: BackupSongMetadata, song: SongSummary): Boolean =
             normalize(meta.title) == normalize(song.title) && normalize(meta.artist) == normalize(song.artistName)
     }
@@ -101,7 +142,22 @@ class BackupSongResolver @Inject constructor(private val musicDao: MusicDao) {
     private companion object {
         const val DURATION_TOLERANCE_MS = 2000L
         const val SQLITE_CHUNK_SIZE = 500
+
+        /** Deepest matching key first: the last three path segments, then two, then the file name. */
+        private const val MAX_PATH_SEGMENTS = 3
+
         fun normalize(text: String): String = text.trim().lowercase()
         fun matchKey(title: String, artist: String) = "${normalize(title)}|${normalize(artist)}"
+
+        fun pathKeys(path: String): List<String> {
+            val segments = path.replace('\\', '/').trim('/')
+                .lowercase()
+                .split('/')
+                .filter { it.isNotEmpty() }
+            if (segments.isEmpty()) return emptyList()
+            return (minOf(MAX_PATH_SEGMENTS, segments.size) downTo 1).map { depth ->
+                segments.takeLast(depth).joinToString("/")
+            }
+        }
     }
 }

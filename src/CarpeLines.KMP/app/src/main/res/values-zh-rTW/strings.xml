@@ -84,7 +84,12 @@
 <string name="backup_module_playback_history_label">播放歷史</string>
 <string name="backup_module_playback_history_description">每次播放的時間與時長記錄，用於最近播放和統計</string>
 <string name="backup_module_artist_images_label">歌手頭像</string>
-<string name="backup_module_artist_images_description">統計頁顯示的歌手頭像位址</string>
+<string name="backup_module_artist_images_description">歌手頭像連結，以及你上傳的自訂頭像</string>
+<string name="backup_module_skipped_warning">已略過%1$s：%2$s</string>
+<string name="backup_error_export_module_too_large">%1$s 已達 %2$dMB，超過單一模組 %3$dMB 上限。請取消勾選後重試</string>
+<string name="backup_error_export_too_large">備份總大小將達 %1$dMB，超過 %2$dMB 上限。請減少勾選的模組後重試</string>
+<string name="backup_plan_warning_legacy_schema">這是舊版備份（v%1$d），部分模組可能無法使用</string>
+<string name="backup_plan_warning_library_not_scanned">請先掃描音樂庫：歌手頭像需要與音樂庫比對</string>
 <string name="backup_progress_starting_backup_task">開始備份任務</string>
 <string name="restore_completed_success">備份還原成功</string>
 <string name="restore_completed_partial_issues">還原完成，但存在部分未解決問題</string>
@@ -93,6 +98,7 @@
 <string name="data_exported_successfully">資料匯出成功</string>
 <string name="export_failed_format">匯出失敗：%1$s</string>
 <string name="data_restored_successfully">資料還原成功</string>
+<string name="data_restored_with_warnings">資料已還原，但部分模組被略過：\n%1$s</string>
 <string name="restore_partial_unresolved_format">還原完成，部分項目處理失敗：%1$s</string>
 <string name="dev_test_crash_message">開發者選項觸發測試當機，用於當機回報功能測試，屬於預期行為</string>
 

@@ -146,5 +146,11 @@
     <string name="backup_module_playback_history_label">Wiedergabeverlauf</string>
     <string name="backup_module_playback_history_description">Zeit und Dauer jeder Hörsitzung, verwendet für Zuletzt gehört und Statistiken</string>
     <string name="backup_module_artist_images_label">Künstlerbilder</string>
-    <string name="backup_module_artist_images_description">Künstlerbild-URLs auf der Statistikseite</string>
+    <string name="backup_module_artist_images_description">Künstlerbild-Links und die von dir hochgeladenen eigenen Bilder</string>
+    <string name="backup_module_skipped_warning">%1$s übersprungen: %2$s</string>
+    <string name="backup_error_export_module_too_large">%1$s ist %2$dMB groß und überschreitet das Limit von %3$dMB pro Modul. Abwählen und erneut versuchen</string>
+    <string name="backup_error_export_too_large">Das Backup wäre %1$dMB groß und überschreitet das Limit von %2$dMB. Weniger Module auswählen</string>
+    <string name="backup_plan_warning_legacy_schema">Dies ist ein älteres Backup (v%1$d). Einige Module sind möglicherweise nicht verfügbar</string>
+    <string name="backup_plan_warning_library_not_scanned">Bitte zuerst die Mediathek scannen: Künstlerbilder werden damit abgeglichen</string>
+    <string name="data_restored_with_warnings">Daten wiederhergestellt, aber einige Module wurden übersprungen:\n%1$s</string>
 </resources>

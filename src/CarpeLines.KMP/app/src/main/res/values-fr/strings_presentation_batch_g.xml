@@ -7,6 +7,7 @@
     <string name="presentation_batch_g_backup_details">Détails de la sauvegarde</string>
     <string name="presentation_batch_g_backup_device">Appareil</string>
     <string name="presentation_batch_g_backup_entries_will_replace">%1$d entrées · Remplaceront les données actuelles</string>
+    <string name="presentation_batch_g_backup_entries_will_merge">%1$d entrées · Seront fusionnées avec les données actuelles</string>
     <string name="presentation_batch_g_backup_modules_selected">%1$d sur %2$d modules sélectionnés</string>
     <string name="presentation_batch_g_backup_restore_modules">Restaurer les modules</string>
     <string name="presentation_batch_g_backup_restore_selected">Restaurer la sélection</string>
