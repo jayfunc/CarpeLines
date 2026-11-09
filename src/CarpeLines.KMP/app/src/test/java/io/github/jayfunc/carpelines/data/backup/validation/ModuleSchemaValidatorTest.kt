@@ -3,6 +3,7 @@ package io.github.jayfunc.carpelines.data.backup.validation
 import io.github.jayfunc.carpelines.data.backup.model.BackupSection
 import io.github.jayfunc.carpelines.data.backup.model.BackupValidationResult
 import io.github.jayfunc.carpelines.data.backup.model.Severity
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
@@ -113,6 +114,22 @@ class ModuleSchemaValidatorTest {
         )
         assertTrue(history is BackupValidationResult.Invalid)
         assertTrue((history as BackupValidationResult.Invalid).warnings.any { it.code == "INVALID_DURATION" })
+    }
+
+    @Test
+    fun `local music folders with valid paths pass validation`() {
+        val payload = """["/storage/emulated/0/Music", "/storage/emulated/0/Download/Music"]"""
+        val result = validator.validate(BackupSection.LOCAL_MUSIC_FOLDERS, payload)
+        assertTrue(result.isValid())
+    }
+
+    @Test
+    fun `local music folders with invalid entries emit warnings`() {
+        val payload = """["/storage/emulated/0/Music", 42, "  ", null]"""
+        val result = validator.validate(BackupSection.LOCAL_MUSIC_FOLDERS, payload)
+        assertTrue(result is BackupValidationResult.Invalid)
+        val warnings = (result as BackupValidationResult.Invalid).warnings
+        assertEquals(3, warnings.count { it.code == "INVALID_LOCAL_MUSIC_FOLDER" })
     }
 
     @Test

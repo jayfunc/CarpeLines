@@ -145,6 +145,8 @@
     <string name="backup_module_engagement_stats_description">Число прослушиваний и общее время прослушивания по трекам</string>
     <string name="backup_module_playback_history_label">История воспроизведения</string>
     <string name="backup_module_playback_history_description">Время и длительность каждого прослушивания для раздела «Недавно прослушано» и статистики</string>
+    <string name="backup_module_local_music_folders_label">Папки локальной музыки</string>
+    <string name="backup_module_local_music_folders_description">Папки, импортированные в настройках локальной музыки, для глубокого поиска текстов и обложек</string>
     <string name="backup_module_skipped_warning">%1$s пропущен: %2$s</string>
     <string name="backup_error_export_module_too_large">%1$s занимает %2$d МБ — больше предела %3$d МБ на модуль. Снимите выбор и повторите</string>
     <string name="backup_error_export_too_large">Резервная копия займёт %1$d МБ — больше предела %2$d МБ. Снимите выбор с части модулей</string>

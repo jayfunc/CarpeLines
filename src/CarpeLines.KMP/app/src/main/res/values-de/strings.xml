@@ -145,6 +145,8 @@
     <string name="backup_module_engagement_stats_description">Wiedergabezahl und gesamte Hörzeit pro Titel</string>
     <string name="backup_module_playback_history_label">Wiedergabeverlauf</string>
     <string name="backup_module_playback_history_description">Zeit und Dauer jeder Hörsitzung, verwendet für Zuletzt gehört und Statistiken</string>
+    <string name="backup_module_local_music_folders_label">Ordner für lokale Musik</string>
+    <string name="backup_module_local_music_folders_description">In den Einstellungen für lokale Musik importierte Ordner für die tiefe Suche nach Lyrics und Covern</string>
     <string name="backup_module_skipped_warning">%1$s übersprungen: %2$s</string>
     <string name="backup_error_export_module_too_large">%1$s ist %2$dMB groß und überschreitet das Limit von %3$dMB pro Modul. Abwählen und erneut versuchen</string>
     <string name="backup_error_export_too_large">Das Backup wäre %1$dMB groß und überschreitet das Limit von %2$dMB. Weniger Module auswählen</string>

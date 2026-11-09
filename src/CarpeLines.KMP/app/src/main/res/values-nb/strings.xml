@@ -145,6 +145,8 @@
     <string name="backup_module_engagement_stats_description">Avspillinger og total lyttetid per sang</string>
     <string name="backup_module_playback_history_label">Avspillingshistorikk</string>
     <string name="backup_module_playback_history_description">Tid og varighet for hver lytteseanse, brukt til Nylig spilt og statistikk</string>
+    <string name="backup_module_local_music_folders_label">Lokale musikkmapper</string>
+    <string name="backup_module_local_music_folders_description">Mapper importert i innstillingene for lokal musikk for dyp søk etter tekst og omslag</string>
     <string name="backup_module_skipped_warning">%1$s hoppet over: %2$s</string>
     <string name="backup_error_export_module_too_large">%1$s er %2$dMB, over grensen på %3$dMB per modul. Fjern valget og prøv igjen</string>
     <string name="backup_error_export_too_large">Sikkerhetskopien vil bli %1$dMB, over grensen på %2$dMB. Fjern valget på noen moduler</string>

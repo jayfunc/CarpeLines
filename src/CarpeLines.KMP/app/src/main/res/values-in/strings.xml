@@ -145,6 +145,8 @@
     <string name="backup_module_engagement_stats_description">Jumlah pemutaran dan total waktu mendengarkan per lagu</string>
     <string name="backup_module_playback_history_label">Riwayat pemutaran</string>
     <string name="backup_module_playback_history_description">Waktu dan durasi setiap sesi mendengarkan, digunakan untuk Baru Diputar dan statistik</string>
+    <string name="backup_module_local_music_folders_label">Folder Musik Lokal</string>
+    <string name="backup_module_local_music_folders_description">Folder yang diimpor di pengaturan Musik Lokal untuk pencarian lirik dan sampul secara mendalam</string>
     <string name="backup_module_skipped_warning">%1$s dilewati: %2$s</string>
     <string name="backup_error_export_module_too_large">%1$s berukuran %2$dMB, melebihi batas %3$dMB per modul. Hapus pilihan lalu coba lagi</string>
     <string name="backup_error_export_too_large">Cadangan akan berukuran %1$dMB, melebihi batas %2$dMB. Kurangi modul yang dipilih</string>

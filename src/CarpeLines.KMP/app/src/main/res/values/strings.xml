@@ -85,6 +85,8 @@
     <string name="backup_module_engagement_stats_description">Play count and total listening time per song</string>
     <string name="backup_module_playback_history_label">Playback History</string>
     <string name="backup_module_playback_history_description">Time and duration of each listening session, used for Recently Played and stats</string>
+    <string name="backup_module_local_music_folders_label">Local Music Folders</string>
+    <string name="backup_module_local_music_folders_description">Folders imported in Local Music settings for deep lyric and artwork search</string>
     <string name="backup_module_skipped_warning">%1$s skipped: %2$s</string>
     <string name="backup_error_export_module_too_large">%1$s is %2$dMB, over the %3$dMB limit for one module. Deselect it and try again</string>
     <string name="backup_error_export_too_large">The backup would be %1$dMB, over the %2$dMB limit. Deselect some modules and try again</string>

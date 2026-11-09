@@ -15,6 +15,12 @@ enum class BackupSection(
         descriptionRes = R.string.backup_module_global_settings_description,
         iconRes = R.drawable.rounded_settings_24
     ),
+    LOCAL_MUSIC_FOLDERS(
+        key = "local_music_folders",
+        labelRes = R.string.backup_module_local_music_folders_label,
+        descriptionRes = R.string.backup_module_local_music_folders_description,
+        iconRes = R.drawable.rounded_folder_24
+    ),
     LYRICS(
         key = "lyrics",
         labelRes = R.string.backup_module_lyrics_label,

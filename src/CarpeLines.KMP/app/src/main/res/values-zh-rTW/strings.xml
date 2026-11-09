@@ -83,6 +83,8 @@
 <string name="backup_module_engagement_stats_description">每首歌的播放次數與累計收聽時長</string>
 <string name="backup_module_playback_history_label">播放歷史</string>
 <string name="backup_module_playback_history_description">每次播放的時間與時長記錄，用於最近播放和統計</string>
+<string name="backup_module_local_music_folders_label">本機音樂資料夾</string>
+<string name="backup_module_local_music_folders_description">在「本機音樂」設定中匯入、用於深度搜尋歌詞與封面的資料夾</string>
 <string name="backup_module_skipped_warning">已略過%1$s：%2$s</string>
 <string name="backup_error_export_module_too_large">%1$s 已達 %2$dMB，超過單一模組 %3$dMB 上限。請取消勾選後重試</string>
 <string name="backup_error_export_too_large">備份總大小將達 %1$dMB，超過 %2$dMB 上限。請減少勾選的模組後重試</string>

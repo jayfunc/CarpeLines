@@ -145,6 +145,8 @@
     <string name="backup_module_engagement_stats_description">Nombre de lectures et durée totale d\'écoute par morceau</string>
     <string name="backup_module_playback_history_label">Historique de lecture</string>
     <string name="backup_module_playback_history_description">Heure et durée de chaque écoute, utilisé pour Récemment écouté et les statistiques</string>
+    <string name="backup_module_local_music_folders_label">Dossiers de musique locale</string>
+    <string name="backup_module_local_music_folders_description">Dossiers importés dans les réglages de musique locale pour une recherche approfondie des paroles et des pochettes</string>
     <string name="backup_module_skipped_warning">%1$s ignoré : %2$s</string>
     <string name="backup_error_export_module_too_large">%1$s fait %2$d Mo, au-delà de la limite de %3$d Mo par module. Désélectionnez-le et réessayez</string>
     <string name="backup_error_export_too_large">La sauvegarde ferait %1$d Mo, au-delà de la limite de %2$d Mo. Désélectionnez des modules et réessayez</string>

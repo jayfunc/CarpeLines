@@ -85,6 +85,8 @@
     <string name="backup_module_engagement_stats_description">曲ごとの再生回数と合計再生時間</string>
     <string name="backup_module_playback_history_label">再生履歴</string>
     <string name="backup_module_playback_history_description">各再生セッションの時刻と時間。最近再生した曲と統計に使います</string>
+    <string name="backup_module_local_music_folders_label">ローカル音楽フォルダー</string>
+    <string name="backup_module_local_music_folders_description">ローカル音楽の設定でインポートした、歌詞とアートワークを詳しく検索するフォルダー</string>
     <string name="backup_module_skipped_warning">%1$s をスキップしました：%2$s</string>
     <string name="backup_error_export_module_too_large">%1$s は %2$dMB で、1 モジュールの上限 %3$dMB を超えています。選択を解除して再試行してください</string>
     <string name="backup_error_export_too_large">バックアップは %1$dMB となり、上限 %2$dMB を超えます。選択するモジュールを減らして再試行してください</string>

@@ -7,6 +7,7 @@ import io.github.jayfunc.carpelines.data.backup.model.BackupSection
 import io.github.jayfunc.carpelines.data.backup.module.BackupModuleHandler
 import io.github.jayfunc.carpelines.data.backup.module.EngagementStatsModuleHandler
 import io.github.jayfunc.carpelines.data.backup.module.GlobalSettingsModuleHandler
+import io.github.jayfunc.carpelines.data.backup.module.LocalMusicFoldersModuleHandler
 import io.github.jayfunc.carpelines.data.backup.module.LyricsModuleHandler
 import io.github.jayfunc.carpelines.data.backup.module.PlaybackHistoryModuleHandler
 import dagger.Module
@@ -39,12 +40,14 @@ object BackupModule {
     @Singleton
     fun provideModuleHandlers(
         globalSettingsHandler: GlobalSettingsModuleHandler,
+        localMusicFoldersHandler: LocalMusicFoldersModuleHandler,
         lyricsHandler: LyricsModuleHandler,
         engagementStatsHandler: EngagementStatsModuleHandler,
         playbackHistoryHandler: PlaybackHistoryModuleHandler
     ): Map<BackupSection, BackupModuleHandler> {
         return mapOf(
             BackupSection.GLOBAL_SETTINGS to globalSettingsHandler,
+            BackupSection.LOCAL_MUSIC_FOLDERS to localMusicFoldersHandler,
             BackupSection.LYRICS to lyricsHandler,
             BackupSection.ENGAGEMENT_STATS to engagementStatsHandler,
             BackupSection.PLAYBACK_HISTORY to playbackHistoryHandler

@@ -145,6 +145,8 @@
     <string name="backup_module_engagement_stats_description">Reproducciones y tiempo total de escucha por canción</string>
     <string name="backup_module_playback_history_label">Historial de reproducción</string>
     <string name="backup_module_playback_history_description">Hora y duración de cada sesión de escucha, usado para Reproducido recientemente y estadísticas</string>
+    <string name="backup_module_local_music_folders_label">Carpetas de música local</string>
+    <string name="backup_module_local_music_folders_description">Carpetas importadas en los ajustes de música local para buscar letras y portadas en profundidad</string>
     <string name="backup_module_skipped_warning">%1$s omitido: %2$s</string>
     <string name="backup_error_export_module_too_large">%1$s ocupa %2$dMB y supera el límite de %3$dMB por módulo. Desmárcalo e inténtalo de nuevo</string>
     <string name="backup_error_export_too_large">La copia ocuparía %1$dMB y supera el límite de %2$dMB. Desmarca algunos módulos e inténtalo de nuevo</string>

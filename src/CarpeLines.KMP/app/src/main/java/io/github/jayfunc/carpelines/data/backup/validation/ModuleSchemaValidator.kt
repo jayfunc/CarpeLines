@@ -51,6 +51,7 @@ class ModuleSchemaValidator @Inject constructor() {
             BackupSection.LYRICS -> validateLyrics(array, errors)
             BackupSection.ENGAGEMENT_STATS -> validateEngagementStats(array, errors)
             BackupSection.PLAYBACK_HISTORY -> validatePlaybackHistory(array, errors)
+            BackupSection.LOCAL_MUSIC_FOLDERS -> validateLocalMusicFolders(array, errors)
             BackupSection.GLOBAL_SETTINGS -> validatePreferenceEntries(jsonElement, section.key, errors)
         }
 
@@ -299,6 +300,25 @@ class ModuleSchemaValidator @Inject constructor() {
                         "INVALID_TIMESTAMP",
                         "PlaybackHistory[$i]: timestamp is not numeric",
                         module = "playback_history",
+                        severity = Severity.WARNING
+                    )
+                )
+            }
+        }
+    }
+
+    private fun validateLocalMusicFolders(array: com.google.gson.JsonArray, errors: MutableList<ValidationError>) {
+        array.forEachIndexed { i, element ->
+            val path = element
+                .takeIf { it.isJsonPrimitive && it.asJsonPrimitive.isString }
+                ?.asString
+                ?.takeIf { it.isNotBlank() }
+            if (path == null) {
+                errors.add(
+                    ValidationError(
+                        "INVALID_LOCAL_MUSIC_FOLDER",
+                        "LocalMusicFolders[$i]: invalid folder path",
+                        module = "local_music_folders",
                         severity = Severity.WARNING
                     )
                 )

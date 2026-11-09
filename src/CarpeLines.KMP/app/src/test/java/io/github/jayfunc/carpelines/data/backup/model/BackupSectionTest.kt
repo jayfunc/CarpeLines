@@ -23,6 +23,7 @@ class BackupSectionTest {
     @Test
     fun `fromKey returns correct section for known keys`() {
         assertEquals(BackupSection.GLOBAL_SETTINGS, BackupSection.fromKey("global_settings"))
+        assertEquals(BackupSection.LOCAL_MUSIC_FOLDERS, BackupSection.fromKey("local_music_folders"))
         assertEquals(BackupSection.LYRICS, BackupSection.fromKey("lyrics"))
         assertEquals(BackupSection.ENGAGEMENT_STATS, BackupSection.fromKey("engagement_stats"))
         assertEquals(BackupSection.PLAYBACK_HISTORY, BackupSection.fromKey("playback_history"))
@@ -40,8 +41,8 @@ class BackupSectionTest {
     }
 
     @Test
-    fun `there are exactly 4 backup sections`() {
-        assertEquals(4, BackupSection.entries.size)
+    fun `there are exactly 5 backup sections`() {
+        assertEquals(5, BackupSection.entries.size)
     }
 
     @Test

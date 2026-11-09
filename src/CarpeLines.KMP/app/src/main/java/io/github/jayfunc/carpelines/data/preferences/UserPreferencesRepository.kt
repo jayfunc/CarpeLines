@@ -104,7 +104,8 @@ constructor(
         PreferencesKeys.UPDATE_LAST_NOTIFIED_VERSION.name,
         // Absolute storage paths of *this* device. Restoring another device's values would
         // either hide the local library behind its block rules or leave the imported folders
-        // pointing at directories that do not exist here.
+        // pointing at directories that do not exist here. The imported folders have their own
+        // backup module, so they stay out of the global settings payload.
         PreferencesKeys.ALLOWED_DIRECTORIES.name,
         PreferencesKeys.BLOCKED_DIRECTORIES.name,
         PreferencesKeys.LOCAL_LIBRARY_FOLDERS.name

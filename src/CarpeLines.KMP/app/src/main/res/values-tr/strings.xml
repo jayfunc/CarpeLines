@@ -145,6 +145,8 @@
     <string name="backup_module_engagement_stats_description">Şarkı başına çalma sayısı ve toplam dinleme süresi</string>
     <string name="backup_module_playback_history_label">Oynatma geçmişi</string>
     <string name="backup_module_playback_history_description">Son Çalınanlar ve istatistikler için kullanılan her dinleme oturumunun zamanı ve süresi</string>
+    <string name="backup_module_local_music_folders_label">Yerel müzik klasörleri</string>
+    <string name="backup_module_local_music_folders_description">Yerel müzik ayarlarında içe aktarılan ve metin ile kapaklar için derin aramada kullanılan klasörler</string>
     <string name="backup_module_skipped_warning">%1$s atlandı: %2$s</string>
     <string name="backup_error_export_module_too_large">%1$s %2$dMB boyutunda, modül başına %3$dMB sınırını aşıyor. Seçimi kaldırıp tekrar deneyin</string>
     <string name="backup_error_export_too_large">Yedek %1$dMB olacak, %2$dMB sınırını aşıyor. Bazı modüllerin seçimini kaldırıp tekrar deneyin</string>
