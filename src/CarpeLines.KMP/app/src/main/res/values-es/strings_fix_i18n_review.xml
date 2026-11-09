@@ -11,9 +11,4 @@
     <string name="collage_pattern_pixel_cookie">Galleta de píxeles</string>
     <string name="collage_pattern_heart_garden">Jardín de corazones</string>
 
-    <plurals name="cloud_download_selected_started">
-        <item quantity="one">Preparando %1$d canción de la nube para escuchar sin conexión</item>
-        <item quantity="many">Preparando %1$d canciones de la nube para escuchar sin conexión</item>
-        <item quantity="other">Preparando %1$d canciones de la nube para escuchar sin conexión</item>
-    </plurals>
 </resources>

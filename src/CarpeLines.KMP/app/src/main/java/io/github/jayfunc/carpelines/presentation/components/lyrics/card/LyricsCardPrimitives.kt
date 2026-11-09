@@ -317,16 +317,3 @@ internal fun formatCardDateLong(): String =
 internal fun formatCardTimeShort(): String =
     SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
 
-internal fun formatCardTimeWithSeconds(): String =
-    SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
-
-/** XAML FontWeight names used by the templates, mapped to Compose weights. */
-internal val XamlBlack = FontWeight.Black
-internal val XamlHeavy = FontWeight.Black
-internal val XamlBold = FontWeight.Bold
-internal val XamlSemiBold = FontWeight.SemiBold
-internal val XamlNormal = FontWeight.Normal
-internal val XamlLight = FontWeight.Light
-
-@Immutable
-internal data class CardPalette(val accent: Color, val onAccent: Color = Color.White)

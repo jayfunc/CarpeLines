@@ -208,48 +208,6 @@ private fun isReservedCustomMetadataKey(key: String): Boolean {
     return compactKey in RESERVED_CUSTOM_METADATA_COMPACT_KEYS
 }
 
-internal fun buildCustomMetadataChanges(
-    metadataWasRead: Boolean,
-    originalRating: Int?,
-    editedRating: Int?,
-    originalFields: List<CustomMetadataField>,
-    editedFields: List<CustomMetadataField>
-): Result<CustomMetadataChanges> = runCatching {
-    val ratingUpdate = when {
-        !metadataWasRead && editedRating == null -> MetadataValueUpdate.Keep
-        editedRating == originalRating -> MetadataValueUpdate.Keep
-        editedRating == null -> MetadataValueUpdate.Clear
-        else -> MetadataValueUpdate.Set(editedRating)
-    }
-
-    val normalizedOriginal = originalFields.associate { field ->
-        normalizeCustomMetadataKey(field.key) to field.value.trim()
-    }
-    val normalizedEdited = linkedMapOf<String, String>()
-    editedFields.forEach { field ->
-        val key = normalizeCustomMetadataKey(field.key)
-        if (normalizedEdited.containsKey(key)) {
-            throw IllegalArgumentException("Duplicate custom metadata field: $key")
-        }
-        normalizedEdited[key] = field.value.trim()
-    }
-
-    val updates = buildList {
-        normalizedEdited.forEach { (key, value) ->
-            if (normalizedOriginal[key] != value) {
-                add(CustomMetadataFieldUpdate(key, value))
-            }
-        }
-        normalizedOriginal.keys
-            .filterNot(normalizedEdited::containsKey)
-            .forEach { removedKey -> add(CustomMetadataFieldUpdate(removedKey, null)) }
-    }
-
-    validateCustomMetadataChanges(
-        CustomMetadataChanges(rating = ratingUpdate, fields = updates)
-    ).getOrThrow()
-}
-
 internal fun extractEditableCustomMetadataFields(
     propertyMap: Map<String, Array<String>>
 ): List<CustomMetadataField> = propertyMap.mapNotNull { (rawKey, values) ->

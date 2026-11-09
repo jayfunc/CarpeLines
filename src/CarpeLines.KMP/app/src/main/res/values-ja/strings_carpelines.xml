@@ -2,7 +2,6 @@
 <resources>
     <string name="tab_stats">統計</string>
     <string name="home_hero_title" translatable="false">CarpeLines</string>
-    <string name="home_hero_subtitle">スマホで再生中の曲の歌詞を、一語ずつ表示</string>
     <string name="home_now_playing_eyebrow">再生中</string>
     <string name="home_idle_title">再生中の曲はありません</string>
     <string name="home_idle_subtitle">どのプレーヤーにも対応</string>
@@ -11,6 +10,5 @@
     <string name="home_paused_in_app">%1$s · 一時停止中</string>
     <string name="home_played_players_title">使用したプレーヤー</string>
     <string name="home_played_players_count">%1$d 曲</string>
-    <string name="home_played_players_empty">まだ再生履歴はありません。どのプレーヤーでも再生すると、そのアイコンがここに表示されます。</string>
     <string name="lyrics_not_found_local_hint">歌詞が見つかりません</string>
 </resources>

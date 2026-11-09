@@ -11,8 +11,4 @@
     <string name="collage_pattern_pixel_cookie">Pixelkeks</string>
     <string name="collage_pattern_heart_garden">Herzgarten</string>
 
-    <plurals name="cloud_download_selected_started">
-        <item quantity="one">%1$d Cloud-Song wird für die Offline-Wiedergabe vorbereitet</item>
-        <item quantity="other">%1$d Cloud-Songs werden für die Offline-Wiedergabe vorbereitet</item>
-    </plurals>
 </resources>

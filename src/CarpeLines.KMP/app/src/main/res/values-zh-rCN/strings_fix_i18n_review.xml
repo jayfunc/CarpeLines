@@ -11,7 +11,4 @@
     <string name="collage_pattern_pixel_cookie">像素饼干</string>
     <string name="collage_pattern_heart_garden">爱心花园</string>
 
-    <plurals name="cloud_download_selected_started">
-        <item quantity="other">正在准备 %1$d 首云端歌曲以供离线播放</item>
-    </plurals>
 </resources>

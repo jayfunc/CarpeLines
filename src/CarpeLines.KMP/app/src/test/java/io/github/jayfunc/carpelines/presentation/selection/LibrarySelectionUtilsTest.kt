@@ -22,35 +22,6 @@ class LibrarySelectionUtilsTest {
     }
 
     @Test
-    fun `toggleOrderedSelection preserves selection order and removes by identity`() {
-        val first = Item(1, "First")
-        val second = Item(2, "Second")
-
-        val selected = toggleOrderedSelection(emptyList(), first, Item::id)
-            .let { toggleOrderedSelection(it, second, Item::id) }
-
-        assertEquals(listOf(first, second), selected)
-        assertEquals(listOf(second), toggleOrderedSelection(selected, first.copy(label = "Updated"), Item::id))
-    }
-
-    @Test
-    fun `appendDistinctSelection appends only new identities`() {
-        val first = Item(1, "First")
-        val second = Item(2, "Second")
-        val third = Item(3, "Third")
-
-        val selected = appendDistinctSelection(
-            current = listOf(first, second),
-            candidates = listOf(second.copy(label = "Duplicate"), third),
-            keyOf = Item::id
-        )
-
-        assertEquals(listOf(first, second, third), selected)
-        assertEquals(2, selectionIndex(selected, 2L, Item::id))
-        assertNull(selectionIndex(selected, 99L, Item::id))
-    }
-
-    @Test
     fun `flattenDistinctGroups keeps category and song order while removing overlaps`() {
         val first = Item(1, "First")
         val shared = Item(2, "Shared")

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="artist_page_settings_section">歌手頁面</string>
-    <string name="artist_page_albums_collapsed_by_default">預設收起專輯</string>
-    <string name="artist_page_albums_collapsed_by_default_sub">歌手有多張專輯時，起初僅顯示專輯標題。點按專輯即可查看其中的歌曲。</string>
-    <string name="artist_page_collapse_all_albums">全部收起</string>
-    <string name="artist_page_expand_all_albums">全部展開</string>
-</resources>

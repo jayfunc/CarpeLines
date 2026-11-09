@@ -52,8 +52,6 @@ import io.github.jayfunc.carpelines.ui.m3e.M3ENavItem
 import kotlinx.collections.immutable.ImmutableList
 
 internal val NavBarContentHeight = 68.dp
-internal val NavBarCompactContentHeight = 68.dp
-internal val NavBarContentHeightFullWidth = NavBarContentHeight
 internal val NavBarOuterTopPadding = 8.dp
 
 // The pill floats above the gesture bar instead of sitting on it. 16 dp read as "attached to the
@@ -67,33 +65,6 @@ internal fun sanitizeNavigationBarBottomInset(systemNavBarInset: Dp): Dp {
     if (!systemNavBarInset.value.isFinite()) return 0.dp
     return systemNavBarInset.coerceIn(0.dp, MaxNavigationBarBottomInset)
 }
-
-internal fun calculatePlayerSheetCollapsedTargetY(
-    containerHeightPx: Float,
-    collapsedContentHeightPx: Float,
-    bottomMarginPx: Float,
-    bottomSpacerPx: Float
-): Float {
-    val safeContainerHeightPx = containerHeightPx.takeIf { it.isFinite() }?.coerceAtLeast(0f) ?: 0f
-    val safeCollapsedContentHeightPx = collapsedContentHeightPx.takeIf { it.isFinite() }?.coerceAtLeast(0f) ?: 0f
-    val safeBottomMarginPx = bottomMarginPx.takeIf { it.isFinite() }?.coerceAtLeast(0f) ?: 0f
-    val safeBottomSpacerPx = bottomSpacerPx.takeIf { it.isFinite() }?.coerceAtLeast(0f) ?: 0f
-    val maxTargetY = (safeContainerHeightPx - safeCollapsedContentHeightPx).coerceAtLeast(0f)
-
-    return (safeContainerHeightPx - safeCollapsedContentHeightPx - safeBottomMarginPx - safeBottomSpacerPx)
-        .coerceIn(0f, maxTargetY)
-}
-
-internal fun resolveNavBarContentHeight(compactMode: Boolean): Dp = NavBarContentHeight
-
-internal fun resolveMainScreenBottomGradientHeight(compactMode: Boolean): Dp =
-    NavBarContentHeight + NavBarOuterTopPadding + NavBarOuterBottomPadding + MainScreenBottomGradientExtraHeight
-
-/** Height occupied by the fixed floating bar, including its outer margins and inset. */
-internal fun resolveNavBarOccupiedHeight(
-    systemNavBarInset: Dp,
-    compactMode: Boolean
-): Dp = NavBarContentHeight + NavBarOuterTopPadding + NavBarOuterBottomPadding + systemNavBarInset
 
 /**
  * The app's top-level navigation bar.

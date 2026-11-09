@@ -234,23 +234,3 @@ fun M3ELoadingState(
     }
 }
 
-/**
- * Placeholder block for content that is still resolving.
- *
- * Skeletons keep the final layout stable while data arrives, which avoids the layout jump that
- * a spinner causes. They are hidden from accessibility on purpose: announcing placeholder boxes
- * is noise, the accompanying [M3ELoadingState] carries the state.
- */
-@Composable
-fun M3ESkeletonBlock(
-    modifier: Modifier = Modifier,
-    height: androidx.compose.ui.unit.Dp = 16.dp
-) {
-    M3ESurface(
-        modifier = modifier
-            .height(height)
-            .semantics { },
-        shape = M3EShape.small,
-        color = MaterialTheme.colorScheme.surfaceContainerHighest
-    ) {}
-}

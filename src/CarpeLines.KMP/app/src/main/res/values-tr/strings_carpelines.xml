@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tab_stats">İstatistikler</string>
-    <string name="home_hero_subtitle">Telefonunuzda çalan her şey için kelime kelime şarkı sözleri</string>
     <string name="home_now_playing_eyebrow">Şimdi çalıyor</string>
     <string name="home_idle_title">Henüz bir şey çalmıyor</string>
     <string name="home_idle_subtitle">Tüm oynatıcılarla uyumludur</string>
@@ -10,6 +9,5 @@
     <string name="home_paused_in_app">%1$s · Duraklatıldı</string>
     <string name="home_played_players_title">Kullandığın oynatıcılar</string>
     <string name="home_played_players_count">%1$d parça</string>
-    <string name="home_played_players_empty">Henüz çalma yok. Herhangi bir oynatıcıda bir şey başlat, simgesi burada görünecek.</string>
     <string name="lyrics_not_found_local_hint">Şarkı sözü bulunamadı</string>
 </resources>

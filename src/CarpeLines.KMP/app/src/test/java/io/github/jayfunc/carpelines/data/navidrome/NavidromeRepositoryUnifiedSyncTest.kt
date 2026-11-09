@@ -34,7 +34,6 @@ class NavidromeRepositoryUnifiedSyncTest {
             api = mockk(relaxed = true),
             dao = navidromeDao,
             musicDao = musicDao,
-            playlistPreferencesRepository = mockk(relaxed = true),
             userPreferencesRepository = userPreferencesRepository,
             context = mockk(relaxed = true)
         )

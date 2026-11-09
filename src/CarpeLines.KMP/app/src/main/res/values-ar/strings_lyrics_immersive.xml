@@ -1,31 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="lyrics_immersive_show_chrome">إظهار عناصر التحكم</string>
-    <string name="lyrics_immersive_close">الخروج من شاشة الكلمات</string>
-    <string name="lyrics_immersive_previous">المقطع السابق</string>
-    <string name="lyrics_immersive_next">المقطع التالي</string>
-    <string name="lyrics_immersive_source">عبر %1$s</string>
     <string name="lyrics_overview_lyrics_only">إظهار الكلمات فقط</string>
     <string name="lyrics_line_actions_title">إجراءات السطر</string>
     <string name="lyrics_line_actions_instrumental">مقطع موسيقي</string>
     <string name="lyrics_line_actions_offset_label">إزاحة السطر</string>
     <string name="lyrics_line_actions_group_lyrics">الكلمات</string>
     <string name="lyrics_line_actions_copy">نسخ هذا السطر</string>
-    <string name="lyrics_line_actions_earlier">تقديم الكلمات</string>
-    <string name="lyrics_line_actions_later">تأخير الكلمات</string>
     <string name="lyrics_line_actions_reset_offset">إعادة تعيين الإزاحة لهذا المقطع</string>
     <string name="lyrics_line_actions_refresh">جلب الكلمات مجددًا</string>
     <string name="lyrics_line_actions_manual_search">البحث عن الكلمات يدويًا</string>
     <string name="lyrics_line_actions_settings">مظهر الكلمات</string>
     <string name="lyrics_line_actions_management">إدارة كلمات الأغاني</string>
-    <string name="lyrics_layout_mode_title">التخطيط</string>
-    <string name="lyrics_layout_mode_subtitle">عدد أسطر الكلمات التي تشترك في الشاشة</string>
-    <string name="lyrics_layout_mode_scroll">قائمة قابلة للتمرير</string>
-    <string name="lyrics_layout_mode_scroll_desc">كل الأسطر مرئية والسطر قيد التشغيل في الوسط</string>
-    <string name="lyrics_layout_mode_single">سطر واحد</string>
-    <string name="lyrics_layout_mode_single_desc">السطر قيد التشغيل يملأ الشاشة</string>
-    <string name="lyrics_layout_mode_dual">سطران</string>
-    <string name="lyrics_layout_mode_dual_desc">السطر قيد التشغيل والذي يليه، جاهزان للمتابعة</string>
     <string name="lyrics_playing_line_title">موضع السطر قيد التشغيل</string>
     <string name="lyrics_playing_line_subtitle">أين يقع السطر المُغنّى على الشاشة</string>
     <string name="lyrics_playing_line_value">%1$d%% من الأعلى</string>

@@ -248,12 +248,6 @@ interface MusicDao {
     @Query("DELETE FROM song_artist_cross_ref WHERE song_id IN (SELECT id FROM songs WHERE source_type = 0)")
     suspend fun deleteLocalSongArtistCrossRefs()
 
-    @Query("DELETE FROM favorites WHERE songId IN (:songIds)")
-    suspend fun deleteFavoritesBySongIds(songIds: List<Long>)
-
-    @Query("DELETE FROM favorites WHERE songId IN (SELECT id FROM songs WHERE source_type = 0)")
-    suspend fun deleteLocalFavorites()
-
     @Query("DELETE FROM lyrics WHERE songId IN (:songIds)")
     suspend fun deleteLyricsBySongIds(songIds: List<Long>)
 
@@ -291,7 +285,6 @@ interface MusicDao {
         if (songIds.isEmpty()) return
         songIds.chunked(CROSS_REF_BATCH_SIZE).forEach { chunk ->
             deleteCrossRefsBySongIds(chunk)
-            deleteFavoritesBySongIds(chunk)
             deleteLyricsBySongIds(chunk)
             deleteSongsByIds(chunk)
         }
@@ -330,7 +323,6 @@ interface MusicDao {
         if (deletedSongIds.isNotEmpty()) {
             deletedSongIds.chunked(CROSS_REF_BATCH_SIZE).forEach { chunk ->
                 deleteCrossRefsBySongIds(chunk)
-                deleteFavoritesBySongIds(chunk)
                 deleteLyricsBySongIds(chunk)
                 deleteSongsByIds(chunk)
             }
@@ -696,46 +688,6 @@ interface MusicDao {
         filterMode: Int
     ): List<Long>
 
-    @Query("""
-        SELECT songs.id FROM songs
-        INNER JOIN favorites ON songs.id = favorites.songId AND favorites.isFavorite = 1
-        WHERE (:applyDirectoryFilter = 0 OR songs.id < 0 OR songs.parent_directory_path IN (:allowedParentDirs))
-        AND (
-            :filterMode = 0
-            OR (
-                :filterMode = 1
-                AND songs.source_type = 0
-            )
-            OR (
-                :filterMode = 2
-                AND songs.source_type != 0
-            )
-        )
-        ORDER BY
-            CASE WHEN :sortOrder = 'liked_title_az' THEN songs.title END COLLATE NOCASE ASC,
-            CASE WHEN :sortOrder = 'liked_title_za' THEN songs.title END COLLATE NOCASE DESC,
-            CASE WHEN :sortOrder = 'liked_artist' THEN songs.artist_name END COLLATE NOCASE ASC,
-            CASE WHEN :sortOrder = 'liked_artist_desc' THEN songs.artist_name END COLLATE NOCASE DESC,
-            CASE WHEN :sortOrder = 'liked_album' THEN songs.album_name END COLLATE NOCASE ASC,
-            CASE WHEN :sortOrder = 'liked_album_desc' THEN songs.album_name END COLLATE NOCASE DESC,
-            CASE WHEN :sortOrder IN ('liked_album', 'liked_album_desc')
-                THEN CASE WHEN COALESCE(songs.disc_number, 0) <= 0 THEN 1 ELSE songs.disc_number END END ASC,
-            CASE WHEN :sortOrder IN ('liked_album', 'liked_album_desc')
-                THEN CASE WHEN songs.track_number > 0 THEN 0 ELSE 1 END END ASC,
-            CASE WHEN :sortOrder IN ('liked_album', 'liked_album_desc') AND songs.track_number > 0
-                THEN songs.track_number END ASC,
-            CASE WHEN :sortOrder = 'liked_date_liked' THEN favorites.timestamp END DESC,
-            CASE WHEN :sortOrder = 'liked_date_liked_asc' THEN favorites.timestamp END ASC,
-            songs.title COLLATE NOCASE ASC,
-            songs.id ASC
-    """)
-    suspend fun getFavoriteSongIdsSorted(
-        allowedParentDirs: List<String>,
-        applyDirectoryFilter: Boolean,
-        sortOrder: String,
-        filterMode: Int
-    ): List<Long>
-
     /**
      * Returns a PagingSource for songs, enabling efficient pagination for large libraries.
      * Room auto-generates the PagingSource implementation.
@@ -829,145 +781,6 @@ interface MusicDao {
         limit: Int,
         offset: Int
     ): List<SongEntity>
-
-    /**
-     * Returns a PagingSource for favorite songs, enabling efficient pagination.
-     * Joins songs with favorites table and supports multi-sort.
-     */
-    @Query("""
-        SELECT songs.* FROM songs
-        INNER JOIN favorites ON songs.id = favorites.songId AND favorites.isFavorite = 1
-        WHERE (:applyDirectoryFilter = 0 OR songs.id < 0 OR songs.parent_directory_path IN (:allowedParentDirs))
-        AND (
-            :filterMode = 0
-            OR (
-                :filterMode = 1
-                AND songs.source_type = 0
-            )
-            OR (
-                :filterMode = 2
-                AND songs.source_type != 0
-            )
-        )
-        ORDER BY
-            CASE WHEN :sortOrder = 'liked_title_az' THEN songs.title END COLLATE NOCASE ASC,
-            CASE WHEN :sortOrder = 'liked_title_za' THEN songs.title END COLLATE NOCASE DESC,
-            CASE WHEN :sortOrder = 'liked_artist' THEN songs.artist_name END COLLATE NOCASE ASC,
-            CASE WHEN :sortOrder = 'liked_artist_desc' THEN songs.artist_name END COLLATE NOCASE DESC,
-            CASE WHEN :sortOrder = 'liked_album' THEN songs.album_name END COLLATE NOCASE ASC,
-            CASE WHEN :sortOrder = 'liked_album_desc' THEN songs.album_name END COLLATE NOCASE DESC,
-            CASE WHEN :sortOrder IN ('liked_album', 'liked_album_desc')
-                THEN CASE WHEN COALESCE(songs.disc_number, 0) <= 0 THEN 1 ELSE songs.disc_number END END ASC,
-            CASE WHEN :sortOrder IN ('liked_album', 'liked_album_desc')
-                THEN CASE WHEN songs.track_number > 0 THEN 0 ELSE 1 END END ASC,
-            CASE WHEN :sortOrder IN ('liked_album', 'liked_album_desc') AND songs.track_number > 0
-                THEN songs.track_number END ASC,
-            CASE WHEN :sortOrder = 'liked_date_liked' THEN favorites.timestamp END DESC,
-            CASE WHEN :sortOrder = 'liked_date_liked_asc' THEN favorites.timestamp END ASC,
-            songs.title COLLATE NOCASE ASC,
-            songs.id ASC
-    """)
-    fun getFavoriteSongsPaginated(
-        allowedParentDirs: List<String>,
-        applyDirectoryFilter: Boolean,
-        sortOrder: String,
-        filterMode: Int
-    ): PagingSource<Int, SongEntity>
-
-    /**
-     * Returns all favorite songs as a list (for playback queue when shuffling).
-     */
-    @Query("""
-        SELECT songs.* FROM songs
-        INNER JOIN favorites ON songs.id = favorites.songId AND favorites.isFavorite = 1
-        WHERE (:applyDirectoryFilter = 0 OR songs.id < 0 OR songs.parent_directory_path IN (:allowedParentDirs))
-        AND (
-            :filterMode = 0
-            OR (
-                :filterMode = 1
-                AND songs.source_type = 0
-            )
-            OR (
-                :filterMode = 2
-                AND songs.source_type != 0
-            )
-        )
-        ORDER BY songs.title COLLATE NOCASE ASC
-    """)
-    suspend fun getFavoriteSongsList(
-        allowedParentDirs: List<String>,
-        applyDirectoryFilter: Boolean,
-        filterMode: Int
-    ): List<SongEntity>
-
-    @Query("""
-        SELECT """ + SONG_LIST_PROJECTION + """
-        FROM songs
-        INNER JOIN favorites ON songs.id = favorites.songId AND favorites.isFavorite = 1
-        WHERE (:applyDirectoryFilter = 0 OR songs.id < 0 OR songs.parent_directory_path IN (:allowedParentDirs))
-        AND (
-            :filterMode = 0
-            OR (
-                :filterMode = 1
-                AND songs.source_type = 0
-            )
-            OR (
-                :filterMode = 2
-                AND songs.source_type != 0
-            )
-        )
-        ORDER BY
-            CASE WHEN :sortOrder = 'liked_title_az' THEN songs.title END COLLATE NOCASE ASC,
-            CASE WHEN :sortOrder = 'liked_title_za' THEN songs.title END COLLATE NOCASE DESC,
-            CASE WHEN :sortOrder = 'liked_artist' THEN songs.artist_name END COLLATE NOCASE ASC,
-            CASE WHEN :sortOrder = 'liked_artist_desc' THEN songs.artist_name END COLLATE NOCASE DESC,
-            CASE WHEN :sortOrder = 'liked_album' THEN songs.album_name END COLLATE NOCASE ASC,
-            CASE WHEN :sortOrder = 'liked_album_desc' THEN songs.album_name END COLLATE NOCASE DESC,
-            CASE WHEN :sortOrder IN ('liked_album', 'liked_album_desc')
-                THEN CASE WHEN COALESCE(songs.disc_number, 0) <= 0 THEN 1 ELSE songs.disc_number END END ASC,
-            CASE WHEN :sortOrder IN ('liked_album', 'liked_album_desc')
-                THEN CASE WHEN songs.track_number > 0 THEN 0 ELSE 1 END END ASC,
-            CASE WHEN :sortOrder IN ('liked_album', 'liked_album_desc') AND songs.track_number > 0
-                THEN songs.track_number END ASC,
-            CASE WHEN :sortOrder = 'liked_date_liked' THEN favorites.timestamp END DESC,
-            CASE WHEN :sortOrder = 'liked_date_liked_asc' THEN favorites.timestamp END ASC,
-            songs.title COLLATE NOCASE ASC,
-            songs.id ASC
-        LIMIT :limit OFFSET :offset
-    """)
-    suspend fun getFavoriteSongsPage(
-        allowedParentDirs: List<String>,
-        applyDirectoryFilter: Boolean,
-        sortOrder: String,
-        filterMode: Int,
-        limit: Int,
-        offset: Int
-    ): List<SongEntity>
-
-    /**
-     * Returns the count of favorite songs (reactive).
-     */
-    @Query("""
-        SELECT COUNT(*) FROM songs
-        INNER JOIN favorites ON songs.id = favorites.songId AND favorites.isFavorite = 1
-        WHERE (:applyDirectoryFilter = 0 OR songs.id < 0 OR songs.parent_directory_path IN (:allowedParentDirs))
-        AND (
-            :filterMode = 0
-            OR (
-                :filterMode = 1
-                AND songs.source_type = 0
-            )
-            OR (
-                :filterMode = 2
-                AND songs.source_type != 0
-            )
-        )
-    """)
-    fun getFavoriteSongCount(
-        allowedParentDirs: List<String>,
-        applyDirectoryFilter: Boolean,
-        filterMode: Int
-    ): Flow<Int>
 
     /**
      * Returns a PagingSource for search results, enabling efficient pagination for large result sets.
@@ -1645,20 +1458,6 @@ interface MusicDao {
     """)
     suspend fun deleteOrphanedArtists()
 
-    @Query("UPDATE songs SET is_favorite = :isFavorite WHERE id = :songId")
-    suspend fun setFavoriteStatus(songId: Long, isFavorite: Boolean)
-
-    @Query("SELECT is_favorite FROM songs WHERE id = :songId")
-    suspend fun getFavoriteStatus(songId: Long): Boolean?
-
-    @Transaction
-    suspend fun toggleFavoriteStatus(songId: Long): Boolean {
-        val currentStatus = getFavoriteStatus(songId) ?: false
-        val newStatus = !currentStatus
-        setFavoriteStatus(songId, newStatus)
-        return newStatus
-    }
-
     @Query("""
         UPDATE songs
         SET title = :title,
@@ -1731,43 +1530,6 @@ interface MusicDao {
     @Query("UPDATE songs SET album_art_uri_string = :albumArtUri WHERE id = :songId")
     suspend fun updateSongAlbumArt(songId: Long, albumArtUri: String?)
 
-    /**
-     * Stores canonical MusicBrainz identifiers and fills only metadata that is currently absent.
-     * Existing user/library names are deliberately preserved; choosing a match must not silently
-     * regroup albums or artists in the local library.
-     */
-    @Query(
-        """
-        UPDATE songs
-        SET title = CASE
-                WHEN TRIM(title) = '' OR LOWER(title) = 'unknown title' THEN :title
-                ELSE title
-            END,
-            artist_name = CASE
-                WHEN TRIM(artist_name) = '' OR LOWER(artist_name) = 'unknown artist' THEN :artist
-                ELSE artist_name
-            END,
-            album_name = CASE
-                WHEN TRIM(album_name) = '' OR LOWER(album_name) = 'unknown album' THEN :album
-                ELSE album_name
-            END,
-            year = CASE WHEN year <= 0 THEN :year ELSE year END,
-            mb_recording_id = :recordingId,
-            mb_release_id = :releaseId,
-            mb_artist_id = :artistId
-        WHERE id = :songId
-        """
-    )
-    suspend fun applyMusicBrainzMatch(
-        songId: Long,
-        title: String,
-        artist: String,
-        album: String,
-        year: Int,
-        recordingId: String,
-        releaseId: String?,
-        artistId: String?
-    )
 
     @Query("UPDATE songs SET lyrics = :lyrics WHERE id = :songId")
     suspend fun updateLyrics(songId: Long, lyrics: String)
@@ -1985,7 +1747,6 @@ interface MusicDao {
         crossRefs: List<SongArtistCrossRef>
     ) {
         deleteLocalSongArtistCrossRefs()
-        deleteLocalFavorites()
         deleteLocalLyrics()
         clearLocalSongs()
         deleteOrphanedAlbums()

@@ -34,7 +34,6 @@ class JellyfinRepositoryUnifiedSyncTest {
             api = mockk(relaxed = true),
             dao = jellyfinDao,
             musicDao = musicDao,
-            playlistPreferencesRepository = mockk(relaxed = true),
             userPreferencesRepository = userPreferencesRepository,
             context = mockk(relaxed = true)
         )

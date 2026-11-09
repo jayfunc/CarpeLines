@@ -34,16 +34,6 @@ internal fun sanitizeSyncedWords(words: List<SyncedWord>): List<SyncedWord> =
         }
     }
 
-internal fun normalizeWordEndTime(
-    currentWordTimeMs: Long,
-    nextWordTimeMs: Long,
-    lineEndTimeMs: Long,
-): Long {
-    val minEnd = currentWordTimeMs + 1L
-    val boundedLineEnd = lineEndTimeMs.coerceAtLeast(minEnd)
-    return nextWordTimeMs.coerceIn(minEnd, boundedLineEnd)
-}
-
 @Composable
 internal fun rememberInterpolatedPlaybackPosition(
     sampledPosition: State<Long>,

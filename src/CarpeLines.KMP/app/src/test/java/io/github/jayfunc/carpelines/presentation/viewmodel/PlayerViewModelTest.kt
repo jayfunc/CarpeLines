@@ -60,7 +60,6 @@ import io.github.jayfunc.carpelines.R
 import io.github.jayfunc.carpelines.data.service.player.DualPlayerEngine
 import io.github.jayfunc.carpelines.data.worker.SyncManager
 import io.github.jayfunc.carpelines.di.DispatcherProvider
-import io.github.jayfunc.carpelines.utils.AppShortcutManager
 import io.github.jayfunc.carpelines.utils.MediaItemBuilder
 import io.github.jayfunc.carpelines.utils.MediaStorePermissionHelper
 import io.github.jayfunc.carpelines.presentation.viewmodel.*
@@ -81,13 +80,11 @@ class PlayerViewModelTest {
 
     private val mockSyncManager: SyncManager = mockk(relaxed = true)
     private val mockDualPlayerEngine: DualPlayerEngine = mockk(relaxed = true)
-    private val mockAppShortcutManager: AppShortcutManager = mockk(relaxed = true)
     private val mockListeningStatsTracker: ListeningStatsTracker = mockk(relaxed = true)
     private val mockDailyMixStateHolder: DailyMixStateHolder = mockk(relaxed = true)
     private val mockLyricsStateHolder: LyricsStateHolder = mockk(relaxed = true)
     private val mockQueueStateHolder: QueueStateHolder = mockk(relaxed = true)
     private val mockQueueUndoStateHolder: QueueUndoStateHolder = mockk(relaxed = true)
-    private val mockPlaylistDismissUndoStateHolder: PlaylistDismissUndoStateHolder = mockk(relaxed = true)
     private val mockPlaybackStateHolder: PlaybackStateHolder = mockk(relaxed = true)
     private val mockConnectivityStateHolder: ConnectivityStateHolder = mockk(relaxed = true)
     private val mockSleepTimerStateHolder: SleepTimerStateHolder = mockk(relaxed = true)
@@ -100,7 +97,6 @@ class PlayerViewModelTest {
     private val mockExternalMediaStateHolder: ExternalMediaStateHolder = mockk(relaxed = true)
     private val mockThemeStateHolder: ThemeStateHolder = mockk(relaxed = true)
     private val mockMultiSelectionStateHolder: MultiSelectionStateHolder = mockk(relaxed = true)
-    private val mockPlaylistSelectionStateHolder: PlaylistSelectionStateHolder = mockk(relaxed = true)
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -117,7 +113,6 @@ class PlayerViewModelTest {
     private val _searchResultsFlow = MutableStateFlow<ImmutableList<SearchResultItem>>(persistentListOf())
     private val _selectedSearchFilterFlow = MutableStateFlow(SearchFilterType.ALL)
     private val _repeatModeFlow = MutableStateFlow(Player.REPEAT_MODE_OFF)
-    private val _favoriteIdsFlow = MutableStateFlow<Set<String>>(emptySet())
     private val folderSongSortFlow = MutableStateFlow<SortOption>(SortOption.FolderSongTitleAZ)
     private lateinit var stablePlayerStateFlow: MutableStateFlow<StablePlayerState>
     private lateinit var mockController: MediaController
@@ -132,11 +127,9 @@ class PlayerViewModelTest {
         mockkStatic(ContextCompat::class)
         val directExecutor = java.util.concurrent.Executor { it.run() }
         every { ContextCompat.getMainExecutor(any()) } returns directExecutor
-        coEvery { mockUserPreferencesRepository.favoriteSongIdsFlow } returns flowOf(emptySet())
         coEvery { mockUserPreferencesRepository.songsSortOptionFlow } returns flowOf("SongTitleAZ")
         coEvery { mockUserPreferencesRepository.albumsSortOptionFlow } returns flowOf("AlbumTitleAZ")
         coEvery { mockUserPreferencesRepository.artistsSortOptionFlow } returns flowOf("ArtistNameAZ")
-        coEvery { mockUserPreferencesRepository.likedSongsSortOptionFlow } returns flowOf("LikedSongTitleAZ")
         coEvery { mockUserPreferencesRepository.navBarCornerRadiusFlow } returns flowOf(32)
         coEvery { mockUserPreferencesRepository.navBarStyleFlow } returns flowOf("Default")
         coEvery { mockUserPreferencesRepository.libraryNavigationModeFlow } returns flowOf("TabRow")
@@ -162,7 +155,6 @@ class PlayerViewModelTest {
         every { mockLibraryStateHolder.currentArtistSortOption } returns MutableStateFlow<SortOption>(SortOption.ArtistNameAZ)
         every { mockLibraryStateHolder.currentFolderSortOption } returns MutableStateFlow<SortOption>(SortOption.FolderNameAZ)
         every { mockLibraryStateHolder.currentFolderSongSortOption } returns folderSongSortFlow
-        every { mockLibraryStateHolder.currentFavoriteSortOption } returns MutableStateFlow<SortOption>(SortOption.LikedSongTitleAZ)
         every { mockLibraryStateHolder.currentStorageFilter } returns MutableStateFlow(StorageFilter.ALL)
 
         every { mockSearchStateHolder.searchHistory } returns _searchHistoryFlow
@@ -176,7 +168,6 @@ class PlayerViewModelTest {
 
         every { mockConnectivityStateHolder.initialize(any()) } just runs
 
-        _favoriteIdsFlow.value = emptySet()
         stablePlayerStateFlow = MutableStateFlow(StablePlayerState(currentSong = null))
         every { mockPlaybackStateHolder.stablePlayerState } returns stablePlayerStateFlow
         every { mockPlaybackStateHolder.setMediaController(any()) } just runs
@@ -185,7 +176,6 @@ class PlayerViewModelTest {
         every { mockLibraryStateHolder.initialize(any()) } just runs
 
         every { mockMusicRepository.getPaginatedSongs(any(), any()) } returns flowOf(androidx.paging.PagingData.empty())
-        every { mockMusicRepository.getPaginatedFavoriteSongs(any(), any()) } returns flowOf(androidx.paging.PagingData.empty())
         every { mockMusicRepository.getAudioFiles() } returns flowOf(emptyList())
         every { mockMusicRepository.getDistinctAlbumArtSongs() } returns flowOf(emptyList())
         every { mockMusicRepository.getHomeMixPreviewSongs(any()) } returns flowOf(emptyList())
@@ -193,18 +183,13 @@ class PlayerViewModelTest {
         every { mockMusicRepository.getCloudSongCountFlow() } returns flowOf(0)
         every { mockMusicRepository.searchSongs(any()) } returns flowOf(emptyList())
         every { mockMusicRepository.getMusicByGenre(any()) } returns flowOf(emptyList())
-        coEvery { mockMusicRepository.getFavoriteSongIdsOnce() } returns emptySet()
-        every { mockMusicRepository.getFavoriteSongIdsFlow() } returns _favoriteIdsFlow
         every { mockMusicRepository.getSong(any()) } returns flowOf(null)
         coEvery { mockMusicRepository.getSongIdByContentUri(any()) } returns null
         coEvery { mockMusicRepository.getSongByPath(any()) } returns null
-        coEvery { mockMusicRepository.setFavoriteStatus(any(), any()) } just Runs
         coEvery { mockMusicRepository.getAllSongsOnce() } returns emptyList()
-        coEvery { mockMusicRepository.getFavoriteSongsOnce(any()) } returns emptyList()
         coEvery { mockMusicRepository.getFirstPlayableSong() } returns null
         coEvery { mockMusicRepository.getRandomSongs(any()) } returns emptyList()
         coEvery { mockMusicRepository.getSongIdsSorted(any(), any()) } returns emptyList()
-        coEvery { mockMusicRepository.getFavoriteSongIdsSorted(any(), any()) } returns emptyList()
         every { mockLyricsStateHolder.songUpdates } returns MutableSharedFlow()
 
         mockController = mockk(relaxed = true)
@@ -222,13 +207,11 @@ class PlayerViewModelTest {
             mockAlbumArtThemeDao,
             mockSyncManager,
             mockDualPlayerEngine,
-            mockAppShortcutManager,
             mockListeningStatsTracker,
             mockDailyMixStateHolder,
             mockLyricsStateHolder,
             mockQueueStateHolder,
             mockQueueUndoStateHolder,
-            mockPlaylistDismissUndoStateHolder,
             mockPlaybackStateHolder,
             mockConnectivityStateHolder,
             mockSleepTimerStateHolder,
@@ -241,7 +224,6 @@ class PlayerViewModelTest {
             mockExternalMediaStateHolder,
             mockThemeStateHolder,
             mockMultiSelectionStateHolder,
-            mockPlaylistSelectionStateHolder,
             testDispatchers
         )
     }
@@ -419,61 +401,6 @@ class PlayerViewModelTest {
         }
     }
 
-    @Test
-    fun `toggleFavorite resolves external current song to MediaStore favorite id`() = runTest {
-        val externalSong = Song(
-            id = "external:content://media/external/audio/media/42",
-            title = "External Song",
-            artist = "Artist",
-            artistId = -1L,
-            album = "Album",
-            albumId = -1L,
-            path = "/storage/emulated/0/Music/external-song.mp3",
-            contentUriString = "file:///data/user/0/io.github.jayfunc.carpelines/cache/external_audio/audio_42.mp3",
-            albumArtUriString = null,
-            duration = 180000L,
-            mimeType = "audio/mpeg",
-            bitrate = null,
-            sampleRate = null
-        )
-        stablePlayerStateFlow.value = StablePlayerState(currentSong = externalSong)
-
-        playerViewModel.toggleFavorite()
-        advanceUntilIdle()
-
-        coVerify { mockMusicRepository.setFavoriteStatus("42", true) }
-    }
-
-    @Test
-    fun `isCurrentSongFavorite resolves external current song before reading favorite ids`() = runTest {
-        _favoriteIdsFlow.value = setOf("42")
-        val externalSong = Song(
-            id = "external:content://media/external/audio/media/42",
-            title = "External Song",
-            artist = "Artist",
-            artistId = -1L,
-            album = "Album",
-            albumId = -1L,
-            path = "/storage/emulated/0/Music/external-song.mp3",
-            contentUriString = "file:///data/user/0/io.github.jayfunc.carpelines/cache/external_audio/audio_42.mp3",
-            albumArtUriString = null,
-            duration = 180000L,
-            mimeType = "audio/mpeg",
-            bitrate = null,
-            sampleRate = null
-        )
-
-        playerViewModel.isCurrentSongFavorite.test {
-            assertEquals(false, awaitItem())
-
-            stablePlayerStateFlow.value = StablePlayerState(currentSong = externalSong)
-            advanceUntilIdle()
-
-            assertEquals(true, awaitItem())
-            cancelAndConsumeRemainingEvents()
-        }
-    }
-
     @Nested
     @DisplayName("Shuffle Functionality")
     inner class ShuffleFunctionalityTests {
@@ -539,24 +466,6 @@ class PlayerViewModelTest {
         }
 
         @Test
-        fun `shuffleFavoriteSongs calls prepareShuffledQueue with startAtZero`() = runTest {
-            val favoriteSongs = listOf(song1, song3)
-            coEvery { mockMusicRepository.getFavoriteSongsOnce(StorageFilter.ALL) } returns favoriteSongs
-            stubShuffledPlayback(favoriteSongs, startSong = song1)
-
-            playerViewModel.shuffleFavoriteSongs()
-            advanceUntilIdle()
-
-            coVerify { mockMusicRepository.getFavoriteSongsOnce(StorageFilter.ALL) }
-            coVerify {
-                mockQueueStateHolder.prepareShuffledQueueSuspending(
-                    favoriteSongs,
-                    true
-                )
-            }
-        }
-
-        @Test
         fun `playRandomAlbum plays the album in track order without shuffling`() = runTest {
             val album = Album(
                 id = 77L,
@@ -578,9 +487,9 @@ class PlayerViewModelTest {
             advanceUntilIdle()
 
             verify {
-                mockQueueStateHolder.setOriginalQueueOrder(listOf(track1, track2, track3), listOf(null, null, null))
+                mockQueueStateHolder.setOriginalQueueOrder(listOf(track1, track2, track3))
             }
-            coVerify(exactly = 0) { mockQueueStateHolder.prepareShuffledQueueSuspending(any(), any(), any()) }
+            coVerify(exactly = 0) { mockQueueStateHolder.prepareShuffledQueueSuspending(any(), any()) }
         }
 
         @Test
@@ -616,20 +525,6 @@ class PlayerViewModelTest {
         }
 
         @Test
-        fun `shuffling liked songs names the queue in the app language`() = runTest {
-            val favoriteSongs = listOf(song1, song3)
-            coEvery { mockMusicRepository.getFavoriteSongsOnce(StorageFilter.ALL) } returns favoriteSongs
-            stubShuffledPlayback(favoriteSongs, startSong = song1)
-            every { mockContext.getString(R.string.queue_name_liked_songs_shuffled) } returns "我喜欢的歌曲（随机）"
-            advanceUntilIdle()
-
-            playerViewModel.shuffleFavoriteSongs()
-            advanceUntilIdle()
-
-            assertEquals("我喜欢的歌曲（随机）", playerViewModel.playerUiState.value.currentQueueSourceName)
-        }
-
-        @Test
         fun `playing selected songs names the queue in the app language`() = runTest {
             val selectedSongs = listOf(song3, song1)
             stubShuffledPlayback(selectedSongs)
@@ -662,60 +557,6 @@ class PlayerViewModelTest {
     }
 
     @Nested
-    @DisplayName("Liked select all")
-    inner class FavoriteSelectionTests {
-
-        // More favorites than one page of the Liked list (paging maxSize is 250).
-        private val favoriteSongs = (1..300).map { id ->
-            Song(id = "$id", title = "Song $id", artist = "Artist", genre = "Rock", albumArtUriString = null, artistId = 1L, albumId = 1L, contentUriString = "content://dummy/$id", duration = 180000L, bitrate = null, sampleRate = null, album = "Album", path = "/music/$id.mp3", mimeType = "audio/mpeg")
-        }
-
-        private val hideLocalMedia = MutableStateFlow(false)
-
-        // Runs before the view model's init collectors are first dispatched.
-        @BeforeEach
-        fun stubLibrarySongs() {
-            every { mockLibraryStateHolder.allSongsById } returns MutableStateFlow(favoriteSongs.associateBy { it.id })
-            every { mockUserPreferencesRepository.hideLocalMediaFlow } returns hideLocalMedia
-        }
-
-        @Test
-        fun `select all returns every favorite in the order of the Liked list`() = runTest {
-            advanceUntilIdle()
-            val favoriteSort = playerViewModel.playerUiState.value.currentFavoriteSortOption
-            val sortedIds = favoriteSongs.map { it.id.toLong() }.shuffled(kotlin.random.Random(7))
-            coEvery { mockMusicRepository.getFavoriteSongIdsSorted(favoriteSort, StorageFilter.ALL) } returns sortedIds
-
-            val selection = playerViewModel.getSongsForCurrentFavoriteSelection()
-
-            assertEquals(sortedIds.map(Long::toString), selection.map { it.id })
-        }
-
-        @Test
-        fun `select all resolves favorites that are missing from the library cache`() = runTest {
-            advanceUntilIdle()
-            val uncachedSong = favoriteSongs.first().copy(id = "301", title = "Song 301")
-            coEvery { mockMusicRepository.getFavoriteSongIdsSorted(any(), any()) } returns listOf(301L, 1L)
-            every { mockMusicRepository.getSongsByIds(listOf("301")) } returns flowOf(listOf(uncachedSong))
-
-            val selection = playerViewModel.getSongsForCurrentFavoriteSelection()
-
-            assertEquals(listOf("301", "1"), selection.map { it.id })
-        }
-
-        @Test
-        fun `select all only asks for cloud favorites while local media is hidden`() = runTest {
-            hideLocalMedia.value = true
-            advanceUntilIdle()
-
-            playerViewModel.getSongsForCurrentFavoriteSelection()
-
-            coVerify { mockMusicRepository.getFavoriteSongIdsSorted(any(), StorageFilter.ONLINE) }
-            coVerify(exactly = 0) { mockMusicRepository.getFavoriteSongIdsSorted(any(), StorageFilter.ALL) }
-        }
-    }
-
-    @Nested
     @DisplayName("Locate current song")
     inner class LocateCurrentSongTests {
 
@@ -724,25 +565,7 @@ class PlayerViewModelTest {
         // The song sits at a different position in each list: 3 among all songs, 1 among favorites.
         private fun stubListOrders() {
             coEvery { mockMusicRepository.getSongIdsSorted(any(), any()) } returns listOf(1L, 2L, 3L, 42L)
-            coEvery { mockMusicRepository.getFavoriteSongIdsSorted(any(), any()) } returns listOf(7L, 42L)
             stablePlayerStateFlow.value = StablePlayerState(currentSong = currentSong)
-        }
-
-        @Test
-        fun `a Liked locate emits the favorites-order index tagged for Liked`() = runTest {
-            advanceUntilIdle()
-            stubListOrders()
-            val favoriteSort = playerViewModel.playerUiState.value.currentFavoriteSortOption
-
-            playerViewModel.scrollToIndexEvent.test {
-                playerViewModel.requestLocateCurrentSong(LibraryTabId.LIKED)
-                advanceUntilIdle()
-
-                assertEquals(LocateScrollRequest(tab = LibraryTabId.LIKED, index = 1), awaitItem())
-                cancelAndIgnoreRemainingEvents()
-            }
-            coVerify { mockMusicRepository.getFavoriteSongIdsSorted(favoriteSort, any()) }
-            coVerify(exactly = 0) { mockMusicRepository.getSongIdsSorted(any(), any()) }
         }
 
         @Test
@@ -759,7 +582,6 @@ class PlayerViewModelTest {
                 cancelAndIgnoreRemainingEvents()
             }
             coVerify { mockMusicRepository.getSongIdsSorted(songSort, any()) }
-            coVerify(exactly = 0) { mockMusicRepository.getFavoriteSongIdsSorted(any(), any()) }
         }
     }
 

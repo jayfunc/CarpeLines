@@ -6,7 +6,6 @@ import io.github.jayfunc.carpelines.data.model.Album
 import io.github.jayfunc.carpelines.data.model.Artist
 import io.github.jayfunc.carpelines.data.model.Lyrics
 import io.github.jayfunc.carpelines.data.model.LyricsSourcePreference
-import io.github.jayfunc.carpelines.data.model.Playlist
 import io.github.jayfunc.carpelines.data.model.SearchFilterType
 import io.github.jayfunc.carpelines.data.model.SearchHistoryItem
 import io.github.jayfunc.carpelines.data.model.SearchResultItem
@@ -42,39 +41,6 @@ interface MusicRepository {
         sortOption: io.github.jayfunc.carpelines.data.model.SortOption,
         storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter = io.github.jayfunc.carpelines.data.model.StorageFilter.ALL
     ): Flow<PagingData<Artist>>
-
-    /**
-     * Returns paginated favorite songs for efficient display.
-     * @return Flow of PagingData<Song> for use with LazyPagingItems.
-     */
-    fun getPaginatedFavoriteSongs(
-        sortOption: io.github.jayfunc.carpelines.data.model.SortOption,
-        storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter = io.github.jayfunc.carpelines.data.model.StorageFilter.ALL
-    ): Flow<PagingData<Song>>
-
-    /**
-     * Returns all favorite songs as a list (for playback queue on shuffle).
-     */
-    suspend fun getFavoriteSongsOnce(
-        storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter = io.github.jayfunc.carpelines.data.model.StorageFilter.ALL
-    ): List<Song>
-
-    /**
-     * Returns a bounded favorites page without materializing the full favorites list.
-     */
-    suspend fun getFavoriteSongsPage(
-        limit: Int,
-        offset: Int,
-        sortOption: io.github.jayfunc.carpelines.data.model.SortOption = io.github.jayfunc.carpelines.data.model.SortOption.LikedSongTitleAZ,
-        storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter = io.github.jayfunc.carpelines.data.model.StorageFilter.ALL
-    ): List<Song>
-
-    /**
-     * Returns the count of favorite songs (reactive).
-     */
-    fun getFavoriteSongCountFlow(
-        storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter = io.github.jayfunc.carpelines.data.model.StorageFilter.ALL
-    ): Flow<Int>
 
     /**
      * Returns the count of songs in the library.
@@ -236,7 +202,6 @@ interface MusicRepository {
     fun searchSongs(query: String): Flow<List<Song>>
     fun searchAlbums(query: String, minTracks: Int = 1): Flow<List<Album>>
     fun searchArtists(query: String): Flow<List<Artist>>
-    suspend fun searchPlaylists(query: String): List<Playlist>
     fun searchAll(query: String, filterType: SearchFilterType): Flow<List<SearchResultItem>>
 
     suspend fun addSearchHistoryItem(query: String)
@@ -250,30 +215,6 @@ interface MusicRepository {
      * @return Flow that emits a list of Song objects (simulated for this genre).
      */
     fun getMusicByGenre(genreId: String): Flow<List<Song>>
-
-    /**
-     * Toggles the favorite status of a song.
-     * @param songId The song ID.
-     * @return The new favorite status (true if favorite, false otherwise).
-     */
-    suspend fun toggleFavoriteStatus(songId: String): Boolean
-
-    /**
-     * Explicitly sets the favorite status of a song.
-     * @param songId The song ID.
-     * @param isFavorite Target status.
-     */
-    suspend fun setFavoriteStatus(songId: String, isFavorite: Boolean)
-
-    /**
-     * Returns favorite song IDs directly from Room (favorites table).
-     */
-    suspend fun getFavoriteSongIdsOnce(): Set<String>
-
-    /**
-     * Reactive stream of favorite song IDs from Room favorites table.
-     */
-    fun getFavoriteSongIdsFlow(): Flow<Set<String>>
 
     /**
      * Returns a specific song by its ID.
@@ -328,11 +269,6 @@ interface MusicRepository {
     suspend fun deleteById(id: Long)
 
     suspend fun getSongIdsSorted(
-        sortOption: io.github.jayfunc.carpelines.data.model.SortOption,
-        storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter
-    ): List<Long>
-
-    suspend fun getFavoriteSongIdsSorted(
         sortOption: io.github.jayfunc.carpelines.data.model.SortOption,
         storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter
     ): List<Long>

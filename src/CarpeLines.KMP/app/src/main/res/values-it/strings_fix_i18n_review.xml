@@ -11,9 +11,4 @@
     <string name="collage_pattern_pixel_cookie">Biscotto pixelato</string>
     <string name="collage_pattern_heart_garden">Giardino di cuori</string>
 
-    <plurals name="cloud_download_selected_started">
-        <item quantity="one">Preparazione di %1$d brano dal cloud per l\'ascolto offline</item>
-        <item quantity="many">Preparazione di %1$d brani dal cloud per l\'ascolto offline</item>
-        <item quantity="other">Preparazione di %1$d brani dal cloud per l\'ascolto offline</item>
-    </plurals>
 </resources>

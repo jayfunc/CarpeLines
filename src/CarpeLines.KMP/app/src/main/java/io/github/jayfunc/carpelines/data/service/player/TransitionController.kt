@@ -7,12 +7,8 @@ import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
 import io.github.jayfunc.carpelines.data.media.TrackBpmRepository
-import io.github.jayfunc.carpelines.data.model.TransitionMode
-import io.github.jayfunc.carpelines.data.model.TransitionResolution
-import io.github.jayfunc.carpelines.data.model.TransitionSource
+import io.github.jayfunc.carpelines.data.model.CrossfadeSettings
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
-import io.github.jayfunc.carpelines.data.repository.TransitionRepository
-import io.github.jayfunc.carpelines.utils.MediaItemBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -30,21 +26,17 @@ import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private data class TransitionSettingsSnapshot(
-    val resolution: TransitionResolution,
-    val isCrossfadeEnabled: Boolean,
-    val isSmartEnabled: Boolean,
-)
-
 /**
- * Orchestrates song transitions by observing the player state and
+ * Orchestrates the crossfade between consecutive songs by observing the player state and
  * commanding the DualPlayerEngine.
+ *
+ * The crossfade is a global playback setting (enabled + duration + smart mode); per-playlist
+ * and per-pair rules no longer exist.
  */
 @OptIn(UnstableApi::class)
 @Singleton
 class TransitionController @Inject constructor(
     private val engine: DualPlayerEngine,
-    private val transitionRepository: TransitionRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
     private val trackBpmRepository: TrackBpmRepository,
 ) {
@@ -110,7 +102,7 @@ class TransitionController @Inject constructor(
                     transitionSchedulerJob?.cancel()
                     engine.cancelNext()
 
-                     engine.masterPlayer.currentMediaItem?.let { scheduleTransitionFor(it) }
+                    engine.masterPlayer.currentMediaItem?.let { scheduleTransitionFor(it) }
                 }
             }
 
@@ -176,90 +168,34 @@ class TransitionController @Inject constructor(
 
             val nextMediaItem = transitionTarget.mediaItem
 
-            val fromTrackId = currentMediaItem.mediaId
-            val toTrackId = nextMediaItem.mediaId
-            val currentPlaylistId = MediaItemBuilder.playlistIdOf(currentMediaItem)
-            val nextPlaylistId = MediaItemBuilder.playlistIdOf(nextMediaItem)
-            // A song the user queued from elsewhere carries no playlist tag; next to playlist
-            // songs it still takes the playlist's default transition rather than the global one.
-            val playlistId = currentPlaylistId ?: nextPlaylistId
-            // A pair's own transition only plays while the queue still plays that pair as the
-            // playlist has it: both songs queued from the playlist, back to back. Once the user
-            // moves, inserts or removes songs around it, it falls back to the playlist default.
-            val pairStillFromPlaylist = currentPlaylistId != null && currentPlaylistId == nextPlaylistId
-
-            Timber.tag("TransitionDebug").d(
-                "Resolving settings for playlistId=%s, %s -> %s (pairFromPlaylist=%s)",
-                playlistId, fromTrackId, toTrackId, pairStillFromPlaylist
-            )
-
-            val isCrossfadeEnabledFlow = userPreferencesRepository.isCrossfadeEnabledFlow
-
-            val settingsFlow = if (playlistId != null) {
-                transitionRepository.resolveTransitionSettings(
-                    playlistId,
-                    fromTrackId.takeIf { pairStillFromPlaylist },
-                    toTrackId.takeIf { pairStillFromPlaylist },
-                )
-            } else {
-                Timber.tag("TransitionDebug").d("Missing playlistId. Using global settings.")
-                transitionRepository.getGlobalSettings().map {
-                    TransitionResolution(
-                        settings = it,
-                        source = TransitionSource.GLOBAL_DEFAULT
-                    )
-                }
-            }
-
             combine(
-                settingsFlow,
-                isCrossfadeEnabledFlow,
+                userPreferencesRepository.crossfadeDurationFlow,
+                userPreferencesRepository.isCrossfadeEnabledFlow,
                 userPreferencesRepository.smartCrossfadeEnabledFlow,
-            ) { resolution, isEnabled, isSmartEnabled ->
-                TransitionSettingsSnapshot(
-                    resolution = resolution,
-                    isCrossfadeEnabled = isEnabled,
-                    isSmartEnabled = isSmartEnabled,
-                )
+            ) { durationMs, isEnabled, isSmartEnabled ->
+                Triple(durationMs, isEnabled, isSmartEnabled)
             }.distinctUntilChanged()
-            .collectLatest { snapshot ->
-                val resolution = snapshot.resolution
-                val isEnabled = snapshot.isCrossfadeEnabled
-
-                val settings = resolution.settings
-                Timber.tag("TransitionDebug").d(
-                    "Settings resolved: Mode=%s, Duration=%dms, GlobalEnabled=%s, Source=%s",
-                    settings.mode, settings.durationMs, isEnabled, resolution.source
-                )
-
-                // The global toggle is a master kill-switch, deliberately checked before the
-                // resolution source: a playlist or per-track rule picks which settings win, not
-                // whether crossfade runs at all.
+            .collectLatest { (durationMs, isEnabled, isSmartEnabled) ->
                 if (!isEnabled) {
-                    Timber.tag("TransitionDebug").d(
-                        "Crossfade globally disabled (source=%s). Using default gap.",
-                        resolution.source
-                    )
+                    Timber.tag("TransitionDebug").d("Crossfade globally disabled. Using default gap.")
                     engine.cancelNext()
                     engine.setPauseAtEndOfMediaItems(shouldPause = false)
                     return@collectLatest
                 }
 
-                if (settings.mode == TransitionMode.NONE || settings.durationMs <= 0) {
-                    Timber.tag("TransitionDebug").d("Transition disabled or zero duration.")
+                if (durationMs <= 0) {
+                    Timber.tag("TransitionDebug").d("Crossfade duration is zero.")
                     engine.cancelNext()
                     engine.setPauseAtEndOfMediaItems(shouldPause = false)
                     return@collectLatest
                 }
+
+                val settings = CrossfadeSettings(durationMs = durationMs)
 
                 // Smart crossfade: tag-embedded tempo for both sides of the transition
                 // (cached in-memory after the first read — never decodes audio).
-                // A user-authored per-pair rule (PLAYLIST_SPECIFIC) is explicit intent and
-                // is never overridden by the automatic tempo logic.
-                val smartApplies = snapshot.isSmartEnabled &&
-                    resolution.source != TransitionSource.PLAYLIST_SPECIFIC
-                val outgoingBpm = if (smartApplies) trackBpmRepository.bpmFor(currentMediaItem) else null
-                val incomingBpm = if (smartApplies) trackBpmRepository.bpmFor(nextMediaItem) else null
+                val outgoingBpm = if (isSmartEnabled) trackBpmRepository.bpmFor(currentMediaItem) else null
+                val incomingBpm = if (isSmartEnabled) trackBpmRepository.bpmFor(nextMediaItem) else null
 
                 Timber.tag("TransitionDebug").d("Preparing next track for overlap: %s", nextMediaItem.mediaId)
                 engine.prepareNext(transitionTarget)
@@ -283,7 +219,7 @@ class TransitionController @Inject constructor(
                     return@collectLatest
                 }
 
-                val smartPlan = if (smartApplies) {
+                val smartPlan = if (isSmartEnabled) {
                     SmartCrossfadePlanner.plan(
                         base = settings,
                         trackDurationMs = duration,
@@ -305,9 +241,8 @@ class TransitionController @Inject constructor(
                 val transitionPoint = smartPlan?.transitionPointMs ?: (duration - effectiveDuration)
 
                 Timber.tag("TransitionDebug").d(
-                    "Scheduled %s at %d ms (SongDur: %d). Fade duration: %d ms (smart=%s)",
-                    effectiveSettings.mode, transitionPoint, duration, effectiveDuration,
-                    smartPlan?.compatibility
+                    "Scheduled crossfade at %d ms (SongDur: %d). Fade duration: %d ms (smart=%s)",
+                    transitionPoint, duration, effectiveDuration, smartPlan?.compatibility
                 )
 
                 engine.setPauseAtEndOfMediaItems(shouldPause = true)

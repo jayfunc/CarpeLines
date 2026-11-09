@@ -491,22 +491,6 @@ class MainActivity : ComponentActivity() {
             // Player results used to be emitted into a flow nobody collected.
             playerViewModel.toastEvents.collect { message -> appMessageHost.show(message) }
         }
-        // Dismissing the mini player is reversible, so it gets the M3 undo snackbar instead of a
-        // bespoke bar: the action stays reachable by screen readers and the timeout is the
-        // platform's, not a hand-rolled countdown.
-        val playerUiState by playerViewModel.playerUiState.collectAsStateWithLifecycle()
-        LaunchedEffect(appMessageHost, playerUiState.showDismissUndoBar) {
-            if (!playerUiState.showDismissUndoBar) return@LaunchedEffect
-            val result = appMessageHost.snackbarHostState.showSnackbar(
-                message = context.getString(R.string.playlist_dismissed_message),
-                actionLabel = context.getString(R.string.action_undo),
-                duration = SnackbarDuration.Short
-            )
-            if (result == SnackbarResult.ActionPerformed) {
-                playerViewModel.undoDismissPlaylist()
-            }
-        }
-
         val pendingUpdatesNav by _pendingUpdatesNavigation.collectAsStateWithLifecycle()
         LaunchedEffect(pendingUpdatesNav) {
             if (!pendingUpdatesNav) return@LaunchedEffect
@@ -579,8 +563,6 @@ class MainActivity : ComponentActivity() {
                 // detail pages do the same; the rail stays on large screens.
                 Screen.NowPlayingLyrics.route,
                 Screen.LyricsCard.route,
-                Screen.PlaylistDetail.route,
-                Screen.EditTransition.route,
                 Screen.About.route,
                 Screen.Licenses.route,
                 Screen.Recap.route,

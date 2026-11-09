@@ -58,26 +58,3 @@ internal fun collectArtistNames(
     return combined
 }
 
-internal fun choosePreferredArtistName(
-    localArtistName: String,
-    mediaStoreArtistName: String,
-    artistDelimiters: List<String>,
-    wordDelimiters: List<String> = emptyList()
-): String {
-    val localTrimmed = localArtistName.trim()
-    val mediaTrimmed = mediaStoreArtistName.trim()
-
-    if (localTrimmed.isBlank()) return mediaStoreArtistName
-    if (mediaTrimmed.isBlank()) return localArtistName
-
-    val localArtists = localTrimmed.splitArtistsByDelimiters(artistDelimiters, wordDelimiters)
-    val mediaArtists = mediaTrimmed.splitArtistsByDelimiters(artistDelimiters, wordDelimiters)
-
-    return when {
-        mediaArtists.size > localArtists.size -> mediaStoreArtistName
-        localArtists.size > mediaArtists.size -> localArtistName
-        mediaTrimmed.length > localTrimmed.length -> mediaStoreArtistName
-        localTrimmed.length > mediaTrimmed.length -> localArtistName
-        else -> mediaStoreArtistName
-    }
-}

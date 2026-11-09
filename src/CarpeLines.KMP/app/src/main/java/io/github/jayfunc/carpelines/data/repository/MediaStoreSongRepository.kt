@@ -8,7 +8,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import io.github.jayfunc.carpelines.data.database.MusicDao
-import io.github.jayfunc.carpelines.data.database.FavoritesDao
 import io.github.jayfunc.carpelines.data.database.toSong
 import io.github.jayfunc.carpelines.data.model.ArtistRef
 import io.github.jayfunc.carpelines.data.model.Song
@@ -43,7 +42,6 @@ import javax.inject.Singleton
 import timber.log.Timber
 
 private data class SearchPrefs(
-    val favoriteIds: Set<Long>,
     val allowedDirs: Set<String>,
     val blockedDirs: Set<String>,
     val artistDelimiters: List<String>,
@@ -56,14 +54,9 @@ private data class SearchPrefs(
 class MediaStoreSongRepository @Inject constructor(
     @ApplicationContext private val context: Context,
     private val mediaStoreObserver: MediaStoreObserver,
-    private val favoritesDao: FavoritesDao,
     private val musicDao: MusicDao,
     private val userPreferencesRepository: UserPreferencesRepository
 ) : SongRepository {
-
-    private suspend fun getFavoriteIds(): Set<Long> {
-        return favoritesDao.getFavoriteSongIdsOnce().toSet()
-    }
 
     private fun normalizePath(path: String): String = File(path).absolutePath
 
@@ -73,7 +66,6 @@ class MediaStoreSongRepository @Inject constructor(
     ): Flow<List<Song>> {
         return combine(
             mediaStoreObserver.mediaStoreChanges.onStart { emit(Unit) },
-            favoritesDao.getFavoriteSongIds().distinctUntilChanged(),
             userPreferencesRepository.allowedDirectoriesFlow.distinctUntilChanged(),
             userPreferencesRepository.blockedDirectoriesFlow.distinctUntilChanged(),
             userPreferencesRepository.artistDelimitersFlow.distinctUntilChanged(),
@@ -81,15 +73,13 @@ class MediaStoreSongRepository @Inject constructor(
             userPreferencesRepository.artistWordDelimitersFlow.distinctUntilChanged(),
             userPreferencesRepository.extractArtistsFromTitleFlow.distinctUntilChanged()
         ) { values ->
-            val favoriteIds = @Suppress("UNCHECKED_CAST") (values[1] as List<Long>)
-            val allowedDirs = @Suppress("UNCHECKED_CAST") (values[2] as Set<String>)
-            val blockedDirs = @Suppress("UNCHECKED_CAST") (values[3] as Set<String>)
-            val artistDelimiters = @Suppress("UNCHECKED_CAST") (values[4] as List<String>)
-            val minDuration = values[5] as Int
-            val wordDelimiters = @Suppress("UNCHECKED_CAST") (values[6] as List<String>)
-            val extractFromTitle = values[7] as Boolean
+            val allowedDirs = @Suppress("UNCHECKED_CAST") (values[1] as Set<String>)
+            val blockedDirs = @Suppress("UNCHECKED_CAST") (values[2] as Set<String>)
+            val artistDelimiters = @Suppress("UNCHECKED_CAST") (values[3] as List<String>)
+            val minDuration = values[4] as Int
+            val wordDelimiters = @Suppress("UNCHECKED_CAST") (values[5] as List<String>)
+            val extractFromTitle = values[6] as Boolean
             fetchSongsFromMediaStore(
-                favoriteIds = favoriteIds.toSet(),
                 allowedDirs = allowedDirs.toList(),
                 blockedDirs = blockedDirs.toList(),
                 artistDelimiters = artistDelimiters,
@@ -105,7 +95,6 @@ class MediaStoreSongRepository @Inject constructor(
     override fun getSongs(): Flow<List<Song>> = observeSongs()
 
     private suspend fun fetchSongsFromMediaStore(
-        favoriteIds: Set<Long>,
         allowedDirs: List<String>,
         blockedDirs: List<String>,
         artistDelimiters: List<String>,
@@ -246,7 +235,6 @@ class MediaStoreSongRepository @Inject constructor(
                         duration = cursor.getLong(durationCol),
                         genre = songIdToGenreMap[id],
                         lyrics = null,
-                        isFavorite = favoriteIds.contains(id),
                         trackNumber = cursor.getInt(trackCol) % 1000,
                         year = cursor.getInt(yearCol),
                         dateAdded = cursor.getLong(dateAddedCol),
@@ -323,19 +311,17 @@ class MediaStoreSongRepository @Inject constructor(
 
     override suspend fun searchSongs(query: String): List<Song> {
         if (query.isBlank()) return emptyList()
-        val (favoriteIds, allowedDirs, blockedDirs, artistDelimiters, wordDelims, extractFromTitle, minDuration) = coroutineScope {
-            val fav = async { getFavoriteIds() }
+        val (allowedDirs, blockedDirs, artistDelimiters, wordDelims, extractFromTitle, minDuration) = coroutineScope {
             val allowed = async { userPreferencesRepository.allowedDirectoriesFlow.first() }
             val blocked = async { userPreferencesRepository.blockedDirectoriesFlow.first() }
             val delims = async { userPreferencesRepository.artistDelimitersFlow.first() }
             val wordD = async { userPreferencesRepository.artistWordDelimitersFlow.first() }
             val extract = async { userPreferencesRepository.extractArtistsFromTitleFlow.first() }
             val minDur = async { userPreferencesRepository.minSongDurationFlow.first() }
-            SearchPrefs(fav.await(), allowed.await(), blocked.await(), delims.await(), wordD.await(), extract.await(), minDur.await())
+            SearchPrefs(allowed.await(), blocked.await(), delims.await(), wordD.await(), extract.await(), minDur.await())
         }
         val queryTerm = "%${query.trim()}%"
         return fetchSongsFromMediaStore(
-            favoriteIds = favoriteIds,
             allowedDirs = allowedDirs.toList(),
             blockedDirs = blockedDirs.toList(),
             artistDelimiters = artistDelimiters,
@@ -479,75 +465,4 @@ class MediaStoreSongRepository @Inject constructor(
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getPaginatedFavoriteSongs(
-        sortOption: io.github.jayfunc.carpelines.data.model.SortOption,
-        storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter
-    ): Flow<PagingData<Song>> {
-        return combine(
-            userPreferencesRepository.allowedDirectoriesFlow,
-            userPreferencesRepository.blockedDirectoriesFlow
-        ) { allowedDirs, blockedDirs ->
-            allowedDirs to blockedDirs
-        }.flatMapLatest { (allowedDirs, blockedDirs) ->
-            kotlinx.coroutines.flow.flow {
-                val (allowedParentDirs, applyDirectoryFilter) =
-                    computeAllowedDirs(allowedDirs, blockedDirs)
-                emit(
-                    androidx.paging.Pager(
-                        config = defaultPagingConfig,
-                        pagingSourceFactory = {
-                            musicDao.getFavoriteSongsPaginated(
-                                allowedParentDirs = allowedParentDirs,
-                                applyDirectoryFilter = applyDirectoryFilter,
-                                sortOrder = sortOption.storageKey,
-                                filterMode = storageFilter.value
-                            )
-                        }
-                    ).flow
-                )
-            }.flatMapLatest { it }
-        }.map { pagingData ->
-            pagingData.map { entity -> entity.toSong().copy(isFavorite = true) }
-        }
-    }
-
-    override suspend fun getFavoriteSongsOnce(
-        storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter
-    ): List<Song> = withContext(Dispatchers.IO) {
-        val allowedDirs = userPreferencesRepository.allowedDirectoriesFlow.first()
-        val blockedDirs = userPreferencesRepository.blockedDirectoriesFlow.first()
-        val (allowedParentDirs, applyDirectoryFilter) =
-            computeAllowedDirs(allowedDirs, blockedDirs)
-        musicDao.getFavoriteSongsList(
-            allowedParentDirs = allowedParentDirs,
-            applyDirectoryFilter = applyDirectoryFilter,
-            filterMode = storageFilter.value
-        )
-            .map { entity -> entity.toSong().copy(isFavorite = true) }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getFavoriteSongCountFlow(
-        storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter
-    ): Flow<Int> {
-        return combine(
-            userPreferencesRepository.allowedDirectoriesFlow,
-            userPreferencesRepository.blockedDirectoriesFlow
-        ) { allowedDirs, blockedDirs ->
-            allowedDirs to blockedDirs
-        }.flatMapLatest { (allowedDirs, blockedDirs) ->
-            kotlinx.coroutines.flow.flow {
-                val (allowedParentDirs, applyDirectoryFilter) =
-                    computeAllowedDirs(allowedDirs, blockedDirs)
-                emit(Pair(allowedParentDirs, applyDirectoryFilter))
-            }.flatMapLatest { (allowedDirs, applyFilter) ->
-                musicDao.getFavoriteSongCount(
-                    allowedParentDirs = allowedDirs,
-                    applyDirectoryFilter = applyFilter,
-                    filterMode = storageFilter.value
-                )
-            }
-        }
-    }
 }

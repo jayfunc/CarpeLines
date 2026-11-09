@@ -76,6 +76,7 @@ data class SongEntity(
     @ColumnInfo(name = "genre") val genre: String?,
     @ColumnInfo(name = "file_path") val filePath: String,
     @ColumnInfo(name = "parent_directory_path") val parentDirectoryPath: String,
+    /** Kept for schema compatibility; the favorites feature was removed and this is always false. */
     @ColumnInfo(name = "is_favorite", defaultValue = "0") val isFavorite: Boolean = false,
     @ColumnInfo(name = "lyrics", defaultValue = "null") val lyrics: String? = null,
     @ColumnInfo(name = "track_number", defaultValue = "0") val trackNumber: Int = 0,
@@ -125,7 +126,6 @@ private fun SongEntity.toSongInternal(artists: List<ArtistRef>): Song {
             ?.let { raw -> if ('\u0000' in raw) GenreParser.joinValues(raw.split('\u0000')) else raw }
             .normalizeMetadataText(),
         lyrics = this.lyrics?.normalizeMetadataText(),
-        isFavorite = this.isFavorite,
         trackNumber = this.trackNumber,
         discNumber = this.discNumber,
         dateAdded = this.dateAdded,
@@ -216,7 +216,6 @@ fun Song.toEntity(filePathFromMediaStore: String, parentDirFromMediaStore: Strin
         albumArtUriString = this.albumArtUriString,
         duration = this.duration,
         genre = this.genre,
-        isFavorite = this.isFavorite,
         lyrics = this.lyrics,
         trackNumber = this.trackNumber,
         discNumber = this.discNumber,
@@ -253,7 +252,6 @@ fun Song.toEntityWithoutPaths(): SongEntity {
         albumArtUriString = this.albumArtUriString,
         duration = this.duration,
         genre = this.genre,
-        isFavorite = this.isFavorite,
         lyrics = this.lyrics,
         trackNumber = this.trackNumber,
         discNumber = this.discNumber,

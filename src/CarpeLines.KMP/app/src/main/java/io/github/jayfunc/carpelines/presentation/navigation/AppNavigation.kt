@@ -32,8 +32,6 @@ import io.github.jayfunc.carpelines.presentation.screens.CoverSourceSettingsScre
 import io.github.jayfunc.carpelines.presentation.screens.NowPlayingLyricsScreen
 import io.github.jayfunc.carpelines.presentation.screens.UpdatesScreen
 import io.github.jayfunc.carpelines.presentation.model.SettingsCategory
-import io.github.jayfunc.carpelines.presentation.screens.EditTransitionScreen
-import io.github.jayfunc.carpelines.presentation.screens.PlaylistDetailScreen
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import io.github.jayfunc.carpelines.presentation.screens.LyricsCardRoute
 import io.github.jayfunc.carpelines.presentation.screens.LyricsManagementSettingsScreen
@@ -46,7 +44,6 @@ import io.github.jayfunc.carpelines.presentation.screens.StatsScreen
 import io.github.jayfunc.carpelines.presentation.screens.SettingsScreen
 import io.github.jayfunc.carpelines.presentation.screens.SettingsCategoryScreen
 import io.github.jayfunc.carpelines.presentation.viewmodel.PlayerViewModel
-import io.github.jayfunc.carpelines.presentation.viewmodel.PlaylistViewModel
 import io.github.jayfunc.carpelines.presentation.viewmodel.RecapViewModel
 import io.github.jayfunc.carpelines.presentation.recap.RecapScreen
 import kotlinx.coroutines.flow.first
@@ -410,44 +407,6 @@ fun AppNavigation(
                     LicensesScreen(
                         onNavigationIconClick = { navController.popBackStack() }
                     )
-                }
-            }
-            composable(
-                route = Screen.PlaylistDetail.route,
-                arguments = listOf(navArgument("playlistId") { type = NavType.StringType }),
-                enterTransition = { enterTransition() },
-                exitTransition = { exitTransition() },
-                popEnterTransition = { popEnterTransition() },
-                popExitTransition = { popExitTransition() },
-            ) { backStackEntry ->
-                val playlistId = backStackEntry.arguments?.getString("playlistId")
-                val playlistViewModel: PlaylistViewModel = hiltViewModel()
-                if (playlistId != null) {
-                    ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
-                        PlaylistDetailScreen(
-                            playlistId = playlistId,
-                            playerViewModel = playerViewModel,
-                            playlistViewModel = playlistViewModel,
-                            onBackClick = { navController.popBackStack() },
-                            onDeletePlayListClick = { navController.popBackStack() },
-                            navController = navController
-                        )
-                    }
-                }
-            }
-            composable(
-                route = Screen.EditTransition.route,
-                arguments = listOf(navArgument("playlistId") {
-                    type = NavType.StringType
-                    nullable = true
-                }),
-                enterTransition = { enterTransition() },
-                exitTransition = { exitTransition() },
-                popEnterTransition = { popEnterTransition() },
-                popExitTransition = { popExitTransition() },
-            ) {
-                ScreenWrapper(navController = navController, playerViewModel = playerViewModel) {
-                    EditTransitionScreen(navController = navController)
                 }
             }
             composable(

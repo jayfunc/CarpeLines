@@ -122,43 +122,6 @@ internal fun requiresTemporaryForegroundForStart(
             !serviceAlreadyForeground)
 }
 
-suspend fun loadArtworkBytesViaCoil(context: Context, uri: Uri): ByteArray? {
-    val appContext = context.applicationContext
-    val request = ImageRequest.Builder(appContext)
-        .data(uri)
-        .size(
-            ArtworkTransportSanitizer.WIDGET_CONFIG.maxDimensionPx,
-            ArtworkTransportSanitizer.WIDGET_CONFIG.maxDimensionPx,
-        )
-        .precision(Precision.INEXACT)
-        .allowHardware(false)
-        .memoryCachePolicy(CachePolicy.ENABLED)
-        .networkCachePolicy(CachePolicy.ENABLED)
-        .build()
-
-    return runCatching {
-        val drawable = appContext.imageLoader.execute(request).drawable ?: return@runCatching null
-        val fallbackSizePx = ArtworkTransportSanitizer.WIDGET_CONFIG.maxDimensionPx
-        val bitmap = drawable.toBitmap(
-            width = drawable.intrinsicWidth.takeIf { it > 0 } ?: fallbackSizePx,
-            height = drawable.intrinsicHeight.takeIf { it > 0 } ?: fallbackSizePx,
-            config = Bitmap.Config.ARGB_8888,
-        )
-        val encodedBytes = ByteArrayOutputStream().use { output ->
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 92, output)
-            output.toByteArray()
-        }
-        ArtworkTransportSanitizer.sanitizeEncodedBytes(
-            data = encodedBytes,
-            config = ArtworkTransportSanitizer.WIDGET_CONFIG,
-        )
-    }.getOrElse { error ->
-        Timber.tag("MusicService_CarpeLines").w(error, "Artwork read failed via Coil for uri=%s", uri)
-        null
-    }
-}
-
-
 @androidx.annotation.OptIn(UnstableApi::class)
 @AndroidEntryPoint
 class MusicService : MediaSessionService() {
@@ -201,7 +164,6 @@ class MusicService : MediaSessionService() {
         )
     }
 
-    private var favoriteSongIds = emptySet<String>()
     private var mediaSession: MediaSession? = null
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var keepPlayingInBackground = true
@@ -517,8 +479,6 @@ class MusicService : MediaSessionService() {
                 if (isPrivilegedController(controller)) {
                     val customCommands = listOf(
                         MusicNotificationProvider.CUSTOM_COMMAND_CLOSE_PLAYER,
-                        MusicNotificationProvider.CUSTOM_COMMAND_LIKE,
-                        MusicNotificationProvider.CUSTOM_COMMAND_SET_FAVORITE_STATE,
                         MusicNotificationProvider.CUSTOM_COMMAND_TOGGLE_SHUFFLE,
                         MusicNotificationProvider.CUSTOM_COMMAND_SHUFFLE_ON,
                         MusicNotificationProvider.CUSTOM_COMMAND_SHUFFLE_OFF,
@@ -620,27 +580,6 @@ class MusicService : MediaSessionService() {
                         session.player.repeatMode = newMode
                         refreshMediaSessionUi(session)
                     }
-                    MusicNotificationProvider.CUSTOM_COMMAND_LIKE -> {
-                        val songId = session.player.currentMediaItem?.mediaId
-                            ?: return@onCustomCommand Futures.immediateFuture(
-                                SessionResult(SessionError.ERROR_UNKNOWN)
-                            )
-                        val targetFavoriteState = !favoriteSongIds.contains(songId)
-                        return setCurrentSongFavoriteState(
-                            session = session,
-                            targetFavoriteState = targetFavoriteState
-                        )
-                    }
-                    MusicNotificationProvider.CUSTOM_COMMAND_SET_FAVORITE_STATE -> {
-                        val enabled = args.getBoolean(
-                            MusicNotificationProvider.EXTRA_FAVORITE_ENABLED,
-                            false
-                        )
-                        return setCurrentSongFavoriteState(
-                            session = session,
-                            targetFavoriteState = enabled
-                        )
-                    }
                 }
                 return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
             }
@@ -716,24 +655,6 @@ class MusicService : MediaSessionService() {
             mediaSession?.let { refreshMediaSessionUi(it) }
         }
 
-        serviceScope.launch {
-            musicRepository.getFavoriteSongIdsFlow().collect { ids ->
-                Timber.tag("MusicService")
-                    .d("favoriteSongIdsFlow(Room) collected. New ids size: ${ids.size}")
-                val oldIds = favoriteSongIds
-                favoriteSongIds = ids
-                val currentSongId = mediaSession?.player?.currentMediaItem?.mediaId
-                if (currentSongId != null) {
-                    val wasFavorite = oldIds.contains(currentSongId)
-                    val isFavorite = ids.contains(currentSongId)
-                    if (wasFavorite != isFavorite) {
-                        Timber.tag("MusicService")
-                            .d("Favorite status changed for current song. Updating notification.")
-                        mediaSession?.let { refreshMediaSessionUi(it) }
-                    }
-                }
-            }
-        }
     }
 
     private fun startTemporaryForegroundForCommand() {
@@ -1383,7 +1304,6 @@ class MusicService : MediaSessionService() {
                 durationMs = metadata.extras
                     ?.getLong(MediaItemBuilder.EXTERNAL_EXTRA_DURATION)
                     ?.takeIf { it > 0L },
-                playlistId = MediaItemBuilder.playlistIdOf(mediaItem),
             )
         }
         return snapshotItems
@@ -1508,9 +1428,6 @@ class MusicService : MediaSessionService() {
             snapshotItem.durationMs?.takeIf { it > 0L }?.let {
                 putLong(MediaItemBuilder.EXTERNAL_EXTRA_DURATION, it)
             }
-            snapshotItem.playlistId?.takeIf { it.isNotBlank() }?.let {
-                putString(MediaItemBuilder.EXTRA_PLAYLIST_ID, it)
-            }
         }
         metadataBuilder.setExtras(extras)
 
@@ -1565,10 +1482,6 @@ class MusicService : MediaSessionService() {
             ?.takeIf { it.isNotBlank() }
             ?: return null
         return parseArtworkUriString(extrasUri)
-    }
-
-    fun isSongFavorite(songId: String?): Boolean {
-        return songId != null && favoriteSongIds.contains(songId)
     }
 
     override fun onUpdateNotification(session: MediaSession, startInForegroundRequired: Boolean) {
@@ -1759,37 +1672,6 @@ class MusicService : MediaSessionService() {
         refreshMediaSessionUi(session)
     }
 
-    private fun setCurrentSongFavoriteState(
-        session: MediaSession,
-        targetFavoriteState: Boolean
-    ): ListenableFuture<SessionResult> {
-        val songId = session.player.currentMediaItem?.mediaId
-            ?: return Futures.immediateFuture(SessionResult(SessionError.ERROR_UNKNOWN))
-
-        val isCurrentlyFavorite = favoriteSongIds.contains(songId)
-        if (isCurrentlyFavorite == targetFavoriteState) {
-            refreshMediaSessionUi(session)
-            return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
-        }
-
-        favoriteSongIds = if (targetFavoriteState) {
-            favoriteSongIds + songId
-        } else {
-            favoriteSongIds - songId
-        }
-
-        refreshMediaSessionUi(session)
-
-        serviceScope.launch {
-            Timber.tag("MusicService")
-                .d("Applying favorite=$targetFavoriteState for songId: $songId")
-            musicRepository.setFavoriteStatus(songId, targetFavoriteState)
-            refreshMediaSessionUi(session)
-        }
-
-        return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
-    }
-
     /**
      * @param exposeInternalArtwork the request comes from this app's own controller. Its items
      *   also keep their playlist tag: the rebuilt items come from the library and would
@@ -1813,16 +1695,7 @@ class MusicService : MediaSessionService() {
                 }
             }
         }
-        if (!exposeInternalArtwork) return resolution
-        // One resolved item per requested item, in order.
-        return resolution.copy(
-            mediaItems = resolution.mediaItems.mapIndexed { index, item ->
-                MediaItemBuilder.withPlaylistId(
-                    item,
-                    requestedItems.getOrNull(index)?.let(MediaItemBuilder::playlistIdOf)
-                )
-            }.toMutableList()
-        )
+        return resolution
     }
 
     /**
@@ -1887,8 +1760,6 @@ class MusicService : MediaSessionService() {
         return buildString {
             append(player.currentMediaItem?.mediaId.orEmpty())
             append('|')
-            append(isSongFavorite(player.currentMediaItem?.mediaId))
-            append('|')
             append(isManualShuffleEnabled)
             append('|')
             append(player.repeatMode)
@@ -1897,16 +1768,6 @@ class MusicService : MediaSessionService() {
 
     private fun buildMediaButtonPreferences(session: MediaSession): List<CommandButton> {
         val player = session.player
-        val songId = player.currentMediaItem?.mediaId
-        val isFavorite = isSongFavorite(songId)
-        val likeButton = CommandButton.Builder(
-            if (isFavorite) CommandButton.ICON_HEART_FILLED else CommandButton.ICON_HEART_UNFILLED
-        )
-            .setDisplayName("Like")
-            .setSessionCommand(SessionCommand(MusicNotificationProvider.CUSTOM_COMMAND_LIKE, Bundle.EMPTY))
-            .setSlots(CommandButton.SLOT_OVERFLOW)
-            .build()
-
         val shuffleOn = isManualShuffleEnabled
         val shuffleCommandAction = if (shuffleOn) {
             MusicNotificationProvider.CUSTOM_COMMAND_SHUFFLE_OFF
@@ -1940,7 +1801,7 @@ class MusicService : MediaSessionService() {
             .setSlots(CommandButton.SLOT_OVERFLOW)
             .build()
 
-        return listOf(likeButton, closeButton, shuffleButton, repeatButton)
+        return listOf(closeButton, shuffleButton, repeatButton)
     }
 
     /**

@@ -4,7 +4,6 @@ import android.app.Activity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.jayfunc.carpelines.R
 import io.github.jayfunc.carpelines.data.model.Song
-import io.github.jayfunc.carpelines.data.preferences.PlaylistPreferencesRepository
 import io.github.jayfunc.carpelines.data.repository.MusicRepository
 import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
@@ -16,7 +15,6 @@ import kotlinx.coroutines.withContext
 class SongRemovalStateHolder @Inject constructor(
     private val musicRepository: MusicRepository,
     private val metadataEditStateHolder: MetadataEditStateHolder,
-    private val playlistPreferencesRepository: PlaylistPreferencesRepository,
     private val libraryStateHolder: LibraryStateHolder
 ) {
     suspend fun showDeleteConfirmation(activity: Activity, song: Song): Boolean {
@@ -63,6 +61,5 @@ class SongRemovalStateHolder @Inject constructor(
     suspend fun removeSongFromLibrary(song: Song) {
         libraryStateHolder.removeSong(song.id)
         musicRepository.deleteById(song.id.toLong())
-        playlistPreferencesRepository.removeSongFromAllPlaylists(song.id)
     }
 }

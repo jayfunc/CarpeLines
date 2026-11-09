@@ -12,17 +12,6 @@
     <string name="queue_name_selected_songs">選択した曲</string>
 
     <!-- Player sheet, mini player and full player chrome -->
-    <string name="cd_player_sheet_collapsed">CarpeLines プレーヤーシート（折りたたみ）、%1$s</string>
-    <string name="cd_player_sheet_expanded">CarpeLines プレーヤーシート（展開）、%1$s</string>
-    <string name="cd_player_sheet_collapsed_no_track">CarpeLines プレーヤーシート（折りたたみ）</string>
-    <string name="cd_player_sheet_expanded_no_track">CarpeLines プレーヤーシート（展開）</string>
-    <string name="mini_player_connecting_device">デバイスに接続中…</string>
-    <string name="mini_player_preparing_playback">再生を準備中…</string>
-    <string name="mini_player_loading_audio">音声を読み込み中…</string>
     <string name="cd_shuffle">シャッフル</string>
     <string name="cd_playback_position">再生位置</string>
-    <string name="add_bookmark_title">ブックマークを保存</string>
-    <string name="add_bookmark_saved_point">保存した再生位置</string>
-    <string name="add_bookmark_use_lyric_line">歌詞の行を使う</string>
-    <string name="add_bookmark_default_name">ブックマーク @ %1$s</string>
 </resources>

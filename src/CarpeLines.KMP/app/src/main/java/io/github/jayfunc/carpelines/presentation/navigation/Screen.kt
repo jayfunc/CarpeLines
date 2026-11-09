@@ -27,19 +27,10 @@ sealed class Screen(val route: String) {
         fun createRoute(highlightKey: String? = null) =
             if (highlightKey != null) "lyrics_settings?highlightKey=$highlightKey" else "lyrics_settings"
     }
-    object PlaylistDetail : Screen("playlist_detail/{playlistId}") {
-        fun createRoute(playlistId: String) = "playlist_detail/$playlistId"
-    }
-
     object Stats : Screen("stats")
     object Recap : Screen("recap/{year}") {
         fun createRoute(year: Int) = "recap/$year"
     }
-    object EditTransition : Screen("edit_transition?playlistId={playlistId}") {
-        fun createRoute(playlistId: String?) =
-            if (playlistId != null) "edit_transition?playlistId=$playlistId" else "edit_transition"
-    }
-
     object About : Screen("about")
     object Licenses : Screen("licenses")
     object BetterLyricsSearch : Screen("betterlyrics_search")

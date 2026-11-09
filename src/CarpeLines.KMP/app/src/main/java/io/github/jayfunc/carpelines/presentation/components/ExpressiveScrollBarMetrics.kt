@@ -117,20 +117,6 @@ internal fun resolveDragTargetIndex(
         .coerceIn(0, lastIndex)
 }
 
-internal fun extractFastScrollGlyph(value: String?): String? {
-    val leadingChar = value
-        .orEmpty()
-        .trim()
-        .firstOrNull { it.isLetterOrDigit() }
-        ?: return null
-
-    return if (leadingChar.isDigit()) {
-        "#"
-    } else {
-        leadingChar.uppercaseChar().toString()
-    }
-}
-
 internal fun medianOrNull(values: Iterable<Float>): Float? {
     val sorted = values
         .filter { it.isFinite() && it > 0f }

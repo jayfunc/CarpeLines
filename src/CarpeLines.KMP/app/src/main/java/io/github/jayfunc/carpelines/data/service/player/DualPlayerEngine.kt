@@ -36,7 +36,7 @@ import androidx.media3.extractor.DefaultExtractorsFactory
 import androidx.media3.extractor.mp3.Mp3Extractor
 import androidx.media3.extractor.flac.FlacExtractor
 import io.github.jayfunc.carpelines.data.model.AudioOutputMode
-import io.github.jayfunc.carpelines.data.model.TransitionSettings
+import io.github.jayfunc.carpelines.data.model.CrossfadeSettings
 import io.github.jayfunc.carpelines.data.offline.CloudOfflineRepository
 import io.github.jayfunc.carpelines.utils.MediaItemBuilder
 import io.github.jayfunc.carpelines.utils.envelope
@@ -1481,7 +1481,7 @@ class DualPlayerEngine @Inject constructor(
         volumeBeforeTransition = null
     }
 
-    fun performTransition(settings: TransitionSettings) {
+    fun performTransition(settings: CrossfadeSettings) {
         transitionJob?.cancel()
         if (volumeBeforeTransition == null) volumeBeforeTransition = playerA.volume
         val transitionRunId = transitionRunTracker.start()
@@ -1511,7 +1511,7 @@ class DualPlayerEngine @Inject constructor(
         }
     }
 
-    private suspend fun performOverlapTransition(settings: TransitionSettings) {
+    private suspend fun performOverlapTransition(settings: CrossfadeSettings) {
         val auxiliaryPlayer = playerB
         if (auxiliaryPlayer == null || auxiliaryPlayer.mediaItemCount == 0) {
             restoreVolumeBeforeTransition()

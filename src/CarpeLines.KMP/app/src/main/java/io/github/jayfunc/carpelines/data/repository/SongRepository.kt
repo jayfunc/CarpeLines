@@ -14,14 +14,4 @@ interface SongRepository {
     fun getPaginatedSongs(sortOption: io.github.jayfunc.carpelines.data.model.SortOption, storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter): Flow<PagingData<Song>>
     @OptIn(ExperimentalCoroutinesApi::class)
     fun getPaginatedSongs(): Flow<PagingData<Song>>
-    fun getPaginatedFavoriteSongs(
-        sortOption: io.github.jayfunc.carpelines.data.model.SortOption,
-        storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter
-    ): Flow<PagingData<Song>>
-    suspend fun getFavoriteSongsOnce(
-        storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter
-    ): List<Song>
-    fun getFavoriteSongCountFlow(
-        storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter
-    ): Flow<Int>
 }

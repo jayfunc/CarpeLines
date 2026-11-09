@@ -106,8 +106,7 @@ class SearchStateHolder @Inject constructor(
                                         is SearchResultItem.SongItem -> 0
                                         is SearchResultItem.AlbumItem -> 1
                                         is SearchResultItem.ArtistItem -> 2
-                                        is SearchResultItem.PlaylistItem -> 3
-                                    }
+                                                                }
                                 }
                             )
 

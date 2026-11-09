@@ -170,6 +170,28 @@ val MIGRATION_6_7 = object : Migration(6, 7) {
     }
 }
 
+/**
+ * v7 -> v8: local playlists, favorites and per-playlist transition rules are gone.
+ *
+ * The tables are dropped rather than kept so no orphan rows survive and no stale query can
+ * resolve a playlist id. `songs.is_favorite` stays: it is part of the shared song projection.
+ * `song_engagements` is untouched — Daily Mix and the listening stats depend on it.
+ *
+ * Idempotent (`IF EXISTS`) per the Auto Backup drift guard above.
+ */
+val MIGRATION_7_8 = object : Migration(7, 8) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("DROP TRIGGER IF EXISTS trg_favorites_insert_sync_song")
+        db.execSQL("DROP TRIGGER IF EXISTS trg_favorites_update_sync_song")
+        db.execSQL("DROP TRIGGER IF EXISTS trg_favorites_delete_sync_song")
+
+        db.execSQL("DROP TABLE IF EXISTS `playlist_songs`")
+        db.execSQL("DROP TABLE IF EXISTS `playlists`")
+        db.execSQL("DROP TABLE IF EXISTS `favorites`")
+        db.execSQL("DROP TABLE IF EXISTS `transition_rules`")
+    }
+}
+
 val MIGRATION_5_6 = object : Migration(5, 6) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL("DROP TABLE IF EXISTS `playlist_songs_v6`")

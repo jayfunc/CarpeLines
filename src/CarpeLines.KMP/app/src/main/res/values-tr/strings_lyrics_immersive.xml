@@ -1,31 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="lyrics_immersive_show_chrome">Kontrolleri göster</string>
-    <string name="lyrics_immersive_close">Şarkı sözü ekranından çık</string>
-    <string name="lyrics_immersive_previous">Önceki parça</string>
-    <string name="lyrics_immersive_next">Sonraki parça</string>
-    <string name="lyrics_immersive_source">%1$s aracılığıyla</string>
     <string name="lyrics_overview_lyrics_only">Yalnızca sözleri göster</string>
     <string name="lyrics_line_actions_title">Satır işlemleri</string>
     <string name="lyrics_line_actions_instrumental">Enstrümantal bölüm</string>
     <string name="lyrics_line_actions_offset_label">Satır kaydırması</string>
     <string name="lyrics_line_actions_group_lyrics">Şarkı sözleri</string>
     <string name="lyrics_line_actions_copy">Bu satırı kopyala</string>
-    <string name="lyrics_line_actions_earlier">Sözleri öne al</string>
-    <string name="lyrics_line_actions_later">Sözleri geri al</string>
     <string name="lyrics_line_actions_reset_offset">Bu parçanın kaydırmasını sıfırla</string>
     <string name="lyrics_line_actions_refresh">Sözleri yeniden getir</string>
     <string name="lyrics_line_actions_manual_search">Sözleri elle ara</string>
     <string name="lyrics_line_actions_settings">Şarkı sözü görünümü</string>
     <string name="lyrics_line_actions_management">Şarkı sözlerini yönet</string>
-    <string name="lyrics_layout_mode_title">Düzen</string>
-    <string name="lyrics_layout_mode_subtitle">Ekranı kaç şarkı sözü satırı paylaşır</string>
-    <string name="lyrics_layout_mode_scroll">Kaydırmalı liste</string>
-    <string name="lyrics_layout_mode_scroll_desc">Her satır görünür ve çalan satır ortada durur</string>
-    <string name="lyrics_layout_mode_single">Tek satır</string>
-    <string name="lyrics_layout_mode_single_desc">Çalan satır ekranı doldurur</string>
-    <string name="lyrics_layout_mode_dual">İki satır</string>
-    <string name="lyrics_layout_mode_dual_desc">Çalan satır ve bir sonraki, takip etmeye hazır</string>
     <string name="lyrics_playing_line_title">Çalan satır konumu</string>
     <string name="lyrics_playing_line_subtitle">Söylenen satırın ekranda durduğu yer</string>
     <string name="lyrics_playing_line_value">Üstten %1$d%%</string>

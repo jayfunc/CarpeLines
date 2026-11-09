@@ -11,8 +11,4 @@
     <string name="collage_pattern_pixel_cookie">Pikselkjeks</string>
     <string name="collage_pattern_heart_garden">Hjertehage</string>
 
-    <plurals name="cloud_download_selected_started">
-        <item quantity="one">Klargjør %1$d sang fra skyen for avspilling uten nett</item>
-        <item quantity="other">Klargjør %1$d sanger fra skyen for avspilling uten nett</item>
-    </plurals>
 </resources>

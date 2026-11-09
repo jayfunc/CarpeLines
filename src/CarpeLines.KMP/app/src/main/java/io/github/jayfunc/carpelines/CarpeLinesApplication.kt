@@ -16,7 +16,6 @@ import coil.ImageLoaderFactory
 import io.github.jayfunc.carpelines.data.diagnostics.AdvancedPerformanceDiagnosticsController
 import io.github.jayfunc.carpelines.data.media.SongMetadataEditor
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
-import io.github.jayfunc.carpelines.data.playlist.M3uSyncCoordinator
 import io.github.jayfunc.carpelines.data.repository.ArtistImageRepository
 import io.github.jayfunc.carpelines.presentation.viewmodel.LibraryStateHolder
 import io.github.jayfunc.carpelines.presentation.viewmodel.ThemeStateHolder
@@ -77,9 +76,6 @@ class CarpeLinesApplication : Application(), ImageLoaderFactory, Configuration.P
     lateinit var advancedPerformanceDiagnosticsController: dagger.Lazy<AdvancedPerformanceDiagnosticsController>
 
     @Inject
-    lateinit var m3uSyncCoordinator: dagger.Lazy<M3uSyncCoordinator>
-
-    @Inject
     lateinit var updateCheckScheduler: dagger.Lazy<io.github.jayfunc.carpelines.data.update.UpdateCheckScheduler>
 
     @Inject
@@ -98,7 +94,6 @@ class CarpeLinesApplication : Application(), ImageLoaderFactory, Configuration.P
     private val appLifecycleObserver = object : DefaultLifecycleObserver {
         override fun onStart(owner: LifecycleOwner) {
             libraryStateHolder.get().restoreAfterTrimIfNeeded()
-            m3uSyncCoordinator.get().onAppForeground()
             advancedPerformanceDiagnosticsController.get().onAppForeground()
             // Gives songs cut off by an interrupted tag save (a failed write-back, or the app
             // being killed mid-write) their edited audio back, and lists the ones the app can no
@@ -219,8 +214,6 @@ class CarpeLinesApplication : Application(), ImageLoaderFactory, Configuration.P
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
 
         syncManager.get().start()
-
-        m3uSyncCoordinator.get().start()
 
         updateCheckScheduler.get().start()
 

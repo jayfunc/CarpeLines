@@ -132,45 +132,6 @@ fun M3EButtonGroup(
     )
 }
 
-/** M3 FAB sizes. Expressiveness grows with the size, so only one large FAB belongs on a screen. */
-enum class M3EFabSize(val container: Dp, val icon: Dp) {
-    Small(56.dp, 24.dp),
-    Medium(80.dp, 28.dp),
-    Large(96.dp, 36.dp)
-}
-
-/**
- * Floating action button.
- *
- * A FAB is for the screen's single most important *creation* action. It is not a navigation
- * shortcut, and it must never be destructive or ambiguous — those belong in the app bar or in a
- * row of actions.
- */
-@Composable
-fun M3EFab(
-    onClick: () -> Unit,
-    icon: ImageVector,
-    contentDescription: String,
-    modifier: Modifier = Modifier,
-    size: M3EFabSize = M3EFabSize.Small,
-    containerColor: Color = MaterialTheme.colorScheme.primaryContainer,
-    contentColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
-) {
-    FloatingActionButton(
-        onClick = onClick,
-        modifier = modifier.size(size.container),
-        shape = if (size == M3EFabSize.Small) M3EShape.large else M3EShape.extraLarge,
-        containerColor = containerColor,
-        contentColor = contentColor
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = contentDescription,
-            modifier = Modifier.size(size.icon)
-        )
-    }
-}
-
 /**
  * Filter chip.
  *

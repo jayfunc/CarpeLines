@@ -3,7 +3,6 @@ package io.github.jayfunc.carpelines.presentation.viewmodel
 import io.github.jayfunc.carpelines.data.model.Song
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 class QueueStateHolderTest {
@@ -25,32 +24,21 @@ class QueueStateHolderTest {
     )
 
     @Test
-    fun `original order keeps the playlist of each entry by position`() {
+    fun `original order keeps the songs that were queued`() {
         val holder = QueueStateHolder()
 
-        holder.setOriginalQueueOrder(listOf(song("x"), song("a"), song("x")), listOf(null, "p", "p"))
+        holder.setOriginalQueueOrder(listOf(song("x"), song("a")))
 
-        assertEquals(listOf(null, "p", "p"), holder.originalQueuePlaylistIds)
+        assertEquals(listOf("x", "a"), holder.originalQueueOrder.map { it.id })
     }
 
     @Test
-    fun `playlist ids that do not line up with the original order are dropped`() {
-        val holder = QueueStateHolder()
-        holder.setOriginalQueueOrder(listOf(song("a")), listOf("p"))
-
-        holder.setOriginalQueueOrder(listOf(song("a"), song("b")), listOf("p"))
-
-        assertNull(holder.originalQueuePlaylistIds)
-    }
-
-    @Test
-    fun `shuffled playback keeps the playlist of every original entry`() = runTest {
+    fun `shuffled playback keeps the original order`() = runTest {
         val holder = QueueStateHolder()
         val songs = listOf(song("a"), song("b"), song("c"))
 
-        holder.prepareShuffledQueueSuspending(songs, playlistId = "p")
+        holder.prepareShuffledQueueSuspending(songs)
 
         assertEquals(songs, holder.originalQueueOrder)
-        assertEquals(listOf("p", "p", "p"), holder.originalQueuePlaylistIds)
     }
 }

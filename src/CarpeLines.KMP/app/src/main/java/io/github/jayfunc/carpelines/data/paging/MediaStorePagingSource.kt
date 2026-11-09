@@ -149,7 +149,6 @@ class MediaStorePagingSource(
                     duration = cursor.getLong(durationCol),
                     genre = songIdToGenreMap[id],
                     lyrics = null,
-                    isFavorite = false,
                     trackNumber = cursor.getInt(trackCol) % 1000,
                     year = cursor.getInt(yearCol),
                     dateAdded = cursor.getLong(dateAddedCol),

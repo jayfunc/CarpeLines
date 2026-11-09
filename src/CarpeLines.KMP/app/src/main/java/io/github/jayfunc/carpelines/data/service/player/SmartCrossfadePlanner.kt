@@ -1,7 +1,7 @@
 package io.github.jayfunc.carpelines.data.service.player
 
 import io.github.jayfunc.carpelines.data.model.Curve
-import io.github.jayfunc.carpelines.data.model.TransitionSettings
+import io.github.jayfunc.carpelines.data.model.CrossfadeSettings
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.ln
@@ -31,7 +31,7 @@ enum class BpmCompatibility {
  */
 data class SmartCrossfadePlan(
     /** Settings to feed the engine — bar-quantized duration, smooth curves. */
-    val settings: TransitionSettings,
+    val settings: CrossfadeSettings,
     /** Absolute outgoing-track position (ms) at which to fire the crossfade. */
     val transitionPointMs: Long,
     val compatibility: BpmCompatibility,
@@ -99,7 +99,7 @@ object SmartCrossfadePlanner {
      *   passed in so plan output always respects the same invariants.
      */
     fun plan(
-        base: TransitionSettings,
+        base: CrossfadeSettings,
         trackDurationMs: Long,
         outgoingBpm: Float?,
         incomingBpm: Float?,

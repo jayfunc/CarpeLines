@@ -211,104 +211,6 @@ sealed class SortOption(
         direction = SortDirection.Ascending
     )
 
-    object PlaylistNameAZ : SortOption(
-        storageKey = "playlist_name_az",
-        displayName = "Name (A-Z)",
-        methodLabel = "Name",
-        methodLabelRes = R.string.sort_method_name,
-        methodKey = "playlist_name",
-        direction = SortDirection.Ascending
-    )
-    object PlaylistNameZA : SortOption(
-        storageKey = "playlist_name_za",
-        displayName = "Name (Z-A)",
-        methodLabel = "Name",
-        methodLabelRes = R.string.sort_method_name,
-        methodKey = "playlist_name",
-        direction = SortDirection.Descending
-    )
-    object PlaylistDateCreated : SortOption(
-        storageKey = "playlist_date_created",
-        displayName = "Date Created",
-        methodLabel = "Date Created",
-        methodLabelRes = R.string.sort_method_date_created,
-        methodKey = "playlist_date_created",
-        direction = SortDirection.Descending
-    )
-    object PlaylistDateCreatedAsc : SortOption(
-        storageKey = "playlist_date_created_asc",
-        displayName = "Date Created (Oldest First)",
-        methodLabel = "Date Created",
-        methodLabelRes = R.string.sort_method_date_created,
-        methodKey = "playlist_date_created",
-        direction = SortDirection.Ascending
-    )
-
-    object LikedSongTitleAZ : SortOption(
-        storageKey = "liked_title_az",
-        displayName = "Title (A-Z)",
-        methodLabel = "Title",
-        methodLabelRes = R.string.sort_method_title,
-        methodKey = "liked_title",
-        direction = SortDirection.Ascending
-    )
-    object LikedSongTitleZA : SortOption(
-        storageKey = "liked_title_za",
-        displayName = "Title (Z-A)",
-        methodLabel = "Title",
-        methodLabelRes = R.string.sort_method_title,
-        methodKey = "liked_title",
-        direction = SortDirection.Descending
-    )
-    object LikedSongArtist : SortOption(
-        storageKey = "liked_artist",
-        displayName = "Artist",
-        methodLabel = "Artist",
-        methodLabelRes = R.string.sort_method_artist,
-        methodKey = "liked_artist",
-        direction = SortDirection.Ascending
-    )
-    object LikedSongArtistDesc : SortOption(
-        storageKey = "liked_artist_desc",
-        displayName = "Artist (Z-A)",
-        methodLabel = "Artist",
-        methodLabelRes = R.string.sort_method_artist,
-        methodKey = "liked_artist",
-        direction = SortDirection.Descending
-    )
-    object LikedSongAlbum : SortOption(
-        storageKey = "liked_album",
-        displayName = "Album",
-        methodLabel = "Album",
-        methodLabelRes = R.string.sort_method_album,
-        methodKey = "liked_album",
-        direction = SortDirection.Ascending
-    )
-    object LikedSongAlbumDesc : SortOption(
-        storageKey = "liked_album_desc",
-        displayName = "Album (Z-A)",
-        methodLabel = "Album",
-        methodLabelRes = R.string.sort_method_album,
-        methodKey = "liked_album",
-        direction = SortDirection.Descending
-    )
-    object LikedSongDateLiked : SortOption(
-        storageKey = "liked_date_liked",
-        displayName = "Date Liked",
-        methodLabel = "Date Liked",
-        methodLabelRes = R.string.sort_method_date_liked,
-        methodKey = "liked_date_liked",
-        direction = SortDirection.Descending
-    )
-    object LikedSongDateLikedAsc : SortOption(
-        storageKey = "liked_date_liked_asc",
-        displayName = "Date Liked (Oldest First)",
-        methodLabel = "Date Liked",
-        methodLabelRes = R.string.sort_method_date_liked,
-        methodKey = "liked_date_liked",
-        direction = SortDirection.Ascending
-    )
-
     object FolderNameAZ : SortOption(
         storageKey = "folder_name_az",
         displayName = "Name (A-Z)",
@@ -550,15 +452,6 @@ sealed class SortOption(
             )
         }
 
-        val PLAYLISTS: List<SortOption> by lazy {
-            listOf(
-                PlaylistNameAZ,
-                PlaylistNameZA,
-                PlaylistDateCreated,
-                PlaylistDateCreatedAsc
-            )
-        }
-
         val FOLDERS: List<SortOption> by lazy {
             listOf(
                 FolderNameAZ,
@@ -587,19 +480,6 @@ sealed class SortOption(
             )
         }
 
-        val LIKED: List<SortOption> by lazy {
-            listOf(
-                LikedSongTitleAZ,
-                LikedSongTitleZA,
-                LikedSongArtist,
-                LikedSongArtistDesc,
-                LikedSongAlbum,
-                LikedSongAlbumDesc,
-                LikedSongDateLiked,
-                LikedSongDateLikedAsc
-            )
-        }
-
         val GENRES: List<SortOption> by lazy {
             listOf(
                 GenreNameAZ,
@@ -610,7 +490,7 @@ sealed class SortOption(
         }
 
         private val ALL: List<SortOption> by lazy {
-            SONGS + ALBUMS + ARTISTS + PLAYLISTS + FOLDERS + FOLDER_SONGS + LIKED + GENRES
+            SONGS + ALBUMS + ARTISTS + FOLDERS + FOLDER_SONGS + GENRES
         }
 
         private val defaultOptionByMethodKey: Map<String, SortOption> by lazy {

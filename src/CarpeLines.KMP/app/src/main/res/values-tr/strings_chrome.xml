@@ -12,17 +12,6 @@
     <string name="queue_name_selected_songs">Seçilen Şarkılar</string>
 
     <!-- Player sheet, mini player and full player chrome -->
-    <string name="cd_player_sheet_collapsed">CarpeLines oynatıcı paneli daraltıldı, %1$s</string>
-    <string name="cd_player_sheet_expanded">CarpeLines oynatıcı paneli genişletildi, %1$s</string>
-    <string name="cd_player_sheet_collapsed_no_track">CarpeLines oynatıcı paneli daraltıldı</string>
-    <string name="cd_player_sheet_expanded_no_track">CarpeLines oynatıcı paneli genişletildi</string>
-    <string name="mini_player_connecting_device">Cihaza bağlanılıyor…</string>
-    <string name="mini_player_preparing_playback">Oynatma hazırlanıyor…</string>
-    <string name="mini_player_loading_audio">Ses yükleniyor…</string>
     <string name="cd_shuffle">Karıştır</string>
     <string name="cd_playback_position">Oynatma konumu</string>
-    <string name="add_bookmark_title">Yer imi kaydet</string>
-    <string name="add_bookmark_saved_point">Kaydedilen oynatma noktası</string>
-    <string name="add_bookmark_use_lyric_line">Şarkı sözü satırını kullan</string>
-    <string name="add_bookmark_default_name">Yer imi @ %1$s</string>
 </resources>

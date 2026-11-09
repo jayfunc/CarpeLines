@@ -148,9 +148,6 @@ class LibraryStateHolder @Inject constructor(
     private val _currentFolderSongSortOption = MutableStateFlow<SortOption>(SortOption.FolderSongTitleAZ)
     val currentFolderSongSortOption = _currentFolderSongSortOption.asStateFlow()
 
-    private val _currentFavoriteSortOption = MutableStateFlow<SortOption>(SortOption.LikedSongDateLiked)
-    val currentFavoriteSortOption = _currentFavoriteSortOption.asStateFlow()
-
     private val _currentGenreSortOption = MutableStateFlow<SortOption>(SortOption.GenreNameAZ)
     val currentGenreSortOption = _currentGenreSortOption.asStateFlow()
 
@@ -174,20 +171,6 @@ class LibraryStateHolder @Inject constructor(
         }.flatMapLatest { (sortOption, filter) ->
             musicRepository.getPaginatedArtists(sortOption, filter)
         }
-        .flowOn(Dispatchers.IO)
-
-    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-    val favoritesPagingFlow: kotlinx.coroutines.flow.Flow<androidx.paging.PagingData<Song>> =
-        kotlinx.coroutines.flow.combine(_currentFavoriteSortOption, effectiveStorageFilter) { sort, filter ->
-            sort to filter
-        }.flatMapLatest { (sortOption, storageFilter) ->
-            musicRepository.getPaginatedFavoriteSongs(sortOption, storageFilter)
-        }
-        .flowOn(Dispatchers.IO)
-
-    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-    val favoriteSongCountFlow: kotlinx.coroutines.flow.Flow<Int> = effectiveStorageFilter
-        .flatMapLatest { filter -> musicRepository.getFavoriteSongCountFlow(filter) }
         .flowOn(Dispatchers.IO)
 
     // Genre already carries its colors and song count, so equal lists can be dropped here.
@@ -219,9 +202,6 @@ class LibraryStateHolder @Inject constructor(
 
             val folderSongSortKey = userPreferencesRepository.folderSongsSortOptionFlow.first()
             _currentFolderSongSortOption.value = SortOption.FOLDER_SONGS.find { it.storageKey == folderSongSortKey } ?: SortOption.FolderSongTitleAZ
-
-            val likedSortKey = userPreferencesRepository.likedSongsSortOptionFlow.first()
-            _currentFavoriteSortOption.value = SortOption.LIKED.find { it.storageKey == likedSortKey } ?: SortOption.LikedSongDateLiked
 
             val genreSortKey = userPreferencesRepository.genresSortOptionFlow.first()
             _currentGenreSortOption.value = SortOption.GENRES.find { it.storageKey == genreSortKey } ?: SortOption.GenreNameAZ
@@ -549,18 +529,6 @@ class LibraryStateHolder @Inject constructor(
                     .thenBy { it.path }
             )
             else -> folders.toList()
-        }
-    }
-
-    fun sortFavoriteSongs(sortOption: SortOption, persist: Boolean = true) {
-        scope?.launch {
-            if (persist && _currentFavoriteSortOption.value.storageKey == sortOption.storageKey) {
-                return@launch
-            }
-            if (persist) {
-                userPreferencesRepository.setLikedSongsSortOption(sortOption.storageKey)
-            }
-            _currentFavoriteSortOption.value = sortOption
         }
     }
 

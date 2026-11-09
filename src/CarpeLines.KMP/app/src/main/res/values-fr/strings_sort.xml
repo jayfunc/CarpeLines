@@ -11,7 +11,5 @@
     <string name="sort_method_song_count">Nombre de chansons</string>
     <string name="sort_method_name">Nom</string>
     <string name="sort_method_num_songs">Nombre de chansons</string>
-    <string name="sort_method_date_created">Date de création</string>
-    <string name="sort_method_date_liked">Date d\'ajout aux favoris</string>
     <string name="sort_method_subfolder_count">Nombre de sous-dossiers</string>
 </resources>

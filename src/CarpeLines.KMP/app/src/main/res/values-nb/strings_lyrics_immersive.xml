@@ -1,31 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="lyrics_immersive_show_chrome">Vis kontroller</string>
-    <string name="lyrics_immersive_close">Forlat sangtekstskjermen</string>
-    <string name="lyrics_immersive_previous">Forrige spor</string>
-    <string name="lyrics_immersive_next">Neste spor</string>
-    <string name="lyrics_immersive_source">via %1$s</string>
     <string name="lyrics_overview_lyrics_only">Vis bare sangteksten</string>
     <string name="lyrics_line_actions_title">Linjehandlinger</string>
     <string name="lyrics_line_actions_instrumental">Instrumentalt parti</string>
     <string name="lyrics_line_actions_offset_label">Linjeforskyvning</string>
     <string name="lyrics_line_actions_group_lyrics">Sangtekst</string>
     <string name="lyrics_line_actions_copy">Kopier denne linjen</string>
-    <string name="lyrics_line_actions_earlier">Flytt sangteksten tidligere</string>
-    <string name="lyrics_line_actions_later">Flytt sangteksten senere</string>
     <string name="lyrics_line_actions_reset_offset">Tilbakestill forskyvning for dette sporet</string>
     <string name="lyrics_line_actions_refresh">Hent sangteksten på nytt</string>
     <string name="lyrics_line_actions_manual_search">Søk etter sangtekst manuelt</string>
     <string name="lyrics_line_actions_settings">Sangtekstutseende</string>
     <string name="lyrics_line_actions_management">Administrer sangtekster</string>
-    <string name="lyrics_layout_mode_title">Oppsett</string>
-    <string name="lyrics_layout_mode_subtitle">Hvor mange sangtekstlinjer som deler skjermen</string>
-    <string name="lyrics_layout_mode_scroll">Rullende liste</string>
-    <string name="lyrics_layout_mode_scroll_desc">Hver linje er synlig, og linjen som spilles står i midten</string>
-    <string name="lyrics_layout_mode_single">Én linje</string>
-    <string name="lyrics_layout_mode_single_desc">Linjen som spilles fyller skjermen</string>
-    <string name="lyrics_layout_mode_dual">To linjer</string>
-    <string name="lyrics_layout_mode_dual_desc">Linjen som spilles og den neste, klare til å følge</string>
     <string name="lyrics_playing_line_title">Posisjon for aktiv linje</string>
     <string name="lyrics_playing_line_subtitle">Hvor den sungne linjen står på skjermen</string>
     <string name="lyrics_playing_line_value">%1$d%% fra toppen</string>

@@ -11,7 +11,4 @@
     <string name="collage_pattern_pixel_cookie">Kue Piksel</string>
     <string name="collage_pattern_heart_garden">Taman Hati</string>
 
-    <plurals name="cloud_download_selected_started">
-        <item quantity="other">Menyiapkan %1$d lagu cloud untuk diputar offline</item>
-    </plurals>
 </resources>

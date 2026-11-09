@@ -12,17 +12,6 @@
     <string name="queue_name_selected_songs">選取的歌曲</string>
 
     <!-- Player sheet, mini player and full player chrome -->
-    <string name="cd_player_sheet_collapsed">CarpeLines 播放器面板已收起，%1$s</string>
-    <string name="cd_player_sheet_expanded">CarpeLines 播放器面板已展開，%1$s</string>
-    <string name="cd_player_sheet_collapsed_no_track">CarpeLines 播放器面板已收起</string>
-    <string name="cd_player_sheet_expanded_no_track">CarpeLines 播放器面板已展開</string>
-    <string name="mini_player_connecting_device">正在連線裝置…</string>
-    <string name="mini_player_preparing_playback">正在準備播放…</string>
-    <string name="mini_player_loading_audio">正在載入音訊…</string>
     <string name="cd_shuffle">隨機播放</string>
     <string name="cd_playback_position">播放進度</string>
-    <string name="add_bookmark_title">儲存書簽</string>
-    <string name="add_bookmark_saved_point">已儲存的播放位置</string>
-    <string name="add_bookmark_use_lyric_line">使用歌詞行</string>
-    <string name="add_bookmark_default_name">書簽 @ %1$s</string>
 </resources>

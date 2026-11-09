@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tab_stats">الإحصاءات</string>
-    <string name="home_hero_subtitle">كلمات الأغاني كلمة بكلمة لكل ما يُشغَّل على هاتفك</string>
     <string name="home_now_playing_eyebrow">قيد التشغيل</string>
     <string name="home_idle_title">لا يوجد شيء قيد التشغيل</string>
     <string name="home_idle_subtitle">متوافق مع أي مشغل</string>
@@ -10,6 +9,5 @@
     <string name="home_paused_in_app">%1$s · متوقف مؤقتًا</string>
     <string name="home_played_players_title">المشغلات التي استخدمتها</string>
     <string name="home_played_players_count">%1$d مقطع</string>
-    <string name="home_played_players_empty">لا توجد عمليات تشغيل بعد. ابدأ شيئًا في أي مشغل وسيظهر رمزه هنا.</string>
     <string name="lyrics_not_found_local_hint">لم يتم العثور على الكلمات</string>
 </resources>

@@ -29,17 +29,12 @@ class SortOptionTest {
             SortOption.SongDateAddedAsc,
             SortOption.SongDateAdded.resolveForDirection(SortDirection.Ascending)
         )
-        assertEquals(
-            SortOption.PlaylistDateCreated,
-            SortOption.PlaylistDateCreatedAsc.resolveForDirection(SortDirection.Descending)
-        )
     }
 
     @Test
     fun `flip direction swaps paired sort options`() {
         assertEquals(SortOption.SongTitleZA, SortOption.SongTitleAZ.flipDirection())
         assertEquals(SortOption.SongTitleAZ, SortOption.SongTitleZA.flipDirection())
-        assertEquals(SortOption.LikedSongDateLikedAsc, SortOption.LikedSongDateLiked.flipDirection())
         assertEquals(SortOption.FolderSongCountAsc, SortOption.FolderSongCountDesc.flipDirection())
         assertEquals(SortOption.SongDefaultOrder, SortOption.SongDefaultOrder.flipDirection())
     }
@@ -163,5 +158,5 @@ class SortOptionTest {
 
     private val allOptions: List<SortOption>
         get() = SortOption.SONGS + SortOption.ALBUMS + SortOption.ARTISTS +
-            SortOption.PLAYLISTS + SortOption.FOLDERS + SortOption.FOLDER_SONGS + SortOption.LIKED
+            SortOption.FOLDERS + SortOption.FOLDER_SONGS
 }

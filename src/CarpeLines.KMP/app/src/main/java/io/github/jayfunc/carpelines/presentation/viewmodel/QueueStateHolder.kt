@@ -19,23 +19,11 @@ class QueueStateHolder @Inject constructor() {
     private var _originalQueueOrder: List<Song> = emptyList()
     val originalQueueOrder: List<Song> get() = _originalQueueOrder
 
-    private var _originalQueuePlaylistIds: List<String?>? = null
-
     /**
-     * The playlist each entry of [originalQueueOrder] was queued from, by position, with null for
-     * an entry that has none. Null when that is not known. Kept by position because the order can
-     * hold a song twice, once from a playlist and once added by hand, and only the place of each
-     * copy tells them apart.
+     * Set original queue order (for updates during playback).
      */
-    val originalQueuePlaylistIds: List<String?>? get() = _originalQueuePlaylistIds
-
-    /**
-     * Set original queue order (for updates during playback), with the playlist of each entry
-     * when known. [playlistIds] that do not line up with [queue] are dropped.
-     */
-    fun setOriginalQueueOrder(queue: List<Song>, playlistIds: List<String?>? = null) {
+    fun setOriginalQueueOrder(queue: List<Song>) {
         _originalQueueOrder = queue.toList()
-        _originalQueuePlaylistIds = playlistIds?.takeIf { it.size == queue.size }?.toList()
     }
 
     /**
@@ -52,13 +40,12 @@ class QueueStateHolder @Inject constructor() {
      */
     suspend fun prepareShuffledQueueSuspending(
         songs: List<Song>,
-        startAtZero: Boolean = false,
-        playlistId: String? = null
+        startAtZero: Boolean = false
     ): Pair<List<Song>, Song>? {
         if (songs.isEmpty()) return null
 
         val startSong = songs.random()
-        setOriginalQueueOrder(songs, List(songs.size) { playlistId })
+        setOriginalQueueOrder(songs)
 
         val startIndex = songs.indexOfFirst { it.id == startSong.id }.coerceAtLeast(0)
         val shuffledQueue = withContext(Dispatchers.Default) {

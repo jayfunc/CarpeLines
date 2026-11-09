@@ -11,7 +11,5 @@
     <string name="sort_method_song_count">曲数</string>
     <string name="sort_method_name">名前</string>
     <string name="sort_method_num_songs">曲数</string>
-    <string name="sort_method_date_created">作成日</string>
-    <string name="sort_method_date_liked">お気に入り追加日</string>
     <string name="sort_method_subfolder_count">サブフォルダー数</string>
 </resources>

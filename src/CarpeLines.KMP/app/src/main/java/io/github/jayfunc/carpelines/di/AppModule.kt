@@ -19,9 +19,7 @@ import io.github.jayfunc.carpelines.BuildConfig
 import io.github.jayfunc.carpelines.CarpeLinesApplication
 import io.github.jayfunc.carpelines.data.database.AlbumArtThemeDao
 import io.github.jayfunc.carpelines.data.database.EngagementDao
-import io.github.jayfunc.carpelines.data.database.FavoritesDao
 import io.github.jayfunc.carpelines.data.database.LyricsDao
-import io.github.jayfunc.carpelines.data.database.LocalPlaylistDao
 import io.github.jayfunc.carpelines.data.database.ListenBrainzDao
 import io.github.jayfunc.carpelines.data.database.AudioBookmarkDao
 import io.github.jayfunc.carpelines.data.database.MIGRATION_1_2
@@ -30,13 +28,12 @@ import io.github.jayfunc.carpelines.data.database.MIGRATION_3_4
 import io.github.jayfunc.carpelines.data.database.MIGRATION_4_5
 import io.github.jayfunc.carpelines.data.database.MIGRATION_5_6
 import io.github.jayfunc.carpelines.data.database.MIGRATION_6_7
+import io.github.jayfunc.carpelines.data.database.MIGRATION_7_8
 import io.github.jayfunc.carpelines.data.database.MusicDao
 import io.github.jayfunc.carpelines.data.database.OfflineTrackDao
 import io.github.jayfunc.carpelines.data.database.CarpeLinesDatabase
 import io.github.jayfunc.carpelines.data.database.SearchHistoryDao
-import io.github.jayfunc.carpelines.data.database.TransitionDao
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
-import io.github.jayfunc.carpelines.data.preferences.PlaylistPreferencesRepository
 import io.github.jayfunc.carpelines.data.preferences.dataStore
 import io.github.jayfunc.carpelines.data.media.SongMetadataEditor
 import io.github.jayfunc.carpelines.data.network.deezer.DeezerApiService
@@ -50,8 +47,6 @@ import io.github.jayfunc.carpelines.data.repository.MediaStoreSongRepository
 import io.github.jayfunc.carpelines.data.repository.MusicRepository
 import io.github.jayfunc.carpelines.data.repository.MusicRepositoryImpl
 import io.github.jayfunc.carpelines.data.repository.SongRepository
-import io.github.jayfunc.carpelines.data.repository.TransitionRepository
-import io.github.jayfunc.carpelines.data.repository.TransitionRepositoryImpl
 import io.github.jayfunc.carpelines.data.repository.FolderTreeBuilder
 import dagger.Module
 import dagger.Provides
@@ -131,6 +126,7 @@ object AppModule {
                 MIGRATION_4_5,
                 MIGRATION_5_6,
                 MIGRATION_6_7,
+                MIGRATION_7_8,
             )
             .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
 
@@ -161,32 +157,14 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideTransitionDao(database: CarpeLinesDatabase): TransitionDao {
-        return database.transitionDao()
-    }
-
-    @Singleton
-    @Provides
     fun provideEngagementDao(database: CarpeLinesDatabase): EngagementDao {
         return database.engagementDao()
     }
 
     @Singleton
     @Provides
-    fun provideFavoritesDao(database: CarpeLinesDatabase): FavoritesDao {
-        return database.favoritesDao()
-    }
-
-    @Singleton
-    @Provides
     fun provideLyricsDao(database: CarpeLinesDatabase): LyricsDao {
         return database.lyricsDao()
-    }
-
-    @Singleton
-    @Provides
-    fun provideLocalPlaylistDao(database: CarpeLinesDatabase): LocalPlaylistDao {
-        return database.localPlaylistDao()
     }
 
     @Singleton
@@ -269,14 +247,12 @@ object AppModule {
     fun provideSongRepository(
         @ApplicationContext context: Context,
         mediaStoreObserver: io.github.jayfunc.carpelines.data.observer.MediaStoreObserver,
-        favoritesDao: FavoritesDao,
         userPreferencesRepository: UserPreferencesRepository,
         musicDao: MusicDao
     ): SongRepository {
         return MediaStoreSongRepository(
             context = context,
             mediaStoreObserver = mediaStoreObserver,
-            favoritesDao = favoritesDao,
             userPreferencesRepository = userPreferencesRepository,
             musicDao = musicDao
         )
@@ -293,36 +269,24 @@ object AppModule {
     fun provideMusicRepository(
         @ApplicationContext context: Context,
         userPreferencesRepository: UserPreferencesRepository,
-        playlistPreferencesRepository: PlaylistPreferencesRepository,
         searchHistoryDao: SearchHistoryDao,
         musicDao: MusicDao,
         lyricsRepository: LyricsRepository,
         songRepository: SongRepository,
-        favoritesDao: FavoritesDao,
         artistImageRepository: ArtistImageRepository,
         folderTreeBuilder: FolderTreeBuilder
     ): MusicRepository {
         return MusicRepositoryImpl(
             context = context,
             userPreferencesRepository = userPreferencesRepository,
-            playlistPreferencesRepository = playlistPreferencesRepository,
             searchHistoryDao = searchHistoryDao,
             musicDao = musicDao,
             lyricsRepository = lyricsRepository,
             songRepository = songRepository,
-            favoritesDao = favoritesDao,
             artistImageRepository = artistImageRepository,
             folderTreeBuilder = folderTreeBuilder
         )
 
-    }
-
-    @Provides
-    @Singleton
-    fun provideTransitionRepository(
-        transitionRepositoryImpl: TransitionRepositoryImpl
-    ): TransitionRepository {
-        return transitionRepositoryImpl
     }
 
     @Provides

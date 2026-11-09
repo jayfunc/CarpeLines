@@ -24,7 +24,6 @@ import io.github.jayfunc.carpelines.data.navidrome.model.NavidromeMusicFolder
 import io.github.jayfunc.carpelines.data.navidrome.model.NavidromeSong
 import io.github.jayfunc.carpelines.data.network.navidrome.NavidromeApiService
 import io.github.jayfunc.carpelines.data.network.navidrome.NavidromeResponseParser
-import io.github.jayfunc.carpelines.data.preferences.PlaylistPreferencesRepository
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
 import io.github.jayfunc.carpelines.data.stream.BulkSyncResult
 import io.github.jayfunc.carpelines.data.stream.CloudMusicUtils
@@ -64,7 +63,6 @@ class NavidromeRepository @Inject constructor(
     private val api: NavidromeApiService,
     private val dao: NavidromeDao,
     private val musicDao: MusicDao,
-    private val playlistPreferencesRepository: PlaylistPreferencesRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
     @ApplicationContext private val context: Context
 ) {
@@ -83,7 +81,6 @@ class NavidromeRepository @Inject constructor(
         private const val NAVIDROME_ARTIST_ID_OFFSET = 11_000_000_000_000L
         private const val NAVIDROME_PARENT_DIRECTORY = "/Cloud/Navidrome"
         private const val NAVIDROME_GENRE = GenreParser.NAVIDROME_PLACEHOLDER
-        private const val NAVIDROME_PLAYLIST_PREFIX = "navidrome_playlist:"
         const val LIBRARY_PLAYLIST_ID = "__library__"
     }
 
@@ -235,11 +232,6 @@ class NavidromeRepository @Inject constructor(
         api.clearCredentials()
         prefs.edit { clear() }
 
-        val playlistsToDelete = dao.getAllPlaylistsList()
-        playlistsToDelete.forEach { playlist ->
-            deleteAppPlaylistForNavidromePlaylist(playlist.id)
-        }
-
         dao.clearAllSongs()
         musicDao.clearAllNavidromeSongs()
         dao.clearAllPlaylists()
@@ -327,7 +319,6 @@ class NavidromeRepository @Inject constructor(
                     stalePlaylists.forEach { stale ->
                         dao.deleteSongsByPlaylist(stale.id)
                         dao.deletePlaylist(stale.id)
-                        deleteAppPlaylistForNavidromePlaylist(stale.id)
                     }
                 }
 
@@ -383,14 +374,9 @@ class NavidromeRepository @Inject constructor(
                     Timber.d("$TAG: Playlist $playlistId - Deleting old songs, inserting ${entities.size} new songs")
                     dao.deleteSongsByPlaylist(playlistId)
                     dao.insertSongs(entities)
-                    
-                    val playlistName = dao.getPlaylistById(playlistId)?.name ?: "Playlist"
-                    updateAppPlaylistForNavidromePlaylist(playlistId, playlistName, entities)
                 } else if (songJsons.isEmpty()) {
                     Timber.d("$TAG: Playlist $playlistId is empty on server, clearing local cache")
                     dao.deleteSongsByPlaylist(playlistId)
-                    val playlistName = dao.getPlaylistById(playlistId)?.name ?: "Playlist"
-                    updateAppPlaylistForNavidromePlaylist(playlistId, playlistName, emptyList())
                 } else {
                     Timber.w("$TAG: songJsons was not empty (${songJsons.size}) but entities was empty. Parsing issue?")
                 }
@@ -903,64 +889,6 @@ class NavidromeRepository @Inject constructor(
         return -(NAVIDROME_ARTIST_ID_OFFSET + artistName.lowercase().hashCode().toLong().absoluteValue)
     }
 
-    private fun getAppPlaylistIdForNavidrome(navidromePlaylistId: String): String {
-        return "$NAVIDROME_PLAYLIST_PREFIX$navidromePlaylistId"
-    }
-
-    private suspend fun updateAppPlaylistForNavidromePlaylist(
-        navidromePlaylistId: String,
-        playlistName: String,
-        navidromeEntities: List<NavidromeSongEntity>
-    ) {
-        try {
-            val unifiedSongIds = navidromeEntities.map { entity ->
-                toUnifiedSongId(entity.navidromeId).toString()
-            }
-
-            val appPlaylistId = getAppPlaylistIdForNavidrome(navidromePlaylistId)
-            val allPlaylists = playlistPreferencesRepository.userPlaylistsFlow
-            val existingPlaylist = withContext(Dispatchers.IO) {
-                allPlaylists.map { playlists ->
-                    playlists.find { it.id == appPlaylistId }
-                }.first()
-            }
-
-            if (existingPlaylist != null) {
-                playlistPreferencesRepository.updatePlaylist(
-                    existingPlaylist.copy(
-                        name = playlistName,
-                        songIds = unifiedSongIds,
-                        lastModified = System.currentTimeMillis(),
-                        source = "NAVIDROME"
-                    )
-                )
-                Timber.d("$TAG: Updated app playlist for Navidrome playlist $navidromePlaylistId")
-            } else {
-                playlistPreferencesRepository.createPlaylist(
-                    name = playlistName,
-                    songIds = unifiedSongIds,
-                    customId = appPlaylistId,
-                    source = "NAVIDROME"
-                )
-                Timber.d("$TAG: Created app playlist for Navidrome playlist $navidromePlaylistId")
-            }
-        } catch (e: Exception) {
-            if (e is CancellationException) throw e
-            Timber.e(e, "$TAG: Failed to update app playlist for Navidrome playlist $navidromePlaylistId")
-        }
-    }
-
-    private suspend fun deleteAppPlaylistForNavidromePlaylist(navidromePlaylistId: String) {
-        try {
-            val appPlaylistId = getAppPlaylistIdForNavidrome(navidromePlaylistId)
-            playlistPreferencesRepository.deletePlaylist(appPlaylistId)
-            Timber.d("$TAG: Deleted app playlist for Navidrome playlist $navidromePlaylistId")
-        } catch (e: Exception) {
-            if (e is CancellationException) throw e
-            Timber.w(e, "$TAG: Failed to delete app playlist for Navidrome playlist $navidromePlaylistId")
-        }
-    }
-
     suspend fun reportPlayback(
         navidromeId: String,
         positionMs: Long,
@@ -994,7 +922,6 @@ class NavidromeRepository @Inject constructor(
 
         dao.deleteSongsByPlaylist(playlistId)
         dao.deletePlaylist(playlistId)
-        deleteAppPlaylistForNavidromePlaylist(playlistId)
         syncUnifiedLibrarySongsFromNavidrome()
     }
 }
@@ -1056,7 +983,6 @@ fun NavidromeSong.toSong(): Song {
         trackNumber = trackNumber,
         discNumber = CloudMusicUtils.normalizeDiscNumber(discNumber),
         dateAdded = dateAddedOr(System.currentTimeMillis()),
-        isFavorite = false,
         navidromeId = id
     )
 }

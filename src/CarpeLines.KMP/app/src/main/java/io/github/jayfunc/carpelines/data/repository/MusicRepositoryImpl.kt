@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 import androidx.core.net.toUri
-import io.github.jayfunc.carpelines.data.database.FavoritesDao
 import io.github.jayfunc.carpelines.data.database.GenreSongCountRow
 import io.github.jayfunc.carpelines.data.database.MusicDao
 import io.github.jayfunc.carpelines.data.database.SearchHistoryDao
@@ -33,14 +32,12 @@ import io.github.jayfunc.carpelines.data.model.Genre
 import io.github.jayfunc.carpelines.data.model.Lyrics
 import io.github.jayfunc.carpelines.data.model.LyricsSourcePreference
 import io.github.jayfunc.carpelines.data.model.MusicFolder
-import io.github.jayfunc.carpelines.data.model.Playlist
 import io.github.jayfunc.carpelines.data.model.SearchFilterType
 import io.github.jayfunc.carpelines.data.model.SearchHistoryItem
 import io.github.jayfunc.carpelines.data.model.SearchResultItem
 import io.github.jayfunc.carpelines.data.model.SortOption
 import io.github.jayfunc.carpelines.data.model.FolderSource
 import io.github.jayfunc.carpelines.data.model.StorageFilter
-import io.github.jayfunc.carpelines.data.preferences.PlaylistPreferencesRepository
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
 import io.github.jayfunc.carpelines.ui.theme.GenreThemeUtils
 import io.github.jayfunc.carpelines.utils.DirectoryFilterUtils
@@ -84,12 +81,10 @@ import timber.log.Timber
 class MusicRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val userPreferencesRepository: UserPreferencesRepository,
-    private val playlistPreferencesRepository: PlaylistPreferencesRepository,
     private val searchHistoryDao: SearchHistoryDao,
     private val musicDao: MusicDao,
     private val lyricsRepository: LyricsRepository,
     private val songRepository: SongRepository,
-    private val favoritesDao: FavoritesDao,
     private val artistImageRepository: ArtistImageRepository,
     private val folderTreeBuilder: FolderTreeBuilder
 ) : MusicRepository {
@@ -273,36 +268,6 @@ class MusicRepositoryImpl @Inject constructor(
         }.map { pagingData ->
             pagingData.map { entity -> entity.toArtist().withFolderArtwork() }
         }.flowOn(Dispatchers.IO)
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getPaginatedFavoriteSongs(sortOption: SortOption, storageFilter: StorageFilter): Flow<PagingData<Song>> {
-        return songRepository.getPaginatedFavoriteSongs(sortOption, storageFilter)
-    }
-
-    override suspend fun getFavoriteSongsOnce(storageFilter: StorageFilter): List<Song> {
-        return songRepository.getFavoriteSongsOnce(storageFilter)
-    }
-
-    override suspend fun getFavoriteSongsPage(
-        limit: Int,
-        offset: Int,
-        sortOption: SortOption,
-        storageFilter: StorageFilter
-    ): List<Song> = withContext(Dispatchers.IO) {
-        val filter = cachedDirFilter.value
-        musicDao.getFavoriteSongsPage(
-            allowedParentDirs = filter.allowedParentDirs,
-            applyDirectoryFilter = filter.applyFilter,
-            sortOrder = sortOption.storageKey,
-            filterMode = storageFilter.toFilterMode(),
-            limit = limit,
-            offset = offset
-        ).map { it.toSong() }
-    }
-
-    override fun getFavoriteSongCountFlow(storageFilter: StorageFilter): Flow<Int> {
-        return songRepository.getFavoriteSongCountFlow(storageFilter)
     }
 
     override fun getSongCountFlow(): Flow<Int> {
@@ -575,17 +540,8 @@ class MusicRepositoryImpl @Inject constructor(
         }.withFolderArtwork().flowOn(Dispatchers.IO)
     }
 
-    override suspend fun searchPlaylists(query: String): List<Playlist> {
-        if (query.isBlank()) return emptyList()
-        return playlistPreferencesRepository.userPlaylistsFlow.first()
-            .filter { playlist ->
-                playlist.name.contains(query, ignoreCase = true)
-            }
-    }
-
     override fun searchAll(query: String, filterType: SearchFilterType): Flow<List<SearchResultItem>> {
         if (query.isBlank()) return flowOf(emptyList())
-        val playlistsFlow = flow { emit(searchPlaylists(query)) }
 
         return combine(
             userPreferencesRepository.minTracksPerAlbumFlow
@@ -597,14 +553,12 @@ class MusicRepositoryImpl @Inject constructor(
                     combine(
                         searchSongs(query),
                         searchAlbums(query, minTracks),
-                        searchArtists(query),
-                        playlistsFlow
-                    ) { songs, albums, artists, playlists ->
+                        searchArtists(query)
+                    ) { songs, albums, artists ->
                         mutableListOf<SearchResultItem>().apply {
                             songs.forEach { add(SearchResultItem.SongItem(it)) }
                             albums.forEach { add(SearchResultItem.AlbumItem(it)) }
                             artists.forEach { add(SearchResultItem.ArtistItem(it)) }
-                            playlists.forEach { add(SearchResultItem.PlaylistItem(it)) }
                         }
                     }
                 }
@@ -613,7 +567,6 @@ class MusicRepositoryImpl @Inject constructor(
                 SearchFilterType.SONGS -> searchSongs(query).map { songs -> songs.map { SearchResultItem.SongItem(it) } }
                 SearchFilterType.ALBUMS -> searchAlbums(query, minTracks).map { albums -> albums.map { SearchResultItem.AlbumItem(it) } }
                 SearchFilterType.ARTISTS -> searchArtists(query).map { artists -> artists.map { SearchResultItem.ArtistItem(it) } }
-                SearchFilterType.PLAYLISTS -> playlistsFlow.map { playlists -> playlists.map { SearchResultItem.PlaylistItem(it) } }
             }
         }.flowOn(Dispatchers.Default)
     }
@@ -780,40 +733,6 @@ class MusicRepositoryImpl @Inject constructor(
             applyDirectoryFilter = filter.applyFilter,
             filterMode = StorageFilter.ALL.toFilterMode()
         ).first().map { it.toArtist().withFolderArtwork() }
-    }
-
-    override suspend fun setFavoriteStatus(songId: String, isFavorite: Boolean) = withContext(Dispatchers.IO) {
-        val id = songId.toLongOrNull() ?: return@withContext
-        if (isFavorite) {
-            favoritesDao.setFavorite(
-                io.github.jayfunc.carpelines.data.database.FavoritesEntity(
-                    songId = id,
-                    isFavorite = true
-                )
-            )
-        } else {
-            favoritesDao.removeFavorite(id)
-        }
-    }
-
-    override suspend fun getFavoriteSongIdsOnce(): Set<String> = withContext(Dispatchers.IO) {
-        favoritesDao.getFavoriteSongIdsOnce()
-            .map { it.toString() }
-            .toSet()
-    }
-
-    override fun getFavoriteSongIdsFlow(): Flow<Set<String>> {
-        return favoritesDao.getFavoriteSongIds()
-            .map { ids -> ids.asSequence().map(Long::toString).toSet() }
-            .distinctUntilChanged()
-    }
-
-    override suspend fun toggleFavoriteStatus(songId: String): Boolean = withContext(Dispatchers.IO) {
-        val id = songId.toLongOrNull() ?: return@withContext false
-        val isFav = favoritesDao.isFavorite(id) ?: false
-        val newFav = !isFav
-        setFavoriteStatus(songId, newFav)
-        return@withContext newFav
     }
 
     override fun getSong(songId: String): Flow<Song?> {
@@ -996,19 +915,6 @@ class MusicRepositoryImpl @Inject constructor(
     ): List<Long> = withContext(Dispatchers.IO) {
         val filter = cachedDirFilter.value
         musicDao.getSongIdsSorted(
-            allowedParentDirs = filter.allowedParentDirs,
-            applyDirectoryFilter = filter.applyFilter,
-            sortOrder = sortOption.storageKey,
-            filterMode = storageFilter.toFilterMode()
-        )
-    }
-
-    override suspend fun getFavoriteSongIdsSorted(
-        sortOption: SortOption,
-        storageFilter: io.github.jayfunc.carpelines.data.model.StorageFilter
-    ): List<Long> = withContext(Dispatchers.IO) {
-        val filter = cachedDirFilter.value
-        musicDao.getFavoriteSongIdsSorted(
             allowedParentDirs = filter.allowedParentDirs,
             applyDirectoryFilter = filter.applyFilter,
             sortOrder = sortOption.storageKey,

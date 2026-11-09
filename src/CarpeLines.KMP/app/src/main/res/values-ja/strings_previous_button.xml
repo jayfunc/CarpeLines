@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="setcat_previous_button_title">前へボタン</string>
-    <string name="setcat_previous_button_description">前へボタンを押したときに、現在の曲を最初から再生するか、前の曲に移動するかを選択します</string>
-    <string name="setcat_previous_button_restart_track">曲を最初から再生</string>
-    <string name="setcat_previous_button_restart_track_description">再生開始から数秒経過すると、前へボタンで曲を最初から再生します。もう一度押すと前の曲に移動します。</string>
-    <string name="setcat_previous_button_previous_track">前の曲へ</string>
-    <string name="setcat_previous_button_previous_track_description">前へボタンは常に前の曲に移動します。現在の曲のどこを再生中でも変わりません</string>
-</resources>

@@ -93,7 +93,6 @@ import io.github.jayfunc.carpelines.ui.theme.RoundedSans
 import java.io.File
 import androidx.compose.ui.res.stringResource
 
-val defaultShape = RoundedCornerShape(26.dp)
 val genHeight = 42.dp
 
 private enum class LibraryToolbarMode { SHUFFLE, PLAYLIST, BREADCRUMBS }

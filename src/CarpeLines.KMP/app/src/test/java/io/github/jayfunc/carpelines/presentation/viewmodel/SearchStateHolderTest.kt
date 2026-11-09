@@ -42,7 +42,6 @@ class SearchStateHolderTest {
         every { searchAll(any(), SearchFilterType.SONGS) } returns flowOf(nightSongs)
         every { searchAll(any(), SearchFilterType.ALBUMS) } returns flowOf(nightAlbums)
         every { searchAll(any(), SearchFilterType.ARTISTS) } returns flowOf(nightArtists)
-        every { searchAll(any(), SearchFilterType.PLAYLISTS) } returns flowOf(emptyList())
     }
 
     @Test

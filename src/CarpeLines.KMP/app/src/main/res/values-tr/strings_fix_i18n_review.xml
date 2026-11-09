@@ -11,8 +11,4 @@
     <string name="collage_pattern_pixel_cookie">Piksel Kurabiye</string>
     <string name="collage_pattern_heart_garden">Kalp Bahçesi</string>
 
-    <plurals name="cloud_download_selected_started">
-        <item quantity="one">%1$d bulut parçası çevrimdışı dinleme için hazırlanıyor</item>
-        <item quantity="other">%1$d bulut parçası çevrimdışı dinleme için hazırlanıyor</item>
-    </plurals>
 </resources>

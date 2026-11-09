@@ -64,7 +64,6 @@ import io.github.jayfunc.carpelines.data.service.MusicNotificationProvider
 import io.github.jayfunc.carpelines.data.service.player.DualPlayerEngine
 import io.github.jayfunc.carpelines.data.worker.SyncManager
 import io.github.jayfunc.carpelines.di.DispatcherProvider
-import io.github.jayfunc.carpelines.utils.AppShortcutManager
 import io.github.jayfunc.carpelines.utils.ValidatedLyricsImport
 import io.github.jayfunc.carpelines.utils.QueueUtils
 import io.github.jayfunc.carpelines.utils.MediaItemBuilder
@@ -207,7 +206,6 @@ private data class SortOptionsSnapshot(
     val albumSort: SortOption,
     val artistSort: SortOption,
     val folderSort: SortOption,
-    val favoriteSort: SortOption,
 )
 
 private data class PreparedPlaybackQueueSegments(
@@ -274,13 +272,11 @@ class PlayerViewModel @Inject constructor(
     val syncManager: SyncManager,
 
     private val dualPlayerEngine: DualPlayerEngine,
-    private val appShortcutManager: AppShortcutManager,
     private val listeningStatsTracker: ListeningStatsTracker,
     private val dailyMixStateHolder: DailyMixStateHolder,
     private val lyricsStateHolder: LyricsStateHolder,
     private val queueStateHolder: QueueStateHolder,
     private val queueUndoStateHolder: QueueUndoStateHolder,
-    private val playlistDismissUndoStateHolder: PlaylistDismissUndoStateHolder,
     private val playbackStateHolder: PlaybackStateHolder,
     private val connectivityStateHolder: ConnectivityStateHolder,
     private val sleepTimerStateHolder: SleepTimerStateHolder,
@@ -293,7 +289,6 @@ class PlayerViewModel @Inject constructor(
     private val externalMediaStateHolder: ExternalMediaStateHolder,
     val themeStateHolder: ThemeStateHolder,
     val multiSelectionStateHolder: MultiSelectionStateHolder,
-    val playlistSelectionStateHolder: PlaylistSelectionStateHolder,
     private val dispatchers: DispatcherProvider
 ) : ViewModel() {
 
@@ -335,45 +330,12 @@ class PlayerViewModel @Inject constructor(
 
 
 
-    private val _playlistPickerStorageFilter = MutableStateFlow(io.github.jayfunc.carpelines.data.model.StorageFilter.OFFLINE)
-    val playlistPickerStorageFilter: StateFlow<io.github.jayfunc.carpelines.data.model.StorageFilter> = _playlistPickerStorageFilter.asStateFlow()
-
     /**
      * Paginated songs for efficient display in LibraryScreen.
      * Uses Paging 3 for memory-efficient loading of large libraries.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     val paginatedSongs: Flow<PagingData<Song>> = libraryStateHolder.songsPagingFlow
-        .cachedIn(viewModelScope)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val playlistPickerFavoriteSongs: Flow<PagingData<Song>> = combine(
-        libraryStateHolder.currentSongSortOption,
-        _playlistPickerStorageFilter
-    ) { sortOption, storageFilter ->
-        sortOption to storageFilter
-    }
-        .flatMapLatest { (sortOption, storageFilter) ->
-            musicRepository.getPaginatedFavoriteSongs(
-                sortOption = sortOption,
-                storageFilter = storageFilter
-            )
-        }
-        .cachedIn(viewModelScope)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val playlistPickerSongs: Flow<PagingData<Song>> = combine(
-        libraryStateHolder.currentSongSortOption,
-        _playlistPickerStorageFilter
-    ) { sortOption, storageFilter ->
-        sortOption to storageFilter
-    }
-        .flatMapLatest { (sortOption, storageFilter) ->
-            musicRepository.getPaginatedSongs(
-                sortOption = sortOption,
-                storageFilter = storageFilter
-            )
-        }
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -603,11 +565,7 @@ class PlayerViewModel @Inject constructor(
                 val state = playerUiState.value
                 val storageFilter = currentEffectiveLibraryStorageFilter(state)
 
-                val sortedIds = if (tab == LibraryTabId.LIKED) {
-                    musicRepository.getFavoriteSongIdsSorted(state.currentFavoriteSortOption, storageFilter)
-                } else {
-                    musicRepository.getSongIdsSorted(state.currentSongSortOption, storageFilter)
-                }
+                val sortedIds = musicRepository.getSongIdsSorted(state.currentSongSortOption, storageFilter)
 
                 val unifiedId = currentSong.id.toLongOrNull()
                     ?: currentSong.contentUriString
@@ -645,37 +603,10 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun showAndPlaySongFromFavorites(
-        song: Song,
-        queueName: String = context.getString(R.string.queue_name_liked_songs),
-        isVoluntaryPlay: Boolean = true
-    ) {
-        launchLatestFullQueuePlayback(
-            song = song,
-            queueName = queueName,
-            isVoluntaryPlay = isVoluntaryPlay,
-            failureMessage = "Failed to build favorites queue for songId=%s"
-        ) {
-            val sortOption = playerUiState.value.currentFavoriteSortOption
-            val storageFilter = currentEffectiveLibraryStorageFilter()
-            musicRepository.getFavoriteSongIdsSorted(sortOption, storageFilter)
-        }
-    }
-
     suspend fun getSongsForCurrentLibrarySelection(): List<Song> {
         val state = playerUiState.value
         val sortedIds = musicRepository.getSongIdsSorted(
             state.currentSongSortOption,
-            currentEffectiveLibraryStorageFilter(state),
-        )
-        return resolvePlaybackQueueFromSortedIds(sortedIds)
-    }
-
-    /** Every song in the Liked list as it is sorted and filtered on screen, not just the loaded pages. */
-    suspend fun getSongsForCurrentFavoriteSelection(): List<Song> {
-        val state = playerUiState.value
-        val sortedIds = musicRepository.getFavoriteSongIdsSorted(
-            state.currentFavoriteSortOption,
             currentEffectiveLibraryStorageFilter(state),
         )
         return resolvePlaybackQueueFromSortedIds(sortedIds)
@@ -1031,9 +962,7 @@ class PlayerViewModel @Inject constructor(
                     LibraryTabId.SONGS -> SortOption.SONGS
                     LibraryTabId.ALBUMS -> SortOption.ALBUMS
                     LibraryTabId.ARTISTS -> SortOption.ARTISTS
-                    LibraryTabId.PLAYLISTS -> SortOption.PLAYLISTS
                     LibraryTabId.FOLDERS -> SortOption.FOLDERS
-                    LibraryTabId.LIKED -> SortOption.LIKED
                     LibraryTabId.GENRES -> SortOption.GENRES
                 }
             } finally {
@@ -1149,29 +1078,6 @@ class PlayerViewModel @Inject constructor(
 
     private val _playbackAudioMetadata = MutableStateFlow(PlaybackAudioMetadata())
     val playbackAudioMetadata: StateFlow<PlaybackAudioMetadata> = _playbackAudioMetadata.asStateFlow()
-
-    val favoriteSongIds: StateFlow<Set<String>> = musicRepository
-        .getFavoriteSongIdsFlow()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptySet())
-
-    val isCurrentSongFavorite: StateFlow<Boolean> = combine(
-        stablePlayerState
-            .map { it.currentSong }
-            .distinctUntilChanged { old, new ->
-                old?.id == new?.id &&
-                    old?.contentUriString == new?.contentUriString &&
-                    old?.path == new?.path
-            }
-            .flatMapLatest { song ->
-                kotlinx.coroutines.flow.flow {
-                    emit(resolveFavoriteSongId(song))
-                }
-            },
-        favoriteSongIds
-    ) { favoriteSongId, ids ->
-        favoriteSongId?.let { ids.contains(it) } ?: false
-    }.distinctUntilChanged()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     data class FullPlayerSlice(
         val currentSongArtists: ImmutableList<Artist> = persistentListOf(),
@@ -1297,8 +1203,6 @@ class PlayerViewModel @Inject constructor(
         .distinctUntilChanged()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PlayerConfigSlice())
 
-    val favoritesPagingFlow = libraryStateHolder.favoritesPagingFlow
-
     val dailyMixSongs: StateFlow<ImmutableList<Song>> = dailyMixStateHolder.dailyMixSongs
     val yourMixSongs: StateFlow<ImmutableList<Song>> = dailyMixStateHolder.yourMixSongs
 
@@ -1306,26 +1210,14 @@ class PlayerViewModel @Inject constructor(
         dailyMixStateHolder.removeFromDailyMix(songId)
     }
 
-    /**
-     * Observes a song by ID from Room DB, combined with the latest favorite status.
-     * Uses direct Room query instead of scanning the full in-memory list.
-     */
+    /** Observes a song by ID from the unified Room table. */
     fun observeSong(songId: String?): Flow<Song?> {
         if (songId == null) return flowOf(null)
-        return combine(
-            musicRepository.getSong(songId),
-            favoriteSongIds
-        ) { song, favorites ->
-            song?.copy(isFavorite = favorites.contains(songId))
-        }.distinctUntilChanged()
+        return musicRepository.getSong(songId).distinctUntilChanged()
     }
 
-
-
     private fun updateDailyMix() {
-        dailyMixStateHolder.updateDailyMix(
-            favoriteSongIdsFlow = favoriteSongIds
-        )
+        dailyMixStateHolder.updateDailyMix()
     }
 
     fun shuffleAllSongs(queueName: String = context.getString(R.string.queue_name_all_songs_shuffled)) {
@@ -1408,21 +1300,6 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun shuffleFavoriteSongs() {
-        Timber.tag("ShuffleDebug").d("shuffleFavoriteSongs called.")
-
-        viewModelScope.launch {
-            val favSongs = musicRepository.getFavoriteSongsOnce(playerUiState.value.currentStorageFilter)
-            if (favSongs.isNotEmpty()) {
-                playSongsShuffled(
-                    favSongs,
-                    context.getString(R.string.queue_name_liked_songs_shuffled),
-                    startAtZero = true
-                )
-            }
-        }
-    }
-
     /** Only the album pick is random; its tracks play in album order. */
     fun playRandomAlbum() {
         libraryStateHolder.albums.value.randomOrNull()?.let(::playAlbum)
@@ -1462,9 +1339,7 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun forceUpdateDailyMix() {
-        dailyMixStateHolder.forceUpdate(
-            favoriteSongIdsFlow = favoriteSongIds
-        )
+        dailyMixStateHolder.forceUpdate()
     }
 
     private var transitionSchedulerJob: Job? = null
@@ -1546,19 +1421,6 @@ class PlayerViewModel @Inject constructor(
             }
 
             viewModelScope.launch {
-                val legacyFavoriteIds = userPreferencesRepository.favoriteSongIdsFlow.first()
-                if (legacyFavoriteIds.isNotEmpty()) {
-                    val roomFavoriteIds = musicRepository.getFavoriteSongIdsOnce()
-                    if (roomFavoriteIds.isEmpty()) {
-                        legacyFavoriteIds.forEach { songId ->
-                            musicRepository.setFavoriteStatus(songId, true)
-                        }
-                    }
-                    userPreferencesRepository.clearFavoriteSongIds()
-                }
-            }
-
-            viewModelScope.launch {
                 userPreferencesRepository.isFoldersPlaylistViewFlow.collect { isPlaylistView ->
                     folderNavigationStateHolder.setFoldersPlaylistViewState(
                         isPlaylistView = isPlaylistView,
@@ -1592,15 +1454,13 @@ class PlayerViewModel @Inject constructor(
                 combine(
                     userPreferencesRepository.folderBackGestureNavigationFlow,
                     userPreferencesRepository.isAlbumsListViewFlow,
-                    userPreferencesRepository.isPlaylistsGridViewFlow,
-                ) { gestureNav, albumsList, playlistsGrid ->
-                    Triple(gestureNav, albumsList, playlistsGrid)
-                }.collect { (gestureNav, albumsList, playlistsGrid) ->
+                ) { gestureNav, albumsList ->
+                    gestureNav to albumsList
+                }.collect { (gestureNav, albumsList) ->
                     _playerUiState.update {
                         it.copy(
                             folderBackGestureNavigationEnabled = gestureNav,
                             isAlbumsListView = albumsList,
-                            isPlaylistsGridView = playlistsGrid,
                         )
                     }
                 }
@@ -1658,20 +1518,13 @@ class PlayerViewModel @Inject constructor(
                     SortOption.FOLDER_SONGS,
                     SortOption.FolderSongTitleAZ
                 )
-                val initialLikedSort = resolveSortOption(
-                    userPreferencesRepository.likedSongsSortOptionFlow.first(),
-                    SortOption.LIKED,
-                    SortOption.LikedSongDateLiked
-                )
-
                 _playerUiState.update {
                     it.copy(
                         currentSongSortOption = initialSongSort,
                         currentAlbumSortOption = initialAlbumSort,
                         currentArtistSortOption = initialArtistSort,
                         currentFolderSortOption = initialFolderSort,
-                        currentFolderSongSortOption = initialFolderSongSort,
-                        currentFavoriteSortOption = initialLikedSort
+                        currentFolderSongSortOption = initialFolderSongSort
                     )
                 }
 
@@ -1680,7 +1533,6 @@ class PlayerViewModel @Inject constructor(
                 sortArtists(initialArtistSort, persist = false)
                 sortFolders(initialFolderSort, persist = false)
                 sortFolderSongs(initialFolderSongSort, persist = false)
-                sortFavoriteSongs(initialLikedSort, persist = false)
             }
 
             viewModelScope.launch {
@@ -1768,17 +1620,15 @@ class PlayerViewModel @Inject constructor(
                     libraryStateHolder.currentAlbumSortOption,
                     libraryStateHolder.currentArtistSortOption,
                     libraryStateHolder.currentFolderSortOption,
-                    libraryStateHolder.currentFavoriteSortOption,
-                ) { songSort, albumSort, artistSort, folderSort, favoriteSort ->
-                    SortOptionsSnapshot(songSort, albumSort, artistSort, folderSort, favoriteSort)
+                ) { songSort, albumSort, artistSort, folderSort ->
+                    SortOptionsSnapshot(songSort, albumSort, artistSort, folderSort)
                 }.collect { snapshot ->
                     _playerUiState.update {
                         it.copy(
                             currentSongSortOption = snapshot.songSort,
                             currentAlbumSortOption = snapshot.albumSort,
                             currentArtistSortOption = snapshot.artistSort,
-                            currentFolderSortOption = snapshot.folderSort,
-                            currentFavoriteSortOption = snapshot.favoriteSort,
+                            currentFolderSortOption = snapshot.folderSort
                         )
                     }
                 }
@@ -1814,12 +1664,6 @@ class PlayerViewModel @Inject constructor(
                     }
             }
 
-            playlistDismissUndoStateHolder.observeUndoStateAgainstPlayback(
-                scope = viewModelScope,
-                currentSongIdFlow = stablePlayerState.map { it.currentSong?.id },
-                getUiState = { _playerUiState.value },
-                onHideDismissUndoBar = { hideDismissUndoBar() }
-            )
         }
     }
 
@@ -1835,9 +1679,7 @@ class PlayerViewModel @Inject constructor(
 
 
     private fun checkAndUpdateDailyMixIfNeeded() {
-        dailyMixStateHolder.checkAndUpdateIfNeeded(
-            favoriteSongIdsFlow = favoriteSongIds
-        )
+        dailyMixStateHolder.checkAndUpdateIfNeeded()
     }
 
     private fun preloadThemesAndInitialData() {
@@ -1881,10 +1723,6 @@ class PlayerViewModel @Inject constructor(
 
     fun setStorageFilter(filter: io.github.jayfunc.carpelines.data.model.StorageFilter) {
         libraryStateHolder.setStorageFilter(filter)
-    }
-
-    fun setPlaylistPickerStorageFilter(filter: io.github.jayfunc.carpelines.data.model.StorageFilter) {
-        _playlistPickerStorageFilter.value = filter
     }
 
     fun setHideLocalMedia(hide: Boolean) {
@@ -1942,9 +1780,6 @@ class PlayerViewModel @Inject constructor(
             playLoadedControllerItem(controller, reusableTargetIndex)
             if (isVoluntaryPlay) {
                 incrementSongScore(song)
-                if (playlistId != null && queueName != "None") {
-                    appShortcutManager.updateLastPlaylistShortcut(playlistId, queueName)
-                }
             }
         } else {
             if (isVoluntaryPlay) incrementSongScore(song)
@@ -2817,8 +2652,7 @@ class PlayerViewModel @Inject constructor(
             val validStartSong =
                 validSongs.firstOrNull { it.id == startSong.id } ?: validSongs.first()
 
-            // Every entry is queued from playlistId, so shuffle off can put each tag back in place.
-            queueStateHolder.setOriginalQueueOrder(validSongs, List(validSongs.size) { playlistId })
+            queueStateHolder.setOriginalQueueOrder(validSongs)
 
             val isPersistent = userPreferencesRepository.persistentShuffleEnabledFlow.first()
             throwIfDirectPlaybackRequestIsStale(requestToken)
@@ -2858,8 +2692,7 @@ class PlayerViewModel @Inject constructor(
         directPlaybackJob = viewModelScope.launch {
             val result = queueStateHolder.prepareShuffledQueueSuspending(
                 songsToPlay,
-                startAtZero,
-                playlistId
+                startAtZero
             )
             throwIfDirectPlaybackRequestIsStale(requestToken)
             if (result == null) {
@@ -3045,10 +2878,6 @@ class PlayerViewModel @Inject constructor(
         }
         val effectiveStartSong = songsToPlay.firstOrNull { it.id == startSong.id } ?: songsToPlay.first()
 
-        if (playlistId != null && queueName != "None") {
-            appShortcutManager.updateLastPlaylistShortcut(playlistId, queueName)
-        }
-
         beginPreparingSong(effectiveStartSong)
         _playerUiState.update {
             it.copy(
@@ -3178,62 +3007,6 @@ class PlayerViewModel @Inject constructor(
         playbackStateHolder.cycleRepeatMode()
     }
 
-    private suspend fun setFavoriteStatusEverywhere(songId: String, isFavorite: Boolean) {
-        musicRepository.setFavoriteStatus(songId, isFavorite)
-    }
-
-    fun toggleFavorite() {
-        val currentSong = playbackStateHolder.stablePlayerState.value.currentSong ?: return
-        viewModelScope.launch {
-            val favoriteSongId = resolveFavoriteSongId(currentSong) ?: return@launch
-            val currentlyFavorite = favoriteSongIds.value.contains(favoriteSongId)
-            setFavoriteStatusEverywhere(favoriteSongId, !currentlyFavorite)
-        }
-    }
-
-    fun toggleFavoriteSpecificSong(song: Song, removing: Boolean = false) {
-        viewModelScope.launch {
-            val favoriteSongId = resolveFavoriteSongId(song) ?: return@launch
-            val currentlyFavorite = favoriteSongIds.value.contains(favoriteSongId)
-            val targetFavoriteState = if (removing) false else !currentlyFavorite
-            setFavoriteStatusEverywhere(favoriteSongId, targetFavoriteState)
-        }
-    }
-
-    private suspend fun resolveFavoriteSongId(song: Song?): String? {
-        song ?: return null
-        if (song.id.toLongOrNull() != null) {
-            return song.id
-        }
-
-        val contentUriCandidates = buildList {
-            if (song.id.startsWith(EXTERNAL_SONG_ID_PREFIX)) {
-                add(song.id.removePrefix(EXTERNAL_SONG_ID_PREFIX))
-            }
-            add(song.contentUriString)
-        }.filter { it.isNotBlank() }.distinct()
-
-        for (candidate in contentUriCandidates) {
-            musicRepository.getSongIdByContentUri(candidate)?.let { return it.toString() }
-            parseMediaStoreAudioId(candidate)?.let { return it.toString() }
-        }
-
-        val pathCandidates = buildList {
-            add(song.path)
-            contentUriCandidates.forEach { candidate ->
-                parseFileUriPath(candidate)?.let(::add)
-            }
-        }.filter { it.isNotBlank() }.distinct()
-
-        for (candidate in pathCandidates) {
-            musicRepository.getSongByPath(candidate)?.id?.takeIf { it.toLongOrNull() != null }?.let {
-                return it
-            }
-        }
-
-        return null
-    }
-
     private fun parseMediaStoreAudioId(uriString: String): Long? {
         val normalizedUri = uriString.substringBefore('?').substringBefore('#')
         if (
@@ -3273,7 +3046,7 @@ class PlayerViewModel @Inject constructor(
     }
 
     private fun buildPlaybackMediaItem(song: Song, playlistId: String? = null): MediaItem =
-        MediaItemBuilder.withPlaylistId(MediaItemBuilder.build(song), playlistId)
+        MediaItemBuilder.build(song)
 
     /**
      * Plays all selected songs, preserving their selection order.
@@ -3477,62 +3250,6 @@ class PlayerViewModel @Inject constructor(
                 Timber.tag("PlayerViewModel").e(e, "Error adding selected genres as next")
                 _toastEvents.emit(context.getString(R.string.player_could_not_queue_genres))
             }
-        }
-    }
-
-    /**
-     * Adds all selected songs to favorites.
-     * Clears selection after liking.
-     */
-    fun likeSelectedSongs(songs: List<Song>) {
-        viewModelScope.launch {
-            val favIds = favoriteSongIds.value.toMutableSet()
-            var likedCount = 0
-            songs.forEach { song ->
-                if (!favIds.contains(song.id)) {
-                    setFavoriteStatusEverywhere(song.id, true)
-                    favIds.add(song.id)
-                    likedCount++
-                }
-            }
-            if (likedCount > 0) {
-                _toastEvents.emit(
-                    context.resources.getQuantityString(R.plurals.n_songs_added_to_favorites, likedCount, likedCount),
-                )
-            } else {
-                _toastEvents.emit(context.getString(R.string.player_all_songs_already_in_favorites))
-            }
-            multiSelectionStateHolder.clearSelection()
-        }
-    }
-
-    /**
-     * Removes all selected songs from favorites.
-     * Clears selection after unliking.
-     */
-    fun unlikeSelectedSongs(songs: List<Song>) {
-        viewModelScope.launch {
-            val favIds = favoriteSongIds.value.toMutableSet()
-            var unlikedCount = 0
-            songs.forEach { song ->
-                if (favIds.contains(song.id)) {
-                    setFavoriteStatusEverywhere(song.id, false)
-                    favIds.remove(song.id)
-                    unlikedCount++
-                }
-            }
-            if (unlikedCount > 0) {
-                _toastEvents.emit(
-                    context.resources.getQuantityString(
-                        R.plurals.n_songs_removed_from_favorites,
-                        unlikedCount,
-                        unlikedCount,
-                    ),
-                )
-            } else {
-                _toastEvents.emit(context.getString(R.string.player_no_songs_were_in_favorites))
-            }
-            multiSelectionStateHolder.clearSelection()
         }
     }
 
@@ -3868,7 +3585,6 @@ class PlayerViewModel @Inject constructor(
     }
 
     suspend fun removeSong(song: Song) {
-        toggleFavoriteSpecificSong(song, true)
         playbackStateHolder.setCurrentPosition(0L)
         _playerUiState.update { currentState ->
             currentState.copy(
@@ -4020,10 +3736,6 @@ class PlayerViewModel @Inject constructor(
         libraryStateHolder.sortArtists(sortOption, persist)
     }
 
-    fun sortFavoriteSongs(sortOption: SortOption, persist: Boolean = true) {
-        libraryStateHolder.sortFavoriteSongs(sortOption, persist)
-    }
-
     fun sortFolders(sortOption: SortOption, persist: Boolean = true) {
         libraryStateHolder.sortFolders(sortOption, persist)
     }
@@ -4096,12 +3808,6 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun setPlaylistsGridView(isGrid: Boolean) {
-        viewModelScope.launch {
-            userPreferencesRepository.setPlaylistsGridView(isGrid)
-        }
-    }
-
     fun updateSearchFilter(filterType: SearchFilterType) {
         searchStateHolder.updateSearchFilter(filterType)
     }
@@ -4168,7 +3874,6 @@ class PlayerViewModel @Inject constructor(
         sleepTimerStateHolder.onCleared(ownerScope)
         connectivityStateHolder.onCleared(ownerScope)
         queueUndoStateHolder.onCleared()
-        playlistDismissUndoStateHolder.onCleared()
     }
 
     fun setSleepTimer(durationMinutes: Int) {
@@ -4190,58 +3895,6 @@ class PlayerViewModel @Inject constructor(
 
     fun cancelSleepTimer(overrideToastMessage: String? = null, suppressDefaultToast: Boolean = false) {
         sleepTimerStateHolder.cancelSleepTimer(overrideToastMessage, suppressDefaultToast)
-    }
-
-    fun dismissPlaylistAndShowUndo() {
-        setMiniPlayerDismissing(false)
-        playlistDismissUndoStateHolder.dismissPlaylistAndShowUndo(
-            scope = viewModelScope,
-            currentSong = playbackStateHolder.stablePlayerState.value.currentSong,
-            queue = _playerUiState.value.currentPlaybackQueue,
-            queueName = _playerUiState.value.currentQueueSourceName,
-            position = playbackStateHolder.currentPosition.value,
-            getUiState = { _playerUiState.value },
-            updateUiState = { mutation -> _playerUiState.update(mutation) },
-            disconnectRemoteIfNeeded = {},
-            clearPlayback = {
-                mediaController?.stop()
-                mediaController?.clearMediaItems()
-            },
-            clearStablePlaybackState = {
-                playbackStateHolder.updateStablePlayerState {
-                    it.copy(
-                        currentSong = null,
-                        isPlaying = false,
-                        playWhenReady = false,
-                        totalDuration = 0L
-                    )
-                }
-            },
-            setCurrentPosition = { playbackStateHolder.setCurrentPosition(it) },
-            setSheetVisible = { _isSheetVisible.value = it }
-        )
-    }
-
-    fun hideDismissUndoBar() {
-        playlistDismissUndoStateHolder.hideDismissUndoBar { mutation ->
-            _playerUiState.update(mutation)
-        }
-    }
-
-    fun undoDismissPlaylist() {
-        setMiniPlayerDismissing(false)
-        playlistDismissUndoStateHolder.undoDismissPlaylist(
-            scope = viewModelScope,
-            getUiState = { _playerUiState.value },
-            updateUiState = { mutation -> _playerUiState.update(mutation) },
-            playSongs = { songs, startSong, queueName ->
-                playSongs(songs, startSong, queueName)
-            },
-            seekTo = { position -> mediaController?.seekTo(position) },
-            setSheetVisible = { _isSheetVisible.value = it },
-            setSheetCollapsed = { _sheetState.value = PlayerSheetState.COLLAPSED },
-            emitToast = { message -> _toastEvents.emit(message) }
-        )
     }
 
     fun getSongUrisForGenre(genreId: String): Flow<List<String>> {
@@ -5043,20 +4696,6 @@ class PlayerViewModel @Inject constructor(
             }
     }
 
-    val customGenres: StateFlow<Set<String>> = userPreferencesRepository.customGenresFlow
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptySet()
-        )
-
-    val customGenreIcons: StateFlow<Map<String, Int>> = userPreferencesRepository.customGenreIconsFlow
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyMap()
-        )
-
     val isGenreGridView: StateFlow<Boolean> = userPreferencesRepository.isGenreGridViewFlow
         .stateIn(
             scope = viewModelScope,
@@ -5076,11 +4715,6 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun addCustomGenre(genre: String, iconResId: Int? = null) {
-        viewModelScope.launch {
-            userPreferencesRepository.addCustomGenre(genre, iconResId)
-        }
-    }
 }
 
 internal fun Song.withRepositoryHydration(repositorySong: Song): Song {

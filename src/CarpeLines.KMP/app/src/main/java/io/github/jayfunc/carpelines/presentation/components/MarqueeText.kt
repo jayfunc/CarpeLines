@@ -31,40 +31,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.Constraints
 
-@Composable
-fun AutoScrollingTextOnDemand(
-    text: String,
-    style: TextStyle,
-    gradientEdgeColor: Color,
-    expansionFractionProvider: () -> Float,
-    modifier: Modifier = Modifier,
-    canScroll: Boolean = true
-) {
-    var overflow by remember(text, style) { mutableStateOf(false) }
-    val canStart by remember(text, style) { derivedStateOf { expansionFractionProvider() > 0.99f && overflow } }
-
-
-    if (!overflow) {
-        Text(
-            text = text,
-            style = style,
-            maxLines = 1,
-            softWrap = false,
-            onTextLayout = { res: TextLayoutResult -> overflow = res.hasVisualOverflow },
-            modifier = modifier
-        )
-    } else {
-        AutoScrollingText(
-            text = text,
-            style = style,
-            textAlign = TextAlign.Start,
-            gradientEdgeColor = gradientEdgeColor,
-            modifier = modifier,
-            canScroll = canScroll && canStart
-        )
-    }
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AutoScrollingText(

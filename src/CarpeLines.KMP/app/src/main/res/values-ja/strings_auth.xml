@@ -1,47 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="auth_cd_back">戻る</string>
-    <string name="auth_show_password">パスワードを表示</string>
-    <string name="auth_hide_password">パスワードを隠す</string>
-    <string name="auth_connecting">接続中…</string>
-    <string name="auth_connect">接続</string>
-    <string name="auth_connection_details">接続情報</string>
-    <string name="auth_connection_details_subtitle">サーバーの URL とアカウント情報を入力してください</string>
-    <string name="auth_server_url">サーバー URL</string>
-    <string name="auth_username">ユーザー名</string>
-    <string name="auth_password">パスワード</string>
-    <string name="auth_password_placeholder">パスワードを入力</string>
-    <string name="auth_username_placeholder_admin">admin</string>
-    <string name="toast_welcome_user">ようこそ、%1$s さん！</string>
-    <string name="auth_local_network_permission_denied">ローカルネットワーク上のサーバーに接続するため、付近のデバイスへのアクセスを許可してください</string>
-    <string name="auth_select_libraries_title">同期するライブラリを選択</string>
-    <string name="auth_select_libraries_subtitle">このサーバーには複数の音楽ライブラリがあります。同期するものを選んでください。後でサーバーのダッシュボードから変更できます。</string>
-    <string name="auth_select_libraries_confirm">保存して同期</string>
-
-    <string name="auth_navidrome_title">Subsonic / Navidrome</string>
-    <string name="auth_navidrome_subtitle">自前の音楽サーバーに接続します</string>
-    <string name="auth_navidrome_info_card">Navidrome、Airsonic、Gonic、Ampache など、Subsonic API 互換のサーバーに対応しています</string>
-    <string name="auth_navidrome_server_placeholder" translatable="false">http://192.168.1.100:4533</string>
-    <string name="auth_navidrome_server_url_hint">サーバー URL は全体を入力してください。ローカルサーバーは http://、リモートサーバーは https:// を使います</string>
-    <string name="auth_navidrome_username_hint">Subsonic または Navidrome のアカウント名です</string>
-    <string name="auth_navidrome_password_hint">サーバーが対応していればアプリパスワードも使用できます</string>
-    <string name="auth_prefill_http">http:// を補完</string>
-    <string name="auth_use_http">HTTP / VPN を使用</string>
-    <string name="auth_navidrome_footer">Navidrome、Gonic、Airsonic など Subsonic 互換サーバーに対応</string>
-    <string name="cd_navidrome_logo">Navidrome</string>
-    <string name="cd_subsonic_logo">Subsonic</string>
-
-    <string name="auth_jellyfin_title">Jellyfin</string>
-    <string name="auth_jellyfin_info_card">Jellyfin サーバーに接続します。ローカルネットワークでは HTTP と HTTPS の両方を利用できます。</string>
-    <string name="auth_jellyfin_subtitle">Jellyfin メディアサーバーに接続します</string>
-    <string name="auth_jellyfin_connection_subtitle">Jellyfin サーバーの URL とアカウント情報を入力してください</string>
-    <string name="auth_jellyfin_server_placeholder" translatable="false">http://192.168.1.100:8096</string>
-    <string name="auth_jellyfin_server_url_hint">ポートを含む完全な URL を入力してください。ローカル、Tailscale、.local、.lan のアドレスは HTTP を利用できます。</string>
-    <string name="auth_jellyfin_username_hint">Jellyfin アカウントのユーザー名</string>
-    <string name="auth_jellyfin_password_hint">Jellyfin アカウントのパスワード</string>
-    <string name="auth_jellyfin_footer">Jellyfin サーバーに接続して音楽ライブラリをストリーミングします</string>
-    <string name="cd_jellyfin_logo">Jellyfin</string>
 
 
-    <string name="auth_web_retry">再試行</string>
+
+
 </resources>

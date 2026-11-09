@@ -3,18 +3,9 @@
     <string name="library_tab_songs">曲</string>
     <string name="library_tab_albums">アルバム</string>
     <string name="library_tab_artists">アーティスト</string>
-    <string name="library_tab_playlists">プレイリスト</string>
     <string name="library_tab_folders">フォルダー</string>
-    <string name="library_tab_liked">お気に入り</string>
 
-    <string name="library_error_loading_songs">曲を読み込めませんでした</string>
-    <string name="library_error_loading_albums">アルバムを読み込めませんでした</string>
-    <string name="library_error_loading_artists">アーティストを読み込めませんでした</string>
-    <string name="library_retry">再試行</string>
 
-    <string name="library_no_songs_in_library_message">ライブラリに曲がありません</string>
-    <string name="library_no_songs_rescan_hint">端末に音楽がある場合は、設定でライブラリを再スキャンしてみてください</string>
-    <string name="cd_no_songs_in_library">曲が見つかりません</string>
 
     <string name="library_action_new">新規</string>
     <string name="cd_create_new_playlist">新しいプレイリストを作成</string>
@@ -25,44 +16,8 @@
     <string name="library_storage_filter_offline">ローカル</string>
     <string name="cd_sort_options">並べ替えオプション</string>
 
-    <string name="lyrics_synced_badge">同期済み</string>
     <string name="song_field_artist_optional">アーティスト（任意）</string>
 
-    <string name="song_picker_title">曲を追加</string>
-    <string name="cd_confirm_add_songs">選択した曲を追加</string>
-    <string name="song_picker_action_add">追加</string>
-    <string name="song_picker_search_label">曲を検索または絞り込み…</string>
-    <string name="song_picker_filter_favorites">お気に入り</string>
-    <string name="song_picker_error_load_failed">曲を読み込めませんでした</string>
-    <string name="song_picker_load_more">さらに読み込む</string>
 
     
-    <string name="lib_empty_songs_all_title">曲はまだありません</string>
-    <string name="lib_empty_songs_all_subtitle">端末に音楽を追加するか、クラウドソースを同期して聴き始めましょう</string>
-    <string name="lib_empty_songs_offline_title">ローカルの曲が見つかりません</string>
-    <string name="lib_empty_songs_offline_subtitle">別のソースフィルターを試すか、端末のライブラリを再スキャンしてください</string>
-    <string name="lib_empty_songs_online_title">クラウドの曲が見つかりません</string>
-    <string name="lib_empty_songs_online_subtitle">Navidrome または Jellyfin の曲を同期するか、ローカルソースに切り替えてください</string>
-    <string name="lib_empty_albums_all_title">アルバムがありません</string>
-    <string name="lib_empty_albums_all_subtitle">ライブラリで曲がグループ化されると、アルバムがここに表示されます</string>
-    <string name="lib_empty_albums_offline_title">ローカルのアルバムが見つかりません</string>
-    <string name="lib_empty_albums_offline_subtitle">ローカルのアルバムグループを作成するにはローカル曲が必要です</string>
-    <string name="lib_empty_albums_online_title">クラウドのアルバムが見つかりません</string>
-    <string name="lib_empty_albums_online_subtitle">アルバム情報のあるクラウド曲は、同期後にここに表示されます</string>
-    <string name="lib_empty_artists_all_title">アーティストがいません</string>
-    <string name="lib_empty_artists_all_subtitle">いずれかのソースから曲がインデックスされると、アーティストが表示されます</string>
-    <string name="lib_empty_artists_offline_title">ローカルのアーティストが見つかりません</string>
-    <string name="lib_empty_artists_offline_subtitle">現在、ローカル曲のアーティスト情報はありません</string>
-    <string name="lib_empty_artists_online_title">クラウドのアーティストが見つかりません</string>
-    <string name="lib_empty_artists_online_subtitle">リモート曲を同期すると、クラウドのアーティストが表示されます</string>
-    <string name="lib_empty_liked_all_title">お気に入りの曲はまだありません</string>
-    <string name="lib_empty_liked_all_subtitle">曲の再生中にハートのアイコンをタップすると、ここに保存されます</string>
-    <string name="lib_empty_liked_offline_title">お気に入りのローカル曲がありません</string>
-    <string name="lib_empty_liked_offline_subtitle">ソースフィルターを切り替えるか、端末の曲をお気に入りに追加してください</string>
-    <string name="lib_empty_liked_online_title">お気に入りのクラウド曲がありません</string>
-    <string name="lib_empty_liked_online_subtitle">Navidrome または Jellyfin の曲をお気に入りに追加すると、ここに表示されます</string>
-    <string name="lib_empty_folders_title">フォルダーが見つかりません</string>
-    <string name="lib_empty_folders_subtitle">音楽のある内部ストレージのフォルダーがここに表示されます</string>
-    <string name="lib_empty_playlists_title">プレイリストはまだありません</string>
-    <string name="lib_empty_playlists_subtitle">最初のプレイリストを作成してライブラリを整理しましょう</string>
 </resources>

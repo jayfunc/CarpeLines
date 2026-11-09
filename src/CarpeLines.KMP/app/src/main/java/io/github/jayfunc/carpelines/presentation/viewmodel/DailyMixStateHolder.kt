@@ -78,18 +78,16 @@ class DailyMixStateHolder @Inject constructor(
      * Update the daily mix with new songs.
      * Uses getAllSongsOnce() to load songs on-demand instead of keeping a permanent subscription.
      */
-    fun updateDailyMix(favoriteSongIdsFlow: kotlinx.coroutines.flow.Flow<Set<String>>) {
+    fun updateDailyMix() {
         updateJob?.cancel()
         updateJob = scope?.launch(Dispatchers.IO) {
             val allSongs = musicRepository.getAllSongsOnce()
             if (allSongs.isNotEmpty()) {
-                val favoriteIds = favoriteSongIdsFlow.first()
-
-                val mix = dailyMixManager.generateDailyMix(allSongs, favoriteIds)
+                val mix = dailyMixManager.generateDailyMix(allSongs, emptySet())
                 _dailyMixSongs.value = mix.toImmutableList()
                 userPreferencesRepository.saveDailyMixSongIds(mix.map { it.id })
 
-                val yourMix = dailyMixManager.generateYourMix(allSongs, favoriteIds)
+                val yourMix = dailyMixManager.generateYourMix(allSongs, emptySet())
                 _yourMixSongs.value = yourMix.toImmutableList()
                 userPreferencesRepository.saveYourMixSongIds(yourMix.map { it.id })
             } else {
@@ -135,9 +133,9 @@ class DailyMixStateHolder @Inject constructor(
     /**
      * Force update the daily mix regardless of day.
      */
-    fun forceUpdate(favoriteSongIdsFlow: kotlinx.coroutines.flow.Flow<Set<String>>) {
+    fun forceUpdate() {
         scope?.launch {
-            updateDailyMix(favoriteSongIdsFlow)
+            updateDailyMix()
             userPreferencesRepository.saveLastDailyMixUpdateTimestamp(System.currentTimeMillis())
         }
     }
@@ -145,7 +143,7 @@ class DailyMixStateHolder @Inject constructor(
     /**
      * Check if daily mix needs updating (new day) and update if so.
      */
-    fun checkAndUpdateIfNeeded(favoriteSongIdsFlow: kotlinx.coroutines.flow.Flow<Set<String>>) {
+    fun checkAndUpdateIfNeeded() {
         scope?.launch {
             val lastUpdate = userPreferencesRepository.lastDailyMixUpdateFlow.first()
             val today = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
@@ -154,7 +152,7 @@ class DailyMixStateHolder @Inject constructor(
             }.get(Calendar.DAY_OF_YEAR)
 
             if (today != lastUpdateDay) {
-                updateDailyMix(favoriteSongIdsFlow)
+                updateDailyMix()
                 userPreferencesRepository.saveLastDailyMixUpdateTimestamp(System.currentTimeMillis())
             }
         }

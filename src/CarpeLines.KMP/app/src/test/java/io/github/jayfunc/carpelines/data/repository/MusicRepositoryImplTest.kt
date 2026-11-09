@@ -7,13 +7,10 @@ import io.github.jayfunc.carpelines.data.database.SearchHistoryDao
 import io.github.jayfunc.carpelines.data.database.SongEntity
 import io.github.jayfunc.carpelines.data.database.AlbumEntity
 import io.github.jayfunc.carpelines.data.database.ArtistEntity
-import io.github.jayfunc.carpelines.data.model.Playlist
 import io.github.jayfunc.carpelines.data.model.SearchFilterType
 import io.github.jayfunc.carpelines.data.model.SearchResultItem
 import io.github.jayfunc.carpelines.data.model.Song
-import io.github.jayfunc.carpelines.data.preferences.PlaylistPreferencesRepository
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
-import io.github.jayfunc.carpelines.data.database.FavoritesDao
 import io.github.jayfunc.carpelines.utils.GenreParser
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -40,10 +37,8 @@ class MusicRepositoryImplTest {
     private val mockSearchHistoryDao: SearchHistoryDao = mockk(relaxed = true)
     private val mockContext: Context = mockk(relaxed = true)
     private val mockUserPreferencesRepository: UserPreferencesRepository = mockk()
-    private val mockPlaylistPreferencesRepository: PlaylistPreferencesRepository = mockk(relaxed = true)
     private val mockLyricsRepository: LyricsRepository = mockk(relaxed = true)
     private val mockSongRepository: SongRepository = mockk(relaxed = true)
-    private val mockFavoritesDao: FavoritesDao = mockk(relaxed = true)
     private val mockArtistImageRepository: ArtistImageRepository = mockk(relaxed = true)
 
     private val testDispatcher = StandardTestDispatcher()
@@ -98,13 +93,11 @@ class MusicRepositoryImplTest {
         musicRepository = MusicRepositoryImpl(
             context = mockContext,
             userPreferencesRepository = mockUserPreferencesRepository,
-            playlistPreferencesRepository = mockPlaylistPreferencesRepository,
             searchHistoryDao = mockSearchHistoryDao,
             musicDao = mockMusicDao,
             lyricsRepository = mockLyricsRepository,
             songRepository = mockSongRepository,
 
-            favoritesDao = mockFavoritesDao,
             artistImageRepository = mockArtistImageRepository,
             folderTreeBuilder = mockk(relaxed = true)
         )
@@ -436,12 +429,6 @@ class MusicRepositoryImplTest {
                 flowOf(listOf(AlbumEntity(201L, "Low Tide", "Aurora Fields", 101L, null, 3, 0L, 2021)))
             every { mockMusicDao.searchArtists("aurora", any(), any()) } returns
                 flowOf(listOf(ArtistEntity(101L, "Aurora Fields", 8, null)))
-            every { mockPlaylistPreferencesRepository.userPlaylistsFlow } returns flowOf(
-                listOf(
-                    Playlist(id = "p1", name = "Aurora mornings", songIds = listOf("1")),
-                    Playlist(id = "p2", name = "Gym", songIds = listOf("2"))
-                )
-            )
         }
 
         @Test
@@ -460,14 +447,11 @@ class MusicRepositoryImplTest {
 
             val albums = musicRepository.searchAll("aurora", SearchFilterType.ALBUMS).first()
             val artists = musicRepository.searchAll("aurora", SearchFilterType.ARTISTS).first()
-            val playlists = musicRepository.searchAll("aurora", SearchFilterType.PLAYLISTS).first()
 
             assertEquals(listOf(201L), albums.map { (it as SearchResultItem.AlbumItem).album.id })
             assertEquals(all.filterIsInstance<SearchResultItem.AlbumItem>(), albums)
             assertEquals(listOf(101L), artists.map { (it as SearchResultItem.ArtistItem).artist.id })
             assertEquals(all.filterIsInstance<SearchResultItem.ArtistItem>(), artists)
-            assertEquals(listOf("p1"), playlists.map { (it as SearchResultItem.PlaylistItem).playlist.id })
-            assertEquals(all.filterIsInstance<SearchResultItem.PlaylistItem>(), playlists)
         }
     }
 

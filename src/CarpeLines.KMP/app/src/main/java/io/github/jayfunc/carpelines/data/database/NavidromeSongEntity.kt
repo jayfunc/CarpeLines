@@ -86,7 +86,6 @@ fun NavidromeSongEntity.toSong(): Song {
         trackNumber = trackNumber,
         discNumber = CloudMusicUtils.normalizeDiscNumber(discNumber),
         dateAdded = dateAdded,
-        isFavorite = false,
         navidromeId = navidromeId
     )
 }

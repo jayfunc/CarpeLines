@@ -1,31 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="lyrics_immersive_show_chrome">显示控件</string>
-    <string name="lyrics_immersive_close">收起歌词页</string>
-    <string name="lyrics_immersive_previous">上一首</string>
-    <string name="lyrics_immersive_next">下一首</string>
-    <string name="lyrics_immersive_source">来自 %1$s</string>
     <string name="lyrics_overview_lyrics_only">只看歌词</string>
     <string name="lyrics_line_actions_title">歌词操作</string>
     <string name="lyrics_line_actions_instrumental">间奏</string>
     <string name="lyrics_line_actions_offset_label">歌词偏移</string>
     <string name="lyrics_line_actions_group_lyrics">歌词</string>
     <string name="lyrics_line_actions_copy">复制这一行</string>
-    <string name="lyrics_line_actions_earlier">歌词提前</string>
-    <string name="lyrics_line_actions_later">歌词延后</string>
     <string name="lyrics_line_actions_reset_offset">重置本首偏移</string>
     <string name="lyrics_line_actions_refresh">重新获取歌词</string>
     <string name="lyrics_line_actions_manual_search">手动搜词</string>
     <string name="lyrics_line_actions_settings">歌词外观</string>
     <string name="lyrics_line_actions_management">歌词管理</string>
-    <string name="lyrics_layout_mode_title">歌词布局</string>
-    <string name="lyrics_layout_mode_subtitle">屏幕上同时显示几行歌词</string>
-    <string name="lyrics_layout_mode_scroll">滚动列表</string>
-    <string name="lyrics_layout_mode_scroll_desc">显示全部歌词，正在唱的一行居中</string>
-    <string name="lyrics_layout_mode_single">单行</string>
-    <string name="lyrics_layout_mode_single_desc">正在唱的一行铺满屏幕</string>
-    <string name="lyrics_layout_mode_dual">双行</string>
-    <string name="lyrics_layout_mode_dual_desc">正在唱的一行和下一行同时显示</string>
     <string name="lyrics_playing_line_title">歌词位置</string>
     <string name="lyrics_playing_line_subtitle">正在唱的那一行在屏幕上的位置</string>
     <string name="lyrics_playing_line_value">距顶部 %1$d%%</string>

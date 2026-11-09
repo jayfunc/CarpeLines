@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tab_stats">Statistik</string>
-    <string name="home_hero_subtitle">Lirik kata demi kata untuk apa pun yang diputar di ponsel Anda</string>
     <string name="home_now_playing_eyebrow">Sedang diputar</string>
     <string name="home_idle_title">Belum ada yang diputar</string>
     <string name="home_idle_subtitle">Kompatibel dengan semua pemutar</string>
@@ -10,6 +9,5 @@
     <string name="home_paused_in_app">%1$s · Dijeda</string>
     <string name="home_played_players_title">Pemutar yang Anda gunakan</string>
     <string name="home_played_players_count">%1$d trek</string>
-    <string name="home_played_players_empty">Belum ada pemutaran. Putar sesuatu di pemutar apa pun dan ikonnya akan muncul di sini.</string>
     <string name="lyrics_not_found_local_hint">Lirik tidak ditemukan</string>
 </resources>

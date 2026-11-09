@@ -1,31 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="lyrics_immersive_show_chrome">Mostrar controles</string>
-    <string name="lyrics_immersive_close">Salir de la pantalla de letras</string>
-    <string name="lyrics_immersive_previous">Pista anterior</string>
-    <string name="lyrics_immersive_next">Pista siguiente</string>
-    <string name="lyrics_immersive_source">vía %1$s</string>
     <string name="lyrics_overview_lyrics_only">Mostrar solo la letra</string>
     <string name="lyrics_line_actions_title">Acciones de la línea</string>
     <string name="lyrics_line_actions_instrumental">Pasaje instrumental</string>
     <string name="lyrics_line_actions_offset_label">Desplazamiento de la línea</string>
     <string name="lyrics_line_actions_group_lyrics">Letra</string>
     <string name="lyrics_line_actions_copy">Copiar esta línea</string>
-    <string name="lyrics_line_actions_earlier">Adelantar la letra</string>
-    <string name="lyrics_line_actions_later">Atrasar la letra</string>
     <string name="lyrics_line_actions_reset_offset">Restablecer el desplazamiento de esta pista</string>
     <string name="lyrics_line_actions_refresh">Obtener la letra de nuevo</string>
     <string name="lyrics_line_actions_manual_search">Buscar letras manualmente</string>
     <string name="lyrics_line_actions_settings">Apariencia de la letra</string>
     <string name="lyrics_line_actions_management">Gestionar letras</string>
-    <string name="lyrics_layout_mode_title">Disposición</string>
-    <string name="lyrics_layout_mode_subtitle">Cuántas líneas de letra comparten la pantalla</string>
-    <string name="lyrics_layout_mode_scroll">Lista con desplazamiento</string>
-    <string name="lyrics_layout_mode_scroll_desc">Todas las líneas son visibles y la que suena queda en el centro</string>
-    <string name="lyrics_layout_mode_single">Una línea</string>
-    <string name="lyrics_layout_mode_single_desc">La línea que suena llena la pantalla</string>
-    <string name="lyrics_layout_mode_dual">Dos líneas</string>
-    <string name="lyrics_layout_mode_dual_desc">La línea que suena y la siguiente, listas para seguir</string>
     <string name="lyrics_playing_line_title">Posición de la línea activa</string>
     <string name="lyrics_playing_line_subtitle">Dónde se sitúa en pantalla la línea que se canta</string>
     <string name="lyrics_playing_line_value">%1$d%% desde arriba</string>

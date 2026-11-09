@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tab_stats">Statistiques</string>
-    <string name="home_hero_subtitle">Des paroles mot à mot pour tout ce qui joue sur votre téléphone</string>
     <string name="home_now_playing_eyebrow">Lecture en cours</string>
     <string name="home_idle_title">Aucune lecture en cours</string>
     <string name="home_idle_subtitle">Compatible avec tous les lecteurs</string>
@@ -10,6 +9,5 @@
     <string name="home_paused_in_app">%1$s · En pause</string>
     <string name="home_played_players_title">Lecteurs utilisés</string>
     <string name="home_played_players_count">%1$d morceaux</string>
-    <string name="home_played_players_empty">Aucune lecture pour l\'instant. Lancez quelque chose dans un lecteur et son icône apparaîtra ici.</string>
     <string name="lyrics_not_found_local_hint">Paroles introuvables</string>
 </resources>

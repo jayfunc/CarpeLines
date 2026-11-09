@@ -329,7 +329,7 @@ class UserPreferencesRepositoryTest {
     }
 
     @Test
-    fun `migrateTabOrder backfills Folders right after Liked for a legacy order`() = runTest {
+    fun `migrateTabOrder appends Folders to a legacy order that already lists other tabs`() = runTest {
         val tempDir = Files.createTempDirectory("user-preferences-repository-test")
         try {
             val repository = UserPreferencesRepository(
@@ -344,7 +344,7 @@ class UserPreferencesRepositoryTest {
             repository.migrateTabOrder()
 
             assertEquals(
-                listOf("SONGS", "LIKED", "FOLDERS", "ALBUMS", "ARTIST", "PLAYLISTS"),
+                listOf("SONGS", "LIKED", "ALBUMS", "ARTIST", "PLAYLISTS", "FOLDERS"),
                 repository.storedLibraryTabsOrder()
             )
         } finally {
@@ -549,7 +549,7 @@ class UserPreferencesRepositoryTest {
             repository.migrateGenresTab()
 
             assertEquals(
-                listOf("LIKED", "FOLDERS", "SONGS", "ALBUMS", "GENRES"),
+                listOf("LIKED", "SONGS", "ALBUMS", "FOLDERS", "GENRES"),
                 repository.storedLibraryTabsOrder()
             )
         }

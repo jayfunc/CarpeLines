@@ -12,13 +12,9 @@ import androidx.sqlite.db.SupportSQLiteDatabase
         SongSearchFtsEntity::class,
         AlbumEntity::class,
         ArtistEntity::class,
-        TransitionRuleEntity::class,
         SongArtistCrossRef::class,
         SongEngagementEntity::class,
-        FavoritesEntity::class,
         LyricsEntity::class,
-        PlaylistEntity::class,
-        PlaylistSongEntity::class,
         NavidromeSongEntity::class,
         NavidromePlaylistEntity::class,
         JellyfinSongEntity::class,
@@ -27,18 +23,15 @@ import androidx.sqlite.db.SupportSQLiteDatabase
         AudioBookmarkEntity::class,
         OfflineTrackEntity::class
     ],
-    version = 7,
+    version = 8,
     exportSchema = true
 )
 abstract class CarpeLinesDatabase : RoomDatabase() {
     abstract fun albumArtThemeDao(): AlbumArtThemeDao
     abstract fun searchHistoryDao(): SearchHistoryDao
     abstract fun musicDao(): MusicDao
-    abstract fun transitionDao(): TransitionDao
     abstract fun engagementDao(): EngagementDao
-    abstract fun favoritesDao(): FavoritesDao
     abstract fun lyricsDao(): LyricsDao
-    abstract fun localPlaylistDao(): LocalPlaylistDao
     abstract fun navidromeDao(): NavidromeDao
     abstract fun jellyfinDao(): JellyfinDao
     abstract fun listenBrainzDao(): ListenBrainzDao
@@ -46,42 +39,6 @@ abstract class CarpeLinesDatabase : RoomDatabase() {
     abstract fun offlineTrackDao(): OfflineTrackDao
 
     companion object {
-        fun installFavoriteSyncTriggers(db: SupportSQLiteDatabase) {
-            db.execSQL("DROP TRIGGER IF EXISTS trg_favorites_insert_sync_song")
-            db.execSQL("DROP TRIGGER IF EXISTS trg_favorites_update_sync_song")
-            db.execSQL("DROP TRIGGER IF EXISTS trg_favorites_delete_sync_song")
-
-            db.execSQL(
-                """
-                    CREATE TRIGGER IF NOT EXISTS trg_favorites_insert_sync_song
-                    AFTER INSERT ON favorites
-                    BEGIN
-                        UPDATE songs SET is_favorite = NEW.isFavorite WHERE id = NEW.songId;
-                    END
-                """.trimIndent()
-            )
-
-            db.execSQL(
-                """
-                    CREATE TRIGGER IF NOT EXISTS trg_favorites_update_sync_song
-                    AFTER UPDATE ON favorites
-                    BEGIN
-                        UPDATE songs SET is_favorite = NEW.isFavorite WHERE id = NEW.songId;
-                    END
-                """.trimIndent()
-            )
-
-            db.execSQL(
-                """
-                    CREATE TRIGGER IF NOT EXISTS trg_favorites_delete_sync_song
-                    AFTER DELETE ON favorites
-                    BEGIN
-                        UPDATE songs SET is_favorite = 0 WHERE id = OLD.songId;
-                    END
-                """.trimIndent()
-            )
-        }
-
         private fun createSongsSearchVirtualTable(db: SupportSQLiteDatabase) {
             db.execSQL(
                 """
@@ -140,7 +97,6 @@ abstract class CarpeLinesDatabase : RoomDatabase() {
             return object : RoomDatabase.Callback() {
                 override fun onCreate(db: SupportSQLiteDatabase) {
                     super.onCreate(db)
-                    installFavoriteSyncTriggers(db)
                     installSongsSearchSyncTriggers(db)
                 }
             }

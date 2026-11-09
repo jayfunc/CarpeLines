@@ -56,8 +56,7 @@ fun JellyfinSongEntity.toSong(): Song {
         year = year,
         trackNumber = trackNumber,
         discNumber = CloudMusicUtils.normalizeDiscNumber(discNumber),
-        dateAdded = dateAdded,
-        isFavorite = false
+        dateAdded = dateAdded
     )
 }
 

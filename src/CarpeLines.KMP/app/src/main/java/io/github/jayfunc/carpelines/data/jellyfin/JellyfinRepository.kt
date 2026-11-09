@@ -22,7 +22,6 @@ import io.github.jayfunc.carpelines.data.jellyfin.model.JellyfinSong
 import io.github.jayfunc.carpelines.data.model.Song
 import io.github.jayfunc.carpelines.data.network.jellyfin.JellyfinApiService
 import io.github.jayfunc.carpelines.data.network.jellyfin.JellyfinResponseParser
-import io.github.jayfunc.carpelines.data.preferences.PlaylistPreferencesRepository
 import io.github.jayfunc.carpelines.data.preferences.UserPreferencesRepository
 import io.github.jayfunc.carpelines.data.stream.BulkSyncResult
 import io.github.jayfunc.carpelines.data.stream.CloudMusicUtils
@@ -48,7 +47,6 @@ class JellyfinRepository @Inject constructor(
     private val api: JellyfinApiService,
     private val dao: JellyfinDao,
     private val musicDao: MusicDao,
-    private val playlistPreferencesRepository: PlaylistPreferencesRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
     @ApplicationContext private val context: Context
 ) {
@@ -189,11 +187,6 @@ class JellyfinRepository @Inject constructor(
         prefs.edit().clear().apply()
         userPreferencesRepository.clearJellyfinSelectedLibraryIds()
 
-        val playlistsToDelete = dao.getAllPlaylistsList()
-        playlistsToDelete.forEach { playlist ->
-            deleteAppPlaylistForJellyfinPlaylist(playlist.id)
-        }
-
         dao.clearAllSongs()
         musicDao.clearAllJellyfinSongs()
         dao.clearAllPlaylists()
@@ -276,7 +269,6 @@ class JellyfinRepository @Inject constructor(
                     stalePlaylists.forEach { stale ->
                         dao.deleteSongsByPlaylist(stale.id)
                         dao.deletePlaylist(stale.id)
-                        deleteAppPlaylistForJellyfinPlaylist(stale.id)
                     }
                 }
 
@@ -322,12 +314,8 @@ class JellyfinRepository @Inject constructor(
                 if (entities.isNotEmpty()) {
                     dao.deleteSongsByPlaylist(playlistId)
                     dao.insertSongs(entities)
-                    val playlistName = dao.getPlaylistById(playlistId)?.name ?: "Playlist"
-                    updateAppPlaylistForJellyfinPlaylist(playlistId, playlistName, entities)
                 } else if (songJsons.isEmpty()) {
                     dao.deleteSongsByPlaylist(playlistId)
-                    val playlistName = dao.getPlaylistById(playlistId)?.name ?: "Playlist"
-                    updateAppPlaylistForJellyfinPlaylist(playlistId, playlistName, emptyList())
                 }
 
                 Timber.d("$TAG: Synced ${entities.size} songs for playlist $playlistId")
@@ -682,44 +670,6 @@ class JellyfinRepository @Inject constructor(
         return -(JELLYFIN_ARTIST_ID_OFFSET + artistName.lowercase().hashCode().toLong().absoluteValue)
     }
 
-    private suspend fun updateAppPlaylistForJellyfinPlaylist(
-        jellyfinPlaylistId: String,
-        playlistName: String,
-        songs: List<JellyfinSongEntity>
-    ) {
-        val appPlaylistId = "$JELLYFIN_PLAYLIST_PREFIX$jellyfinPlaylistId"
-        val songIds = songs.map { toUnifiedSongId(it.jellyfinId).toString() }
-
-        val existingPlaylist = withContext(Dispatchers.IO) {
-            playlistPreferencesRepository.userPlaylistsFlow.map { playlists ->
-                playlists.find { it.id == appPlaylistId }
-            }.first()
-        }
-
-        if (existingPlaylist != null) {
-            playlistPreferencesRepository.updatePlaylist(
-                existingPlaylist.copy(
-                    name = playlistName,
-                    songIds = songIds,
-                    lastModified = System.currentTimeMillis(),
-                    source = "JELLYFIN"
-                )
-            )
-        } else {
-            playlistPreferencesRepository.createPlaylist(
-                name = playlistName,
-                songIds = songIds,
-                customId = appPlaylistId,
-                source = "JELLYFIN"
-            )
-        }
-    }
-
-    private suspend fun deleteAppPlaylistForJellyfinPlaylist(jellyfinPlaylistId: String) {
-        val appPlaylistId = "$JELLYFIN_PLAYLIST_PREFIX$jellyfinPlaylistId"
-        playlistPreferencesRepository.deletePlaylist(appPlaylistId)
-    }
-
     private fun JellyfinSong.toDisplaySong(): Song {
         return Song(
             id = "jellyfin_search_$id",
@@ -739,8 +689,7 @@ class JellyfinRepository @Inject constructor(
             year = year,
             trackNumber = trackNumber,
             discNumber = CloudMusicUtils.normalizeDiscNumber(discNumber),
-            dateAdded = 0,
-            isFavorite = false
+            dateAdded = 0
         )
     }
 }

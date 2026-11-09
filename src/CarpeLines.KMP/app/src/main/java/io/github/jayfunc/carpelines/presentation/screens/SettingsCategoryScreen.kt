@@ -175,11 +175,9 @@ import io.github.jayfunc.carpelines.presentation.model.SettingsCategory
 import io.github.jayfunc.carpelines.presentation.navigation.Screen
 import io.github.jayfunc.carpelines.presentation.settings.search.settingHighlight
 import io.github.jayfunc.carpelines.presentation.viewmodel.LyricsRefreshProgress
-import io.github.jayfunc.carpelines.presentation.viewmodel.M3uSyncViewModel
 import io.github.jayfunc.carpelines.presentation.viewmodel.PlayerFilterViewModel
 import io.github.jayfunc.carpelines.presentation.viewmodel.PlayerViewModel
 import io.github.jayfunc.carpelines.presentation.viewmodel.SettingsViewModel
-import io.github.jayfunc.carpelines.presentation.viewmodel.SmartMixViewModel
 import io.github.jayfunc.carpelines.ui.m3e.M3ESearchField
 import io.github.jayfunc.carpelines.ui.m3e.M3ESwitch
 import io.github.jayfunc.carpelines.ui.m3e.M3ETextField
@@ -205,9 +203,7 @@ fun SettingsCategoryScreen(
     playerViewModel: PlayerViewModel,
     settingsViewModel: SettingsViewModel = hiltViewModel(),
     playerFilterViewModel: PlayerFilterViewModel = hiltViewModel(),
-    m3uSyncViewModel: M3uSyncViewModel = hiltViewModel(),
     statsViewModel: io.github.jayfunc.carpelines.presentation.viewmodel.StatsViewModel = hiltViewModel(),
-    smartMixViewModel: SmartMixViewModel = hiltViewModel(),
     onBackClick: () -> Unit
 ) {
     val category = SettingsCategory.fromId(categoryId) ?: return
@@ -219,7 +215,6 @@ fun SettingsCategoryScreen(
     val isSyncing by settingsViewModel.isSyncing.collectAsStateWithLifecycle()
     val syncProgress by settingsViewModel.syncProgress.collectAsStateWithLifecycle()
     val dataTransferProgress by settingsViewModel.dataTransferProgress.collectAsStateWithLifecycle()
-    val m3uSyncState by m3uSyncViewModel.state.collectAsStateWithLifecycle()
     val paletteRegenerateTargets by playerViewModel.paletteRegenerationTargets.collectAsStateWithLifecycle()
     var refreshRequested by remember { mutableStateOf(false) }
     var syncRequestObservedRunning by remember { mutableStateOf(false) }
@@ -301,24 +296,10 @@ fun SettingsCategoryScreen(
         }
     }
 
-    val m3uFolderPicker = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocumentTree()
-    ) { uri ->
-        if (uri != null) m3uSyncViewModel.selectFolder(uri)
-    }
-
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(settingsViewModel, lifecycleOwner) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             settingsViewModel.dataTransferEvents.collectLatest { message ->
-                showMessage(message)
-            }
-        }
-    }
-
-    LaunchedEffect(m3uSyncViewModel, lifecycleOwner) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            m3uSyncViewModel.messages.collectLatest { message ->
                 showMessage(message)
             }
         }

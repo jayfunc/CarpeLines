@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="library_tab_genres">流派</string>
-    <string name="lib_empty_genres_title">未找到流派</string>
-    <string name="lib_empty_genres_subtitle">歌曲標籤中的流派會顯示在這裡</string>
 </resources>

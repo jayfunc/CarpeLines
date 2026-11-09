@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tab_stats">Statistiche</string>
-    <string name="home_hero_subtitle">Testi parola per parola per tutto ciò che riproduce il telefono</string>
     <string name="home_now_playing_eyebrow">In riproduzione</string>
     <string name="home_idle_title">Nessuna riproduzione in corso</string>
     <string name="home_idle_subtitle">Compatibile con qualsiasi lettore</string>
@@ -10,6 +9,5 @@
     <string name="home_paused_in_app">%1$s · In pausa</string>
     <string name="home_played_players_title">Lettori usati</string>
     <string name="home_played_players_count">%1$d brani</string>
-    <string name="home_played_players_empty">Ancora nessuna riproduzione. Avvia qualcosa in un lettore e la sua icona apparirà qui.</string>
     <string name="lyrics_not_found_local_hint">Testo non trovato</string>
 </resources>
