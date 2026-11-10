@@ -49,6 +49,7 @@ import io.github.jayfunc.carpelines.presentation.recap.RecapScreen
 import kotlinx.coroutines.flow.first
 import io.github.jayfunc.carpelines.presentation.components.ScreenWrapper
 import io.github.jayfunc.carpelines.presentation.settings.search.ProvideSettingsHighlight
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 @OptIn(UnstableApi::class)
 @SuppressLint("UnrememberedGetBackStackEntry")
@@ -59,18 +60,29 @@ fun AppNavigation(
     paddingValues: PaddingValues,
     userPreferencesRepository: UserPreferencesRepository
 ) {
-    var startDestination by remember { mutableStateOf<String?>(null) }
+    var launchRoute by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
-        startDestination = userPreferencesRepository.launchTabFlow
+        launchRoute = userPreferencesRepository.launchTabFlow
             .first()
             .toRoute()
     }
 
-    startDestination?.let { initialRoute ->
+    launchRoute?.let { initialRoute ->
+        // The default tab is a destination inside the app, not the root of the stack: it is opened
+        // on top of Home so Back (and the navigation bar) can always return to the library. Using
+        // it as NavHost's start destination would leave Home out of the stack entirely, and the
+        // lyrics page hides every navigation affordance, trapping the user there.
+        val opensOnDefaultTab = initialRoute != Screen.Home.route
+        // The opening push is not a user gesture: Home must not flash first, and the tab
+        // transition must not play over the launch fade. Cleared once the default tab is shown.
+        val suppressOpeningTransition = remember(initialRoute) {
+            mutableStateOf(opensOnDefaultTab)
+        }
+
         NavHost(
             navController = navController,
-            startDestination = initialRoute
+            startDestination = Screen.Home.route
         ) {
             composable(
                 Screen.Home.route,
@@ -78,7 +90,8 @@ fun AppNavigation(
                     mainRootEnterTransition(
                         fromRoute = initialState.destination.route,
                         toRoute = targetState.destination.route,
-                        fallback = enterTransition()
+                        fallback = enterTransition(),
+                        suppressed = suppressOpeningTransition.value
                     )
                 },
                 exitTransition = {
@@ -117,7 +130,8 @@ fun AppNavigation(
                     mainRootEnterTransition(
                         fromRoute = initialState.destination.route,
                         toRoute = targetState.destination.route,
-                        fallback = enterTransition()
+                        fallback = enterTransition(),
+                        suppressed = suppressOpeningTransition.value
                     )
                 },
                 exitTransition = {
@@ -256,7 +270,8 @@ fun AppNavigation(
                     mainRootEnterTransition(
                         fromRoute = initialState.destination.route,
                         toRoute = targetState.destination.route,
-                        fallback = enterTransition()
+                        fallback = enterTransition(),
+                        suppressed = suppressOpeningTransition.value
                     )
                 },
                 exitTransition = {
@@ -333,7 +348,8 @@ fun AppNavigation(
                     mainRootEnterTransition(
                         fromRoute = initialState.destination.route,
                         toRoute = targetState.destination.route,
-                        fallback = enterTransition()
+                        fallback = enterTransition(),
+                        suppressed = suppressOpeningTransition.value
                     )
                 },
                 exitTransition = {
@@ -432,6 +448,35 @@ fun AppNavigation(
             }
 
         }
+
+        if (opensOnDefaultTab) {
+            val currentEntry by navController.currentBackStackEntryAsState()
+
+            LaunchedEffect(navController, initialRoute) {
+                // NavHost installs the graph from its own effect, so the first entry has to exist
+                // before the default tab can be pushed on top of it.
+                navController.currentBackStackEntryFlow.first()
+                // Only an untouched Home page gets the default tab: a restored stack (process
+                // death), a deep link or a pending-navigation request already picked a page.
+                val stillOnHome = navController.previousBackStackEntry == null &&
+                    navController.currentBackStackEntry?.destination?.route == Screen.Home.route
+                if (!stillOnHome) {
+                    suppressOpeningTransition.value = false
+                    return@LaunchedEffect
+                }
+                navController.navigate(initialRoute) {
+                    launchSingleTop = true
+                }
+            }
+
+            LaunchedEffect(currentEntry?.id) {
+                // The opening push has already captured the suppressed transition by the time
+                // composition settles on the default tab; from here on, navigation animates.
+                if (currentEntry?.destination?.route == initialRoute) {
+                    suppressOpeningTransition.value = false
+                }
+            }
+        }
     }
 }
 
@@ -482,14 +527,18 @@ private fun mainRootDirection(
 private fun mainRootEnterTransition(
     fromRoute: String?,
     toRoute: String?,
-    fallback: EnterTransition
-): EnterTransition = when (mainRootDirection(fromRoute, toRoute)) {
-    null -> fallback
-    else -> fadeIn(animationSpec = MAIN_ROOT_FADE_IN) +
-        androidx.compose.animation.scaleIn(
-            animationSpec = MAIN_ROOT_SCALE_IN,
-            initialScale = 0.96f
-        )
+    fallback: EnterTransition,
+    suppressed: Boolean = false
+): EnterTransition {
+    if (suppressed) return EnterTransition.None
+    return when (mainRootDirection(fromRoute, toRoute)) {
+        null -> fallback
+        else -> fadeIn(animationSpec = MAIN_ROOT_FADE_IN) +
+            androidx.compose.animation.scaleIn(
+                animationSpec = MAIN_ROOT_SCALE_IN,
+                initialScale = 0.96f
+            )
+    }
 }
 
 private fun mainRootExitTransition(
