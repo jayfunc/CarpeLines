@@ -1485,13 +1485,13 @@ private fun LyricsTransportChrome(
             Text(
                 text = elapsedLabel,
                 style = MaterialTheme.typography.labelMedium,
-                color = colors.translation,
+                color = accent,
             )
             Spacer(Modifier.weight(1f))
             Text(
                 text = durationLabel,
                 style = MaterialTheme.typography.labelMedium,
-                color = colors.translation,
+                color = accent,
             )
         }
 
