@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.ClipData
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -69,6 +70,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -82,8 +84,12 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.GraphicsLayerScope
+import androidx.compose.ui.graphics.RenderEffect
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
@@ -98,6 +104,8 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -1482,13 +1490,13 @@ private fun LyricsTransportChrome(
                 .fillMaxWidth()
                 .entrance(0.44f, 0.92f, 6.dp)
         ) {
-            Text(
+            RollingTimeText(
                 text = elapsedLabel,
                 style = MaterialTheme.typography.labelMedium,
                 color = accent,
             )
             Spacer(Modifier.weight(1f))
-            Text(
+            RollingTimeText(
                 text = durationLabel,
                 style = MaterialTheme.typography.labelMedium,
                 color = accent,
@@ -1531,6 +1539,108 @@ private fun LyricsTransportChrome(
             playPauseLongClickLabel = stringResource(R.string.lyrics_overview_lyrics_only),
         )
     }
+}
+
+/**
+ * The seek bar's clock, drawn digit by digit so a tick rolls like an odometer: the outgoing digit
+ * rises out of its line while the incoming one climbs in from below, both blurred through the
+ * middle of the travel. The colon is static.
+ */
+@Composable
+private fun RollingTimeText(
+    text: String,
+    style: TextStyle,
+    color: Color,
+    modifier: Modifier = Modifier,
+) {
+    // Tabular figures keep every digit the same width, so a roll never nudges its neighbours.
+    val clockStyle = remember(style) { style.copy(fontFeatureSettings = "tnum") }
+    Row(
+        // The digits are drawn in overlapping layers; announce the clock as one string instead
+        // of letting accessibility walk the pieces twice.
+        modifier = modifier.clearAndSetSemantics { contentDescription = text },
+    ) {
+        text.forEachIndexed { index, char ->
+            // Keyed from the end: only the minutes' column can change width, and anchoring from
+            // the right keeps each digit's roll state with the digit it belongs to.
+            key(text.length - 1 - index) {
+                if (char.isDigit()) {
+                    RollingDigit(char = char, style = clockStyle, color = color)
+                } else {
+                    Text(text = char.toString(), style = clockStyle, color = color)
+                }
+            }
+        }
+    }
+}
+
+private const val TimeRollMillis = 260
+
+@Composable
+private fun RollingDigit(
+    char: Char,
+    style: TextStyle,
+    color: Color,
+) {
+    var from by remember { mutableStateOf(char) }
+    var to by remember { mutableStateOf(char) }
+    val roll = remember { Animatable(1f) }
+    var lineHeightPx by remember { mutableFloatStateOf(0f) }
+
+    LaunchedEffect(char) {
+        if (char == to) return@LaunchedEffect
+        // The next tick can land mid-roll; resume from whichever digit owns most of the frame
+        // instead of snapping back to the one that is already sliding away.
+        from = if (roll.value < 0.5f) from else to
+        to = char
+        roll.snapTo(0f)
+        roll.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(
+                durationMillis = TimeRollMillis,
+                easing = M3EMotion.Easings.emphasizedDecelerate,
+            ),
+        )
+    }
+
+    Box(
+        modifier = Modifier
+            .clipToBounds()
+            .onSizeChanged { lineHeightPx = it.height.toFloat() },
+    ) {
+        // Invisible sizer: the box takes exactly one line, which is what the roll clips against.
+        Text(text = "0", style = style, color = Color.Transparent)
+        Text(
+            text = from.toString(),
+            style = style,
+            color = color,
+            modifier = Modifier.graphicsLayer {
+                translationY = -roll.value * lineHeightPx
+                alpha = 1f - roll.value
+                renderEffect = timeRollBlur(roll.value)
+            },
+        )
+        Text(
+            text = to.toString(),
+            style = style,
+            color = color,
+            modifier = Modifier.graphicsLayer {
+                translationY = (1f - roll.value) * lineHeightPx
+                alpha = roll.value
+                renderEffect = timeRollBlur(roll.value)
+            },
+        )
+    }
+}
+
+/**
+ * Blur peaks at the middle of a roll, where the two digits share the line. Android 12+ only —
+ * older versions keep the slide without the blur.
+ */
+private fun GraphicsLayerScope.timeRollBlur(progress: Float): RenderEffect? {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return null
+    val radius = 4f * progress * (1f - progress) * 3.dp.toPx()
+    return if (radius > 0.01f) BlurEffect(radius, radius, TileMode.Decal) else null
 }
 
 /** One stage of an entrance: slices 0..1 out of [reveal] into alpha and rise. */
