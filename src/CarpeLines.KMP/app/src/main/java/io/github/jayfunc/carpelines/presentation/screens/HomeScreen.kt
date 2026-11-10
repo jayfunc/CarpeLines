@@ -211,7 +211,11 @@ fun HomeScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = M3ESpacing.extraLarge)
+                            .padding(
+                                start = M3ESpacing.extraLarge,
+                                top = M3ESpacing.medium,
+                                end = M3ESpacing.extraLarge,
+                            )
                             .animateItem()
                     )
                 }
