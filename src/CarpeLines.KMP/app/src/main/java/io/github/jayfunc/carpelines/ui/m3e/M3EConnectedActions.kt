@@ -1,13 +1,9 @@
 package io.github.jayfunc.carpelines.ui.m3e
 
-import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,30 +23,21 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import io.github.jayfunc.carpelines.ui.theme.LocalReducedMotion
-import io.github.jayfunc.carpelines.ui.theme.M3EMotion
 import io.github.jayfunc.carpelines.ui.theme.M3ESize
 import io.github.jayfunc.carpelines.ui.theme.M3ESpacing
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /** Emphasis of one segment in a [M3EConnectedActions] bar, highest first. */
 @Immutable
@@ -92,14 +79,10 @@ enum class M3EConnectedOrientation {
 /** Gap between connected segments — the M3 Expressive "hairline" that keeps one silhouette. */
 private val ConnectedSpaceBetween: Dp = 2.dp
 
-/** Pressed corner radius: a pill squishes toward a rounded-square, never to a hard rectangle. */
-private val PressedCorner: Dp = 16.dp
-
 /** Resting corner radius of a segment's inner (facing) corners. */
 private val RestingInnerCorner: Dp = 8.dp
 
-/**
- * How much wider a pressed segment grows inside a horizontal bar.
+/** How much wider a pressed segment grows inside a horizontal bar.
  *
  * M3 Expressive's press feedback is spatial, not just tonal: the pressed segment claims the room
  * it is about to act on while its neighbour yields, which reads as one bar reshaping rather than
@@ -107,35 +90,9 @@ private val RestingInnerCorner: Dp = 8.dp
  */
 private const val PressedWeightGain = 1.25f
 
-/** The label shrinks a touch under the finger, so the press lands before the action does. */
-private const val PressedContentScale = 0.95f
-
-/** Extra horizontal padding the label gains while pressed, widening the segment's content box. */
-private val PressedPaddingGrowth: Dp = 4.dp
-
-/** How long the pressed look outlives a quick tap, so the feedback is actually visible. */
-private const val TapLingerMillis = 100L
-
 /** Weight runs on a low-bouncy spring: the bar widens with a little overshoot, then settles. */
 private val PressedWeightSpec =
     spring<Float>(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
-
-/** The label's scale is bouncier than the container: it is the part the eye is already on. */
-private val PressedContentSpec =
-    spring<Float>(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow)
-
-/**
- * Press bookkeeping for one segment.
- *
- * The interaction source is shared with the weight animation in the bar's row, so the widening and
- * the visual press cannot disagree about whether the segment is down.
- */
-private class SegmentPress {
-    val interaction = MutableInteractionSource()
-
-    /** Held on for [TapLingerMillis] after a tap, so a flick still shows the press. */
-    var lingering by mutableStateOf(false)
-}
 
 /**
  * Related actions drawn as one Material 3 Expressive connected action bar.
@@ -189,7 +146,7 @@ fun M3EConnectedActions(
             horizontalArrangement = Arrangement.spacedBy(ConnectedSpaceBetween)
         ) {
             actions.forEachIndexed { index, action ->
-                val press = remember { SegmentPress() }
+                val press = remember { ExpressivePressState() }
                 val pressed by press.interaction.collectIsPressedAsState()
                 val active = pressed || press.lingering
                 val weight by animateFloatAsState(
@@ -238,58 +195,28 @@ private fun ConnectedSegment(
     height: Dp,
     modifier: Modifier = Modifier,
     contentPadding: Dp = M3ESpacing.extraLarge,
-    press: SegmentPress = remember { SegmentPress() },
+    press: ExpressivePressState = remember { ExpressivePressState() },
 ) {
-    val pressed by press.interaction.collectIsPressedAsState()
-    val active = pressed || press.lingering
-    val reducedMotion = LocalReducedMotion.current
-    val haptics = LocalHapticFeedback.current
     val scope = rememberCoroutineScope()
 
-    // A tick at press time, not at click time: the finger wants to know the bar took the press
-    // even when the action behind it takes a moment to open a chooser.
-    LaunchedEffect(pressed) {
-        if (pressed && action.enabled) {
-            haptics.performHapticFeedback(HapticFeedbackType.ContextClick)
-        }
-    }
+    ExpressivePressHaptic(press, action.enabled)
 
-    val spec: FiniteAnimationSpec<Dp> = if (reducedMotion) snap() else M3EMotion.spatialFast()
     val restingOuter = height / 2
-    val outer by animateDpAsState(
-        targetValue = if (active) PressedCorner else restingOuter,
-        animationSpec = spec,
-        label = "segmentOuterCorner"
-    )
-    val inner by animateDpAsState(
-        targetValue = if (active) PressedCorner else RestingInnerCorner,
-        animationSpec = spec,
-        label = "segmentInnerCorner"
-    )
-    val contentGrowth by animateDpAsState(
-        targetValue = if (active && !reducedMotion) PressedPaddingGrowth else 0.dp,
-        animationSpec = spec,
-        label = "segmentContentGrowth"
-    )
-    val contentScale by animateFloatAsState(
-        targetValue = if (active && !reducedMotion) PressedContentScale else 1f,
-        animationSpec = if (reducedMotion) snap() else PressedContentSpec,
-        label = "segmentContentScale"
+    val visuals = rememberExpressivePressVisuals(
+        press = press,
+        restingOuter = restingOuter,
+        restingInner = RestingInnerCorner,
     )
 
     Surface(
         onClick = {
             // Hold the pressed look briefly: without it a quick tap is over before the eyes catch
             // the animation, and the button reads as unresponsive.
-            scope.launch {
-                press.lingering = true
-                delay(TapLingerMillis)
-                press.lingering = false
-            }
+            press.holdAfterTap(scope)
             action.onClick()
         },
         enabled = action.enabled,
-        shape = connectedSegmentShape(index, count, vertical, outer, inner),
+        shape = connectedSegmentShape(index, count, vertical, visuals.outerCorner, visuals.innerCorner),
         color = action.emphasis.container(action.enabled),
         contentColor = action.emphasis.content(action.enabled),
         border = action.emphasis.border(action.enabled),
@@ -299,8 +226,8 @@ private fun ConnectedSegment(
         SegmentContent(
             action = action,
             height = height,
-            horizontalPadding = contentPadding + contentGrowth,
-            contentScale = contentScale,
+            horizontalPadding = contentPadding + visuals.contentGrowth,
+            contentScale = visuals.contentScale,
         )
     }
 }
@@ -373,10 +300,6 @@ private fun connectedSegmentShape(
         )
     }
 }
-
-/** Disabled containers drop to the M3 12% `onSurface` scrim instead of a faded brand colour. */
-private const val DisabledContainerAlpha = 0.12f
-private const val DisabledContentAlpha = 0.38f
 
 @Composable
 private fun M3EActionEmphasis.container(enabled: Boolean): Color {

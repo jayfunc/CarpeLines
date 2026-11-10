@@ -3,13 +3,11 @@ package io.github.jayfunc.carpelines.presentation.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +17,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -65,14 +64,16 @@ import io.github.jayfunc.carpelines.data.backup.model.ModuleRestoreDetail
 import io.github.jayfunc.carpelines.data.backup.model.RestorePlan
 import io.github.jayfunc.carpelines.presentation.utils.LocalAppHapticsConfig
 import io.github.jayfunc.carpelines.presentation.utils.performAppCompatHapticFeedback
+import io.github.jayfunc.carpelines.ui.m3e.M3ESurface
+import io.github.jayfunc.carpelines.ui.m3e.M3ESurfaceLevel
 import io.github.jayfunc.carpelines.ui.m3e.M3ESwitch
 import io.github.jayfunc.carpelines.ui.theme.M3EShape
-import io.github.jayfunc.carpelines.ui.theme.RoundedSans
+import io.github.jayfunc.carpelines.ui.theme.M3ESize
+import io.github.jayfunc.carpelines.ui.theme.M3ESpacing
 import io.github.jayfunc.carpelines.ui.theme.m3eContentWidth
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.ui.res.stringResource
 
 @OptIn(
@@ -382,13 +383,13 @@ fun BackupModuleSelectionDialog(
                                     state = listState,
                                     modifier = Modifier.fillMaxSize(),
                                     contentPadding = PaddingValues(bottom = 18.dp),
-                                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                                    verticalArrangement = Arrangement.spacedBy(2.dp)
                                 ) {
                                     val modules = plan.availableModules.toList()
                                     itemsIndexed(modules, key = { _, section -> section.key }) { index, section ->
                                         val isSelected = section in plan.selectedModules
                                         val detail = plan.moduleDetails[section]
-                                        BackupSectionSelectableCardShared(
+                                        BackupSectionSwitchItem(
                                             section = section,
                                             selected = isSelected,
                                             enabled = !inProgress,
@@ -415,8 +416,9 @@ fun BackupModuleSelectionDialog(
     }
 }
 
+/** Module row in the backup/restore selection lists, styled like a Settings switch row. */
 @Composable
-private fun BackupSectionSelectableCardShared(
+fun BackupSectionSwitchItem(
     section: BackupSection,
     selected: Boolean,
     enabled: Boolean,
@@ -424,35 +426,6 @@ private fun BackupSectionSelectableCardShared(
     shape: Shape = M3EShape.medium,
     onToggle: () -> Unit
 ) {
-    val borderColor by animateColorAsState(
-        targetValue = if (selected) {
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
-        } else {
-            androidx.compose.ui.graphics.Color.Transparent
-        },
-        label = "backup_section_border"
-    )
-    val borderWidth by animateDpAsState(
-        targetValue = if (selected) 2.5.dp else 1.dp,
-        label = "backup_section_border_width"
-    )
-    val iconContainerColor by animateColorAsState(
-        targetValue = if (selected) {
-            MaterialTheme.colorScheme.secondaryContainer
-        } else {
-            MaterialTheme.colorScheme.surfaceContainerHighest
-        },
-        label = "backup_section_icon_bg"
-    )
-    val iconTint by animateColorAsState(
-        targetValue = if (selected) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            MaterialTheme.colorScheme.onSurfaceVariant
-        },
-        label = "backup_section_icon_tint"
-    )
-
     val view = LocalView.current
     val appHapticsConfig = LocalAppHapticsConfig.current
     val handleToggle = {
@@ -465,84 +438,72 @@ private fun BackupSectionSelectableCardShared(
             onToggle()
         }
     }
+    val contentAlpha = if (enabled) 1f else 0.38f
 
-    Surface(
-        onClick = handleToggle,
-        enabled = enabled,
+    M3ESurface(
+        modifier = Modifier.fillMaxWidth(),
+        level = M3ESurfaceLevel.Container,
         shape = shape,
-        color = MaterialTheme.colorScheme.surfaceContainerLow,
-        border = BorderStroke(width = borderWidth, color = borderColor),
-        tonalElevation = if (selected) 2.dp else 0.dp,
-        modifier = Modifier.fillMaxWidth()
+        onClick = handleToggle,
+        enabled = enabled
     ) {
-        Column(
+        Row(
             modifier = Modifier
+                .padding(horizontal = M3ESpacing.large, vertical = M3ESpacing.medium)
                 .fillMaxWidth()
-                .padding(horizontal = 14.dp, vertical = 14.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+                .heightIn(min = M3ESize.minimumTarget),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(M3ESpacing.medium)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            Icon(
+                painter = painterResource(section.iconRes),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.secondary.copy(alpha = contentAlpha),
+                modifier = Modifier.size(M3ESize.iconMedium)
+            )
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(M3ESpacing.extraSmall)
             ) {
-                Surface(
-                    color = iconContainerColor,
-                    shape = RoundedCornerShape(14.dp),
-                    modifier = Modifier.size(48.dp)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            painter = painterResource(section.iconRes),
-                            contentDescription = null,
-                            tint = iconTint,
-                            modifier = Modifier.size(22.dp)
-                        )
-                    }
-                }
-
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
-                ) {
-                    Text(
-                        text = stringResource(section.labelRes),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontFamily = RoundedSans
-                        ),
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        text = stringResource(section.descriptionRes),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    if (detail != null && detail.entryCount > 0) {
-                        Text(
-                            text = if (detail.willOverwrite) {
-                                stringResource(
-                                    R.string.presentation_batch_g_backup_entries_will_replace,
-                                    detail.entryCount
-                                )
-                            } else {
-                                stringResource(
-                                    R.string.presentation_batch_g_backup_entries_will_merge,
-                                    detail.entryCount
-                                )
-                            },
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.tertiary
-                        )
-                    }
-                }
-
-                M3ESwitch(
-                    checked = selected,
-                    onCheckedChange = { handleToggle() },
-                    enabled = enabled
+                Text(
+                    text = stringResource(section.labelRes),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
+                Text(
+                    text = stringResource(section.descriptionRes),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                if (detail != null && detail.entryCount > 0) {
+                    Text(
+                        text = if (detail.willOverwrite) {
+                            stringResource(
+                                R.string.presentation_batch_g_backup_entries_will_replace,
+                                detail.entryCount
+                            )
+                        } else {
+                            stringResource(
+                                R.string.presentation_batch_g_backup_entries_will_merge,
+                                detail.entryCount
+                            )
+                        },
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.tertiary.copy(alpha = contentAlpha)
+                    )
+                }
             }
+
+            M3ESwitch(
+                checked = selected,
+                onCheckedChange = { handleToggle() },
+                enabled = enabled
+            )
         }
     }
 }

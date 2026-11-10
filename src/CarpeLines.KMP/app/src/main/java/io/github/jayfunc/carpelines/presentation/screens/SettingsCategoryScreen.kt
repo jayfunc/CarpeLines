@@ -24,12 +24,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -63,7 +61,6 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ClearAll
@@ -149,12 +146,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import io.github.jayfunc.carpelines.R
+import io.github.jayfunc.carpelines.ui.m3e.M3EExpressiveButton
 import io.github.jayfunc.carpelines.ui.m3e.M3EModalBottomSheet
 import io.github.jayfunc.carpelines.data.backup.model.BackupHistoryEntry
 import io.github.jayfunc.carpelines.data.backup.model.BackupOperationType
 import io.github.jayfunc.carpelines.data.backup.model.BackupSection
 import io.github.jayfunc.carpelines.data.backup.model.BackupTransferProgressUpdate
-import io.github.jayfunc.carpelines.data.backup.model.ModuleRestoreDetail
 import io.github.jayfunc.carpelines.data.backup.model.RestorePlan
 import io.github.jayfunc.carpelines.data.model.AudioOutputMode
 import io.github.jayfunc.carpelines.data.preferences.AppLanguage
@@ -168,6 +165,7 @@ import io.github.jayfunc.carpelines.utils.openBatteryOptimizationSettings
 import io.github.jayfunc.carpelines.data.model.Song
 import io.github.jayfunc.carpelines.presentation.components.BackupDialogHeader
 import io.github.jayfunc.carpelines.presentation.components.BackupPasswordPromptDialog
+import io.github.jayfunc.carpelines.presentation.components.BackupSectionSwitchItem
 import io.github.jayfunc.carpelines.presentation.components.CollapsibleCommonTopBar
 import io.github.jayfunc.carpelines.presentation.components.ExpressiveTopBarContent
 import io.github.jayfunc.carpelines.presentation.components.MiniPlayerHeight
@@ -965,10 +963,6 @@ private fun buildBackupSelectionSummary(context: Context, selected: Set<BackupSe
     }
 }
 
-private fun backupSectionIconRes(section: BackupSection): Int {
-    return section.iconRes
-}
-
 @Composable
 private fun BackupInfoNoticeCard(
     onDismiss: () -> Unit
@@ -1135,13 +1129,10 @@ private fun BackupSectionSelectionDialog(
                                         }
                                     }
 
-                                    ExtendedFloatingActionButton(
+                                    M3EExpressiveButton(
                                         onClick = { closeDialog(onConfirm) },
-                                        modifier = Modifier
-                                            .padding(end = 6.dp)
-                                            .height(48.dp),
-                                        shape = RoundedCornerShape(16.dp),
-                                        containerColor = if (operation == BackupOperationType.EXPORT) {
+                                        modifier = Modifier.padding(end = 6.dp),
+                                        color = if (operation == BackupOperationType.EXPORT) {
                                             MaterialTheme.colorScheme.tertiaryContainer
                                         } else {
                                             MaterialTheme.colorScheme.primaryContainer
@@ -1150,16 +1141,23 @@ private fun BackupSectionSelectionDialog(
                                             MaterialTheme.colorScheme.onTertiaryContainer
                                         } else {
                                             MaterialTheme.colorScheme.onPrimaryContainer
-                                        }
+                                        },
+                                        height = 48.dp,
+                                        cornerRadius = 16.dp,
+                                        shadowElevation = 6.dp,
                                     ) {
                                         if (inProgress) {
-                                            LoadingIndicator(modifier = Modifier.height(20.dp))
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                            Text(
-                                                text = if (operation == BackupOperationType.EXPORT) stringResource(R.string.backup_exporting) else stringResource(R.string.backup_importing),
-                                                style = MaterialTheme.typography.labelLarge,
-                                                fontWeight = FontWeight.SemiBold
-                                            )
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                            ) {
+                                                LoadingIndicator(modifier = Modifier.height(20.dp))
+                                                Text(
+                                                    text = if (operation == BackupOperationType.EXPORT) stringResource(R.string.backup_exporting) else stringResource(R.string.backup_importing),
+                                                    style = MaterialTheme.typography.labelLarge,
+                                                    fontWeight = FontWeight.SemiBold
+                                                )
+                                            }
                                         } else {
                                             Row(
                                                 verticalAlignment = Alignment.CenterVertically,
@@ -1181,7 +1179,8 @@ private fun BackupSectionSelectionDialog(
                                                         stringResource(R.string.setcat_export_backup_title)
                                                     } else {
                                                         stringResource(R.string.setcat_import_backup_title)
-                                                    }
+                                                    },
+                                                    style = MaterialTheme.typography.labelLarge
                                                 )
                                             }
                                         }
@@ -1244,11 +1243,11 @@ private fun BackupSectionSelectionDialog(
                                     state = listState,
                                     modifier = Modifier.fillMaxSize(),
                                     contentPadding = PaddingValues(bottom = 18.dp),
-                                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                                    verticalArrangement = Arrangement.spacedBy(2.dp)
                                 ) {
                                     itemsIndexed(BackupSection.entries, key = { _, section -> section.key }) { index, section ->
                                         val isSelected = section in selectedSections
-                                        BackupSectionSelectableCard(
+                                        BackupSectionSwitchItem(
                                             section = section,
                                             selected = isSelected,
                                             enabled = !inProgress,
@@ -1265,114 +1264,6 @@ private fun BackupSectionSelectionDialog(
                         }
                     }
                 }
-            }
-        }
-    }
-}
-@Composable
-private fun BackupSectionSelectableCard(
-    section: BackupSection,
-    selected: Boolean,
-    enabled: Boolean,
-    detail: ModuleRestoreDetail? = null,
-    shape: Shape = M3EShape.medium,
-    onToggle: () -> Unit
-) {
-    val borderColor by animateColorAsState(
-        targetValue = if (selected) {
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
-        } else {
-            Color.Transparent
-        },
-        label = "backup_section_border"
-    )
-    val borderWidth by animateDpAsState(
-        targetValue = if (selected) 2.5.dp else 1.dp,
-        label = "backup_section_border_width"
-    )
-    val iconContainerColor by animateColorAsState(
-        targetValue = if (selected) {
-            MaterialTheme.colorScheme.secondaryContainer
-        } else {
-            MaterialTheme.colorScheme.surfaceContainerHighest
-        },
-        label = "backup_section_icon_bg"
-    )
-    val iconTint by animateColorAsState(
-        targetValue = if (selected) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            MaterialTheme.colorScheme.onSurfaceVariant
-        },
-        label = "backup_section_icon_tint"
-    )
-
-    Surface(
-        onClick = onToggle,
-        enabled = enabled,
-        shape = shape,
-        color = MaterialTheme.colorScheme.surfaceContainerLow,
-        border = BorderStroke(width = borderWidth, color = borderColor),
-        tonalElevation = if (selected) 2.dp else 0.dp,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 14.dp, vertical = 14.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Surface(
-                    color = iconContainerColor,
-                    shape = M3EShape.medium,
-                    modifier = Modifier.size(48.dp)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            painter = painterResource(backupSectionIconRes(section)),
-                            contentDescription = null,
-                            tint = iconTint,
-                            modifier = Modifier.size(22.dp)
-                        )
-                    }
-                }
-
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
-                ) {
-                    Text(
-                        text = stringResource(section.labelRes),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontFamily = RoundedSans
-                        ),
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        text = stringResource(section.descriptionRes),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    if (detail != null && detail.entryCount > 0) {
-                        Text(
-                            text = stringResource(R.string.backup_entries_will_replace, detail.entryCount),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.tertiary
-                        )
-                    }
-                }
-
-                M3ESwitch(
-                    checked = selected,
-                    onCheckedChange = { onToggle() },
-                    enabled = enabled
-                )
             }
         }
     }

@@ -183,5 +183,3 @@ fun M3ELeadingIconContainer(
         }
     }
 }
-
-private const val DisabledContentAlpha = 0.38f

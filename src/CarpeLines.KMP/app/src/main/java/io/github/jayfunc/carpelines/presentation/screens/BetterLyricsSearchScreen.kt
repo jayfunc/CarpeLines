@@ -4,8 +4,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -14,8 +12,6 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,14 +42,13 @@ import androidx.compose.material.icons.rounded.MusicOff
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SearchOff
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -69,7 +64,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -93,13 +87,15 @@ import io.github.jayfunc.carpelines.presentation.components.SmartImage
 import io.github.jayfunc.carpelines.presentation.components.rememberAppMessage
 import io.github.jayfunc.carpelines.presentation.viewmodel.BetterLyricsSearchViewModel
 import io.github.jayfunc.carpelines.presentation.viewmodel.BetterLyricsSearchViewModel.PreviewTrack
+import io.github.jayfunc.carpelines.ui.m3e.DisabledContainerAlpha
+import io.github.jayfunc.carpelines.ui.m3e.DisabledContentAlpha
 import io.github.jayfunc.carpelines.ui.m3e.M3EEmptyState
+import io.github.jayfunc.carpelines.ui.m3e.M3EExpressiveButton
 import io.github.jayfunc.carpelines.ui.m3e.M3EListItem
 import io.github.jayfunc.carpelines.ui.m3e.M3EModalBottomSheet
 import io.github.jayfunc.carpelines.ui.m3e.M3ESurface
 import io.github.jayfunc.carpelines.ui.m3e.M3ESurfaceLevel
 import io.github.jayfunc.carpelines.ui.m3e.M3ETextField
-import io.github.jayfunc.carpelines.ui.theme.LocalReducedMotion
 import io.github.jayfunc.carpelines.ui.theme.M3EMotion
 import io.github.jayfunc.carpelines.ui.theme.M3EShape
 import io.github.jayfunc.carpelines.ui.theme.M3ESize
@@ -306,16 +302,6 @@ fun BetterLyricsSearchScreen(
                     }
                 }
 
-                if (uiState.searching) {
-                    item(key = "searching") {
-                        LinearWavyProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 10.dp),
-                        )
-                    }
-                }
-
                 uiState.error?.let { message ->
                     item(key = "error") {
                         ErrorCard(
@@ -440,9 +426,10 @@ private fun CurrentTrackCard(media: ExternalMediaState) {
 /**
  * The page's single call to action.
  *
- * It is an M3 Expressive pill: it squishes under the finger, its container fades into the tonal
- * "busy" role while a search runs, and icon and label swap with a short shared-axis transition
- * instead of the label jumping between two layouts.
+ * It is an M3 Expressive pill with the same press feedback as the connected action bars: it
+ * squishes under the finger, its container fades into the tonal "busy" role while a search runs,
+ * and icon and label swap with a short shared-axis transition instead of the label jumping
+ * between two layouts.
  */
 @Composable
 private fun SearchActionButton(
@@ -452,9 +439,6 @@ private fun SearchActionButton(
     modifier: Modifier = Modifier,
 ) {
     val scheme = MaterialTheme.colorScheme
-    val interaction = remember { MutableInteractionSource() }
-    val pressed by interaction.collectIsPressedAsState()
-    val reducedMotion = LocalReducedMotion.current
 
     val containerColor by animateColorAsState(
         targetValue = when {
@@ -474,34 +458,17 @@ private fun SearchActionButton(
         animationSpec = tween(M3EMotion.Duration.medium2),
         label = "searchButtonContent",
     )
-    val scale by animateFloatAsState(
-        targetValue = if (pressed && !reducedMotion) 0.97f else 1f,
-        animationSpec = if (reducedMotion) {
-            snap()
-        } else {
-            spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMediumLow)
-        },
-        label = "searchButtonScale",
-    )
 
-    M3ESurface(
+    M3EExpressiveButton(
         onClick = onSearch,
         enabled = canSearch && !searching,
-        shape = M3EShape.full,
         color = containerColor,
         contentColor = contentColor,
-        interactionSource = interaction,
-        modifier = modifier
-            .height(M3ESize.buttonExpressive)
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            },
+        contentPadding = M3ESpacing.extraLarge,
+        modifier = modifier,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = M3ESpacing.extraLarge),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -809,23 +776,36 @@ private fun PreviewSheetContent(
             )
         }
 
-        Button(
+        val applyEnabled = document != null && !state.applying
+        M3EExpressiveButton(
             onClick = onApply,
-            enabled = document != null && !state.applying,
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = M3ESize.buttonExpressive),
-            shape = M3EShape.full,
+            enabled = applyEnabled,
+            color = if (applyEnabled) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onSurface.copy(alpha = DisabledContainerAlpha)
+            },
+            contentColor = if (applyEnabled) {
+                MaterialTheme.colorScheme.onPrimary
+            } else {
+                MaterialTheme.colorScheme.onSurface.copy(alpha = DisabledContentAlpha)
+            },
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            if (state.applying) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(18.dp),
-                    strokeWidth = 2.dp,
-                    color = MaterialTheme.colorScheme.onPrimary,
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (state.applying) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(18.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                    )
+                    Spacer(Modifier.width(8.dp))
+                }
+                Text(
+                    text = stringResource(R.string.betterlyrics_apply),
+                    style = MaterialTheme.typography.labelLarge,
                 )
-                Spacer(Modifier.width(8.dp))
             }
-            Text(stringResource(R.string.betterlyrics_apply))
         }
 
         Spacer(Modifier.height(8.dp))
@@ -839,26 +819,54 @@ private fun TrackChooser(
     onSelect: (PreviewTrack) -> Unit,
 ) {
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        FilterChip(
+        TrackBadge(
+            label = stringResource(R.string.lyrics_manual_search_track_original),
             selected = selected == PreviewTrack.ORIGINAL,
             onClick = { onSelect(PreviewTrack.ORIGINAL) },
-            label = { Text(stringResource(R.string.lyrics_manual_search_track_original)) },
         )
         if (document.hasTranslation) {
-            FilterChip(
+            TrackBadge(
+                label = stringResource(R.string.lyrics_manual_search_track_translation),
                 selected = selected == PreviewTrack.TRANSLATION,
                 onClick = { onSelect(PreviewTrack.TRANSLATION) },
-                label = { Text(stringResource(R.string.lyrics_manual_search_track_translation)) },
             )
         }
         if (document.hasRomanization) {
-            FilterChip(
+            TrackBadge(
+                label = stringResource(R.string.lyrics_manual_search_track_romanization),
                 selected = selected == PreviewTrack.ROMANIZATION,
                 onClick = { onSelect(PreviewTrack.ROMANIZATION) },
-                label = { Text(stringResource(R.string.lyrics_manual_search_track_romanization)) },
             )
         }
     }
+}
+
+/** Track option drawn like the licences page badges, keeping the chips' outline when unselected. */
+@Composable
+private fun TrackBadge(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    FilterChip(
+        selected = selected,
+        onClick = onClick,
+        label = {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+        },
+        shape = M3EShape.rounded(10.dp),
+        colors = FilterChipDefaults.filterChipColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            labelColor = MaterialTheme.colorScheme.onSurface,
+            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        ),
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+    )
 }
 
 private data class PreviewLine(
